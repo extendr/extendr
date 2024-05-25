@@ -17,11 +17,11 @@
     <span class="kw">let </span>fred = <span class="macro">sym!</span>(fred);
     <span class="macro">assert_eq!</span>(fred.as_symbol(), <span class="prelude-val">Some</span>(Symbol::from_string(<span class="string">"fred"</span>)));
 }</code></pre></div>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.as_char" class="method"><a class="src rightside" href="../../src/extendr_api/wrapper/mod.rs.html#262-264">source</a><h4 class="code-header">fn <a href="#method.as_char" class="fn">as_char</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="rstr/struct.Rstr.html" title="struct extendr_api::wrapper::rstr::Rstr">Rstr</a>&gt;</h4></section></summary><div class="docblock"><p>Convert a CHARSXP object to a Rstr wrapper.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.as_char" class="method"><a class="src rightside" href="../../src/extendr_api/wrapper/mod.rs.html#262-264">source</a><h4 class="code-header">fn <a href="#method.as_char" class="fn">as_char</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="rstr/struct.Rstr.html" title="struct extendr_api::wrapper::rstr::Rstr">Rstr</a>&gt;</h4></section></summary><div class="docblock"><p>Convert a <code>CHARSXP</code> object to a <code>Rstr</code> wrapper.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
 <span class="macro">test!</span> {
-    <span class="kw">let </span>fred = <span class="macro">r!</span>(Rstr::from_string(<span class="string">"fred"</span>));
+    <span class="kw">let </span>fred = Rstr::from_string(<span class="string">"fred"</span>);
     <span class="macro">assert_eq!</span>(fred.as_char(), <span class="prelude-val">Some</span>(Rstr::from_string(<span class="string">"fred"</span>)));
 }</code></pre></div>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.as_raw" class="method"><a class="src rightside" href="../../src/extendr_api/wrapper/mod.rs.html#275-277">source</a><h4 class="code-header">fn <a href="#method.as_raw" class="fn">as_raw</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="raw/struct.Raw.html" title="struct extendr_api::wrapper::raw::Raw">Raw</a>&gt;</h4></section></summary><div class="docblock"><p>Convert a raw object to a Rstr wrapper.</p>

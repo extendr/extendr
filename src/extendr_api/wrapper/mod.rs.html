@@ -651,19 +651,19 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_symbol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Symbol&gt; {
-        Symbol::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Symbol::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
-    <span class="doccomment">/// Convert a CHARSXP object to a Rstr wrapper.
+    <span class="doccomment">/// Convert a `CHARSXP` object to a `Rstr` wrapper.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let fred = r!(Rstr::from_string("fred"));
+    ///     let fred = Rstr::from_string("fred");
     ///     assert_eq!(fred.as_char(), Some(Rstr::from_string("fred")));
     /// }
     /// ```
     </span><span class="kw">fn </span>as_char(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Rstr&gt; {
-        Rstr::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Rstr::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert a raw object to a Rstr wrapper.
@@ -676,7 +676,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_raw(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Raw&gt; {
-        Raw::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Raw::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert a language object to a Language wrapper.
@@ -689,7 +689,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_language(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Language&gt; {
-        Language::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Language::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert a pair list object (LISTSXP) to a Pairlist wrapper.
@@ -703,7 +703,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_pairlist(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Pairlist&gt; {
-        Pairlist::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Pairlist::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert a list object (VECSXP) to a List wrapper.
@@ -715,7 +715,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_list(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;List&gt; {
-        List::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        List::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert an expression object (EXPRSXP) to a Expr wrapper.
@@ -728,7 +728,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_expressions(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Expressions&gt; {
-        Expressions::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Expressions::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert an environment object (ENVSXP) to a Env wrapper.
@@ -744,7 +744,7 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_environment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Environment&gt; {
-        Environment::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Environment::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Convert a function object (CLOSXP) to a Function wrapper.
@@ -756,12 +756,12 @@
     /// }
     /// ```
     </span><span class="kw">fn </span>as_function(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Function&gt; {
-        Function::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Function::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 
     <span class="doccomment">/// Get a wrapper for a promise.
     </span><span class="kw">fn </span>as_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Promise&gt; {
-        Promise::try_from(<span class="self">self</span>.as_robj().clone()).ok()
+        Promise::try_from(<span class="self">self</span>.as_robj()).ok()
     }
 }
 
