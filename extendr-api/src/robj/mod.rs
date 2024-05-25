@@ -358,7 +358,7 @@ impl Robj {
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
                     CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
                     // a character vector contains `CHARSXP`, and thus you
-                    // seldomly have `Robj`'s that are `CHARSXP` themselves
+                    // seldom have `Robj`'s that are `CHARSXP` themselves
                     CHARSXP => sexp == libR_sys::R_NaString,
                     _ => false,
                 }
