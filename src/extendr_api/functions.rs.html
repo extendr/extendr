@@ -300,6 +300,7 @@
 <a href="#300" id="300">300</a>
 <a href="#301" id="301">301</a>
 <a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate as </span>extendr_api;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
@@ -358,7 +359,7 @@
 
 <span class="doccomment">/// Find a namespace by name.
 ///
-/// See also [Robj::double_colon].
+/// See also [`Robj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -366,6 +367,7 @@
 ///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
+/// [`Robj::double_colon`]: Operators::double_colon
 </span><span class="kw">pub fn </span>find_namespace&lt;K: Into&lt;Robj&gt;&gt;(key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Environment&gt; {
     <span class="kw">let </span>key = key.into();
     <span class="kw">let </span>res = single_threaded(|| <span class="macro">call!</span>(<span class="string">".getNamespace"</span>, key.clone()));
@@ -433,7 +435,7 @@
         .unwrap()
 }
 
-<span class="doccomment">/// The base environment; formerly R_NilValue
+<span class="doccomment">/// The base environment; formerly `R_NilValue`
 ///
 /// ```
 /// use extendr_api::prelude::*;

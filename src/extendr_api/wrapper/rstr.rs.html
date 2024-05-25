@@ -128,6 +128,26 @@
 <a href="#128" id="128">128</a>
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper for creating CHARSXP objects.
@@ -147,11 +167,22 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) robj: Robj,
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>sexp_to_str(sexp: SEXP) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
-    <span class="kw">if </span>sexp == R_NaString {
-        &lt;<span class="kw-2">&amp;</span>str&gt;::na()
+<span class="doccomment">/// Returns a rust string-slice based on the provided `SEXP`, which is of type
+/// [`SEXPTYPE::CHARSXP`]. Note that the length of a `CHARSXP` is exactly
+/// the number of non-null bytes in said R character.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>charsxp_to_str(charsxp: SEXP) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
+    <span class="macro">assert_eq!</span>(TYPEOF(charsxp), SEXPTYPE::CHARSXP);
+    <span class="kw">if </span>charsxp == R_NilValue {
+        <span class="prelude-val">None
+    </span>} <span class="kw">else if </span>charsxp == R_NaString {
+        <span class="prelude-val">Some</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na())
+    } <span class="kw">else if </span>charsxp == R_BlankString {
+        <span class="prelude-val">Some</span>(<span class="string">""</span>)
     } <span class="kw">else </span>{
-        std::mem::transmute(to_str(R_CHAR(sexp) <span class="kw">as </span><span class="kw-2">*const </span>u8))
+        <span class="kw">let </span>length = Rf_xlength(charsxp);
+        <span class="kw">let </span>all_bytes =
+            std::slice::from_raw_parts(R_CHAR(charsxp).cast(), length.try_into().unwrap());
+        <span class="prelude-val">Some</span>(std::str::from_utf8_unchecked(all_bytes))
     }
 }
 
@@ -166,7 +197,7 @@
     <span class="doccomment">/// Get the string from a character object.
     /// If the string is NA, then the special na_str() is returned.
     </span><span class="kw">pub fn </span>as_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
-        <span class="kw">unsafe </span>{ sexp_to_str(<span class="self">self</span>.robj.get()) }
+        <span class="self">self</span>.into()
     }
 }
 
@@ -188,6 +219,15 @@
     <span class="doccomment">/// Convert a string slice to a Rstr.
     </span><span class="kw">fn </span>from(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
         Rstr::from_string(s)
+    }
+}
+
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Rstr&gt; <span class="kw">for </span><span class="kw-2">&amp;</span>str {
+    <span class="kw">fn </span>from(value: <span class="kw-2">&amp;</span>Rstr) -&gt; <span class="self">Self </span>{
+        <span class="kw">unsafe </span>{
+            <span class="kw">let </span>charsxp = value.robj.get();
+            rstr::charsxp_to_str(charsxp).unwrap()
+        }
     }
 }
 

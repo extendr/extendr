@@ -1092,16 +1092,6 @@
 <a href="#1092" id="1092">1092</a>
 <a href="#1093" id="1093">1093</a>
 <a href="#1094" id="1094">1094</a>
-<a href="#1095" id="1095">1095</a>
-<a href="#1096" id="1096">1096</a>
-<a href="#1097" id="1097">1097</a>
-<a href="#1098" id="1098">1098</a>
-<a href="#1099" id="1099">1099</a>
-<a href="#1100" id="1100">1100</a>
-<a href="#1101" id="1101">1101</a>
-<a href="#1102" id="1102">1102</a>
-<a href="#1103" id="1103">1103</a>
-<a href="#1104" id="1104">1104</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1265,7 +1255,7 @@
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
+    /// Creating this slice will also instantiate an Altrep objects.
     </span><span class="kw">unsafe fn </span>as_typed_slice_raw&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[T] {
         <span class="kw">let </span>len = XLENGTH(<span class="self">self</span>.get()) <span class="kw">as </span>usize;
         <span class="kw">let </span>data = DATAPTR_RO(<span class="self">self</span>.get()) <span class="kw">as </span><span class="kw-2">*const </span>T;
@@ -1277,8 +1267,8 @@
     /// # Safety
     ///
     /// Unless the type is correct, this will cause undefined behaviour.
-    /// Creating this slice will also instatiate and Altrep objects.
-    /// Not all obejects (especially not list and strings) support this.
+    /// Creating this slice will also instantiate Altrep objects.
+    /// Not all objects (especially not list and strings) support this.
     </span><span class="kw">unsafe fn </span>as_typed_slice_raw_mut&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[T] {
         <span class="kw">let </span>len = XLENGTH(<span class="self">self</span>.get()) <span class="kw">as </span>usize;
         <span class="kw">let </span>data = DATAPTR(<span class="self">self</span>.get_mut()) <span class="kw">as </span><span class="kw-2">*mut </span>T;
@@ -1461,6 +1451,9 @@
                     LGLSXP =&gt; <span class="kw-2">*</span>(LOGICAL(sexp)) == libR_sys::R_NaInt,
                     REALSXP =&gt; R_IsNA(<span class="kw-2">*</span>(REAL(sexp))) != <span class="number">0</span>,
                     CPLXSXP =&gt; R_IsNA((<span class="kw-2">*</span>COMPLEX(sexp)).r) != <span class="number">0</span>,
+                    <span class="comment">// a character vector contains `CHARSXP`, and thus you
+                    // seldom have `Robj`'s that are `CHARSXP` themselves
+                    </span>CHARSXP =&gt; sexp == libR_sys::R_NaString,
                     <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
                 }
             }
@@ -1696,18 +1689,19 @@
     /// ```
     </span><span class="kw">pub fn </span>as_str&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; {
         <span class="kw">unsafe </span>{
-            <span class="kw">match </span><span class="self">self</span>.sexptype() {
+            <span class="kw">let </span>charsxp = <span class="kw">match </span><span class="self">self</span>.sexptype() {
                 STRSXP =&gt; {
-                    <span class="kw">if </span><span class="self">self</span>.len() != <span class="number">1 </span>{
-                        <span class="prelude-val">None
-                    </span>} <span class="kw">else </span>{
-                        <span class="prelude-val">Some</span>(to_str(R_CHAR(STRING_ELT(<span class="self">self</span>.get(), <span class="number">0</span>)) <span class="kw">as </span><span class="kw-2">*const </span>u8))
+                    <span class="comment">// only allows scalar strings
+                    </span><span class="kw">if </span><span class="self">self</span>.len() != <span class="number">1 </span>{
+                        <span class="kw">return </span><span class="prelude-val">None</span>;
                     }
+                    STRING_ELT(<span class="self">self</span>.get(), <span class="number">0</span>)
                 }
-                <span class="comment">// CHARSXP =&gt; Some(to_str(R_CHAR(self.get()) as *const u8)),
-                // SYMSXP =&gt; Some(to_str(R_CHAR(PRINTNAME(self.get())) as *const u8)),
-                </span><span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-            }
+                CHARSXP =&gt; <span class="self">self</span>.get(),
+                SYMSXP =&gt; PRINTNAME(<span class="self">self</span>.get()),
+                <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+            };
+            rstr::charsxp_to_str(charsxp)
         }
     }
 
@@ -2182,20 +2176,6 @@
             </span>R_compute_identical(<span class="self">self</span>.get(), rhs.get(), <span class="number">16</span>) != Rboolean::FALSE
         }
     }
-}
-
-<span class="comment">// Internal utf8 to str conversion.
-// Lets not worry about non-ascii/unicode strings for now (or ever).
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>to_str&lt;<span class="lifetime">'a</span>&gt;(ptr: <span class="kw-2">*const </span>u8) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str {
-    <span class="kw">let </span><span class="kw-2">mut </span>len = <span class="number">0</span>;
-    <span class="kw">loop </span>{
-        <span class="kw">if </span><span class="kw-2">*</span>ptr.offset(len) == <span class="number">0 </span>{
-            <span class="kw">break</span>;
-        }
-        len += <span class="number">1</span>;
-    }
-    <span class="kw">let </span>slice = std::slice::from_raw_parts(ptr, len <span class="kw">as </span>usize);
-    std::str::from_utf8_unchecked(slice)
 }
 
 <span class="doccomment">/// Release any owned objects.

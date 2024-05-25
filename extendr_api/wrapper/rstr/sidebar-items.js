@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["sexp_to_str"],"struct":["Rstr"]};
+window.SIDEBAR_ITEMS = {"fn":["charsxp_to_str"],"struct":["Rstr"]};

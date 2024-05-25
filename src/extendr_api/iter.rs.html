@@ -209,6 +209,29 @@
 <a href="#209" id="209">209</a>
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use </span>wrapper::symbol::levels_symbol;
@@ -266,23 +289,11 @@
     }
 }
 
-<span class="comment">// Get a string reference from a CHARSXP
-</span><span class="kw">fn </span>str_from_strsxp&lt;<span class="lifetime">'a</span>&gt;(sexp: SEXP, index: isize) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str {
+<span class="comment">// Get a string reference from a `CHARSXP`
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>str_from_strsxp&lt;<span class="lifetime">'a</span>&gt;(sexp: SEXP, index: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; {
     single_threaded(|| <span class="kw">unsafe </span>{
-        <span class="kw">if </span>index &lt; <span class="number">0 </span>|| index &gt;= Rf_xlength(sexp) {
-            &lt;<span class="kw-2">&amp;</span>str&gt;::na()
-        } <span class="kw">else </span>{
-            <span class="kw">let </span>charsxp = STRING_ELT(sexp, index);
-            <span class="kw">if </span>charsxp == R_NaString {
-                &lt;<span class="kw-2">&amp;</span>str&gt;::na()
-            } <span class="kw">else if </span>TYPEOF(charsxp) == SEXPTYPE::CHARSXP {
-                <span class="kw">let </span>ptr = R_CHAR(charsxp) <span class="kw">as </span><span class="kw-2">*const </span>u8;
-                <span class="kw">let </span>slice = std::slice::from_raw_parts(ptr, Rf_xlength(charsxp) <span class="kw">as </span>usize);
-                std::str::from_utf8_unchecked(slice)
-            } <span class="kw">else </span>{
-                &lt;<span class="kw-2">&amp;</span>str&gt;::na()
-            }
-        }
+        <span class="kw">let </span>charsxp = STRING_ELT(sexp, index <span class="kw">as _</span>);
+        rstr::charsxp_to_str(charsxp)
     })
 }
 
@@ -300,14 +311,21 @@
             <span class="kw">let </span>vector = <span class="self">self</span>.vector.get();
             <span class="kw">if </span>i &gt;= <span class="self">self</span>.len {
                 <span class="prelude-val">None
+            </span>} <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::NILSXP {
+                <span class="prelude-val">None
             </span>} <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::STRSXP {
-                <span class="prelude-val">Some</span>(str_from_strsxp(vector, i <span class="kw">as </span>isize))
-            } <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::INTSXP &amp;&amp; TYPEOF(<span class="self">self</span>.levels) == SEXPTYPE::STRSXP
-            {
-                <span class="kw">let </span>j = <span class="kw-2">*</span>(INTEGER(vector).add(i));
-                <span class="prelude-val">Some</span>(str_from_strsxp(<span class="self">self</span>.levels, j <span class="kw">as </span>isize - <span class="number">1</span>))
-            } <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::NILSXP {
-                <span class="prelude-val">Some</span>(&lt;<span class="kw-2">&amp;</span>str&gt;::na())
+                str_from_strsxp(vector, i)
+            } <span class="kw">else if </span>TYPEOF(vector) == SEXPTYPE::CHARSXP {
+                rstr::charsxp_to_str(vector)
+            } <span class="kw">else if </span>Rf_isFactor(vector).into() {
+                <span class="comment">// factor support: factor is an integer, and we need
+                // the value of it, to retrieve the assigned label
+                </span><span class="kw">let </span>level_index = std::slice::from_raw_parts(INTEGER(vector), <span class="self">self</span>.len <span class="kw">as _</span>);
+                <span class="kw">let </span>level_index = level_index.get(i)<span class="question-mark">?</span>;
+                <span class="kw">let </span>level_index = level_index
+                    .checked_sub(<span class="number">1</span>)
+                    .expect(<span class="string">"the factor integer has an invalid value in it"</span>);
+                str_from_strsxp(<span class="self">self</span>.levels, level_index <span class="kw">as _</span>)
             } <span class="kw">else </span>{
                 <span class="prelude-val">None
             </span>}
@@ -389,35 +407,63 @@
     </span><span class="kw">fn </span>as_str_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;StrIter&gt; {
         <span class="kw">let </span>i = <span class="number">0</span>;
         <span class="kw">let </span>len = <span class="self">self</span>.len();
-        <span class="kw">match </span><span class="self">self</span>.sexptype() {
-            SEXPTYPE::STRSXP =&gt; <span class="kw">unsafe </span>{
+        <span class="kw">if </span><span class="self">self</span>.sexptype() == SEXPTYPE::STRSXP {
+            <span class="kw">unsafe </span>{
                 <span class="prelude-val">Some</span>(StrIter {
                     vector: <span class="self">self</span>.as_robj().clone(),
                     i,
                     len,
                     levels: R_NilValue,
                 })
-            },
-            SEXPTYPE::INTSXP =&gt; <span class="kw">unsafe </span>{
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(levels) = <span class="self">self</span>.get_attrib(levels_symbol()) {
-                    <span class="kw">if </span><span class="self">self</span>.is_factor() &amp;&amp; levels.sexptype() == SEXPTYPE::STRSXP {
-                        <span class="prelude-val">Some</span>(StrIter {
-                            vector: <span class="self">self</span>.as_robj().clone(),
-                            i,
-                            len,
-                            levels: levels.get(),
-                        })
-                    } <span class="kw">else </span>{
-                        <span class="prelude-val">None
-                    </span>}
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>}
-            },
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
+            }
+        } <span class="kw">else if </span><span class="self">self</span>.sexptype() == SEXPTYPE::CHARSXP {
+            <span class="kw">let </span>len = <span class="number">1</span>;
+            <span class="kw">unsafe </span>{
+                <span class="prelude-val">Some</span>(StrIter {
+                    vector: <span class="self">self</span>.as_robj().clone(),
+                    i,
+                    len,
+                    levels: R_NilValue,
+                })
+            }
+        } <span class="kw">else if </span><span class="self">self</span>.is_factor() {
+            <span class="kw">let </span>levels = <span class="self">self</span>.get_attrib(levels_symbol()).unwrap();
+            <span class="kw">unsafe </span>{
+                <span class="prelude-val">Some</span>(StrIter {
+                    vector: <span class="self">self</span>.as_robj().clone(),
+                    i,
+                    len,
+                    levels: levels.get(),
+                })
+            }
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
 <span class="kw">impl </span>AsStrIter <span class="kw">for </span>Robj {}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use crate as </span>extendr_api;
+    <span class="kw">use </span>extendr_engine::with_r;
+
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>single_charsxp_iterator() {
+        with_r(|| {
+            <span class="kw">let </span>single_charsxp = blank_string();
+            <span class="kw">let </span>s1: Vec&lt;<span class="kw">_</span>&gt; = single_charsxp.as_str_iter().unwrap().collect();
+            <span class="comment">// dbg!(&amp;s1);
+            </span><span class="kw">let </span>single_charsxp = blank_scalar_string();
+            <span class="kw">let </span>s2: Vec&lt;<span class="kw">_</span>&gt; = single_charsxp.as_str_iter().unwrap().collect();
+            <span class="comment">// dbg!(&amp;s2);
+            </span><span class="macro">assert_eq!</span>(s1, s2);
+            <span class="macro">assert_eq!</span>(s1.len(), <span class="number">1</span>);
+            <span class="macro">assert_eq!</span>(s2.len(), <span class="number">1</span>);
+        });
+    }
+}
 </code></pre></div></section></main></body></html>

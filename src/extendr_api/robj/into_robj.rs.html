@@ -825,23 +825,33 @@
 <a href="#825" id="825">825</a>
 <a href="#826" id="826">826</a>
 <a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::scalar::Scalar;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
 
 <span class="kw">mod </span>repeat_into_robj;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>str_to_character(s: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
+<span class="doccomment">/// Returns an `CHARSXP` based on the provided `&amp;str`.
+///
+/// Note that R does string interning, thus repeated application of this
+/// function on the same string, will incur little computational cost.
+///
+/// Note, that you must protect the return value somehow.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>str_to_character(s: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
     <span class="kw">unsafe </span>{
         <span class="kw">if </span>s.is_na() {
             R_NaString
+        } <span class="kw">else if </span>s.is_empty() {
+            R_BlankString
         } <span class="kw">else </span>{
             single_threaded(|| {
-                Rf_mkCharLenCE(
-                    s.as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>raw::c_char,
-                    s.len() <span class="kw">as </span>i32,
-                    cetype_t::CE_UTF8,
-                )
+                <span class="comment">// this function embeds a terminating \nul
+                </span>Rf_mkCharLenCE(s.as_ptr().cast(), s.len() <span class="kw">as </span>i32, cetype_t::CE_UTF8)
             })
         }
     }
