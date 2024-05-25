@@ -337,7 +337,7 @@ mod tests {
 
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
     struct Wrapper(i32);
-    
+
     #[test]
     fn compare_externalptr_pointee() {
         with_r(|| {
