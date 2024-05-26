@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["invert_lower","invert_lower_in_place","invert_lower_in_place_req","invert_lower_req"]};

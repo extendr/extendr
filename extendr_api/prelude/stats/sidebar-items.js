@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Normal","NormalCol","NormalMat","NormalRow","StandardCol","StandardMat","StandardNormalCol","StandardNormalMat","StandardNormalRow","StandardRow","UnitaryMat"]};

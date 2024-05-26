@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Compare matrices for exact or approximate equality."><title>assert_matrix_eq in extendr_api::prelude - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (1ba35e9bb 2024-05-25)" data-channel="nightly" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button><a class="logo-container" href="../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt=""></a></nav><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><h2><a href="../../extendr_api/index.html">extendr_api</a><span class="version">0.6.0</span></h2></div><div class="sidebar-elems"><h2><a href="index.html">In extendr_api::prelude</a></h2></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Macro <a href="../index.html">extendr_api</a>::<wbr><a href="index.html">prelude</a>::<wbr><a class="macro" href="#">assert_matrix_eq</a><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><span class="out-of-band"><button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><span class="macro">macro_rules!</span> assert_matrix_eq {
+    ($(<span class="macro-nonterminal">$args</span>:tt)<span class="kw-2">*</span>) =&gt; { ... };
+}</pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Compare matrices for exact or approximate equality.</p>
+<p>The <code>assert_matrix_eq!</code> simplifies the comparison of two matrices by
+providing the following features:</p>
+<ul>
+<li>Verifies that the dimensions of the matrices match.</li>
+<li>Offers both exact and approximate comparison of individual elements.</li>
+<li>Multiple types of comparators available, depending on the needs of the user.</li>
+<li>Built-in error reporting makes it easy to determine which elements of the two matrices
+that do not compare equal.</li>
+</ul>
+<h2 id="usage"><a class="doc-anchor" href="#usage">§</a>Usage</h2>
+<p>Given two matrices <code>x</code> and <code>y</code>, the default invocation performs an exact elementwise
+comparison of the two matrices.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// Performs elementwise exact comparison
+</span><span class="macro">assert_matrix_eq!</span>(x, y);</code></pre></div>
+<p>An exact comparison is often not desirable. In particular, with floating point types,
+rounding errors or other sources of inaccuracies tend to complicate the matter.
+For this purpose, <code>assert_matrix_eq!</code> provides several comparators.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// Available comparators:
+</span><span class="macro">assert_matrix_eq!</span>(x, y, comp = exact);
+<span class="macro">assert_matrix_eq!</span>(x, y, comp = float);
+<span class="macro">assert_matrix_eq!</span>(x, y, comp = abs, tol = <span class="number">1e-12</span>);
+<span class="macro">assert_matrix_eq!</span>(x, y, comp = ulp, tol = <span class="number">8</span>);</code></pre></div>
+<p><strong>Note</strong>: The <code>comp</code> argument <em>must</em> be specified after <code>x</code> and <code>y</code>, and cannot come
+after comparator-specific options. This is a deliberate design decision,
+with the rationale that assertions should look as uniform as possible for
+the sake of readability.</p>
+<h4 id="the-exact-comparator"><a class="doc-anchor" href="#the-exact-comparator">§</a>The <code>exact</code> comparator</h4>
+<p>This comparator simply uses the default <code>==</code> operator to compare each pair of elements.
+The default comparator delegates the comparison to the <code>exact</code> comparator.</p>
+<h4 id="the-float-comparator"><a class="doc-anchor" href="#the-float-comparator">§</a>The <code>float</code> comparator</h4>
+<p>The <code>float</code> comparator is designed to be a conservative default for comparing floating-point numbers.
+It is inspired by the <code>AlmostEqualUlpsAndAbs</code> comparison function proposed in the excellent blog post
+<a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating Point Numbers, 2012 Edition</a>
+by Bruce Dawson.</p>
+<p>If you expect the two matrices to be almost exactly the same, but you want to leave some
+room for (very small) rounding errors, then this comparator should be your default choice.</p>
+<p>The comparison criterion can be summarized as follows:</p>
+<ol>
+<li>If <code>assert_matrix_eq!(x, y, comp = abs, tol = max_eps)</code> holds for <code>max_eps</code> close to the
+machine epsilon for the floating point type,
+then the comparison is successful.</li>
+<li>Otherwise, returns the result of <code>assert_matrix_eq!(x, y, comp = ulp, tol = max_ulp)</code>,
+where <code>max_ulp</code> is a small positive integer constant.</li>
+</ol>
+<p>The <code>max_eps</code> and <code>max_ulp</code> parameters can be tweaked to your preference with the syntax:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">assert_matrix_eq!</span>(x, y, comp = float, eps = max_eps, ulp = max_ulp);</code></pre></div>
+<p>These additional parameters can be specified in any order after the choice of comparator,
+and do not both need to be present.</p>
+<h4 id="the-abs-comparator"><a class="doc-anchor" href="#the-abs-comparator">§</a>The <code>abs</code> comparator</h4>
+<p>Compares the absolute difference between individual elements against the specified tolerance.
+Specifically, for every pair of elements x and y picked from the same row and column in X and Y
+respectively, the criterion is defined by</p>
+<div class="example-wrap"><pre class="language-text"><code>    | x - y | &lt;= tol.
+</code></pre></div>
+<p>In addition to floating point numbers, the comparator can also be used for integral numbers,
+both signed and unsigned. In order to avoid unsigned underflow, the difference is always
+computed by subtracting the smaller number from the larger number.
+Note that the type of <code>tol</code> is required to be the same as that of the scalar field.</p>
+<h4 id="the-ulp-comparator"><a class="doc-anchor" href="#the-ulp-comparator">§</a>The <code>ulp</code> comparator</h4>
+<p>Elementwise comparison of floating point numbers based on their
+<a href="https://en.wikipedia.org/wiki/Unit_in_the_last_place">ULP</a> difference.
+Once again, this is inspired by the proposals
+<a href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition">in the aforementioned blog post by Bruce Dawson</a>,
+but it handles some cases explicitly as to provide better error reporting.</p>
+<p>Note that the ULP difference of two floating point numbers is not defined in the following cases:</p>
+<ul>
+<li>The two numbers have different signs. The only exception here is +0 and -0,
+which are considered an exact match.</li>
+<li>One of the numbers is NaN.</li>
+</ul>
+<p>ULP-based comparison is typically used when two numbers are expected to be very,
+very close to each other. However, it is typically not very useful very close to zero,
+which is discussed in the linked blog post above.
+The error in many mathematical functions can often be bounded by a certain number of ULP, and so
+this comparator is particularly useful if this number is known.</p>
+<p>Note that the scalar type of the matrix must implement the <a href="crate::ulp::Ulp">Ulp trait</a> in order
+to be used with this comparator. By default, <code>f32</code> and <code>f64</code> implementations are provided.</p>
+<h2 id="error-reporting"><a class="doc-anchor" href="#error-reporting">§</a>Error reporting</h2>
+<p>One of the main motivations for the <code>assert_matrix_eq!</code> macro is the ability to give
+useful error messages which help pinpoint the problems. For example, consider the example</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code>
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>a = <span class="macro">mock_matrix!</span>[<span class="number">1.00</span>, <span class="number">2.00</span>;
+                         <span class="number">3.00</span>, <span class="number">4.00</span>];
+    <span class="kw">let </span>b = <span class="macro">mock_matrix!</span>[<span class="number">1.01</span>, <span class="number">2.00</span>;
+                         <span class="number">3.40</span>, <span class="number">4.00</span>];
+    <span class="macro">assert_matrix_eq!</span>(a, b, comp = abs, tol = <span class="number">1e-8</span>);
+}</code></pre></div>
+<p>which yields the output</p>
+<div class="example-wrap"><pre class="language-text"><code>Matrices X and Y have 2 mismatched element pairs.
+The mismatched elements are listed below, in the format
+(row, col): x = X[[row, col]], y = Y[[row, col]].
+
+(0, 0): x = 1, y = 1.01. Absolute error: 0.010000000000000009.
+(1, 0): x = 3, y = 3.4. Absolute error: 0.3999999999999999.
+
+Comparison criterion: absolute difference, |x - y| &lt;= 0.00000001.
+</code></pre></div><h2 id="trait-bounds-on-elements"><a class="doc-anchor" href="#trait-bounds-on-elements">§</a>Trait bounds on elements</h2>
+<p>Each comparator has specific requirements on which traits the elements
+need to implement. To discover which traits are required for each comparator,
+we refer the reader to implementors of
+<a href="crate::comparators::ElementwiseComparator">ElementwiseComparator</a>,
+which provides the underlying comparison for the various macro invocations.</p>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>
+<span class="kw">let </span><span class="kw-2">ref </span>a = <span class="macro">mock_matrix!</span>[<span class="number">1</span>, <span class="number">2</span>;
+                         <span class="number">3</span>, <span class="number">4i64</span>];
+<span class="kw">let </span><span class="kw-2">ref </span>b = <span class="macro">mock_matrix!</span>[<span class="number">1</span>, <span class="number">3</span>;
+                         <span class="number">3</span>, <span class="number">4i64</span>];
+
+<span class="kw">let </span><span class="kw-2">ref </span>x = <span class="macro">mock_matrix!</span>[<span class="number">1.000</span>, <span class="number">2.000</span>,
+                         <span class="number">3.000</span>, <span class="number">4.000f64</span>];
+<span class="kw">let </span><span class="kw-2">ref </span>y = <span class="macro">mock_matrix!</span>[<span class="number">0.999</span>, <span class="number">2.001</span>,
+                         <span class="number">2.998</span>, <span class="number">4.000f64</span>];
+
+<span class="comment">// comp = abs is also applicable to integers
+</span><span class="macro">assert_matrix_eq!</span>(a, b, comp = abs, tol = <span class="number">1</span>);
+<span class="macro">assert_matrix_eq!</span>(x, y, comp = abs, tol = <span class="number">0.01</span>);</code></pre></div>
+</div></details></section></div></main></body></html>

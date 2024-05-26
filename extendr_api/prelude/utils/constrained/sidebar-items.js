@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["mat","perm","sparse"],"struct":["Array","ArrayGroup","ArrayGroupMut","Idx","IdxInclusive","MaybeIdx","Size"]};

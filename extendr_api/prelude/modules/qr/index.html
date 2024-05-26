@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate provides utilities for computing and manipulating the QR factorization with and without pivoting. The QR factorization decomposes a matrix into a product of a unitary matrix $Q$ (represented using block Householder sequences), and an upper trapezoidal matrix $R$, such that their product is equal to the original matrix (or a column permutation of it in the case where column pivoting is used)."><title>extendr_api::prelude::modules::qr - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-dd39b87e5fcfba68.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.80.0-nightly (1ba35e9bb 2024-05-25)" data-channel="nightly" data-search-js="search-d52510db62a78183.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button><a class="logo-container" href="../../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt=""></a></nav><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../../../../extendr_api/index.html"><img src="https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png" alt="logo"></a><h2><a href="../../../../extendr_api/index.html">extendr_api</a><span class="version">0.6.0</span></h2></div><h2 class="location"><a href="#">Module qr</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#modules">Modules</a></li></ul></section><h2><a href="../index.html">In extendr_api::prelude::modules</a></h2></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../../../index.html">extendr_api</a>::<wbr><a href="../../index.html">prelude</a>::<wbr><a href="../index.html">modules</a>::<wbr><a class="mod" href="#">qr</a><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><span class="out-of-band"><button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate provides utilities for computing and manipulating the QR factorization with and
+without pivoting. The QR factorization decomposes a matrix into a product of a unitary matrix
+$Q$ (represented using block Householder sequences), and an upper trapezoidal matrix $R$, such
+that their product is equal to the original matrix (or a column permutation of it in the case
+where column pivoting is used).</p>
+<h2 id="example"><a class="doc-anchor" href="#example">§</a>Example</h2>
+<p>Assume we have an overdetermined system $AX = B$ with full rank, and that we wish to find the
+solution that minimizes the 2-norm.</p>
+<p>This is equivalent to computing a matrix $X$ that minimizes the value $||AX - B||^2$,
+which is given by the solution $$X = (A^H A)^{-1} A^H B.$$</p>
+<p>If we compute the QR decomposition of $A$, such that $A = QR = Q_{\text{thin}} R_{\text{rect}}$,
+then we get $$X = R_{\text{rect}}^{-1} Q_{\text{thin}}^H B.$$</p>
+<p>To translate this to code, we can proceed as follows:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>assert_approx_eq::assert_approx_eq;
+<span class="kw">use </span>dyn_stack::{GlobalPodBuffer, PodStack, StackReq};
+<span class="kw">use </span>faer::{
+    linalg::{householder, qr::no_pivoting::compute, triangular_solve},
+    mat, Conj, Mat, Parallelism,
+};
+<span class="kw">use </span>reborrow::<span class="kw-2">*</span>;
+
+<span class="comment">// we start by defining matrices A and B that define our least-squares problem.
+</span><span class="kw">let </span>a = <span class="macro">mat!</span>[
+    [-<span class="number">1.14920683</span>, -<span class="number">1.67950492</span>],
+    [-<span class="number">0.93009756</span>, -<span class="number">0.03885086</span>],
+    [<span class="number">1.22579735</span>, <span class="number">0.88489976</span>],
+    [<span class="number">0.70698973</span>, <span class="number">0.38928314</span>],
+    [-<span class="number">1.66293762</span>, <span class="number">0.38123281</span>],
+    [<span class="number">0.27639595</span>, -<span class="number">0.32559289</span>],
+    [-<span class="number">0.37506387</span>, -<span class="number">0.13180778</span>],
+    [-<span class="number">1.20774962</span>, -<span class="number">0.38635657</span>],
+    [<span class="number">0.44373549</span>, <span class="number">0.84397648</span>],
+    [-<span class="number">1.96779374</span>, -<span class="number">1.42751757_f64</span>],
+];
+
+<span class="kw">let </span>b = <span class="macro">mat!</span>[
+    [-<span class="number">0.14689786</span>, -<span class="number">0.52845138</span>, -<span class="number">2.26975669</span>],
+    [-<span class="number">1.00844774</span>, -<span class="number">1.38550214</span>, <span class="number">0.50329459</span>],
+    [<span class="number">1.07941646</span>, <span class="number">0.71514245</span>, -<span class="number">0.73987761</span>],
+    [<span class="number">0.1281168</span>, -<span class="number">0.23999022</span>, <span class="number">1.58776697</span>],
+    [-<span class="number">0.49385283</span>, <span class="number">1.17875407</span>, <span class="number">2.01019076</span>],
+    [<span class="number">0.65117811</span>, -<span class="number">0.60339895</span>, <span class="number">0.27217694</span>],
+    [<span class="number">0.85599951</span>, -<span class="number">0.00699227</span>, <span class="number">0.93607199</span>],
+    [-<span class="number">0.12635444</span>, <span class="number">0.94945626</span>, <span class="number">0.86565968</span>],
+    [<span class="number">0.02383305</span>, <span class="number">0.41515805</span>, -<span class="number">1.2816278</span>],
+    [<span class="number">0.34158312</span>, -<span class="number">0.07552168</span>, <span class="number">0.56724015_f64</span>],
+];
+
+<span class="comment">// computed with numpy
+</span><span class="kw">let </span>expected_solution = <span class="macro">mat!</span>[
+    [<span class="number">0.33960324</span>, -<span class="number">0.33812452</span>, -<span class="number">0.8458301</span>],
+    [-<span class="number">0.25718351</span>, <span class="number">0.6281214</span>, <span class="number">1.07071764_f64</span>],
+];
+
+<span class="kw">let </span>rank = a.nrows().min(a.ncols());
+
+<span class="comment">// we choose the recommended block size for the householder factors of our problem.
+</span><span class="kw">let </span>blocksize = compute::recommended_blocksize::&lt;f64&gt;(a.nrows(), a.ncols());
+
+<span class="comment">// we allocate the memory for the operations that we perform
+</span><span class="kw">let </span><span class="kw-2">mut </span>mem =
+    GlobalPodBuffer::new(StackReq::any_of(
+        [
+            compute::qr_in_place_req::&lt;f64&gt;(
+                a.nrows(),
+                a.ncols(),
+                blocksize,
+                Parallelism::None,
+                Default::default(),
+            )
+            .unwrap(),
+            householder::apply_block_householder_sequence_transpose_on_the_left_in_place_req::&lt;
+                f64,
+            &gt;(a.nrows(), blocksize, b.ncols())
+            .unwrap(),
+        ],
+    ));
+<span class="kw">let </span><span class="kw-2">mut </span>stack = PodStack::new(<span class="kw-2">&amp;mut </span>mem);
+
+<span class="kw">let </span><span class="kw-2">mut </span>qr = a;
+<span class="kw">let </span><span class="kw-2">mut </span>h_factor = Mat::zeros(blocksize, rank);
+compute::qr_in_place(
+    qr.as_mut(),
+    h_factor.as_mut(),
+    Parallelism::None,
+    stack.rb_mut(),
+    Default::default(),
+);
+
+<span class="comment">// now the Householder bases are in the strictly lower trapezoidal part of `a`, and the
+// matrix R is in the upper triangular part of `a`.
+
+</span><span class="kw">let </span><span class="kw-2">mut </span>solution = b.clone();
+
+<span class="comment">// compute Q^H×B
+</span>householder::apply_block_householder_sequence_transpose_on_the_left_in_place_with_conj(
+    qr.as_ref(),
+    h_factor.as_ref(),
+    Conj::Yes,
+    solution.as_mut(),
+    Parallelism::None,
+    stack.rb_mut(),
+);
+
+solution.truncate(rank, b.ncols());
+
+<span class="comment">// compute R_rect^{-1} Q_thin^H×B
+</span>triangular_solve::solve_upper_triangular_in_place(
+    qr.as_ref().split_at_row(rank).<span class="number">0</span>,
+    solution.as_mut(),
+    Parallelism::None,
+);
+
+<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..rank {
+    <span class="kw">for </span>j <span class="kw">in </span><span class="number">0</span>..b.ncols() {
+        <span class="macro">assert_approx_eq!</span>(solution.read(i, j), expected_solution.read(i, j));
+    }
+}</code></pre></div>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="col_pivoting/index.html" title="mod extendr_api::prelude::modules::qr::col_pivoting">col_pivoting</a></div><div class="desc docblock-short">The QR decomposition decomposes a matrix $A$ into the product
+$$AP^T = QR,$$
+where $P$ is a permutation matrix, $Q$ is a unitary matrix (represented as a block Householder
+sequence), and $R$ is an upper trapezoidal matrix.</div></li><li><div class="item-name"><a class="mod" href="no_pivoting/index.html" title="mod extendr_api::prelude::modules::qr::no_pivoting">no_pivoting</a></div><div class="desc docblock-short">The QR decomposition decomposes a matrix $A$ into the product
+$$A = QR,$$
+where $Q$ is a unitary matrix (represented as a block Householder sequence), and $R$ is an upper
+trapezoidal matrix.</div></li></ul></section></div></main></body></html>

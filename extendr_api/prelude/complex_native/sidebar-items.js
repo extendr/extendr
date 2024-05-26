@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["c32","c32conj","c64","c64conj"]};

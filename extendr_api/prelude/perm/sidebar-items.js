@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["permute_cols","permute_cols_in_place","permute_cols_in_place_req","permute_rows","permute_rows_in_place","permute_rows_in_place_req","swap_cols","swap_cols_idx","swap_rows","swap_rows_idx"],"struct":["Perm","PermRef"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["add","add_assign","add_into","binary_op","binary_op_assign_into","sub","sub_assign","sub_into","ternary_op_assign_into","union_symbolic"]};

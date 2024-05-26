@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ComputeVectors"],"fn":["compute_evd_complex","compute_evd_complex_custom_epsilon","compute_evd_real","compute_evd_real_custom_epsilon","compute_evd_req","compute_hermitian_evd","compute_hermitian_evd_custom_epsilon","compute_hermitian_evd_req"],"struct":["EvdParams","HermitianEvdParams"]};

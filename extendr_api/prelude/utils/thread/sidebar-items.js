@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["for_each_raw","join_raw","par_split_indices","parallelism_degree"],"struct":["Ptr"]};

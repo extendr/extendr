@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["solve_in_place_req","solve_in_place_with_conj"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["adjoint","adjoint_symbolic","permute_hermitian","permute_hermitian_req","sort_dedup_indices","sort_indices","transpose"]};

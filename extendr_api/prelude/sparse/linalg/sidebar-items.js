@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CholeskyError","FaerError","LuError"],"mod":["amd","cholesky","colamd","lu","matmul","qr","solvers","triangular_solve"],"struct":["SupernodalThreshold","SymbolicSupernodalParams"],"trait":["Index","SignedIndex"]};

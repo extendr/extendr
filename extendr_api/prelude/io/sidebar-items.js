@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["NpyDType"],"struct":["Npy"],"trait":["FromNpy"]};
