@@ -90,6 +90,10 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
+from_factor_as_integers <- function(x) invisible(.Call(wrap__from_factor_as_integers, x))
+
+from_factor <- function(x) invisible(.Call(wrap__from_factor, x))
+
 leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
 
 leak_arg2_try_implicit_doubles <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_doubles, `_y`, x)

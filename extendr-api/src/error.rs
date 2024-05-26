@@ -47,6 +47,7 @@ pub enum Error {
     ExpectedRstr(Robj),
     ExpectedLogical(Robj),
     ExpectedInteger(Robj),
+    ExpectedFactor(Robj),
     ExpectedReal(Robj),
     ExpectedComplex(Robj),
     ExpectedString(Robj),
@@ -116,6 +117,7 @@ impl std::fmt::Display for Error {
             }
             Error::ExpectedLogical(robj) => write!(f, "Expected Logicals got {:?}", robj.rtype()),
             Error::ExpectedInteger(robj) => write!(f, "Expected Integers got {:?}", robj.rtype()),
+            Error::ExpectedFactor(robj) => write!(f, "Expected Factors got {:?}", robj.rtype()),
             Error::ExpectedReal(robj) => write!(f, "Expected Doubles got {:?}", robj.rtype()),
             Error::ExpectedComplex(robj) => write!(f, "Expected Complexes got {:?}", robj.rtype()),
             Error::ExpectedString(robj) => write!(f, "Expected Strings got {:?}", robj.rtype()),

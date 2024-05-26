@@ -12,6 +12,7 @@ pub mod doubles;
 pub mod environment;
 pub mod expr;
 pub mod externalptr;
+pub mod factors;
 pub mod function;
 pub mod integers;
 pub mod lang;
@@ -42,6 +43,7 @@ pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
 pub use externalptr::ExternalPtr;
+pub use factors::Factors;
 pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;
@@ -216,6 +218,7 @@ make_conversions!(Altrep, ExpectedAltrep, is_altrep, "Not an Altrep type");
 make_conversions!(S4, ExpectedS4, is_s4, "Not a S4 type");
 
 make_conversions!(Integers, ExpectedInteger, is_integer, "Not an integer type");
+make_conversions!(Factors, ExpectedFactor, is_factor, "Not a factor type");
 make_conversions!(Logicals, ExpectedLogical, is_logical, "Not a logical type");
 make_conversions!(Doubles, ExpectedReal, is_real, "Not a floating point type");
 make_conversions!(

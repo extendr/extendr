@@ -3,6 +3,7 @@ use extendr_api::{graphics::*, prelude::*};
 mod altrep;
 mod attributes;
 mod dataframe;
+mod factors;
 mod graphic_device;
 mod memory_leaks;
 mod optional_either;
@@ -344,6 +345,7 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use factors;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;
