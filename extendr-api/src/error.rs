@@ -165,7 +165,7 @@ impl std::fmt::Display for Error {
                 )
             }
             Error::ExpectedExternalPtrReference => {
-                write!(f, "only able to return reference to self")
+                write!(f, "It is only possible to return a reference to self.")
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),

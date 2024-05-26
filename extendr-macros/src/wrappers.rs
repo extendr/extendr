@@ -242,7 +242,7 @@ pub(crate) fn make_function_wrappers(
                     // included in panic. The advantage would be the panic cause could be included
                     // in the R terminal error message and not only via std-err.
                     // but it should be handled in a separate function and not in-lined here.
-                    let err_string = format!("user function panicked: {}", #r_name_str);
+                    let err_string = format!("User function panicked: {}", #r_name_str);
                     // cannot use throw_r_error here for some reason.
                     // handle_panic() exports err string differently than throw_r_error.
                     extendr_api::handle_panic(err_string.as_str(), || panic!());
