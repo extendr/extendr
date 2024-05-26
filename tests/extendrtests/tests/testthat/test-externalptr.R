@@ -29,6 +29,13 @@ test_that("method should return the right reference", {
   max_class <- x$max_ref(y)
   expect_identical(max_class, y)
   expect_false(isTRUE(identical(x, max_class)))
+})
+
+test_that("return the right reference with other parameters present", {
+  x <- Wrapper$new()
+  y <- Wrapper$new()
+  x$set_a(10)
+  y$set_a(42)
 
   # check if you can have regular arguments as well
   x <- Wrapper$new()
