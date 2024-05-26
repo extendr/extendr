@@ -214,22 +214,6 @@ MySubmoduleClass$set_a <- function(x) invisible(.Call(wrap__MySubmoduleClass__se
 
 MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
 
-MySubmoduleClass$me_owned <- function() .Call(wrap__MySubmoduleClass__me_owned, self)
-
-MySubmoduleClass$me_ref <- function() .Call(wrap__MySubmoduleClass__me_ref, self)
-
-MySubmoduleClass$me_mut <- function() .Call(wrap__MySubmoduleClass__me_mut, self)
-
-MySubmoduleClass$me_explicit_ref <- function() .Call(wrap__MySubmoduleClass__me_explicit_ref, self)
-
-MySubmoduleClass$me_explicit_mut <- function() .Call(wrap__MySubmoduleClass__me_explicit_mut, self)
-
-MySubmoduleClass$max_ref <- function(other) .Call(wrap__MySubmoduleClass__max_ref, self, other)
-
-MySubmoduleClass$max_ref_offset <- function(other, `_offset`) .Call(wrap__MySubmoduleClass__max_ref_offset, self, other, `_offset`)
-
-MySubmoduleClass$max_ref2 <- function(other) .Call(wrap__MySubmoduleClass__max_ref2, self, other)
-
 #' @rdname MySubmoduleClass
 #' @usage NULL
 #' @export
@@ -237,6 +221,45 @@ MySubmoduleClass$max_ref2 <- function(other) .Call(wrap__MySubmoduleClass__max_r
 
 #' @export
 `[[.MySubmoduleClass` <- `$.MySubmoduleClass`
+
+#' Class for testing (exported)
+#' @examples
+#' x <- Wrapper$new()
+#' x$a()
+#' x$set_a(10)
+#' x$a()
+#' @export
+Wrapper <- new.env(parent = emptyenv())
+
+Wrapper$new <- function() .Call(wrap__Wrapper__new)
+
+Wrapper$set_a <- function(x) invisible(.Call(wrap__Wrapper__set_a, self, x))
+
+Wrapper$a <- function() .Call(wrap__Wrapper__a, self)
+
+Wrapper$me_owned <- function() .Call(wrap__Wrapper__me_owned, self)
+
+Wrapper$me_ref <- function() .Call(wrap__Wrapper__me_ref, self)
+
+Wrapper$me_mut <- function() .Call(wrap__Wrapper__me_mut, self)
+
+Wrapper$me_explicit_ref <- function() .Call(wrap__Wrapper__me_explicit_ref, self)
+
+Wrapper$me_explicit_mut <- function() .Call(wrap__Wrapper__me_explicit_mut, self)
+
+Wrapper$max_ref <- function(other) .Call(wrap__Wrapper__max_ref, self, other)
+
+Wrapper$max_ref_offset <- function(other, `_offset`) .Call(wrap__Wrapper__max_ref_offset, self, other, `_offset`)
+
+Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
+
+#' @rdname Wrapper
+#' @usage NULL
+#' @export
+`$.Wrapper` <- function (self, name) { func <- Wrapper[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Wrapper` <- `$.Wrapper`
 
 
 # nolint end
