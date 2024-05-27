@@ -4,7 +4,7 @@ use std::{
     ptr,
 };
 
-use extendr_api::ownership;
+use extendr_api::{ownership, single_threaded};
 use extendr_engine::with_r;
 use libR_sys::{R_ContinueUnwind, SEXP};
 #[allow(unused_imports)]
@@ -19,6 +19,7 @@ mod split;
 use split::split_closure;
 
 thread_local! {
+    // FIXME: ensure that the number match the number of resources in the test
     static RESOURCE_TOTAL: RefCell<i32> = const { RefCell::new(4) } ;
 }
 
@@ -79,14 +80,10 @@ fn outer_function() {
         let (cleandata, cleanfun) = split_closure(&mut clean_closure);
         let cleanfun = Some(cleanfun);
         let cont = R_MakeUnwindCont();
-        R_UnwindProtect(fun, data, cleanfun, cleandata, cont);
-        R_ContinueUnwind(cont);
-
-        // print how many active objects
-        // let ownership_lock = ownership::OWNERSHIP.lock();
-        // if let Ok(ownership) = ownership_lock {
-        //     dbg!(ownership.total_protected());
-        // }
+        single_threaded(|| {
+            R_UnwindProtect(fun, data, cleanfun, cleandata, cont);
+            R_ContinueUnwind(cont);
+        })
     });
 
     println!("Continuing execution in outer_function");
@@ -124,8 +121,9 @@ fn unwinding_rust_2() {
     }
 }
 
-fn main() {
-    outer_function();
-    println!("Program continues execution after outer_function");
-    assert_eq!(RESOURCE_TOTAL.take(), 0);
-}
+// Does this run before tests?
+// fn main() {
+//     outer_function();
+//     println!("Program continues execution after outer_function");
+//     assert_eq!(RESOURCE_TOTAL.take(), 0);
+// }
