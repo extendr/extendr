@@ -12,11 +12,11 @@ use libR_sys::{
     R_MakeUnwindCont, R_NilValue, R_UnwindProtect, R_tryCatchError, R_withCallingErrorHandler,
     Rboolean, Rf_PrintValue, Rf_error,
 };
-use split::split_closure;
 use std::cell::RefCell;
 
-#[path = "../split.rs"]
+#[path = "../src/split.rs"]
 mod split;
+use split::split_closure;
 
 thread_local! {
     static RESOURCE_TOTAL: RefCell<i32> = const { RefCell::new(4) } ;
@@ -67,19 +67,9 @@ fn outer_function() {
         };
         let (s, cfn) = split_closure(&mut f);
 
-        // I guess this is the standard
-        // Rf_error(c"eror".as_ptr());
-
-        // doesn't work
-        // R_withCallingErrorHandler(Some(cfn), s, None, ptr::null_mut());
-
-        // this "works"?
-        // let result = R_tryCatchError(Some(cfn), s, None, ptr::null_mut());
-        // Rf_PrintValue(result);
-
         let fun = Some(cfn);
         let data = s;
-        let mut clean_closure = |jump: Rboolean| unsafe {
+        let mut clean_closure = |jump: Rboolean| {
             println!("anything?");
             dbg!(jump);
             if jump.into() {
@@ -88,10 +78,6 @@ fn outer_function() {
         };
         let (cleandata, cleanfun) = split_closure(&mut clean_closure);
         let cleanfun = Some(cleanfun);
-        // DOESN'T WORK
-        // let cleanfun = None;
-        // let cleandata = ptr::null_mut();
-        // let cont = R_NilValue; // doesn't work at all
         let cont = R_MakeUnwindCont();
         R_UnwindProtect(fun, data, cleanfun, cleandata, cont);
         R_ContinueUnwind(cont);
@@ -110,6 +96,7 @@ fn outer_function() {
 #[should_panic]
 fn unwinding_rust() {
     outer_function();
+    // actually, the program does not continue after this...
     println!("Program continues execution after outer_function");
     assert_eq!(RESOURCE_TOTAL.take(), 0);
     let ownership_lock = ownership::OWNERSHIP.lock();
