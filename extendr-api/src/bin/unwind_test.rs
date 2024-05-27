@@ -1,5 +1,11 @@
 use std::panic::{self, AssertUnwindSafe};
 
+use std::cell::RefCell;
+
+thread_local! {
+    static RESOURCE_TOTAL: RefCell<i32> = const { RefCell::new(4) } ;
+}
+
 struct Resource {
     name: String,
 }
@@ -7,6 +13,7 @@ struct Resource {
 impl Drop for Resource {
     fn drop(&mut self) {
         println!("Dropping resource: {}", self.name);
+        RESOURCE_TOTAL.with(|x| x.replace_with(|x| *x - 1));
     }
 }
 
@@ -41,7 +48,15 @@ fn outer_function() {
     println!("Continuing execution in outer_function");
 }
 
+#[test]
+fn unwinding_rust() {
+    outer_function();
+    println!("Program continues execution after outer_function");
+    assert_eq!(RESOURCE_TOTAL.take(), 0);
+}
+
 fn main() {
     outer_function();
     println!("Program continues execution after outer_function");
+    // assert_eq!(RESOURCE_TOTAL.take(), 0);
 }
