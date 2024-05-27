@@ -1,6 +1,15 @@
-use std::panic::{self, AssertUnwindSafe};
+use std::{
+    panic::{self, AssertUnwindSafe},
+    ptr::{self},
+};
 
+use extendr_engine::with_r;
+use libR_sys::{R_NilValue, R_withCallingErrorHandler, Rf_error};
+use split::split_closure;
 use std::cell::RefCell;
+
+#[path = "../split.rs"]
+mod split;
 
 thread_local! {
     static RESOURCE_TOTAL: RefCell<i32> = const { RefCell::new(4) } ;
@@ -44,6 +53,16 @@ fn outer_function() {
         Ok(_) => println!("No panic occurred in inner_function"),
         Err(err) => println!("Caught a panic in outer_function: {:?}", err),
     }
+    with_r(|| unsafe {
+        let mut f = || {
+            Rf_error(c"eror".as_ptr());
+        };
+        let (s, cfn) = split_closure(&mut f);
+
+        // Rf_error(c"eror".as_ptr());
+        // R_withCallingErrorHandler(Some(cfn), s, None, ptr::null_mut());
+        
+    });
 
     println!("Continuing execution in outer_function");
 }
