@@ -49,7 +49,7 @@ mod send_sexp {
 
 use self::send_sexp::SendSEXP;
 
-static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
+pub static OWNERSHIP: Lazy<Mutex<Ownership>> = Lazy::new(|| Mutex::new(Ownership::new()));
 
 pub(crate) unsafe fn protect(sexp: SEXP) {
     let mut own = OWNERSHIP.lock().expect("protect failed");
@@ -64,9 +64,9 @@ pub(crate) unsafe fn unprotect(sexp: SEXP) {
 pub const INITIAL_PRESERVATION_SIZE: usize = 100000;
 pub const EXTRA_PRESERVATION_SIZE: usize = 100000;
 
-// `Object` is a manual reference counting mechanism that is used for each SEXP.
-// `refcount` is the number of times the SEXP is accessed.
-// `index` is the index of the SEXP in the preservation vector.
+// `Object` is a manual reference counting mechanism that is used for each `SEXP`.
+// `refcount` is the number of times the `SEXP` is accessed.
+// `index` is the index of the `SEXP` in the preservation vector.
 #[derive(Debug)]
 struct Object {
     refcount: usize,
@@ -75,7 +75,7 @@ struct Object {
 
 // A reference counted object with an index in the preservation vector.
 #[derive(Debug)]
-struct Ownership {
+pub struct Ownership {
     // A growable vector containing all owned objects.
     preservation: SendSEXP,
 
@@ -264,6 +264,16 @@ impl Ownership {
             }
         }
         // println!("/check");
+    }
+}
+
+impl Ownership {
+    /// Return the total number of currently protected elements, i.e. those with
+    /// non-zero reference count.
+    pub fn total_protected(&self) -> usize {
+        self.objects
+            .values()
+            .fold(0, |acc, x| if x.refcount != 0 { acc } else { acc + 1 })
     }
 }
 
