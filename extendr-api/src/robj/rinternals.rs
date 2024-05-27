@@ -1,5 +1,4 @@
 use crate::*;
-use std::os::raw;
 
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
@@ -67,7 +66,7 @@ pub trait Rinternals: Types + Conversions {
 
     /// Get the source ref.
     fn get_current_srcref(val: i32) -> Robj {
-        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as raw::c_int)) }
+        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as std::ffi::c_int)) }
     }
 
     /// Get the source filename.
@@ -253,7 +252,7 @@ pub trait Rinternals: Types + Conversions {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     unsafe fn external_ptr_addr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as *mut T
+        R_ExternalPtrAddr(self.get()).cast()
     }
 
     /// Internal function used to implement `#[extendr]` impl

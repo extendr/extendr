@@ -132,7 +132,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "new_usize"),
+                              format_args!("User function panicked: {0}", "new_usize"),
                           );
                           res
                       };
@@ -254,7 +254,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "tst_altstring"),
+                              format_args!("User function panicked: {0}", "tst_altstring"),
                           );
                           res
                       };
@@ -384,7 +384,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "tst_altinteger"),
+                              format_args!("User function panicked: {0}", "tst_altinteger"),
                           );
                           res
                       };
@@ -548,7 +548,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "dbls_named"),
+                              format_args!("User function panicked: {0}", "dbls_named"),
                           );
                           res
                       };
@@ -636,7 +636,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "strings_named"),
+                              format_args!("User function panicked: {0}", "strings_named"),
                           );
                           res
                       };
@@ -730,7 +730,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "list_named"),
+                              format_args!("User function panicked: {0}", "list_named"),
                           );
                           res
                       };
@@ -980,7 +980,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "test_derive_into_dataframe",
                               ),
                           );
@@ -1071,7 +1071,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "test_into_robj_dataframe",
                               ),
                           );
@@ -1197,6 +1197,1296 @@
               unsafe { extendr_api::register_call_methods(info, get_dataframe_metadata()) };
           }
       }
+      mod externalptr {
+          use extendr_api::prelude::*;
+          struct Wrapper {
+              a: i32,
+          }
+          #[automatically_derived]
+          impl ::core::default::Default for Wrapper {
+              #[inline]
+              fn default() -> Wrapper {
+                  Wrapper {
+                      a: ::core::default::Default::default(),
+                  }
+              }
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for Wrapper {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field1_finish(
+                      f,
+                      "Wrapper",
+                      "a",
+                      &&self.a,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for Wrapper {
+              #[inline]
+              fn clone(&self) -> Wrapper {
+                  let _: ::core::clone::AssertParamIsClone<i32>;
+                  *self
+              }
+          }
+          #[automatically_derived]
+          impl ::core::marker::Copy for Wrapper {}
+          /// Class for testing (exported)
+          /// @examples
+          /// x <- Wrapper$new()
+          /// x$a()
+          /// x$set_a(10)
+          /// x$a()
+          /// @export
+          impl Wrapper {
+              /// Method for making a new object.
+              fn new() -> Self {
+                  Self { a: 0 }
+              }
+              /// Method for setting stuff.
+              /// @param x a number
+              fn set_a(&mut self, x: i32) {
+                  self.a = x;
+              }
+              /// Method for getting stuff.
+              fn a(&self) -> i32 {
+                  self.a
+              }
+              /// Method for getting one's (by way of a copy) self.
+              fn me_owned(&self) -> Self {
+                  *self
+              }
+              /// Method for getting one's (ref) self.
+              fn me_ref(&self) -> &Self {
+                  self
+              }
+              /// Method for getting one's (ref mut) self.
+              fn me_mut(&mut self) -> &mut Self {
+                  self
+              }
+              /// Method for getting one's ref (explicit) self.
+              fn me_explicit_ref(&self) -> &Wrapper {
+                  self
+              }
+              /// Method for getting one's ref mut (explicit) self.
+              fn me_explicit_mut(&mut self) -> &mut Wrapper {
+                  self
+              }
+              fn max_ref(&self, other: &'static Wrapper) -> &Self {
+                  if self.a > other.a { self } else { other }
+              }
+              /// `offset` does nothing.
+              fn max_ref_offset(&self, other: &'static Wrapper, _offset: i32) -> &Self {
+                  if self.a > other.a { self } else { other }
+              }
+              fn max_ref2(&self, other: &'static Self) -> &Self {
+                  if self.a > other.a { self } else { other }
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__new() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(<Wrapper>::new())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "new"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for making a new object.",
+                      rust_name: "new",
+                      r_name: "new",
+                      mod_name: "new",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__new as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__set_a(
+              _self: extendr_api::SEXP,
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&mut Wrapper>::try_from(&mut _self_robj),
+                                      )
+                                      .set_a(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "set_a"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "i32",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for setting stuff.\n @param x a number",
+                      rust_name: "set_a",
+                      r_name: "set_a",
+                      mod_name: "set_a",
+                      args: args,
+                      return_type: "()",
+                      func_ptr: wrap__Wrapper__set_a as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__a(_self: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&Wrapper>::try_from(&_self_robj),
+                                      )
+                                      .a(),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "a"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting stuff.",
+                      rust_name: "a",
+                      r_name: "a",
+                      mod_name: "a",
+                      args: args,
+                      return_type: "i32",
+                      func_ptr: wrap__Wrapper__a as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__me_owned(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&Wrapper>::try_from(&_self_robj),
+                                      )
+                                      .me_owned(),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "me_owned"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__me_owned(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (by way of a copy) self.",
+                      rust_name: "me_owned",
+                      r_name: "me_owned",
+                      mod_name: "me_owned",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__me_owned as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__me_ref(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&Wrapper>::try_from(&_self_robj),
+                              )
+                              .me_ref();
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "me_ref"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__me_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (ref) self.",
+                      rust_name: "me_ref",
+                      r_name: "me_ref",
+                      mod_name: "me_ref",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__me_ref as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__me_mut(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&mut Wrapper>::try_from(&mut _self_robj),
+                              )
+                              .me_mut();
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "me_mut"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__me_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's (ref mut) self.",
+                      rust_name: "me_mut",
+                      r_name: "me_mut",
+                      mod_name: "me_mut",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__me_mut as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__me_explicit_ref(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&Wrapper>::try_from(&_self_robj),
+                              )
+                              .me_explicit_ref();
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "me_explicit_ref"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__me_explicit_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's ref (explicit) self.",
+                      rust_name: "me_explicit_ref",
+                      r_name: "me_explicit_ref",
+                      mod_name: "me_explicit_ref",
+                      args: args,
+                      return_type: "Wrapper",
+                      func_ptr: wrap__Wrapper__me_explicit_ref as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__me_explicit_mut(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&mut Wrapper>::try_from(&mut _self_robj),
+                              )
+                              .me_explicit_mut();
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "me_explicit_mut"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__me_explicit_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " Method for getting one's ref mut (explicit) self.",
+                      rust_name: "me_explicit_mut",
+                      r_name: "me_explicit_mut",
+                      mod_name: "me_explicit_mut",
+                      args: args,
+                      return_type: "Wrapper",
+                      func_ptr: wrap__Wrapper__me_explicit_mut as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__max_ref(
+              _self: extendr_api::SEXP,
+              other: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _other_robj = extendr_api::robj::Robj::from_sexp(other);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&Wrapper>::try_from(&_self_robj),
+                              )
+                              .max_ref(_other_robj.try_into()?);
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(other),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(other));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "max_ref"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__max_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "other",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "max_ref",
+                      r_name: "max_ref",
+                      mod_name: "max_ref",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__max_ref as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__max_ref_offset(
+              _self: extendr_api::SEXP,
+              other: extendr_api::SEXP,
+              _offset: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _other_robj = extendr_api::robj::Robj::from_sexp(other);
+                  let __offset_robj = extendr_api::robj::Robj::from_sexp(_offset);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&Wrapper>::try_from(&_self_robj),
+                              )
+                              .max_ref_offset(
+                                  _other_robj.try_into()?,
+                                  __offset_robj.try_into()?,
+                              );
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(other),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(other));
+                          }
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_offset),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_offset));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "max_ref_offset"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__max_ref_offset(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "other",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "_offset",
+                          arg_type: "i32",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " `offset` does nothing.",
+                      rust_name: "max_ref_offset",
+                      r_name: "max_ref_offset",
+                      mod_name: "max_ref_offset",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__max_ref_offset as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Wrapper__max_ref2(
+              _self: extendr_api::SEXP,
+              other: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                  let _other_robj = extendr_api::robj::Robj::from_sexp(other);
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                                  <&Wrapper>::try_from(&_self_robj),
+                              )
+                              .max_ref2(_other_robj.try_into()?);
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(_self),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(_self));
+                          }
+                          if std::ptr::addr_eq(
+                              extendr_api::R_ExternalPtrAddr(other),
+                              std::ptr::from_ref(return_ref_to_self),
+                          ) {
+                              return Ok(extendr_api::Robj::from_sexp(other));
+                          }
+                          Err(Error::ExpectedExternalPtrReference)
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "max_ref2"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper__max_ref2(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Wrapper",
+                          default: None,
+                      },
+                      extendr_api::metadata::Arg {
+                          name: "other",
+                          arg_type: "Self",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "max_ref2",
+                      r_name: "max_ref2",
+                      mod_name: "max_ref2",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Wrapper__max_ref2 as *const u8,
+                      hidden: false,
+                  })
+          }
+          impl TryFrom<Robj> for &Wrapper {
+              type Error = Error;
+              fn try_from(robj: Robj) -> Result<Self> {
+                  Self::try_from(&robj)
+              }
+          }
+          impl TryFrom<Robj> for &mut Wrapper {
+              type Error = Error;
+              fn try_from(mut robj: Robj) -> Result<Self> {
+                  Self::try_from(&mut robj)
+              }
+          }
+          impl TryFrom<&Robj> for &Wrapper {
+              type Error = Error;
+              fn try_from(robj: &Robj) -> Result<Self> {
+                  unsafe {
+                      let external_ptr: &ExternalPtr<Wrapper> = robj.try_into()?;
+                      external_ptr.try_addr()
+                  }
+              }
+          }
+          impl TryFrom<&mut Robj> for &mut Wrapper {
+              type Error = Error;
+              fn try_from(robj: &mut Robj) -> Result<Self> {
+                  unsafe {
+                      let external_ptr: &mut ExternalPtr<Wrapper> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
+                  }
+              }
+          }
+          impl From<Wrapper> for Robj {
+              fn from(value: Wrapper) -> Self {
+                  unsafe {
+                      let mut res: ExternalPtr<Wrapper> = ExternalPtr::new(value);
+                      res.set_attrib(class_symbol(), "Wrapper").unwrap();
+                      res.into()
+                  }
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Wrapper(impls: &mut Vec<extendr_api::metadata::Impl>) {
+              let mut methods = Vec::new();
+              meta__Wrapper__new(&mut methods);
+              meta__Wrapper__set_a(&mut methods);
+              meta__Wrapper__a(&mut methods);
+              meta__Wrapper__me_owned(&mut methods);
+              meta__Wrapper__me_ref(&mut methods);
+              meta__Wrapper__me_mut(&mut methods);
+              meta__Wrapper__me_explicit_ref(&mut methods);
+              meta__Wrapper__me_explicit_mut(&mut methods);
+              meta__Wrapper__max_ref(&mut methods);
+              meta__Wrapper__max_ref_offset(&mut methods);
+              meta__Wrapper__max_ref2(&mut methods);
+              impls
+                  .push(extendr_api::metadata::Impl {
+                      doc: " Class for testing (exported)\n @examples\n x <- Wrapper$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                      name: "Wrapper",
+                      methods,
+                  });
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__Wrapper(&mut impls);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_externalptr_metadata",
+                      mod_name: "get_externalptr_metadata",
+                      r_name: "get_externalptr_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_externalptr_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_externalptr_wrappers",
+                      mod_name: "make_externalptr_wrappers",
+                      r_name: "make_externalptr_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_externalptr_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "externalptr",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_externalptr_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_externalptr_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_externalptr_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_externalptr_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_externalptr_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_externalptr_metadata()) };
+          }
+      }
       mod graphic_device {
           use extendr_api::{graphics::*, prelude::*};
           pub(crate) struct MyDevice<'a> {
@@ -1270,7 +2560,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_arg2_try_implicit_strings",
                               ),
                           );
@@ -1376,7 +2666,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_arg2_try_implicit_doubles",
                               ),
                           );
@@ -1474,7 +2764,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_unwrap_strings",
                               ),
                           );
@@ -1564,7 +2854,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_unwrap_doubles",
                               ),
                           );
@@ -1658,7 +2948,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_positive_control",
                               ),
                           );
@@ -1752,7 +3042,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "leak_negative_control",
                               ),
                           );
@@ -1932,7 +3222,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "type_aware_sum"),
+                              format_args!("User function panicked: {0}", "type_aware_sum"),
                           );
                           res
                       };
@@ -2101,7 +3391,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "mat_to_mat"),
+                              format_args!("User function panicked: {0}", "mat_to_mat"),
                           );
                           res
                       };
@@ -2184,7 +3474,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "mat_to_rmat"),
+                              format_args!("User function panicked: {0}", "mat_to_rmat"),
                           );
                           res
                       };
@@ -2267,7 +3557,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "mat_to_robj"),
+                              format_args!("User function panicked: {0}", "mat_to_robj"),
                           );
                           res
                       };
@@ -2350,7 +3640,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "mat_to_rmatfloat"),
+                              format_args!("User function panicked: {0}", "mat_to_rmatfloat"),
                           );
                           res
                       };
@@ -2433,7 +3723,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "rmat_to_mat"),
+                              format_args!("User function panicked: {0}", "rmat_to_mat"),
                           );
                           res
                       };
@@ -2516,7 +3806,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "robj_to_mat"),
+                              format_args!("User function panicked: {0}", "robj_to_mat"),
                           );
                           res
                       };
@@ -2599,7 +3889,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "matref_to_mat"),
+                              format_args!("User function panicked: {0}", "matref_to_mat"),
                           );
                           res
                       };
@@ -2871,7 +4161,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "euclidean_dist"),
+                              format_args!("User function panicked: {0}", "euclidean_dist"),
                           );
                           res
                       };
@@ -3052,7 +4342,7 @@
                       let err_string = {
                           let res = ::alloc::fmt::format(
                               format_args!(
-                                  "user function panicked: {0}",
+                                  "User function panicked: {0}",
                                   "raw_identifier_in_fn_args",
                               ),
                           );
@@ -3139,7 +4429,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "r#true"),
+                              format_args!("User function panicked: {0}", "r#true"),
                           );
                           res
                       };
@@ -3217,7 +4507,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "r#false"),
+                              format_args!("User function panicked: {0}", "r#false"),
                           );
                           res
                       };
@@ -3388,7 +4678,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "hello_submodule"),
+                              format_args!("User function panicked: {0}", "hello_submodule"),
                           );
                           res
                       };
@@ -3485,26 +4775,6 @@
               fn a(&self) -> i32 {
                   self.a
               }
-              /// Method for getting one's (by way of a copy) self.
-              fn me_owned(&self) -> Self {
-                  *self
-              }
-              /// Method for getting one's (ref) self.
-              fn me_ref(&self) -> &Self {
-                  self
-              }
-              /// Method for getting one's (ref mut) self.
-              fn me_mut(&mut self) -> &mut Self {
-                  self
-              }
-              /// Method for getting one's ref (explicit) self.
-              fn me_explicit_ref(&self) -> &MySubmoduleClass {
-                  self
-              }
-              /// Method for getting one's ref mut (explicit) self.
-              fn me_explicit_mut(&mut self) -> &mut MySubmoduleClass {
-                  self
-              }
           }
           #[no_mangle]
           #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -3534,7 +4804,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "new"),
+                              format_args!("User function panicked: {0}", "new"),
                           );
                           res
                       };
@@ -3618,7 +4888,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "set_a"),
+                              format_args!("User function panicked: {0}", "set_a"),
                           );
                           res
                       };
@@ -3714,7 +4984,7 @@
                       drop(unwind_err);
                       let err_string = {
                           let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "a"),
+                              format_args!("User function panicked: {0}", "a"),
                           );
                           res
                       };
@@ -3765,455 +5035,6 @@
                       hidden: false,
                   })
           }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__MySubmoduleClass__me_owned(
-              _self: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          Ok(
-                              extendr_api::Robj::from(
-                                  extendr_api::unwrap_or_throw_error(
-                                          <&MySubmoduleClass>::try_from(&_self_robj),
-                                      )
-                                      .me_owned(),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "me_owned"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__MySubmoduleClass__me_owned(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Method for getting one's (by way of a copy) self.",
-                      rust_name: "me_owned",
-                      r_name: "me_owned",
-                      mod_name: "me_owned",
-                      args: args,
-                      return_type: "Self",
-                      func_ptr: wrap__MySubmoduleClass__me_owned as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__MySubmoduleClass__me_ref(
-              _self: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
-                                  <&MySubmoduleClass>::try_from(&_self_robj),
-                              )
-                              .me_ref();
-                          Ok(_self_robj)
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "me_ref"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__MySubmoduleClass__me_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Method for getting one's (ref) self.",
-                      rust_name: "me_ref",
-                      r_name: "me_ref",
-                      mod_name: "me_ref",
-                      args: args,
-                      return_type: "Self",
-                      func_ptr: wrap__MySubmoduleClass__me_ref as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__MySubmoduleClass__me_mut(
-              _self: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
-                                  <&mut MySubmoduleClass>::try_from(&mut _self_robj),
-                              )
-                              .me_mut();
-                          Ok(_self_robj)
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "me_mut"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__MySubmoduleClass__me_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Method for getting one's (ref mut) self.",
-                      rust_name: "me_mut",
-                      r_name: "me_mut",
-                      mod_name: "me_mut",
-                      args: args,
-                      return_type: "Self",
-                      func_ptr: wrap__MySubmoduleClass__me_mut as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__MySubmoduleClass__me_explicit_ref(
-              _self: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
-                                  <&MySubmoduleClass>::try_from(&_self_robj),
-                              )
-                              .me_explicit_ref();
-                          Ok(_self_robj)
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "me_explicit_ref"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__MySubmoduleClass__me_explicit_ref(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Method for getting one's ref (explicit) self.",
-                      rust_name: "me_explicit_ref",
-                      r_name: "me_explicit_ref",
-                      mod_name: "me_explicit_ref",
-                      args: args,
-                      return_type: "MySubmoduleClass",
-                      func_ptr: wrap__MySubmoduleClass__me_explicit_ref as *const u8,
-                      hidden: false,
-                  })
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__MySubmoduleClass__me_explicit_mut(
-              _self: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(|| -> std::result::Result<
-                          Robj,
-                          extendr_api::Error,
-                      > {
-                          let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
-                                  <&mut MySubmoduleClass>::try_from(&mut _self_robj),
-                              )
-                              .me_explicit_mut();
-                          Ok(_self_robj)
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = {
-                          let res = ::alloc::fmt::format(
-                              format_args!("user function panicked: {0}", "me_explicit_mut"),
-                          );
-                          res
-                      };
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__MySubmoduleClass__me_explicit_mut(
-              metadata: &mut Vec<extendr_api::metadata::Func>,
-          ) {
-              let mut args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: " Method for getting one's ref mut (explicit) self.",
-                      rust_name: "me_explicit_mut",
-                      r_name: "me_explicit_mut",
-                      mod_name: "me_explicit_mut",
-                      args: args,
-                      return_type: "MySubmoduleClass",
-                      func_ptr: wrap__MySubmoduleClass__me_explicit_mut as *const u8,
-                      hidden: false,
-                  })
-          }
           impl TryFrom<Robj> for &MySubmoduleClass {
               type Error = Error;
               fn try_from(robj: Robj) -> Result<Self> {
@@ -4259,11 +5080,6 @@
               meta__MySubmoduleClass__new(&mut methods);
               meta__MySubmoduleClass__set_a(&mut methods);
               meta__MySubmoduleClass__a(&mut methods);
-              meta__MySubmoduleClass__me_owned(&mut methods);
-              meta__MySubmoduleClass__me_ref(&mut methods);
-              meta__MySubmoduleClass__me_mut(&mut methods);
-              meta__MySubmoduleClass__me_explicit_ref(&mut methods);
-              meta__MySubmoduleClass__me_explicit_mut(&mut methods);
               impls
                   .push(extendr_api::metadata::Impl {
                       doc: " Class for testing (exported)\n @examples\n x <- MySubmoduleClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
@@ -4384,7 +5200,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "hello_world"),
+                          format_args!("User function panicked: {0}", "hello_world"),
                       );
                       res
                   };
@@ -4455,7 +5271,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "do_nothing"),
+                          format_args!("User function panicked: {0}", "do_nothing"),
                       );
                       res
                   };
@@ -4529,7 +5345,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "double_scalar"),
+                          format_args!("User function panicked: {0}", "double_scalar"),
                       );
                       res
                   };
@@ -4612,7 +5428,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "int_scalar"),
+                          format_args!("User function panicked: {0}", "int_scalar"),
                       );
                       res
                   };
@@ -4695,7 +5511,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "bool_scalar"),
+                          format_args!("User function panicked: {0}", "bool_scalar"),
                       );
                       res
                   };
@@ -4778,7 +5594,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "char_scalar"),
+                          format_args!("User function panicked: {0}", "char_scalar"),
                       );
                       res
                   };
@@ -4861,7 +5677,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "char_vec"),
+                          format_args!("User function panicked: {0}", "char_vec"),
                       );
                       res
                   };
@@ -4944,7 +5760,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "double_vec"),
+                          format_args!("User function panicked: {0}", "double_vec"),
                       );
                       res
                   };
@@ -5026,7 +5842,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "try_rfloat_na"),
+                          format_args!("User function panicked: {0}", "try_rfloat_na"),
                       );
                       res
                   };
@@ -5099,7 +5915,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "try_rint_na"),
+                          format_args!("User function panicked: {0}", "try_rint_na"),
                       );
                       res
                   };
@@ -5173,7 +5989,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "check_rfloat_na"),
+                          format_args!("User function panicked: {0}", "check_rfloat_na"),
                       );
                       res
                   };
@@ -5256,7 +6072,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "check_rint_na"),
+                          format_args!("User function panicked: {0}", "check_rint_na"),
                       );
                       res
                   };
@@ -5349,7 +6165,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "get_doubles_element"),
+                          format_args!("User function panicked: {0}", "get_doubles_element"),
                       );
                       res
                   };
@@ -5447,7 +6263,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "get_integers_element"),
+                          format_args!("User function panicked: {0}", "get_integers_element"),
                       );
                       res
                   };
@@ -5545,7 +6361,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "get_logicals_element"),
+                          format_args!("User function panicked: {0}", "get_logicals_element"),
                       );
                       res
                   };
@@ -5637,7 +6453,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "doubles_square"),
+                          format_args!("User function panicked: {0}", "doubles_square"),
                       );
                       res
                   };
@@ -5724,7 +6540,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "complexes_square"),
+                          format_args!("User function panicked: {0}", "complexes_square"),
                       );
                       res
                   };
@@ -5811,7 +6627,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "integers_square"),
+                          format_args!("User function panicked: {0}", "integers_square"),
                       );
                       res
                   };
@@ -5898,7 +6714,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "logicals_not"),
+                          format_args!("User function panicked: {0}", "logicals_not"),
                       );
                       res
                   };
@@ -5981,7 +6797,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "check_default"),
+                          format_args!("User function panicked: {0}", "check_default"),
                       );
                       res
                   };
@@ -6079,7 +6895,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "special_param_names"),
+                          format_args!("User function panicked: {0}", "special_param_names"),
                       );
                       res
                   };
@@ -6169,7 +6985,7 @@
                   let err_string = {
                       let res = ::alloc::fmt::format(
                           format_args!(
-                              "user function panicked: {0}",
+                              "User function panicked: {0}",
                               "__00__special_function_name",
                           ),
                       );
@@ -6244,7 +7060,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "test.rename.rlike"),
+                          format_args!("User function panicked: {0}", "test.rename.rlike"),
                       );
                       res
                   };
@@ -6318,7 +7134,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "get_default_value"),
+                          format_args!("User function panicked: {0}", "get_default_value"),
                       );
                       res
                   };
@@ -6401,7 +7217,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "add_5_if_not_null"),
+                          format_args!("User function panicked: {0}", "add_5_if_not_null"),
                       );
                       res
                   };
@@ -6532,7 +7348,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "new"),
+                          format_args!("User function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -6616,7 +7432,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "set_a"),
+                          format_args!("User function panicked: {0}", "set_a"),
                       );
                       res
                   };
@@ -6710,7 +7526,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "a"),
+                          format_args!("User function panicked: {0}", "a"),
                       );
                       res
                   };
@@ -6775,11 +7591,17 @@
                       Robj,
                       extendr_api::Error,
                   > {
-                      let _return_ref_to_self = extendr_api::unwrap_or_throw_error(
+                      let return_ref_to_self = extendr_api::unwrap_or_throw_error(
                               <&MyClass>::try_from(&_self_robj),
                           )
                           .me();
-                      Ok(_self_robj)
+                      if std::ptr::addr_eq(
+                          extendr_api::R_ExternalPtrAddr(_self),
+                          std::ptr::from_ref(return_ref_to_self),
+                      ) {
+                          return Ok(extendr_api::Robj::from_sexp(_self));
+                      }
+                      Err(Error::ExpectedExternalPtrReference)
                   }),
               )
           };
@@ -6796,7 +7618,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "me"),
+                          format_args!("User function panicked: {0}", "me"),
                       );
                       res
                   };
@@ -6884,7 +7706,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "restore_from_robj"),
+                          format_args!("User function panicked: {0}", "restore_from_robj"),
                       );
                       res
                   };
@@ -6972,7 +7794,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "get_default_value"),
+                          format_args!("User function panicked: {0}", "get_default_value"),
                       );
                       res
                   };
@@ -7129,7 +7951,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "new"),
+                          format_args!("User function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -7211,7 +8033,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "__name_test"),
+                          format_args!("User function panicked: {0}", "__name_test"),
                       );
                       res
                   };
@@ -7376,7 +8198,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "new"),
+                          format_args!("User function panicked: {0}", "new"),
                       );
                       res
                   };
@@ -7458,7 +8280,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "a"),
+                          format_args!("User function panicked: {0}", "a"),
                       );
                       res
                   };
@@ -7605,7 +8427,7 @@
                   drop(unwind_err);
                   let err_string = {
                       let res = ::alloc::fmt::format(
-                          format_args!("user function panicked: {0}", "my_device"),
+                          format_args!("User function panicked: {0}", "my_device"),
                       );
                       res
                   };
@@ -7699,6 +8521,7 @@
           functions.extend(optional_faer::get_optional_faer_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
+          functions.extend(externalptr::get_externalptr_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
           impls.extend(dataframe::get_dataframe_metadata().impls);
@@ -7708,6 +8531,7 @@
           impls.extend(optional_faer::get_optional_faer_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
+          impls.extend(externalptr::get_externalptr_metadata().impls);
           functions
               .push(extendr_api::metadata::Func {
                   doc: "Metadata access function.",

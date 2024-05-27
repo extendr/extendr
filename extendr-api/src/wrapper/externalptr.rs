@@ -134,7 +134,7 @@ impl<T> ExternalPtr<T> {
 
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(x) as *mut T;
+                    let ptr = R_ExternalPtrAddr(x).cast::<T>();
 
                     // Free the `tag`, which is the type-name
                     R_SetExternalPtrTag(x, R_NilValue);

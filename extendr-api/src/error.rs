@@ -80,6 +80,7 @@ pub enum Error {
 
     ExpectedExternalPtrType(Robj, String),
     ExpectedExternalNonNullPtr(Robj),
+    ExpectedExternalPtrReference,
     Other(String),
 
     #[cfg(feature = "ndarray")]
@@ -162,6 +163,9 @@ impl std::fmt::Display for Error {
                     "expected non-null pointer in externalptr, instead {:?}",
                     robj
                 )
+            }
+            Error::ExpectedExternalPtrReference => {
+                write!(f, "It is only possible to return a reference to self.")
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             Error::Other(str) => write!(f, "{}", str),

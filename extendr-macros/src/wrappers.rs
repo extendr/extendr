@@ -91,11 +91,27 @@ pub(crate) fn make_function_wrappers(
         quote! { #rust_name }
     };
 
+    // arguments for the wrapper with type being `SEXP`
     let formal_args = inputs
         .iter()
         .map(|input| translate_formal(input, self_ty))
         .collect::<syn::Result<Punctuated<FnArg, Token![,]>>>()?;
 
+    // extract the names of the arguments only (`mut` are ignored in `formal_args` already)
+    let sexp_args = formal_args
+        .clone()
+        .into_iter()
+        .map(|x| match x {
+            // the wrapper doesn't use `self` arguments
+            FnArg::Receiver(_) => unreachable!(),
+            FnArg::Typed(ref typed) => match typed.pat.as_ref() {
+                syn::Pat::Ident(ref pat_ident) => pat_ident.ident.clone(),
+                _ => unreachable!(),
+            },
+        })
+        .collect::<Vec<Ident>>();
+
+    // arguments from R (`SEXP`s) are converted to `Robj`
     let convert_args: Vec<syn::Stmt> = inputs
         .iter()
         .map(translate_to_robj)
@@ -170,9 +186,16 @@ pub(crate) fn make_function_wrappers(
         // instead of converting &Self / &mut Self, pass on the passed
         // ExternalPtr<Self>
         quote!(
-            let _return_ref_to_self = #call_name(#actual_args);
-            //FIXME: find a less hardcoded way to write `_self_robj`
-            Ok(_self_robj)
+            let return_ref_to_self = #call_name(#actual_args);
+
+            #(
+            if std::ptr::addr_eq(
+                extendr_api::R_ExternalPtrAddr(#sexp_args),
+                std::ptr::from_ref(return_ref_to_self)) {
+                    return Ok(extendr_api::Robj::from_sexp(#sexp_args))
+                }
+            )*
+            Err(Error::ExpectedExternalPtrReference)
         )
     } else {
         quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
@@ -219,7 +242,7 @@ pub(crate) fn make_function_wrappers(
                     // included in panic. The advantage would be the panic cause could be included
                     // in the R terminal error message and not only via std-err.
                     // but it should be handled in a separate function and not in-lined here.
-                    let err_string = format!("user function panicked: {}",#r_name_str);
+                    let err_string = format!("User function panicked: {}", #r_name_str);
                     // cannot use throw_r_error here for some reason.
                     // handle_panic() exports err string differently than throw_r_error.
                     extendr_api::handle_panic(err_string.as_str(), || panic!());
@@ -445,6 +468,7 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
             }
         }
         FnArg::Receiver(_) => {
+            // this is `mut`, in case of a mutable reference
             Ok(parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); })
         }
     }
