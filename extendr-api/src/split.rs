@@ -1,7 +1,6 @@
 // SOURCE: ffi-helpers, repo: <https://github.com/Michael-F-Bryan/ffi_helpers>
 // Explained in this blog post: <https://adventures.michaelfbryan.com/posts/rust-closures-in-ffi/>
 
-
 use std::ffi::c_void;
 
 /// Splits a closure into its data part and its code part, allowing it to be
@@ -44,9 +43,7 @@ use std::ffi::c_void;
 ///
 /// The returned function can only be called with the returned pointer, or a
 /// pointer to another `C` closure.
-pub unsafe fn split_closure<C, Args, Ret>(
-    closure: &mut C,
-) -> (*mut c_void, C::Trampoline)
+pub unsafe fn split_closure<C, Args, Ret>(closure: &mut C) -> (*mut c_void, C::Trampoline)
 where
     C: Split<Args, Ret>,
 {
