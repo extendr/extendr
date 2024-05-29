@@ -273,7 +273,7 @@ impl Ownership {
     pub fn total_protected(&self) -> usize {
         self.objects
             .values()
-            .fold(0, |acc, x| if x.refcount != 0 { acc } else { acc + 1 })
+            .fold(0, |acc, x| if x.refcount != 0 { acc + 1 } else { acc })
     }
 }
 
