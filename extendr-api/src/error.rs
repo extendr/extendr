@@ -8,6 +8,7 @@ use crate::{throw_r_error, Robj};
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
+#[deprecated]
 pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
     match r {
         Err(e) => {
@@ -18,6 +19,7 @@ pub fn unwrap_or_throw<T>(r: std::result::Result<T, &'static str>) -> T {
 }
 
 #[doc(hidden)]
+#[deprecated]
 pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
     match r {
         Err(e) => {

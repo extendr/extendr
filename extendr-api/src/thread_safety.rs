@@ -48,6 +48,7 @@ where
 /// panics on return.
 ///
 #[doc(hidden)]
+#[deprecated = "leaks memory unintentionally"]
 pub fn handle_panic<F, R>(err_str: &str, f: F) -> R
 where
     F: FnOnce() -> R,
@@ -64,6 +65,7 @@ where
 
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
+#[deprecated = "leaks memory unintentionally"]
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
@@ -100,7 +102,7 @@ where
     }
 
     unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
-        if jump != Rboolean::FALSE {
+        if jump.into() {
             panic!("R has thrown an error.");
         }
     }
@@ -125,5 +127,6 @@ where
         };
         Rf_unprotect(1);
         res
+        //TODO: actually this needs to call `R_ContinueUnwind` _somewhere_
     })
 }
