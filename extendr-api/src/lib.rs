@@ -336,10 +336,15 @@
 //! These features are experimental and are subject to change.
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
-
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]
+#[deny(clippy::panic)]
+#[deny(clippy::panic_in_result_fn)]
+#[deny(clippy::panicking_unwrap)]
+#[deny(non_fmt_panics)]
+#[deny(unconditional_panic)]
+#[deny(clippy::missing_panics_doc)]
 
 pub mod error;
 pub mod functions;
