@@ -23,6 +23,7 @@ thread_local! {
     static RESOURCE_TOTAL: RefCell<i32> = const { RefCell::new(4) } ;
 }
 
+#[derive(Debug)]
 struct Resource {
     name: String,
 }
@@ -34,6 +35,7 @@ impl Drop for Resource {
     }
 }
 
+/// Equiv. to converter or rust function that needs to be wrapped
 fn inner_function() {
     let _inner_res1 = Resource {
         name: String::from("inner_res1"),
@@ -45,6 +47,7 @@ fn inner_function() {
     panic!("Panic inside inner_function");
 }
 
+/// Equiv. to the C-Wrapper
 fn outer_function() {
     let _outer_res1 = Resource {
         name: String::from("outer_res1"),
@@ -82,7 +85,7 @@ fn outer_function() {
         let cont = R_MakeUnwindCont();
         single_threaded(|| {
             R_UnwindProtect(fun, data, cleanfun, cleandata, cont);
-            R_ContinueUnwind(cont);
+            // R_ContinueUnwind(cont);
         })
     });
 
@@ -127,3 +130,40 @@ fn unwinding_rust_2() {
 //     println!("Program continues execution after outer_function");
 //     assert_eq!(RESOURCE_TOTAL.take(), 0);
 // }
+
+#[test]
+fn test_move_ownership_idea() {
+    fn cwrapper(a: Resource, b: Resource) -> () {
+        fn scope_wrapper(a: Resource, b: Resource) -> () {
+            dbg!(a, b);
+        }
+        scope_wrapper(a, b);
+        dbg!("resources must have dropped prior to this point");
+    }
+
+    let a = Resource {
+        name: "Alice".into(),
+    };
+    let b = Resource { name: "Bob".into() };
+
+    cwrapper(a, b);
+}
+
+#[test]
+fn test_move_ownership_idea_closure() {
+    fn cwrapper(a: Resource, b: Resource, c: i32) -> () {
+        let result = (move || -> Result<(), Box<dyn std::error::Error>> {
+            let (_a, _b, _c) = (a, b, c);
+            Ok(())
+        })();
+
+        dbg!("resources must have dropped prior to this point");
+    }
+
+    let a = Resource {
+        name: "Alice".into(),
+    };
+    let b = Resource { name: "Bob".into() };
+
+    cwrapper(a, b, 42);
+}
