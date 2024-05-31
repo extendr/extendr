@@ -131,6 +131,7 @@ fn unwinding_rust_2() {
 //     assert_eq!(RESOURCE_TOTAL.take(), 0);
 // }
 
+// This idea is also shown here: <https://github.com/jrobsonchase/easy_ffi/blob/master/src/lib.rs>
 #[test]
 fn test_move_ownership_idea() {
     fn cwrapper(a: Resource, b: Resource) -> () {
