@@ -345,7 +345,6 @@
 #[deny(non_fmt_panics)]
 #[deny(unconditional_panic)]
 #[deny(clippy::missing_panics_doc)]
-
 pub mod error;
 pub mod functions;
 pub mod io;

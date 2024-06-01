@@ -214,7 +214,7 @@ pub(crate) fn make_function_wrappers(
 
             // pull RNG state before evaluation
             #rng_start
-            
+
             let wrap_result_state: ::std::result::Result<
                 ::std::result::Result<extendr_api::Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
@@ -236,7 +236,7 @@ pub(crate) fn make_function_wrappers(
                 // any conversion error bubbled from #actual_args conversions of incoming args from R.
                 Ok(Err(conversion_err)) => {
                     let err_string = conversion_err.to_string();
-                    drop(conversion_err); 
+                    drop(conversion_err);
                     extendr_api::throw_r_error(&err_string);
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)

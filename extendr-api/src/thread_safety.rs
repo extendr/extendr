@@ -103,7 +103,15 @@ where
 
     unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
         if jump.into() {
-            panic!("R has thrown an error.");
+            // FIXME: this unwinds in the FFI boundary. That's UB. We can
+            // catch_unwind this panic for now, and migrate to `C-unwind`
+            // eventually
+            let unwind_rust = std::panic::catch_unwind(move || {
+                panic!("R has thrown an error.");
+            });
+            if let Err(_) = unwind_rust {
+                reprintln!("failed to unwind rust");
+            }
         }
     }
 
