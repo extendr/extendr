@@ -141,6 +141,8 @@ pub(crate) fn make_function_wrappers(
         .use_rng
         .then(|| {
             quote!(single_threaded(|| unsafe {
+                // can't use libR_sys directly, as then the user of extendr-api
+                // must include libR_sys as a dependency.
                 libR_sys::GetRNGstate();
             });)
         })
@@ -149,6 +151,8 @@ pub(crate) fn make_function_wrappers(
         .use_rng
         .then(|| {
             quote!(single_threaded(|| unsafe {
+                // can't use libR_sys directly, as then the user of extendr-api
+                // must include libR_sys as a dependency.
                 libR_sys::PutRNGstate();
             });)
         })
@@ -210,13 +214,13 @@ pub(crate) fn make_function_wrappers(
 
             // pull RNG state before evaluation
             #rng_start
-
-            let wrap_result_state: std::result::Result<
-                std::result::Result<Robj, extendr_api::Error>,
+            
+            let wrap_result_state: ::std::result::Result<
+                ::std::result::Result<extendr_api::Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                #( #convert_args )*
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || {
+                    #( #convert_args )*
                     #return_type_conversion
                 }))
             };
@@ -232,16 +236,12 @@ pub(crate) fn make_function_wrappers(
                 // any conversion error bubbled from #actual_args conversions of incoming args from R.
                 Ok(Err(conversion_err)) => {
                     let err_string = conversion_err.to_string();
-                    drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
+                    drop(conversion_err); 
                     extendr_api::throw_r_error(&err_string);
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)
                 Err(unwind_err) => {
-                    drop(unwind_err); //did not notice any difference if dropped or not.
-                    // It should be possible to downcast the unwind_err Any type to the error
-                    // included in panic. The advantage would be the panic cause could be included
-                    // in the R terminal error message and not only via std-err.
-                    // but it should be handled in a separate function and not in-lined here.
+                    drop(unwind_err);
                     let err_string = format!("User function panicked: {}", #r_name_str);
                     // cannot use throw_r_error here for some reason.
                     // handle_panic() exports err string differently than throw_r_error.

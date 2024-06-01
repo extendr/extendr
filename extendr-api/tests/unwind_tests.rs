@@ -6,7 +6,7 @@ use std::{
 
 use extendr_api::{ownership, single_threaded};
 use extendr_engine::with_r;
-use libR_sys::{R_ContinueUnwind, SEXP};
+use libR_sys::SEXP;
 #[allow(unused_imports)]
 use libR_sys::{
     R_MakeUnwindCont, R_NilValue, R_UnwindProtect, R_tryCatchError, R_withCallingErrorHandler,

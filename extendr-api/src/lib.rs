@@ -1045,3 +1045,9 @@ mod tests {
         }
     }
 }
+// only available on stable per Rust 1.71.1.
+
+// // #[no_mangle]
+// pub extern "C-unwind" fn panic_in_c() {
+//     panic!()
+// }
