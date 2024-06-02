@@ -143,10 +143,15 @@ impl From<Error> for String {
 
 /// Convert an Robj reference into a borrowed Robj.
 impl From<&Robj> for Robj {
-    // Note: we should probably have a much better reference
-    // mechanism as double-free or underprotection is a distinct possibility.
     fn from(val: &Robj) -> Self {
         unsafe { Robj::from_sexp(val.get()) }
+    }
+}
+
+/// Convert an Robj reference into a mutably borrowed Robj.
+impl From<&mut Robj> for Robj {
+    fn from(val: &mut Robj) -> Self {
+        unsafe { Robj::from_sexp(val.get_mut()) }
     }
 }
 
@@ -721,6 +726,7 @@ impl From<Vec<Rstr>> for Robj {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::prelude::test;
 
     #[test]
     fn test_vec_rint_to_robj() {
