@@ -215,8 +215,8 @@ pub(crate) fn make_function_wrappers(
                 std::result::Result<Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                #( #convert_args )*
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<Robj, extendr_api::Error> {
+                    #(#convert_args)*
                     #return_type_conversion
                 }))
             };
