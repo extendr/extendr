@@ -101,7 +101,8 @@ where
 
     unsafe extern "C" fn do_cleanup(_: *mut raw::c_void, jump: Rboolean) {
         if jump != Rboolean::FALSE {
-            panic!("R has thrown an error.");
+            let caught_panic = std::panic::catch_unwind(|| panic!("R has thrown an error."));
+            assert!(caught_panic.is_err(), "must panic to drop rust items")
         }
     }
 
