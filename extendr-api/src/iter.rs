@@ -78,7 +78,7 @@ impl Iterator for StrIter {
             if i >= self.len {
                 None
             } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
-                None
+                Some(<&str>::na())
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 str_from_strsxp(vector, i)
             } else if TYPEOF(vector) == SEXPTYPE::CHARSXP {
@@ -222,13 +222,20 @@ mod tests {
         with_r(|| {
             let single_charsxp = blank_string();
             let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(&s1);
             let single_charsxp = blank_scalar_string();
             let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(&s2);
             assert_eq!(s1, s2);
             assert_eq!(s1.len(), 1);
             assert_eq!(s2.len(), 1);
+        });
+    }
+
+    #[test]
+    fn test_new_constructor() {
+        with_r(|| {
+            let str_iter = StrIter::new(10);
+
+            assert_eq!(str_iter.collect::<Vec<_>>().len(), 10);
         });
     }
 }
