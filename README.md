@@ -101,37 +101,6 @@ type which wraps the native R object type. This supports a large
 subset of the R internals functions, but wrapped to prevent
 accidental segfaults and failures.
 
-## extendr roadmap
-
-### Basic
-
-- [x] Be able to build simple rust extensions for R.
-- [x] Wrap the R SEXP object safely (Robj)
-- [x] Iterator support for matrices and vectors.
-- [x] Class support.
-
-### Documentation
-
-- [x] Begin documentation.
-- [ ] Begin book-form documentation.
-- [ ] Paper for Bioinformatics.
-- [x] Build and publish CRAN R package.
-- [ ] Publish Use R! series book.
-
-### Automation
-
-- [x] Auto-generate binding wrappers.
-- [x] Auto-generate NAMESPACE and lib.R.
-
-### Features
-
-- [x] Feature-gated support for ndarray.
-- [ ] Feature-gated support for rayon.
-
-### R packages
-
-- [ ] Bindings for rust-bio
-
 ## Contributing
 
 We are happy about any contributions!
