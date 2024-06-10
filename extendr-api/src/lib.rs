@@ -254,15 +254,8 @@
 //! }
 //! ```
 //!
-//! ## Returning Result<T,E> to R
+//! ## Returning `Result<T, E>` to R
 //!
-//! Currently, `throw_r_error()` leaks memory because it jumps to R without properly dropping
-//! some rust objects.
-//!
-//! The memory-safe way to do error handling with extendr is to return a Result<T, E>
-//! to R. By default, any Err will trigger a panic! on the rust side which unwinds the stack.
-//! The rust error trace will be printed to stderr, not R terminal. Any Ok value is returned
-//! as is.
 //!
 //! Alternatively, two experimental non-leaking features, `result_list` and `result_condition`,
 //! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
