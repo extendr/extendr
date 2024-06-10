@@ -88,6 +88,9 @@ pub enum Error {
 
     #[cfg(feature = "either")]
     EitherError(Box<Error>, Box<Error>),
+
+    // used in &[u32] conversion
+    ExpectedNonNegativeValue,
 }
 
 impl std::fmt::Display for Error {
@@ -191,6 +194,9 @@ impl std::fmt::Display for Error {
                     left_err, right_err
                 )
             }
+            Error::ExpectedNonNegativeValue => write!(
+                f, "expected vector of non-negative values"
+            )
         }
     }
 }

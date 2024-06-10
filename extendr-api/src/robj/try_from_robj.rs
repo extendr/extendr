@@ -353,6 +353,34 @@ impl TryFrom<&Robj> for &[f64] {
     }
 }
 
+impl TryFrom<&Robj> for &[u32] {
+    type Error = Error;
+
+    /// Returns a slice by reference, if the underlying `&[i32]` values are
+    /// all non-negative.
+    fn try_from(value: &Robj) -> Result<Self> {
+        let integer_slice: Option<&[i32]> = value.as_typed_slice();
+        if let Some(value) = integer_slice {
+            let any_negative = value.iter().any(|x| x.is_negative());
+            if any_negative {
+                return Err(Error::ExpectedNonNegativeValue);
+            }
+            Ok(unsafe { std::mem::transmute(integer_slice) })
+        } else {
+            Err(Error::ExpectedInteger(value.clone()))
+        }
+    }
+}
+
+impl TryFrom<&Robj> for Vec<u32> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        let slice: &[u32] = value.try_into()?;
+        Ok(Vec::from(slice))
+    }
+}
+
 impl TryFrom<&Robj> for Rcplx {
     type Error = Error;
 
