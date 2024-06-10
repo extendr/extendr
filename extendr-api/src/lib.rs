@@ -255,19 +255,15 @@
 //! ```
 //!
 //! ## Returning `Result<T, E>` to R
-//!
-//!
-//! Alternatively, two experimental non-leaking features, `result_list` and `result_condition`,
+//! 
+//! Two experimental features for returning error-aware R `list`s, `result_list` and `result_condition`,
 //! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
 //!  - list: `list(ok=NULL, err=x)` when `result_list` is enabled,
 //!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`, when `resultd_condition` is enabled.
 //!
 //! It is currently solely up to the user to handle any result on R side.
-//!
-//! The minimal overhead of calling an extendr function is in the ballpark of 2-4us.
-//! Returning a condition or list increases the overhead to 4-8us. Checking & handling the result
-//! on R side will likely increase overall overhead to 8-16us, depending on how efficiently the
-//! result is handled.
+//! 
+//! There is an added overhead of wrapping Rust results in an R `list` object.
 //!
 //! ```ignore
 //! use extendr_api::prelude::*;
@@ -310,7 +306,6 @@
 //!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
-//!
 //! ```
 //!
 //! ## Feature gates
