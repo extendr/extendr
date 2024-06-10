@@ -255,14 +255,14 @@
 //! ```
 //!
 //! ## Returning `Result<T, E>` to R
-//! 
+//!
 //! Two experimental features for returning error-aware R `list`s, `result_list` and `result_condition`,
 //! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
 //!  - list: `list(ok=NULL, err=x)` when `result_list` is enabled,
 //!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`, when `resultd_condition` is enabled.
 //!
 //! It is currently solely up to the user to handle any result on R side.
-//! 
+//!
 //! There is an added overhead of wrapping Rust results in an R `list` object.
 //!
 //! ```ignore
@@ -312,12 +312,15 @@
 //!
 //! extendr-api has some optional features behind these feature gates:
 //!
-//! - `ndarray`: provides the conversion between R's matrices and [ndarray](https://docs.rs/ndarray/latest/ndarray/).
-//! - `num-complex`: provides the conversion between R's complex numbers and [num-complex](https://docs.rs/num-complex/latest/num_complex/).
-//! - `serde`: provides the [Serde](https://serde.rs/) support.
+//! - `ndarray`: provides the conversion between R's matrices and [`ndarray`](https://docs.rs/ndarray/latest/ndarray/).
+//! - `num-complex`: provides the conversion between R's complex numbers and [`num-complex`](https://docs.rs/num-complex/latest/num_complex/).
+//! - `serde`: provides the [`serde`](https://serde.rs/) support.
 //! - `graphics`: provides the functionality to control or implement graphics devices.
+//! - `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
+//! - `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 //!
-//! extendr-api supports three ways of returning a Result<T,E> to R. Only one behavior feature can be enabled at a time.
+//! extendr-api supports three ways of returning a Result<T,E> to R.
+//! Only one behavior feature can be enabled at a time.
 //! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
 //!
 //! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
