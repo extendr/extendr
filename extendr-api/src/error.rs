@@ -194,9 +194,7 @@ impl std::fmt::Display for Error {
                     left_err, right_err
                 )
             }
-            Error::ExpectedNonNegativeValue => write!(
-                f, "expected vector of non-negative values"
-            )
+            Error::ExpectedNonNegativeValue => write!(f, "expected vector of non-negative values"),
         }
     }
 }
