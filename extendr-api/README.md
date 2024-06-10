@@ -26,7 +26,6 @@ extendr_module! {
    mod mymodule;
    fn fred;
 }
-
 ```
 
 In R:
