@@ -19,15 +19,11 @@ crate-type = ["staticlib"]
 extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
 faer = "0.18.0"
 
-# TODO: I couldn't find any nice way to add the condition based on the R version
-# except for using libR-sys just for "DEP_R_*" envvars.
-libR-sys = "*"
-
 [patch.crates-io]
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "../../../../../../../extendr/extendr-api" }
+extendr-api = { path = "../../../../../extendr-main/extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
 
@@ -36,5 +32,3 @@ extendr-api = { path = "../../../../../../../extendr/extendr-api" }
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
 
-# Build against current libR-sys version on github
-libR-sys = { git = "https://github.com/extendr/libR-sys", rev = "09d76ada0cd54aa4481d9f06bbdfa50bcca2814a" }
