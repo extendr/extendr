@@ -1,8 +1,4 @@
 fn main() {
-    // TODO: I couldn't find any nice way to add the condition based on the R version
-    // except for using libR-sys just for "DEP_R_*" envvars.
-    // let major = std::env::var("DEP_R_R_VERSION_MAJOR").unwrap();
-    // let minor = std::env::var("DEP_R_R_VERSION_MINOR").unwrap();
     let mut major = 0;
     let mut minor = 0;
     let mut _patch = 0;
@@ -33,6 +29,9 @@ fn main() {
         minor = raw_r_version[1];
         _patch = raw_r_version[2];
     }
+    let major = major;
+    let minor = minor;
+    let _patch = _patch;
     // dbg!(major, minor);
 
     if major >= 4 && minor >= 3 {
