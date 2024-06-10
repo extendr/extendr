@@ -92,20 +92,6 @@ use crate::wrappers;
 ///     impl People;
 /// }
 /// ```
-///     
-/// **Known limitation**: if you return `&Self` or `&mut Self` or a reference
-/// to the same type, the resultant R object will _always_ be the original
-/// self. For example the below method **will not** return `other`.
-///
-/// ```ignore
-///  // This is not possible today
-/// #[extendr]
-/// impl People {
-///   fn return_other(&self, other: &'static T) -> &Self {
-///     other
-///   }
-/// }
-/// ```
 pub(crate) fn extendr_impl(
     mut item_impl: ItemImpl,
     opts: &ExtendrOptions,
