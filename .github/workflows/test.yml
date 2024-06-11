@@ -204,6 +204,10 @@ jobs:
             cat('level=warning', file = output, append = TRUE)
           }
         shell: Rscript {0}
+      
+      - name: DEBUG CI
+        run: |
+          R CMD config --version
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
         run: |
