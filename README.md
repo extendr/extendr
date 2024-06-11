@@ -11,29 +11,27 @@
 
 extendR is a suite of software packages, see the website [extendR](https://extendr.github.io/) for an overview.
 
-This repository is for the rust crate `extendr-api` specifically.
+This repository is for the rust crates that are part of extendR,
+see also [`{rextendr}`](https://extendr.github.io/rextendr/) for the R-package that facilitates using extendR.
 
-For user guide detailing how to use extendR, see [user-guide](https://extendr.github.io/user-guide/).
+A complete user guide detailing how to use extendR is [available here](https://extendr.github.io/user-guide/).
 
-## Installation - Rust
+The main crate `extendr-api` is published on [crates.io](https://crates.io/crates/extendr-api).
 
-`extendr-api` is published on [crates.io](https://crates.io/crates/extendr-api).
+## Getting started
 
-Simply add this line to the `[dependencies]` section of your `Cargo.toml`.
-You will then be able to call R code from Rust.
+There are many ways to use extendR from R. In an interactive R session one may
+use [`rextendr::rust_function` and friends](https://extendr.github.io/rextendr/reference/rust_source.html)
+to quickly prototype Rust code.
 
-```toml
-[dependencies]
-extendr-api = "0.6"
-```
+In an R package context, one may use [`rextendr::use_extendr()`](https://extendr.github.io/rextendr/reference/use_extendr.html) to setup a Rust powered R-package. See also [vignette on R-packages](https://extendr.github.io/rextendr/articles/package.html).
 
-## Installation - R
+It is also possible to inline Rust code in `RMarkdown`/`knitr`, see [vignette on extendr `knitr-engine`](https://extendr.github.io/rextendr/articles/rmarkdown.html).
 
-There are two ways you can use the extendr API from R. First, you can use the [rextendr](https://extendr.github.io/rextendr/) package to call individual Rust functions from an R session. Second, you can write an R package that uses compiled Rust code, see the [helloextendr](https://github.com/extendr/helloextendr) repo for a minimal example.
+See [rextendr](https://extendr.github.io/rextendr/) package for more information
+on the available functionality from an R session.
 
 ## Overview
-
-Extendr is a Rust extension mechanism for R
 
 It is intended to be easier to use than the C interface and
 Rcpp as Rust gives type safety and freedom from segfaults.

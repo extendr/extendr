@@ -1,4 +1,4 @@
-# extendr-api
+# `extendr-api`
 
 A safe and user friendly R extension interface.
 
@@ -7,6 +7,18 @@ A safe and user friendly R extension interface.
 
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
+
+## Installation
+
+Simply add this line to the `[dependencies]` section of your `Cargo.toml`.
+You will then be able to call R code from Rust.
+
+```toml
+[dependencies]
+extendr-api = "0.6"
+```
+
+## Overview
 
 See [Robj] for much of the content of this crate.
 [Robj] provides a safe wrapper for the R object type.
