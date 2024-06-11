@@ -193,6 +193,25 @@ impl List {
     }
 }
 
+impl Elt<Robj> for List {
+    /// Get a reference to an element in the list.
+    fn elt(&self, i: usize) -> Robj {
+        assert!(i < self.robj.len());
+        unsafe {
+            let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
+            Robj::from_sexp(sexp)
+        }
+    }
+
+    /// Set an element in the list.
+    fn set_elt(&mut self, i: usize, value: Robj) {
+        assert!(i < self.robj.len());
+        single_threaded(|| unsafe {
+            SET_VECTOR_ELT(self.robj.get_mut(), i as R_xlen_t, value.get());
+        });
+    }
+}
+
 impl IntoIterator for List {
     type IntoIter = NamedListIter;
     type Item = (&'static str, Robj);

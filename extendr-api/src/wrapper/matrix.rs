@@ -66,13 +66,25 @@ where
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
-            matrix
-                .as_typed_slice_mut()
-                .unwrap()
-                .iter_mut()
-                .for_each(|x| {
-                    *x = T::na();
-                });
+            // FIXME: replace this with something that uses the `Elt`-interface
+            match matrix.sexptype() {
+                SEXPTYPE::STRSXP => unsafe {
+                    let na_value = R_NaString;
+                    let matrix_ptr = matrix.get_mut();
+                    for ij in 0..nrow * ncol {
+                        SET_STRING_ELT(matrix_ptr, ij as _, na_value);
+                    }
+                },
+                _ => {
+                    matrix
+                        .as_typed_slice_mut()
+                        .unwrap()
+                        .iter_mut()
+                        .for_each(|x| {
+                            *x = T::na();
+                        });
+                }
+            }
         }
         matrix
     }
@@ -141,6 +153,8 @@ where
         self.as_typed_slice().unwrap()
     }
 
+    //FIXME: don't provide this for `Rstr` and friends
+
     /// Returns a flat, mutable representation of the array in col-major.
     pub fn data_mut(&mut self) -> &mut [T] {
         self.as_typed_slice_mut().unwrap()
@@ -159,6 +173,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
+        //FIXME: add a test with `Rstr`
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
@@ -192,6 +207,7 @@ where
         ncols: usize,
         f: F,
     ) -> Self {
+        //FIXME: use the set_elt-interface
         let mut robj = (0..ncols)
             .flat_map(|c| {
                 let mut g = f.clone();
@@ -476,6 +492,38 @@ impl<T, D> DerefMut for RArray<T, D> {
     }
 }
 
+macro_rules! define_elt {
+    ($elt_type:ty, $vec_type:ty) => {
+        impl<D> Elt<$elt_type> for RArray<$elt_type, D> {
+            fn elt(&self, index: usize) -> $elt_type {
+                <$vec_type as Elt<$elt_type>>::elt(
+                    unsafe { std::mem::transmute((&self.robj,)) },
+                    index,
+                )
+            }
+
+            fn set_elt(&mut self, index: usize, val: $elt_type) {
+                <$vec_type as Elt<$elt_type>>::set_elt(
+                    unsafe { std::mem::transmute((&mut self.robj,)) },
+                    index,
+                    val,
+                )
+            }
+        }
+    };
+}
+
+define_elt!(scalar::Rint, Integers);
+define_elt!(i32, Integers);
+define_elt!(Rbool, Logicals);
+// define_elt!(i32, Logicals); // conflict!
+define_elt!(scalar::Rcplx, Complexes);
+define_elt!(scalar::Rfloat, Doubles);
+define_elt!(f64, Doubles);
+define_elt!(u8, Raw);
+define_elt!(Rstr, Strings);
+// define_elt!(&str, Strings); //TODO: ?
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -491,27 +539,55 @@ mod tests {
             // unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rbool> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
+
+            dbg!(m.elt(11)); // access violation
+
             let m: RMatrix<Rint> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rfloat> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
+            let m: RMatrix<Rstr> = RMatrix::new(5, 2);
+            unsafe { Rf_PrintValue(m.get()) };
             rprintln!();
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
             // unsafe { Rf_PrintValue(m.get()) };
             let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
+
+            dbg!(m.elt(19));
+            dbg!(m.elt(20)); // access violation
+            dbg!(m.elt(21)); // access violation
+
             assert_eq!(R!("matrix(NA, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
+
+            dbg!(m.elt(19));
+            dbg!(m.elt(20)); // access violation
+            dbg!(m.elt(21)); // access violation
             assert_eq!(R!("matrix(NA_integer_, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
+            dbg!(m.elt(19));
+            dbg!(m.elt(20)); // access violation
+            dbg!(m.elt(21)); // access violation
             assert_eq!(R!("matrix(NA_real_, 10, 2)").unwrap(), m.into_robj());
 
             let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
+            dbg!(m.elt(19));
+            dbg!(m.elt(20)); // access violation
+            dbg!(m.elt(21)); // access violation
             assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
+
+            let na_matrix = R!("matrix(NA_character_, 10, 2)").unwrap();
+            unsafe { Rf_PrintValue(na_matrix.get()) };
+            let m: RMatrix<Rstr> = RMatrix::new_with_na(10, 2);
+            dbg!(m.elt(19));
+            dbg!(m.elt(20)); // access violation
+            dbg!(m.elt(21)); // access violation
+            assert_eq!(R!("matrix(NA_character_, 10, 2)").unwrap(), m.into_robj());
         });
     }
 

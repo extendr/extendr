@@ -98,7 +98,8 @@ fn test_doubles() {
         let v = s.iter().collect::<Vec<Rfloat>>();
         assert_eq!(v, [1.0, 2.0, 3.0]);
 
-        s.set_elt(1, 5.0.into());
+        s.set_elt(1, 5.0);
+        s.set_elt(1, Rfloat::from(5.0));
         assert_eq!(s.elt(1), 5.0);
 
         let s : Doubles = [1.0, 2.0, 3.0].iter().map(|i| Rfloat::from(*i)).collect();

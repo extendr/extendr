@@ -175,7 +175,7 @@ make_conversions!(
 
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
-make_conversions!(Rstr, ExpectedRstr, is_char, "Not a character object");
+make_getsexp!(Rstr, impl);
 
 make_conversions!(
     Environment,
@@ -237,6 +237,11 @@ make_getsexp!(Dataframe<T>, impl<T>);
 //         unsafe { self.as_typed_slice_raw() }
 //     }
 // }
+
+pub trait Elt<T> {
+    fn elt(&self, index: usize) -> T;
+    fn set_elt(&mut self, index: usize, val: T); //TODO: add this? -> Option<T>;
+}
 
 pub trait Conversions: GetSexp {
     /// Convert a symbol object to a Symbol wrapper.
