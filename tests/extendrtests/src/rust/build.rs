@@ -42,7 +42,7 @@ fn main() {
         .collect();
     assert!(
         raw_r_version.len() >= 3,
-        "rust version was not detected properly"
+        "R version was not detected properly"
     );
     let major = raw_r_version[0];
     let minor = raw_r_version[1];
