@@ -7,11 +7,19 @@
 
 [![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
 
+## Welcome!
+
+extendR is a suite of software packages, see the website [extendR](https://extendr.github.io/) for an overview.
+
+This repository is for the rust crate `extendr-api` specifically.
+
+For user guide detailing how to use extendR, see [user-guide](https://extendr.github.io/user-guide/).
+
 ## Installation - Rust
 
-Extendr is available on [crates.io](https://crates.io/crates/extendr-api).
+`extendr-api` is published on [crates.io](https://crates.io/crates/extendr-api).
 
-Simply add this line to the `[dependencies]` section of a rust crate.
+Simply add this line to the `[dependencies]` section of your `Cargo.toml`.
 You will then be able to call R code from Rust.
 
 ```toml
@@ -142,4 +150,5 @@ You can also get in contact via our [Discord server](https://discord.gg/7hmApuc)
 
 ### Development
 
-The documentation for the latest development version is available here: <https://extendr.github.io/extendr/extendr_api/>
+The documentation for the latest development version of `extendr-api` is available here: 
+<https://extendr.github.io/extendr/extendr_api/>
