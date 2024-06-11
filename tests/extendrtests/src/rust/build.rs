@@ -8,12 +8,12 @@ fn main() {
     let r_home_env = r_home_env.map(PathBuf::from);
 
     // prefer `R_HOME` if set, otherwise use the `PATH` available R
-    let mut r_version = if let Some(r_home_env) = r_home_env {
+    let mut path_to_r = if let Some(r_home_env) = r_home_env {
         std::process::Command::new(r_home_env.join("R"))
     } else {
         std::process::Command::new("R")
     };
-    let r_version = r_version
+    let r_version = path_to_r
         .arg("CMD")
         .args(["config", "--version"])
         .output()
@@ -36,11 +36,14 @@ fn main() {
         .split_ascii_whitespace()
         .next()
         .unwrap();
-    dbg!(raw_r_version);
     let raw_r_version: Vec<u32> = raw_r_version
         .split('.')
         .map(|x| x.parse().unwrap())
         .collect();
+    assert!(
+        raw_r_version.len() >= 3,
+        "rust version was not detected properly"
+    );
     let major = raw_r_version[0];
     let minor = raw_r_version[1];
     let patch = raw_r_version[2];
@@ -52,5 +55,4 @@ fn main() {
     if major >= 4 && minor >= 3 {
         println!("cargo:rustc-cfg=use_r_altlist");
     }
-    assert_ne!(major, 0, "rust version was not detected properly");
 }
