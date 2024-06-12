@@ -9,7 +9,7 @@ fn main() {
 
     // prefer `R_HOME` if set, otherwise use the `PATH` available R
     let mut path_to_r = if let Some(r_home_env) = r_home_env {
-        std::process::Command::new(r_home_env.join("R"))
+        std::process::Command::new(r_home_env.join("bin/R"))
     } else {
         std::process::Command::new("R")
     };
