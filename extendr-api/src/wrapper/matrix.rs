@@ -34,6 +34,37 @@ pub struct RArray<T, D> {
     _data: std::marker::PhantomData<T>,
 }
 
+impl<T, D> RArray<T, D> {
+    /// Set the names of the elements of an array.
+    ///
+    ///
+    /// Equivalent to `names<-` in R
+    pub fn set_names(&mut self, names: Strings) {
+        // TODO: check what `names` are and validate the input...
+        let _ = unsafe { Rf_namesgets(self.get_mut(), names.get()) };
+    }
+
+    /// Set the dimension names of an array.
+    ///
+    /// For [`RMatrix`] a list of length 2 is required, as that would entail
+    /// column-names and row-names. If you only wish to set one, but not the other,
+    /// then the unset element must be R `NULL`
+    ///
+    /// Equivalent to `dimnames<-` in R
+    pub fn set_dimnames(&mut self, dimnames: List) {
+        let _ = unsafe { Rf_dimnamesgets(self.get_mut(), dimnames.get()) };
+    }
+
+    /// Set the dimensions of an array.
+    ///
+    /// Equivalent to `dim<-`
+    pub fn set_dim(&mut self, dim: Robj) {
+        // TODO: ensure that Robj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
+        // or NilValue
+        let _ = unsafe { Rf_dimgets(self.get_mut(), dim.get()) };
+    }
+}
+
 pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
 pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
@@ -94,29 +125,6 @@ impl<T> RMatrix<T> {
     pub fn get_rownames(&self) -> Robj {
         let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(self.get()) });
         rownames
-    }
-
-    ///
-    ///
-    /// Equivalent to `names<-` in R
-    pub fn set_names(&mut self, names: Strings) {
-        // TODO: check what `names` are and validate the input...
-        let _ = unsafe { Rf_namesgets(self.get_mut(), names.get()) };
-    }
-
-    ///
-    /// Equivalent to `dimnames<-` in R
-    pub fn set_dimnames(&mut self, dimnames: List) {
-        let _ = unsafe { Rf_dimnamesgets(self.get_mut(), dimnames.get()) };
-    }
-
-    ///
-    ///
-    /// Equivalent to `dim<-`
-    pub fn set_dim(&mut self, dim: Robj) {
-        // TODO: ensure that Robj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
-        // or NilValue
-        let _ = unsafe { Rf_dimgets(self.get_mut(), dim.get()) };
     }
 }
 
