@@ -95,6 +95,27 @@ impl<T> RMatrix<T> {
         let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(self.get()) });
         rownames
     }
+
+    ///
+    ///
+    /// Equivalent to `names<-` in R
+    pub fn set_names(&mut self, names: Robj) {
+        // TODO: check what `names` are and validate the input...
+        let _ = unsafe { Rf_namesgets(self.get_mut(), names.get()) };
+    }
+
+    ///
+    /// Equivalent to `dimnames<-` in R
+    pub fn set_dimnames(&mut self, dimnames: Robj) {
+        let _ = unsafe { Rf_dimnamesgets(self.get_mut(), dimnames.get()) };
+    }
+
+    ///
+    ///
+    /// Equivalent to `dim<-`
+    pub fn set_dim(&mut self, dim: Robj) {
+        let _ = unsafe { Rf_dimgets(self.get_mut(), dim.get()) };
+    }
 }
 
 const BASE: usize = 0;
