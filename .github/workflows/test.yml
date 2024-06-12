@@ -204,16 +204,10 @@ jobs:
             cat('level=warning', file = output, append = TRUE)
           }
         shell: Rscript {0}
-      
-      - name: DEBUG CI
-        run: |
-          R CMD config --version
-        shell: bash
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
         run: |
           cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
-        shell: bash
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
