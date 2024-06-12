@@ -206,7 +206,6 @@ jobs:
         shell: Rscript {0}
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
-        id: id_cargo_r_cmd_check
         run: |
           cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
@@ -381,7 +380,7 @@ jobs:
           echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       # 1. Retrieve targets
-      # 2. Retrieve 'libcalng' paths
+      # 2. Retrieve 'libclang' paths
       # 3. For each target run
       # 3.1 Select correct $target & $toolchain
       # 3.x Run build commands, checking for errors, providing explicit toolchain & target
