@@ -99,14 +99,14 @@ impl<T> RMatrix<T> {
     ///
     ///
     /// Equivalent to `names<-` in R
-    pub fn set_names(&mut self, names: Robj) {
+    pub fn set_names(&mut self, names: Strings) {
         // TODO: check what `names` are and validate the input...
         let _ = unsafe { Rf_namesgets(self.get_mut(), names.get()) };
     }
 
     ///
     /// Equivalent to `dimnames<-` in R
-    pub fn set_dimnames(&mut self, dimnames: Robj) {
+    pub fn set_dimnames(&mut self, dimnames: List) {
         let _ = unsafe { Rf_dimnamesgets(self.get_mut(), dimnames.get()) };
     }
 
@@ -114,6 +114,8 @@ impl<T> RMatrix<T> {
     ///
     /// Equivalent to `dim<-`
     pub fn set_dim(&mut self, dim: Robj) {
+        // TODO: ensure that Robj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
+        // or NilValue
         let _ = unsafe { Rf_dimgets(self.get_mut(), dim.get()) };
     }
 }
