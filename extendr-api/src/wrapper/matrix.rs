@@ -78,6 +78,25 @@ where
     }
 }
 
+// @findex GetArrayDimnames
+// @findex GetMatrixDimnames
+// @findex GetColNames
+// @findex GetRowNames
+// @findex namesgets
+// @findex dimnamesgets
+// @findex dimgets
+
+impl<T> RMatrix<T> {
+    pub fn get_colnames(&self) -> Robj {
+        let colnames = Robj::from_sexp(unsafe { Rf_GetColNames(self.get()) });
+        colnames
+    }
+    pub fn get_rownames(&self) -> Robj {
+        let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(self.get()) });
+        rownames
+    }
+}
+
 const BASE: usize = 0;
 
 trait Offset<D> {
