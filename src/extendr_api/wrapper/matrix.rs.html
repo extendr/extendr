@@ -573,6 +573,52 @@
 <a href="#573" id="573">573</a>
 <a href="#574" id="574">574</a>
 <a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Wrappers for matrices with deferred arithmetic.
 </span><span class="kw">use </span><span class="self">self</span>::robj::{AsTypedSlice, Robj};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -607,6 +653,41 @@
     </span>dim: D,
 
     _data: std::marker::PhantomData&lt;T&gt;,
+}
+
+<span class="kw">impl</span>&lt;T, D&gt; RArray&lt;T, D&gt; {
+    <span class="kw">pub fn </span>get_dimnames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; List {
+        List::try_from(Robj::from_sexp(<span class="kw">unsafe </span>{ Rf_GetArrayDimnames(<span class="self">self</span>.get()) })).unwrap()
+    }
+
+    <span class="doccomment">/// Set the names of the elements of an array.
+    ///
+    ///
+    /// Equivalent to `names&lt;-` in R
+    </span><span class="kw">pub fn </span>set_names(<span class="kw-2">&amp;mut </span><span class="self">self</span>, names: Strings) {
+        <span class="comment">// TODO: check what `names` are and validate the input...
+        </span><span class="kw">let _ </span>= <span class="kw">unsafe </span>{ Rf_namesgets(<span class="self">self</span>.get_mut(), names.get()) };
+    }
+
+    <span class="doccomment">/// Set the dimension names of an array.
+    ///
+    /// For [`RMatrix`] a list of length 2 is required, as that would entail
+    /// column-names and row-names. If you only wish to set one, but not the other,
+    /// then the unset element must be R `NULL`
+    ///
+    /// Equivalent to `dimnames&lt;-` in R
+    </span><span class="kw">pub fn </span>set_dimnames(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dimnames: List) {
+        <span class="kw">let _ </span>= <span class="kw">unsafe </span>{ Rf_dimnamesgets(<span class="self">self</span>.get_mut(), dimnames.get()) };
+    }
+
+    <span class="doccomment">/// Set the dimensions of an array.
+    ///
+    /// Equivalent to `dim&lt;-`
+    </span><span class="kw">pub fn </span>set_dim(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dim: Robj) {
+        <span class="comment">// TODO: ensure that Robj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
+        // or NilValue
+        </span><span class="kw">let _ </span>= <span class="kw">unsafe </span>{ Rf_dimgets(<span class="self">self</span>.get_mut(), dim.get()) };
+    }
 }
 
 <span class="kw">pub type </span>RColumn&lt;T&gt; = RArray&lt;T, [usize; <span class="number">1</span>]&gt;;
@@ -650,6 +731,17 @@
                 });
         }
         matrix
+    }
+}
+
+<span class="kw">impl</span>&lt;T&gt; RMatrix&lt;T&gt; {
+    <span class="kw">pub fn </span>get_colnames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">let </span>colnames = Robj::from_sexp(<span class="kw">unsafe </span>{ Rf_GetColNames(Rf_GetArrayDimnames(<span class="self">self</span>.get())) });
+        colnames
+    }
+    <span class="kw">pub fn </span>get_rownames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">let </span>rownames = Robj::from_sexp(<span class="kw">unsafe </span>{ Rf_GetRowNames(Rf_GetArrayDimnames(<span class="self">self</span>.get())) });
+        rownames
     }
 }
 
