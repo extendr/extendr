@@ -145,6 +145,14 @@ false <- function(type) .Call(wrap__false, type)
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+fetch_colnames <- function(x) .Call(wrap__fetch_colnames, x)
+
+fetch_rownames <- function(x) .Call(wrap__fetch_rownames, x)
+
+fetch_dimnames <- function(x) .Call(wrap__fetch_dimnames, x)
+
+change_dimnames <- function(x) .Call(wrap__change_dimnames, x)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
