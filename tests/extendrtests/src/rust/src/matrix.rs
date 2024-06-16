@@ -6,12 +6,12 @@ fn fetch_dimnames(x: RMatrix<f64>) -> List {
 }
 
 #[extendr]
-fn fetch_rownames(x: RMatrix<f64>) -> Robj {
+fn fetch_rownames(x: RMatrix<f64>) -> Option<Strings> {
     x.get_rownames()
 }
 
 #[extendr]
-fn fetch_colnames(x: RMatrix<f64>) -> Robj {
+fn fetch_colnames(x: RMatrix<f64>) -> Option<Strings> {
     x.get_colnames()
 }
 
