@@ -35,6 +35,10 @@ pub struct RArray<T, D> {
 }
 
 impl<T, D> RArray<T, D> {
+    pub fn get_dimnames(&self) -> List {
+        List::try_from(Robj::from_sexp(unsafe { Rf_GetArrayDimnames(self.get()) })).unwrap()
+    }
+
     /// Set the names of the elements of an array.
     ///
     ///
@@ -109,21 +113,13 @@ where
     }
 }
 
-// [ ] GetArrayDimnames
-// [ ] GetMatrixDimnames
-// [x] GetColNames
-// [x] GetRowNames
-// [x] namesgets
-// [x] dimnamesgets
-// [x] dimgets
-
 impl<T> RMatrix<T> {
     pub fn get_colnames(&self) -> Robj {
-        let colnames = Robj::from_sexp(unsafe { Rf_GetColNames(self.get()) });
+        let colnames = Robj::from_sexp(unsafe { Rf_GetColNames(Rf_GetArrayDimnames(self.get())) });
         colnames
     }
     pub fn get_rownames(&self) -> Robj {
-        let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(self.get()) });
+        let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(Rf_GetArrayDimnames(self.get())) });
         rownames
     }
 }

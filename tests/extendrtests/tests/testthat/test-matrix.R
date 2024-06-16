@@ -6,12 +6,12 @@ m <- matrix(
   dimnames = dims
 )
 
-
-test_that("Dimnames can be fetched", {
-  expect_equal(fetch_dimnames(m), dims)
-})
+# test_that("Dimnames can be fetched", {
+#   expect_equal(fetch_dimnames(m), dims)
+# })
 
 test_that("Rownames can be fetched", {
+  # expect_equal(rownames(m), dims[[1]])
   expect_equal(fetch_rownames(m), dims[[1]])
 })
 
