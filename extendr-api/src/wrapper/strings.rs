@@ -148,3 +148,12 @@ impl std::fmt::Debug for Strings {
         }
     }
 }
+
+impl From<Option<Strings>> for Robj {
+    fn from(value: Option<Strings>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
