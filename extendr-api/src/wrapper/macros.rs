@@ -23,7 +23,7 @@ macro_rules! gen_vector_wrapper_impl {
                 match value {
                     None => nil_value(),
                     Some(value) => value.into(),
-                } 
+                }
             }
         }
 
