@@ -1,5 +1,4 @@
-# extendr-api
-
+# `extendr-api`
 
 A safe and user friendly R extension interface.
 
@@ -9,10 +8,23 @@ A safe and user friendly R extension interface.
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
 
+## Installation
+
+Simply add this line to the `[dependencies]` section of your `Cargo.toml`.
+You will then be able to call R code from Rust.
+
+```toml
+[dependencies]
+extendr-api = "0.6"
+```
+
+## Overview
+
 See [Robj] for much of the content of this crate.
 [Robj] provides a safe wrapper for the R object type.
 
 Use attributes and macros to export to R.
+
 ```rust
 use extendr_api::prelude::*;
 // Export a function or impl to R.
@@ -38,6 +50,7 @@ result <- fred(1)
 [Robj] is a wrapper for R objects.
 The r!() and R!() macros let you build R objects
 using Rust and R syntax respectively.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -100,6 +113,7 @@ test! {
 To index a vector, first convert it to a slice and then
 remember to use 0-based indexing. In Rust, going out of bounds
 will cause and error (a panic) unlike C++ which may crash.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -114,6 +128,7 @@ test! {
 ```
 
 Much slower, but more general are these methods:
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -135,6 +150,7 @@ The [R!] macro lets you embed R code in Rust
 and takes Rust expressions in {{ }} pairs.
 
 The [Rraw!] macro will not expand the {{ }} pairs.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -165,6 +181,7 @@ test! {
 
 The [r!] macro converts a rust object to an R object
 and takes parameters.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -175,6 +192,7 @@ test! {
 ```
 
 You can call R functions and primitives using the [call!] macro.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
