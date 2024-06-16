@@ -118,13 +118,35 @@ where
 // @findex dimgets
 
 impl<T> RMatrix<T> {
+    pub fn get_dimnames(&self) -> Robj {
+        let dims = self.dimnames();
+
+        if dims.is_none() {
+            return ().into_robj();
+        }
+
+        dims.unwrap().into_iter().collect::<List>().into_robj()
+    }
+
     pub fn get_colnames(&self) -> Robj {
-        let colnames = Robj::from_sexp(unsafe { Rf_GetColNames(self.get()) });
-        colnames
+        let dims = self.dimnames();
+
+        if dims.is_none() {
+            return ().into_robj();
+        }
+
+        let dims = dims.unwrap().collect::<List>();
+        dims[1].clone()
     }
     pub fn get_rownames(&self) -> Robj {
-        let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(self.get()) });
-        rownames
+        let dims = self.dimnames();
+
+        if dims.is_none() {
+            return ().into_robj();
+        }
+
+        let dims = dims.unwrap().collect::<List>();
+        dims[1].clone()
     }
 }
 
