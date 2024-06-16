@@ -1,9 +1,9 @@
 use extendr_api::prelude::*;
 
-// #[extendr]
-// fn fetch_dimnames(x: RMatrix<f64>) -> Robj {
-//     x.get_dimnames().into()
-// }
+#[extendr]
+fn fetch_dimnames(x: RMatrix<f64>) -> List {
+    x.get_dimnames()
+}
 
 #[extendr]
 fn fetch_rownames(x: RMatrix<f64>) -> Robj {
@@ -24,7 +24,7 @@ fn change_dimnames(mut x: RMatrix<f64>) -> Robj {
 
 extendr_module! {
     mod matrix;
-    // fn fetch_dimnames;
+    fn fetch_dimnames;
     fn fetch_colnames;
     fn fetch_rownames;
     fn change_dimnames;

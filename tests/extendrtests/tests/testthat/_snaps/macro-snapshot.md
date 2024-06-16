@@ -2520,6 +2520,91 @@
       }
       mod matrix {
           use extendr_api::prelude::*;
+          fn fetch_dimnames(x: RMatrix<f64>) -> List {
+              x.get_dimnames()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__fetch_dimnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(fetch_dimnames(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "fetch_dimnames"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__fetch_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "fetch_dimnames",
+                      r_name: "fetch_dimnames",
+                      mod_name: "fetch_dimnames",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__fetch_dimnames as *const u8,
+                      hidden: false,
+                  })
+          }
           fn fetch_rownames(x: RMatrix<f64>) -> Robj {
               x.get_rownames()
           }
@@ -2786,6 +2871,7 @@
           pub fn get_matrix_metadata() -> extendr_api::metadata::Metadata {
               let mut functions = Vec::new();
               let mut impls = Vec::new();
+              meta__fetch_dimnames(&mut functions);
               meta__fetch_colnames(&mut functions);
               meta__fetch_rownames(&mut functions);
               meta__change_dimnames(&mut functions);

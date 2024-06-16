@@ -145,6 +145,8 @@ false <- function(type) .Call(wrap__false, type)
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+fetch_dimnames <- function(x) .Call(wrap__fetch_dimnames, x)
+
 fetch_colnames <- function(x) .Call(wrap__fetch_colnames, x)
 
 fetch_rownames <- function(x) .Call(wrap__fetch_rownames, x)
