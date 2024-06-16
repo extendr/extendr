@@ -12,6 +12,7 @@ mod optional_faer;
 mod optional_ndarray;
 mod raw_identifiers;
 mod submodule;
+mod typedsliceargs;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -354,4 +355,5 @@ extendr_module! {
     use submodule;
     use externalptr;
     use matrix;
+    use typedsliceargs;
 }
