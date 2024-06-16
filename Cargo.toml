@@ -26,4 +26,4 @@ extendr-macros = { path = "./extendr-macros", version = "0.6.0" }
 # When uncommenting this, do not forget to uncomment the same line in
 # ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
 # {rextendr}" on .github/workflows/test.yml !
-libR-sys = { git = "https://github.com/extendr/libR-sys", rev = "09d76ada0cd54aa4481d9f06bbdfa50bcca2814a" }
+libR-sys = { git = "https://github.com/extendr/libR-sys", rev = "b26b858230a5ab9675b2b69eea74ababc9a895c9" }

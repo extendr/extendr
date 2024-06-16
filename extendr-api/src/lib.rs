@@ -421,6 +421,14 @@ pub use libR_sys::DllInfo;
 #[doc(hidden)]
 pub use libR_sys::R_ExternalPtrAddr;
 
+/// This is used in `#[extendr(use_rng = true)]` on `fn`-items.
+#[doc(hidden)]
+pub use libR_sys::GetRNGstate;
+
+/// This is used in `#[extendr(use_rng = true)]` on `fn`-items.
+#[doc(hidden)]
+pub use libR_sys::PutRNGstate;
+
 #[doc(hidden)]
 pub use libR_sys::SEXP;
 

@@ -141,7 +141,7 @@ pub(crate) fn make_function_wrappers(
         .use_rng
         .then(|| {
             quote!(single_threaded(|| unsafe {
-                libR_sys::GetRNGstate();
+                extendr_api::GetRNGstate();
             });)
         })
         .unwrap_or_default();
@@ -149,7 +149,7 @@ pub(crate) fn make_function_wrappers(
         .use_rng
         .then(|| {
             quote!(single_threaded(|| unsafe {
-                libR_sys::PutRNGstate();
+                extendr_api::PutRNGstate();
             });)
         })
         .unwrap_or_default();
