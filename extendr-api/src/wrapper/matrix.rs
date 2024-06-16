@@ -109,13 +109,13 @@ where
     }
 }
 
-// @findex GetArrayDimnames
-// @findex GetMatrixDimnames
-// @findex GetColNames
-// @findex GetRowNames
-// @findex namesgets
-// @findex dimnamesgets
-// @findex dimgets
+// [ ] GetArrayDimnames
+// [ ] GetMatrixDimnames
+// [x] GetColNames
+// [x] GetRowNames
+// [x] namesgets
+// [x] dimnamesgets
+// [x] dimgets
 
 impl<T> RMatrix<T> {
     pub fn get_colnames(&self) -> Robj {
