@@ -1,4 +1,4 @@
-# `extendr-api`
+# extendr-api
 
 A safe and user friendly R extension interface.
 
@@ -38,7 +38,6 @@ extendr_module! {
    mod mymodule;
    fn fred;
 }
-
 ```
 
 In R:
@@ -257,7 +256,6 @@ extendr-api
 * `result_list'` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`
 * `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
 * Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
-* Neither of above (default) `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()` which is discouraged.
 
 Finally, there are parts of R's API that are deemed non-API, in that R packages
 on CRAN are recommended not to have these available in packages. If you want
