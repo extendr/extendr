@@ -114,13 +114,31 @@ where
 }
 
 impl<T> RMatrix<T> {
-    pub fn get_colnames(&self) -> Robj {
-        let colnames = Robj::from_sexp(unsafe { Rf_GetColNames(Rf_GetArrayDimnames(self.get())) });
-        colnames
+    pub fn get_colnames(&self) -> Option<Strings> {
+        unsafe {
+            let maybe_colnames = Rf_GetColNames(Rf_GetArrayDimnames(self.get()));
+            match TYPEOF(maybe_colnames) {
+                SEXPTYPE::NILSXP => None,
+                SEXPTYPE::STRSXP => {
+                    let colnames = Robj::from_sexp(maybe_colnames);
+                    Some(std::mem::transmute(colnames))
+                }
+                _ => unreachable!(),
+            }
+        }
     }
-    pub fn get_rownames(&self) -> Robj {
-        let rownames = Robj::from_sexp(unsafe { Rf_GetRowNames(Rf_GetArrayDimnames(self.get())) });
-        rownames
+    pub fn get_rownames(&self) -> Option<Strings> {
+        unsafe {
+            let maybe_rownames = Rf_GetRowNames(Rf_GetArrayDimnames(self.get()));
+            match TYPEOF(maybe_rownames) {
+                SEXPTYPE::NILSXP => None,
+                SEXPTYPE::STRSXP => {
+                    let rownames = Robj::from_sexp(maybe_rownames);
+                    Some(std::mem::transmute(rownames))
+                }
+                _ => unreachable!(),
+            }
+        }
     }
 }
 
