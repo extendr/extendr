@@ -5,6 +5,7 @@ mod attributes;
 mod dataframe;
 mod externalptr;
 mod graphic_device;
+mod matrix;
 mod memory_leaks;
 mod optional_either;
 mod optional_faer;
@@ -353,5 +354,6 @@ extendr_module! {
     use raw_identifiers;
     use submodule;
     use externalptr;
+    use matrix;
     use typedsliceargs;
 }

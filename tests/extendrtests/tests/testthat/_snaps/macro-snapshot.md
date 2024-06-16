@@ -2518,6 +2518,438 @@
               }
           }
       }
+      mod matrix {
+          use extendr_api::prelude::*;
+          fn fetch_dimnames(x: RMatrix<f64>) -> List {
+              x.get_dimnames()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__fetch_dimnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(fetch_dimnames(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "fetch_dimnames"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__fetch_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "fetch_dimnames",
+                      r_name: "fetch_dimnames",
+                      mod_name: "fetch_dimnames",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__fetch_dimnames as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn fetch_rownames(x: RMatrix<f64>) -> Robj {
+              x.get_rownames()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__fetch_rownames(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(fetch_rownames(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "fetch_rownames"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__fetch_rownames(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "fetch_rownames",
+                      r_name: "fetch_rownames",
+                      mod_name: "fetch_rownames",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__fetch_rownames as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn fetch_colnames(x: RMatrix<f64>) -> Robj {
+              x.get_colnames()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__fetch_colnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(fetch_colnames(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "fetch_colnames"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__fetch_colnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "fetch_colnames",
+                      r_name: "fetch_colnames",
+                      mod_name: "fetch_colnames",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__fetch_colnames as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn change_dimnames(mut x: RMatrix<f64>) -> Robj {
+              let rownames = Strings::from_values(["AA", "BB", "CC"]);
+              x.set_dimnames(
+                  extendr_api::List::from_values(
+                      &[extendr_api::Robj::from(rownames), extendr_api::Robj::from(NULL)],
+                  ),
+              );
+              x.to_owned()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__change_dimnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(change_dimnames(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "change_dimnames"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__change_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "RMatrix",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "change_dimnames",
+                      r_name: "change_dimnames",
+                      mod_name: "change_dimnames",
+                      args: args,
+                      return_type: "Robj",
+                      func_ptr: wrap__change_dimnames as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_matrix_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__fetch_dimnames(&mut functions);
+              meta__fetch_colnames(&mut functions);
+              meta__fetch_rownames(&mut functions);
+              meta__change_dimnames(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_matrix_metadata",
+                      mod_name: "get_matrix_metadata",
+                      r_name: "get_matrix_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_matrix_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_matrix_wrappers",
+                      mod_name: "make_matrix_wrappers",
+                      r_name: "make_matrix_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_matrix_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "matrix",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_matrix_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_matrix_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_matrix_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_matrix_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_matrix_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_matrix_metadata()) };
+          }
+      }
       mod memory_leaks {
           use extendr_api::prelude::*;
           fn leak_arg2_try_implicit_strings(_y: Doubles, x: Strings) -> String {
@@ -8947,6 +9379,7 @@
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
           functions.extend(externalptr::get_externalptr_metadata().functions);
+          functions.extend(matrix::get_matrix_metadata().functions);
           functions.extend(typedsliceargs::get_typedsliceargs_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
@@ -8958,6 +9391,7 @@
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
           impls.extend(externalptr::get_externalptr_metadata().impls);
+          impls.extend(matrix::get_matrix_metadata().impls);
           impls.extend(typedsliceargs::get_typedsliceargs_metadata().impls);
           functions
               .push(extendr_api::metadata::Func {
