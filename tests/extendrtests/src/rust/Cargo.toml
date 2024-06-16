@@ -16,7 +16,12 @@ publish = false
 crate-type = ["staticlib"]
 
 [dependencies]
-extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
+extendr-api = { version = "*", features = [
+    "graphics",
+    "ndarray",
+    "faer",
+    "either",
+] }
 faer = "0.18.0"
 
 # TODO: I couldn't find any nice way to add the condition based on the R version
@@ -27,7 +32,7 @@ libR-sys = "*"
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "/Users/josiahparry/github/extendr/extendr-api" }
+extendr-api = { path = "../../../../../../../extendr/extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
 
