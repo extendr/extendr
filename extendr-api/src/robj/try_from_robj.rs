@@ -324,7 +324,7 @@ impl TryFrom<&Robj> for &[Rbool] {
 impl TryFrom<&Robj> for &[Rcplx] {
     type Error = Error;
 
-    /// Convert a complex object into a slice of Rbool
+    /// Convert a complex object into a slice of Rcplx
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
@@ -349,6 +349,82 @@ impl TryFrom<&Robj> for &[f64] {
     /// Use `value.is_na()` to detect NA values.
     fn try_from(robj: &Robj) -> Result<Self> {
         robj.as_typed_slice()
+            .ok_or_else(|| Error::ExpectedReal(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [i32] {
+    type Error = Error;
+
+    /// Convert an INTSXP object into a mutable slice of i32 (integer).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedInteger(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [Rint] {
+    type Error = Error;
+
+    /// Convert an integer object into a mutable slice of Rint (tri-state booleans).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedInteger(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [Rfloat] {
+    type Error = Error;
+
+    /// Convert a doubles object into a mutable slice of Rfloat (tri-state booleans).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedReal(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [Rbool] {
+    type Error = Error;
+
+    /// Convert a logical object into a mutable slice of Rbool (tri-state booleans).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedLogical(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [Rcplx] {
+    type Error = Error;
+
+    /// Convert a complex object into a mutable slice of Rcplx
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedComplex(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [u8] {
+    type Error = Error;
+
+    /// Convert a RAWSXP object into a mutable slice of bytes.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
+            .ok_or_else(|| Error::ExpectedRaw(robj.clone()))
+    }
+}
+
+impl TryFrom<&mut Robj> for &mut [f64] {
+    type Error = Error;
+
+    /// Convert a REALSXP object into a mutable slice of f64 (double precision floating point).
+    /// Use `value.is_na()` to detect NA values.
+    fn try_from(robj: &mut Robj) -> Result<Self> {
+        robj.as_typed_slice_mut()
             .ok_or_else(|| Error::ExpectedReal(robj.clone()))
     }
 }
@@ -392,50 +468,89 @@ impl TryFrom<&Robj> for Rcplx {
 // Convert TryFrom<&Robj> into TryFrom<Robj>. Sadly, we are unable to make a blanket
 // conversion using GetSexp with the current version of Rust.
 macro_rules! impl_try_from_robj {
-    ($($type : ty)*) => {
-        $(
-            impl TryFrom<Robj> for $type {
-                type Error = Error;
+    () => {};
+    (&mut [$type:ty], $($rest:tt)*) => {
+        impl_try_from_robj!(&mut [$type]);
+        impl_try_from_robj!($($rest)*);
+    };
+    ($type:ty, $($rest:tt)*) => {
+        impl_try_from_robj!($type);
+        impl_try_from_robj!($($rest)*);
+    };
+    (&mut [$type:ty]) => {
+        impl TryFrom<Robj> for &mut [$type] {
+            type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
-                    <$type>::try_from(&robj)
+            fn try_from(mut robj: Robj) -> Result<Self> {
+                Self::try_from(&mut robj)
+            }
+        }
+
+        impl TryFrom<&mut Robj> for Option<&mut [$type]> {
+            type Error = Error;
+
+            fn try_from(robj: &mut Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<&mut [$type]>::try_from(robj)?))
                 }
             }
+        }
 
-            impl TryFrom<&Robj> for Option<$type> {
-                type Error = Error;
+        impl TryFrom<Robj> for Option<&mut [$type]> {
+            type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
-                    if robj.is_null() || robj.is_na() {
-                        Ok(None)
-                    } else {
-                        Ok(Some(<$type>::try_from(robj)?))
-                    }
+            fn try_from(mut robj: Robj) -> Result<Self> {
+                Self::try_from(&mut robj)
+            }
+        }
+    };
+
+    ($type:ty) => {
+        impl TryFrom<Robj> for $type {
+            type Error = Error;
+
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
+            }
+        }
+
+        impl TryFrom<&Robj> for Option<$type> {
+            type Error = Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<$type>::try_from(robj)?))
                 }
             }
+        }
 
-            impl TryFrom<Robj> for Option<$type> {
-                type Error = Error;
+        impl TryFrom<Robj> for Option<$type> {
+            type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
-                    <Option::<$type>>::try_from(&robj)
-                }
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
             }
-        )*
-    }
+        }
+    };
 }
 
+#[rustfmt::skip]
 impl_try_from_robj!(
-    u8 u16 u32 u64 usize
-    i8 i16 i32 i64 isize
-    bool
-    Rint Rfloat Rbool Rcplx
-    f32 f64
-    Vec<String>
-    HashMap::<String, Robj> HashMap::<&str, Robj>
-    Vec::<Rint> Vec::<Rfloat> Vec::<Rbool> Vec::<Rcplx> Vec::<u8> Vec::<i32> Vec::<f64>
-    &[Rint] &[Rfloat] &[Rbool] &[Rcplx] &[u8] &[i32] &[f64]
-    &str String
+    u8, u16, u32, u64, usize,
+    i8, i16, i32, i64, isize,
+    bool,
+    Rint, Rfloat, Rbool, Rcplx,
+    f32, f64,
+    Vec::<String>,
+    HashMap::<String, Robj>, HashMap::<&str, Robj>,
+    Vec::<Rint>, Vec::<Rfloat>, Vec::<Rbool>, Vec::<Rcplx>, Vec::<u8>, Vec::<i32>, Vec::<f64>,
+    &[Rint], &[Rfloat], &[Rbool], &[Rcplx], &[u8], &[i32], &[f64],
+    &mut [Rint], &mut [Rfloat], &mut [Rbool], &mut [Rcplx], &mut [u8], &mut [i32], &mut [f64],
+    &str, String,
 );
 
 // NOTE: this is included for compatibility with previously defined `FromRobj`

@@ -145,6 +145,12 @@ false <- function(type) .Call(wrap__false, type)
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
+
+logicals_sum <- function(logicals) .Call(wrap__logicals_sum, logicals)
+
+floats_mean <- function(x) .Call(wrap__floats_mean, x)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
