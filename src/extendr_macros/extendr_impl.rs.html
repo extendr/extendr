@@ -255,20 +255,6 @@
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
 </pre></div><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::{format_ident, quote};
@@ -361,20 +347,6 @@
 /// extendr_module! {
 ///     mod testself;
 ///     impl People;
-/// }
-/// ```
-///     
-/// **Known limitation**: if you return `&amp;Self` or `&amp;mut Self` or a reference
-/// to the same type, the resultant R object will _always_ be the original
-/// self. For example the below method **will not** return `other`.
-///
-/// ```ignore
-///  // This is not possible today
-/// #[extendr]
-/// impl People {
-///   fn return_other(&amp;self, other: &amp;'static T) -&gt; &amp;Self {
-///     other
-///   }
 /// }
 /// ```
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>extendr_impl(
