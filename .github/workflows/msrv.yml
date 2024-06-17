@@ -30,10 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
       - uses: baptiste0928/cargo-install@v3
         with:
           crate: cargo-msrv
       - name: Verify minimum rust version
         run: |
           . ./ci-cargo.ps1
+          ci-cargo +nightly generate-lockfile -Zmsrv-policy --config "resolver.something-like-precedence='something-like-rust-version'" -ActionName "Generate lockfile"
           ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
