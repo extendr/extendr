@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = ["extendr-api", "extendr-engine", "extendr-macros"]
+members = ["extendr-api", "extendr-engine", "extendr-macros", "xtask"]
 
 [workspace.package]
 version = "0.6.0"
