@@ -448,6 +448,26 @@ pub trait MatrixConversions: GetSexp {
 
 impl MatrixConversions for Robj {}
 
+impl<T> Index<usize> for RArray<T, ()>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    type Output = T;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        self.data().index(index)
+    }
+}
+
+impl<T> IndexMut<usize> for RArray<T, ()>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        self.data_mut().index_mut(index)
+    }
+}
+
 impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
