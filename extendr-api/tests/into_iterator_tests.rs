@@ -12,8 +12,6 @@ fn iterating_unamed_list() {
         let na_strs = (0..5).into_iter().map(|_| Rstr::na()).collect::<Strings>();
         assert_eq!(empty_strings, na_strs);
 
-        dbg!(empty_strings, na_strs);
-
         let unamed_list = List::from_values::<[i32; 0]>([]);
         assert_eq!(unamed_list.iter().len(), 0);
 
