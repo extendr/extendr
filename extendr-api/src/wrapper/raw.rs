@@ -61,3 +61,12 @@ impl std::fmt::Debug for Raw {
         f.debug_list().entries(self.as_slice()).finish()
     }
 }
+
+impl From<Option<Raw>> for Robj {
+    fn from(value: Option<Raw>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
