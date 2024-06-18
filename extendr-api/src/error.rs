@@ -4,7 +4,7 @@ use std::convert::Infallible;
 
 use crate::conversions::try_into_int::ConversionError;
 use crate::robj::Types;
-use crate::{throw_r_error, Robj};
+use crate::{throw_r_error, Attributes, Robj};
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
@@ -68,6 +68,7 @@ pub enum Error {
     ExpectedNumeric(Robj),
     ExpectedAltrep(Robj),
     ExpectedDataframe(Robj),
+    ExpectedArray(Robj),
 
     OutOfRange(Robj),
     MustNotBeNA(Robj),
@@ -140,6 +141,13 @@ impl std::fmt::Display for Error {
             Error::ExpectedScalar(robj) => write!(f, "Expected Scalar, got {:?}", robj.rtype()),
             Error::ExpectedVector(robj) => write!(f, "Expected Vector, got {:?}", robj.rtype()),
             Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
+            Error::ExpectedArray(robj) => write!(
+                f,
+                "Expected Array, got {:?}",
+                robj.class()
+                    .map(|x| x.collect::<String>())
+                    .unwrap_or_else(|| "no class attached".into())
+            ),
             Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
             Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),

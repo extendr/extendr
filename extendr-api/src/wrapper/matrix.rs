@@ -301,6 +301,52 @@ where
     }
 }
 
+impl<T> TryFrom<&Robj> for RArray<T, ()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        let is_array: bool = unsafe { Rf_isArray(value.get()) }.into();
+        if !is_array {
+            return Err(Error::ExpectedArray(value.clone()));
+        }
+        Ok(RArray {
+            robj: value.clone(),
+            dim: (),
+            _data: std::marker::PhantomData,
+        })
+    }
+}
+
+impl<T> TryFrom<Robj> for RArray<T, ()> {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> Result<Self> {
+        Self::try_from(&value)
+    }
+}
+
+// impl<T> TryFrom<Robj> for RArray<T, ()> {
+//     type Error = Error;
+
+//     fn try_from(value: Robj) -> Result<Self> {
+//         Self::try_from(&value)
+//     }
+// }
+// impl<T> TryFrom<Robj> for Option<RArray<T, ()>> {
+//     type Error = Error;
+
+//     fn try_from(value: Robj) -> Result<Self> {
+//         Self::try_from(&value)
+//     }
+// }
+// impl<T> TryFrom<Robj> for RArray<T, ()> {
+//     type Error = Error;
+
+//     fn try_from(value: Robj) -> Result<Self> {
+//         Self::try_from(&value)
+//     }
+// }
+
 impl<T> TryFrom<&Robj> for RColumn<T>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -368,53 +414,52 @@ where
 }
 
 macro_rules! impl_try_from_robj_ref {
-    ($($type : tt)*) => {
-        $(
-            impl<T> TryFrom<Robj> for $type<T>
-            where
-                Robj: for<'a> AsTypedSlice<'a, T>,
-            {
-                type Error = Error;
+    {} => {};
+    ($type:ident<$gen_type:ident>, $($rest:tt)*) => {
+        impl_try_from_robj_ref!($type<$gen_type>);
+        impl_try_from_robj_ref!($($rest)*);
+    };
+    ($type:ty) => {
+        impl<T> TryFrom<Robj> for $type
+        where
+            Robj: for<'a> AsTypedSlice<'a, T>,
+        {
+            type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
-                    <$type<T>>::try_from(&robj)
+            fn try_from(robj: Robj) -> Result<Self> {
+                <$type>::try_from(&robj)
+            }
+        }
+
+        impl<T> TryFrom<&Robj> for Option<$type>
+        where
+            Robj: for<'a> AsTypedSlice<'a, T>,
+        {
+            type Error = Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<$type>::try_from(robj)?))
                 }
             }
+        }
 
-            impl<T> TryFrom<&Robj> for Option<$type<T>>
-            where
-                Robj: for<'a> AsTypedSlice<'a, T>,
-            {
-                type Error = Error;
+        impl<T> TryFrom<Robj> for Option<$type>
+        where
+            Robj: for<'a> AsTypedSlice<'a, T>,
+        {
+            type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
-                    if robj.is_null() || robj.is_na() {
-                        Ok(None)
-                    } else {
-                        Ok(Some(<$type<T>>::try_from(robj)?))
-                    }
-                }
+            fn try_from(robj: Robj) -> Result<Self> {
+                <Option::<$type>>::try_from(&robj)
             }
-
-            impl<T> TryFrom<Robj> for Option<$type<T>>
-            where
-                Robj: for<'a> AsTypedSlice<'a, T>,
-            {
-                type Error = Error;
-
-                fn try_from(robj: Robj) -> Result<Self> {
-                    <Option::<$type<T>>>::try_from(&robj)
-                }
-            }
-        )*
+        }
     }
 }
 
-impl_try_from_robj_ref!(
-    RMatrix
-    RColumn
-    RMatrix3D
-);
+impl_try_from_robj_ref!(RMatrix<T>, RColumn<T>, RMatrix3D<T>);
 
 impl<T, D> From<RArray<T, D>> for Robj {
     /// Convert a column, matrix or matrix3d to an Robj.
