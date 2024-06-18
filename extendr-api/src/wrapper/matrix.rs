@@ -317,36 +317,6 @@ impl<T> TryFrom<&Robj> for RArray<T, ()> {
     }
 }
 
-impl<T> TryFrom<Robj> for RArray<T, ()> {
-    type Error = Error;
-
-    fn try_from(value: Robj) -> Result<Self> {
-        Self::try_from(&value)
-    }
-}
-
-// impl<T> TryFrom<Robj> for RArray<T, ()> {
-//     type Error = Error;
-
-//     fn try_from(value: Robj) -> Result<Self> {
-//         Self::try_from(&value)
-//     }
-// }
-// impl<T> TryFrom<Robj> for Option<RArray<T, ()>> {
-//     type Error = Error;
-
-//     fn try_from(value: Robj) -> Result<Self> {
-//         Self::try_from(&value)
-//     }
-// }
-// impl<T> TryFrom<Robj> for RArray<T, ()> {
-//     type Error = Error;
-
-//     fn try_from(value: Robj) -> Result<Self> {
-//         Self::try_from(&value)
-//     }
-// }
-
 impl<T> TryFrom<&Robj> for RColumn<T>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -419,6 +389,10 @@ macro_rules! impl_try_from_robj_ref {
         impl_try_from_robj_ref!($type<$gen_type>);
         impl_try_from_robj_ref!($($rest)*);
     };
+    ($type:ident<$gen_type1:ident, $gen_type2:tt>, $($rest:tt)*) => {
+        impl_try_from_robj_ref!($type<$gen_type1, $gen_type2>);
+        impl_try_from_robj_ref!($($rest)*);
+    };
     ($type:ty) => {
         impl<T> TryFrom<Robj> for $type
         where
@@ -459,7 +433,7 @@ macro_rules! impl_try_from_robj_ref {
     }
 }
 
-impl_try_from_robj_ref!(RMatrix<T>, RColumn<T>, RMatrix3D<T>);
+impl_try_from_robj_ref!(RArray<T, ()>, RMatrix<T>, RColumn<T>, RMatrix3D<T>);
 
 impl<T, D> From<RArray<T, D>> for Robj {
     /// Convert a column, matrix or matrix3d to an Robj.
