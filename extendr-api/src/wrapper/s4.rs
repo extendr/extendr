@@ -190,3 +190,12 @@ impl std::fmt::Debug for S4 {
         f.debug_struct("S4").finish()
     }
 }
+
+impl From<Option<S4>> for Robj {
+    fn from(value: Option<S4>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
