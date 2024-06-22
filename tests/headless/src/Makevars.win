@@ -1,0 +1,40 @@
+TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+
+TARGET_DIR = ./rust/target
+LIBDIR = $(TARGET_DIR)/$(TARGET)/release
+STATLIB = $(LIBDIR)/libheadless.a
+PKG_LIBS = -L$(LIBDIR) -lheadless -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
+
+all: C_clean
+
+$(SHLIB): $(STATLIB)
+
+CARGOTMP = $(CURDIR)/.cargo
+
+$(STATLIB):
+	mkdir -p $(TARGET_DIR)/libgcc_mock
+	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
+	# `libgcc_eh` due to the compilation settings. So, in order to please the
+	# compiler, we need to add empty `libgcc_eh` to the library search paths.
+	#
+	# For more details, please refer to
+	# https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+	touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
+
+	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		export CARGO_HOME=$(CARGOTMP); \
+	fi && \
+		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
+		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
+		cargo build --target=$(TARGET) --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf $(CARGOTMP) && \
+		rm -Rf $(LIBDIR)/build; \
+	fi
+
+C_clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+
+clean:
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)
