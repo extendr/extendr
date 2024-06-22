@@ -10,3 +10,4 @@ name = 'headless'
 
 [dependencies]
 extendr-api = '*'
+libR-sys = "*"
