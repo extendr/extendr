@@ -76,6 +76,7 @@ pub(crate) fn extendr_extern_c(
                 return_type: #return_type_string,
                 // extern "C" fn are directly callable.
                 func_ptr: #rust_name as *const u8,
+                wrap_name: #rust_name_str,
                 hidden: false,
             })
         }
