@@ -8,7 +8,7 @@ skip_if_no_cargo_expand <- function() {
     error = function(e) list(status = 1, stderr = "")
   )
   condition <- (result$status == 0) && (!nzchar(result$stderr))
-  skip_if_not(condition, "cargo expand not available")
+  testthat::skip_if_not(condition, "cargo expand not available")
 }
 
 skip_if_on_nightly <- function() {
@@ -30,5 +30,5 @@ skip_if_on_nightly <- function() {
     condition <- TRUE # rustup failed, something is fishy
   }
 
-  skip_if(isTRUE(condition), "`nightly` toolchain")
+  testthat::skip_if(isTRUE(condition), "`nightly` toolchain")
 }
