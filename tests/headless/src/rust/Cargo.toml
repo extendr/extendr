@@ -9,5 +9,5 @@ crate-type = [ 'staticlib' ]
 name = 'headless'
 
 [dependencies]
-extendr-api = '*'
+extendr-api = { path = "../../../../extendr-api" }
 libR-sys = "*"
