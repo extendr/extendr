@@ -59,6 +59,8 @@ pub(crate) fn make_function_wrappers(
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
 
+    let wrap_name_str = wrap_name.to_string();
+
     let rust_name_str = format!("{}", rust_name);
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
@@ -268,7 +270,8 @@ pub(crate) fn make_function_wrappers(
                 mod_name: #c_name_str,
                 args: args,
                 return_type: #return_type_string,
-                func_ptr: #wrap_name as * const u8,
+                func_ptr: #wrap_name as *const u8,
+                wrap_name: #wrap_name_str,
                 hidden: false,
             })
         }

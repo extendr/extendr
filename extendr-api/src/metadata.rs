@@ -23,6 +23,7 @@ pub struct Func {
     pub args: Vec<Arg>,
     pub return_type: &'static str,
     pub func_ptr: *const u8,
+    pub wrap_name: &'static str,
     pub hidden: bool,
 }
 
@@ -85,14 +86,27 @@ impl From<Arg> for Robj {
 
 impl From<Func> for Robj {
     fn from(val: Func) -> Self {
+        let Func {
+            doc,
+            rust_name,
+            mod_name,
+            r_name,
+            args,
+            return_type,
+            // can't save a function-pointer in an `Robj`
+            func_ptr: _,
+            wrap_name,
+            hidden,
+        } = val;
         let mut result = List::from_values(&[
-            r!(val.doc),
-            r!(val.rust_name),
-            r!(val.mod_name),
-            r!(val.r_name),
-            r!(List::from_values(val.args)),
-            r!(val.return_type),
-            r!(val.hidden),
+            r!(doc),
+            r!(rust_name),
+            r!(mod_name),
+            r!(r_name),
+            r!(List::from_values(args)),
+            r!(return_type),
+            r!(wrap_name),
+            r!(hidden),
         ]);
         result
             .set_names(&[
@@ -102,6 +116,7 @@ impl From<Func> for Robj {
                 "r_name",
                 "args",
                 "return.type",
+                "wrap_name",
                 "hidden",
             ])
             .expect("From<Func> failed");
@@ -202,6 +217,7 @@ fn write_function_wrapper(
     }
 
     if use_symbols {
+        // FIXME: use `WRAP_PREFIX`
         write!(w, "wrap__{}", func.mod_name)?;
     } else {
         write!(w, "\"wrap__{}\"", func.mod_name)?;
@@ -268,6 +284,7 @@ fn write_method_wrapper(
 
     // Here no processing is needed because of `wrap__` prefix
     if use_symbols {
+        // FIXME: use `WRAP_PREFIX`
         write!(w, "wrap__{}__{}", class_name, func.mod_name)?;
     } else {
         write!(w, "\"wrap__{}__{}\"", class_name, func.mod_name)?;

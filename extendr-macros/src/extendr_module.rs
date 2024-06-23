@@ -25,11 +25,13 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module_metadata_name_string = module_metadata_name.to_string();
     let wrap_module_metadata_name =
         format_ident!("{}get_{}_metadata", wrappers::WRAP_PREFIX, modname);
-
+    let wrap_module_metadata_name_str = wrap_module_metadata_name.to_string();
+    
     let make_module_wrappers_name = format_ident!("make_{}_wrappers", modname);
     let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
     let wrap_make_module_wrappers =
         format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
+    let wrap_make_module_wrappers_str = wrap_make_module_wrappers.to_string();
 
     let fnmetanames = fnnames
         .iter()
@@ -69,7 +71,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 r_name: #module_metadata_name_string,
                 args: Vec::new(),
                 return_type: "Metadata",
-                func_ptr: #wrap_module_metadata_name as * const u8,
+                func_ptr: #wrap_module_metadata_name as *const u8,
+                wrap_name: #wrap_module_metadata_name_str,
                 hidden: true,
             });
 
@@ -84,7 +87,8 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                     extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None },
                     ],
                 return_type: "String",
-                func_ptr: #wrap_make_module_wrappers as * const u8,
+                func_ptr: #wrap_make_module_wrappers as *const u8,
+                wrap_name: #wrap_make_module_wrappers_str,
                 hidden: true,
             });
 
@@ -129,7 +133,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-        pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
+        pub extern "C" fn #module_init_name(info: *mut extendr_api::DllInfo) {
             unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
         }
     })
