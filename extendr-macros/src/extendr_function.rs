@@ -5,8 +5,7 @@ use syn::ItemFn;
 
 /// Generate bindings for a single function.
 pub(crate) fn extendr_function(mut func: ItemFn, opts: &ExtendrOptions) -> TokenStream {
-    let wrappers =
-        wrappers::make_function_wrappers(opts, "", &func.attrs, &mut func.sig, None);
+    let wrappers = wrappers::make_function_wrappers(opts, "", &func.attrs, &mut func.sig, None);
     if let Err(e) = wrappers {
         return e.into_compile_error().into();
     };

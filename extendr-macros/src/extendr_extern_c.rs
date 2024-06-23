@@ -11,7 +11,7 @@ use crate::{
 };
 
 /// Returns whether or not a given function is an `extern "C" fn`-item.
-/// 
+///
 /// Somewhat related to [``]
 pub(crate) fn is_extern_c(extern_c_func: &ItemFn) -> bool {
     let abi = &extern_c_func.sig.abi;
@@ -58,7 +58,7 @@ pub(crate) fn extendr_extern_c(
     let return_type_string = get_return_type(&sig);
 
     //TODO: make a check that the return-type is `SEXP` and all arguments are
-    // also `SEXP`. 
+    // also `SEXP`.
 
     let extern_c_wrapper: ItemFn = parse_quote!(
     #[allow(non_snake_case)]
