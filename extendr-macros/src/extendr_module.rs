@@ -1,7 +1,12 @@
 use crate::wrappers;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
+use syn::{
+    parse::{Parse, ParseStream},
+    parse_macro_input,
+    spanned::Spanned,
+    Ident, Token, Type,
+};
 
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
@@ -10,6 +15,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         fnnames,
         implnames,
         usenames,
+        externnames,
     } = module;
     let modname = modname.expect("cannot include unnamed modules");
     let modname_string = modname.to_string();
@@ -26,6 +32,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
 
     let fnmetanames = fnnames
+        .iter()
+        .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, id));
+    let externfnmetanames = externnames
         .iter()
         .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, id));
     let implmetanames = implnames
@@ -45,6 +54,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
             // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
             #( #fnmetanames(&mut functions); )*
+            #( #externfnmetanames(&mut functions); )*
             #( #implmetanames(&mut impls); )*
 
             // Extends functions and impls with the submodules metadata
@@ -125,24 +135,60 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     })
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct Module {
     modname: Option<Ident>,
     fnnames: Vec<Ident>,
     implnames: Vec<Type>,
     usenames: Vec<Ident>,
+    externnames: Vec<Ident>,
+}
+
+#[derive(Debug)]
+struct ExternCfn {}
+
+impl Parse for ExternCfn {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        // let sig: Signature = input.parse()?;
+        let _constness: Option<Token![const]> = input.parse()?;
+        let _asyncness: Option<Token![async]> = input.parse()?;
+        let _unsafety: Option<Token![unsafe]> = input.parse()?;
+        let abi: Option<syn::Abi> = input.parse()?;
+        let _fn_token: Token![fn] = input.parse()?;
+        // let fn_name: Ident = input.parse()?;
+        // the semicolon is processed in `impl Parse for Module`
+        // let _semicolon: Token![;] = input.parse()?;
+
+        // let mut generics: Generics = input.parse()?;
+        // let content;
+        // let paren_token = parenthesized!(content in input);
+        // TODO: check that all arguments are `SEXP` and that the return-type is also
+        // SEXP
+        // let (inputs, variadic) = parse_fn_args(&content)?;
+
+        // let output: ReturnType = input.parse()?;
+        // generics.where_clause = input.parse()?;
+
+        let abi = abi.as_ref().unwrap();
+        if abi.name.is_none() {
+            return Err(syn::Error::new(
+                abi.span(),
+                "`name` of `extern`-element is missing",
+            ));
+        }
+        let _abi_name = abi.name.as_ref().unwrap();
+        //TODO: test if ABI name is "C"
+
+        Ok(Self {})
+    }
 }
 
 // Custom parser for the module.
 impl syn::parse::Parse for Module {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         use syn::spanned::Spanned;
-        let mut res = Self {
-            modname: None,
-            fnnames: Vec::new(),
-            implnames: Vec::new(),
-            usenames: Vec::new(),
-        };
+        let mut res = Self::default();
+
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
                 let name: Ident = input.parse()?;
@@ -152,14 +198,18 @@ impl syn::parse::Parse for Module {
                 res.modname = Some(name);
             } else if input.parse::<Token![fn]>().is_ok() {
                 res.fnnames.push(input.parse()?);
+            } else if input.parse::<ExternCfn>().is_ok() {
+                res.externnames.push(input.parse()?);
             } else if input.parse::<Token![impl]>().is_ok() {
                 res.implnames.push(input.parse()?);
             } else if input.parse::<Token![use]>().is_ok() {
                 res.usenames.push(input.parse()?);
             } else {
-                return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
+                return Err(syn::Error::new(
+                    input.span(),
+                    "expected `mod`, `fn`, `extern \"C\" fn`  or `impl`",
+                ));
             }
-
             input.parse::<Token![;]>()?;
         }
         if res.modname.is_none() {

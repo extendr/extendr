@@ -58,6 +58,7 @@
 mod R;
 mod call;
 mod dataframe;
+mod extendr_extern_c;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -91,6 +92,12 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
+        Item::Fn(extern_c_func) if extendr_extern_c::is_extern_c(&extern_c_func) => {
+            match extendr_extern_c::extendr_extern_c(extern_c_func, &opts) {
+                Ok(result) => result,
+                Err(e) => e.into_compile_error().into(),
+            }
+        }
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
         Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
             Ok(result) => result,

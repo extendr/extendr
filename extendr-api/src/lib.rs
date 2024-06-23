@@ -460,6 +460,7 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
         }
     }
 
+    // https://stackoverflow.com/questions/76131176/registering-native-routines-why-null-terminate-arrays
     rmethods.push(libR_sys::R_CallMethodDef {
         name: std::ptr::null(),
         fun: None,
