@@ -1,13 +1,16 @@
 Package: headless
-Title: What the Package Does (One Line, Title Case)
+Title: Headless integration tests for extendR
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Suited for internal tests of extendr, where we may import `libR-sys`
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Config/rextendr/version: 0.3.1.9000
 SystemRequirements: Cargo (Rust's package manager), rustc
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

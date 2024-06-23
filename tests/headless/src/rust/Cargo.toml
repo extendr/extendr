@@ -1,3 +1,6 @@
+[workspace]
+resolver = "2"
+
 [package]
 name = 'headless'
 publish = false
@@ -10,4 +13,6 @@ name = 'headless'
 
 [dependencies]
 extendr-api = { path = "../../../../extendr-api" }
-libR-sys = "*"
+# libR-sys = "*"
+# Make sure this is the same as in `../../../../Cargo.toml`
+libR-sys = { git = "https://github.com/extendr/libR-sys", rev = "b26b858230a5ab9675b2b69eea74ababc9a895c9" }
