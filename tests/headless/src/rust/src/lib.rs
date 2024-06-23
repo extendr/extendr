@@ -7,9 +7,11 @@ fn hello_world() -> &'static str {
     "Hello world!"
 }
 
+use libR_sys::SEXP;
+
 #[extendr]
 extern "C" fn is_null(value: SEXP) -> SEXP {
-    libR - sys::ScalarLogical(!libR - sys::R_ExternalPtrAddr(pointer))
+    unsafe { libR_sys::Rf_ScalarLogical(libR_sys::R_ExternalPtrAddr(value).is_null() as _) }
 }
 
 // Macro to generate exports.
@@ -17,5 +19,5 @@ extern "C" fn is_null(value: SEXP) -> SEXP {
 // See corresponding C code in `entrypoint.c`.
 extendr_module! {
     mod headless;
-    fn hello_world;
+    extern "C" fn is_null;
 }
