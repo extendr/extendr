@@ -246,8 +246,6 @@ pub trait Types: GetSexp {
     ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
     ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
-    ///     assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
-    ///     assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
     ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), Rtype::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
     ///     assert_eq!(r!(1).rtype(), Rtype::Integers);

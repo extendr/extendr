@@ -53,3 +53,11 @@ fn non_api_rinternals_promise() {
         //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
     });
 }
+
+#[cfg(test)]
+fn non_api_getsexp() {
+    with_r(|| {
+        assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
+        assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
+    });
+}
