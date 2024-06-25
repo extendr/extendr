@@ -72,7 +72,7 @@ pub(crate) fn extendr_extern_c(
                 rust_name: #rust_name_str,
                 r_name: #r_name_str,
                 mod_name: #c_name_str,
-                args: args,
+                args,
                 return_type: #return_type_string,
                 // extern "C" fn are directly callable.
                 func_ptr: #rust_name as *const u8,

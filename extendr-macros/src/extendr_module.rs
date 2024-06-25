@@ -26,12 +26,14 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let wrap_module_metadata_name =
         format_ident!("{}get_{}_metadata", wrappers::WRAP_PREFIX, modname);
     let wrap_module_metadata_name_str = wrap_module_metadata_name.to_string();
-    
+
     let make_module_wrappers_name = format_ident!("make_{}_wrappers", modname);
     let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
     let wrap_make_module_wrappers =
         format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
     let wrap_make_module_wrappers_str = wrap_make_module_wrappers.to_string();
+
+    //TODO: investigate why `prefix` is not used here
 
     let fnmetanames = fnnames
         .iter()
