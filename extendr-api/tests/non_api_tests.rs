@@ -37,3 +37,19 @@ fn environment() {
         assert_eq!(names_and_values, vec![("x", r!(1))]);
     });
 }
+
+#[cfg(test)]
+fn non_api_rinternals_promise() {
+    with_r(|| {
+        let iris_dataframe = global_env()
+            .find_var(sym!(iris))
+            .unwrap()
+            .eval_promise()
+            .unwrap();
+        assert_eq!(iris_dataframe.is_frame(), true);
+        assert_eq!(iris_dataframe.len(), 5);
+
+        // Note: this may crash on some versions of windows which don't support unwinding.
+        //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
+    });
+}
