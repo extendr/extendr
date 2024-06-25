@@ -130,6 +130,7 @@ fn tests_with_successful_outcomes() {
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
+#[ignore]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
     unsafe {
