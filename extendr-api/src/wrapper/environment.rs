@@ -58,17 +58,15 @@ impl Environment {
         NV: IntoIterator,
         NV::Item: SymPair,
     {
-        {
-            let dict_len = 29;
-            let env = new_env(parent, true, dict_len);
-            for nv in names_and_values {
-                let (n, v) = nv.sym_pair();
-                if let Some(n) = n {
-                    unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
-                }
+        let dict_len = 29;
+        let env = new_env(parent, true, dict_len);
+        for nv in names_and_values {
+            let (n, v) = nv.sym_pair();
+            if let Some(n) = n {
+                unsafe { Rf_defineVar(n.get(), v.get(), env.get()) }
             }
-            env
         }
+        env
     }
 
     /// Get the enclosing (parent) environment.

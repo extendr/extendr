@@ -231,16 +231,14 @@ pub fn parse(code: &str) -> Result<Expressions> {
 /// }
 /// ```
 pub fn eval_string(code: &str) -> Result<Robj> {
-    {
-        let expr = parse(code)?;
-        let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expressions() {
-            for lang in expr.values() {
-                res = lang.eval()?
-            }
+    let expr = parse(code)?;
+    let mut res = Robj::from(());
+    if let Some(expr) = expr.as_expressions() {
+        for lang in expr.values() {
+            res = lang.eval()?
         }
-        Ok(res)
     }
+    Ok(res)
 }
 
 /// Parse a string into an R executable object and run it using

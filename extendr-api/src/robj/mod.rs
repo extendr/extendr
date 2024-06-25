@@ -216,10 +216,8 @@ impl Length for Robj {}
 
 impl Robj {
     pub fn from_sexp(sexp: SEXP) -> Self {
-        {
-            unsafe { ownership::protect(sexp) };
-            Robj { inner: sexp }
-        }
+        unsafe { ownership::protect(sexp) };
+        Robj { inner: sexp }
     }
 
     /// A ref of an robj can be constructed from a ref to a SEXP

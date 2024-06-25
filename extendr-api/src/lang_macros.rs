@@ -42,21 +42,17 @@ macro_rules! args {
 
 #[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
-    {
-        let cons = Rf_cons(obj.get(), R_NilValue);
-        SET_TAG(cons, crate::make_symbol(name));
-        SETCDR(tail, cons);
-        cons
-    }
+    let cons = Rf_cons(obj.get(), R_NilValue);
+    SET_TAG(cons, crate::make_symbol(name));
+    SETCDR(tail, cons);
+    cons
 }
 
 #[doc(hidden)]
 pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
-    {
-        let cons = Rf_cons(obj.get(), R_NilValue);
-        SETCDR(tail, cons);
-        cons
-    }
+    let cons = Rf_cons(obj.get(), R_NilValue);
+    SETCDR(tail, cons);
+    cons
 }
 
 #[doc(hidden)]

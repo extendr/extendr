@@ -16,10 +16,8 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
         } else if s.is_empty() {
             R_BlankString
         } else {
-            {
-                // this function embeds a terminating \nul
-                Rf_mkCharLenCE(s.as_ptr().cast(), s.len() as i32, cetype_t::CE_UTF8)
-            }
+            // this function embeds a terminating \nul
+            Rf_mkCharLenCE(s.as_ptr().cast(), s.len() as i32, cetype_t::CE_UTF8)
         }
     }
 }
@@ -192,14 +190,14 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_logical(&self) -> i32
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_raw(&self) -> u8
