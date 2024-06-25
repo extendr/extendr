@@ -216,10 +216,10 @@ impl Length for Robj {}
 
 impl Robj {
     pub fn from_sexp(sexp: SEXP) -> Self {
-        single_threaded(|| {
+        {
             unsafe { ownership::protect(sexp) };
             Robj { inner: sexp }
-        })
+        }
     }
 
     /// A ref of an robj can be constructed from a ref to a SEXP
@@ -712,7 +712,7 @@ pub trait Eval: GetSexp {
     /// }
     /// ```
     fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
-        single_threaded(|| unsafe {
+        unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), env.get(), &mut error as *mut raw::c_int);
             if error != 0 {
@@ -720,7 +720,7 @@ pub trait Eval: GetSexp {
             } else {
                 Ok(Robj::from_sexp(res))
             }
-        })
+        }
     }
 
     /// Evaluate the expression and return NULL or an R object.
@@ -877,8 +877,7 @@ pub trait Attributes: Types + Length {
         let value = value.into();
         unsafe {
             let sexp = self.get_mut();
-            let result =
-                single_threaded(|| catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get())));
+            let result = catch_r_error(|| Rf_setAttrib(sexp, name.get(), value.get()));
             result.map(|_| self)
         }
     }

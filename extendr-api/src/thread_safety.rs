@@ -105,7 +105,7 @@ where
         }
     }
 
-    single_threaded(|| unsafe {
+    unsafe {
         let fun_ptr = do_call::<F> as *const ();
         let clean_ptr = do_cleanup as *const ();
         let x = false;
@@ -125,5 +125,5 @@ where
         };
         Rf_unprotect(1);
         res
-    })
+    }
 }

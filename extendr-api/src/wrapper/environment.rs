@@ -58,7 +58,7 @@ impl Environment {
         NV: IntoIterator,
         NV::Item: SymPair,
     {
-        single_threaded(|| {
+        {
             let dict_len = 29;
             let env = new_env(parent, true, dict_len);
             for nv in names_and_values {
@@ -68,7 +68,7 @@ impl Environment {
                 }
             }
             env
-        })
+        }
     }
 
     /// Get the enclosing (parent) environment.
@@ -83,10 +83,10 @@ impl Environment {
     #[cfg(feature = "non-api")]
     /// Set the enclosing (parent) environment.
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
-        single_threaded(|| unsafe {
+        unsafe {
             let sexp = self.robj.get_mut();
             SET_ENCLOS(sexp, parent.robj.get());
-        });
+        };
         self
     }
 
@@ -101,10 +101,10 @@ impl Environment {
     #[cfg(feature = "non-api")]
     /// Set the environment flags.
     pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
-        single_threaded(|| unsafe {
+        unsafe {
             let sexp = self.robj.get_mut();
             SET_ENVFLAGS(sexp, flags);
-        });
+        };
         self
     }
 
@@ -154,9 +154,9 @@ impl Environment {
         let key = key.into();
         let value = value.into();
         if key.is_symbol() {
-            single_threaded(|| unsafe {
+            unsafe {
                 Rf_defineVar(key.get(), value.get(), self.get());
-            })
+            }
         }
     }
 

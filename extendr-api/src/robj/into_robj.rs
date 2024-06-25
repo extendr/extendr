@@ -1,6 +1,5 @@
 use super::*;
 use crate::scalar::Scalar;
-use crate::single_threaded;
 
 mod repeat_into_robj;
 
@@ -17,10 +16,10 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
         } else if s.is_empty() {
             R_BlankString
         } else {
-            single_threaded(|| {
+            {
                 // this function embeds a terminating \nul
                 Rf_mkCharLenCE(s.as_ptr().cast(), s.len() as i32, cetype_t::CE_UTF8)
-            })
+            }
         }
     }
 }
@@ -480,7 +479,7 @@ where
     I: Sized,
     I::Item: ToVectorValue,
 {
-    single_threaded(|| unsafe {
+    unsafe {
         // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
         if sexptype != SEXPTYPE::NILSXP {
@@ -530,7 +529,7 @@ where
         } else {
             Robj::from(())
         }
-    })
+    }
 }
 
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].

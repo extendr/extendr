@@ -44,7 +44,7 @@ impl Strings {
         V::IntoIter: ExactSizeIterator,
         V::Item: AsRef<str>,
     {
-        single_threaded(|| unsafe {
+        unsafe {
             let values = values.into_iter();
             let maxlen = values.len();
             let mut robj = Robj::alloc_vector(SEXPTYPE::STRSXP, maxlen);
@@ -55,7 +55,7 @@ impl Strings {
                 SET_STRING_ELT(sexp, i as R_xlen_t, ch);
             }
             Self { robj }
-        })
+        }
     }
 
     /// This is a relatively expensive operation, so use a variable if using this in a loop.
@@ -80,11 +80,11 @@ impl Strings {
 
     /// Set a single element of this string vector.
     pub fn set_elt(&mut self, i: usize, e: Rstr) {
-        single_threaded(|| unsafe {
+        unsafe {
             if i < self.len() {
                 SET_STRING_ELT(self.robj.get_mut(), i as isize, e.get());
             }
-        });
+        };
     }
 
     /// Get an iterator for this string vector.
@@ -112,12 +112,12 @@ impl<T: AsRef<str>> FromIterator<T> for Strings {
         let len = iter_collect.len();
 
         let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, len);
-        crate::single_threaded(|| unsafe {
+        unsafe {
             for (i, v) in iter_collect.into_iter().enumerate() {
                 SET_STRING_ELT(robj.get_mut(), i as isize, str_to_character(v.as_ref()));
             }
             Strings { robj }
-        })
+        }
     }
 }
 

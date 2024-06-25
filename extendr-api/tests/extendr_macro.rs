@@ -132,7 +132,7 @@ fn tests_with_successful_outcomes() {
 #[test]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
-    single_threaded(|| unsafe {
+    unsafe {
         test! {
             let old_hook = std::panic::take_hook();
 
@@ -152,7 +152,7 @@ fn tests_with_unsuccessful_outcomes() {
             assert!(catch_r_error(|| wrap__test_i16(r!(1234567890).get())).is_err());
             std::panic::set_hook(old_hook);
         }
-    });
+    };
 }
 
 #[test]

@@ -19,14 +19,14 @@ impl Promise {
     /// ```
     #[cfg(feature = "non-api")]
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
-        single_threaded(|| unsafe {
+        unsafe {
             let sexp = Rf_allocSExp(SEXPTYPE::PROMSXP);
             let robj = Robj::from_sexp(sexp);
             SET_PRCODE(sexp, code.get());
             SET_PRENV(sexp, environment.robj.get());
             SET_PRVALUE(sexp, R_UnboundValue);
             Ok(Promise { robj })
-        })
+        }
     }
 
     /// Get the code to be executed from the promise.

@@ -165,14 +165,14 @@ impl List {
 
     /// Set an element in the list.
     pub fn set_elt(&mut self, i: usize, value: Robj) -> Result<()> {
-        single_threaded(|| unsafe {
+        unsafe {
             if i >= self.robj.len() {
                 Err(Error::OutOfRange(self.robj.clone()))
             } else {
                 SET_VECTOR_ELT(self.robj.get_mut(), i as R_xlen_t, value.get());
                 Ok(())
             }
-        })
+        }
     }
 
     /// Convert a List into a HashMap, consuming the list.
@@ -377,7 +377,7 @@ impl<T: Into<Robj>> FromIterator<T> for List {
         let iter_collect: Vec<_> = iter.into_iter().collect();
         let len = iter_collect.len();
 
-        crate::single_threaded(|| unsafe {
+        unsafe {
             let mut robj = Robj::alloc_vector(SEXPTYPE::VECSXP, len);
             for (i, v) in iter_collect.into_iter().enumerate() {
                 // We don't PROTECT each element here, as they will be immediately
@@ -390,7 +390,7 @@ impl<T: Into<Robj>> FromIterator<T> for List {
             }
 
             List { robj }
-        })
+        }
     }
 }
 

@@ -130,12 +130,18 @@ jobs:
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
+          
+          # assumes that there already are a `.cargo/config.toml`-file, with `[env]` block
+          $cargoConfig = Get-Content .cargo/config.toml
+          $envIndex = $cargoConfig | Select-String -Pattern "\[env\]" | Select-Object -First 1 -ExpandProperty LineNumber
+          $envIndex -= 1
+          $includeLine = "LIBRARY_PATH = `"${pwd_slash}/libgcc_mock`""
+          $cargoConfig = $cargoConfig[0..$envIndex] + $includeLine + $cargoConfig[($envIndex+1)..($cargoConfig.Count-1)]
+          $cargoConfig | Set-Content .cargo/config.toml -Encoding utf8
+          
           @"
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
-
-          [env]
-          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env:
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
@@ -363,12 +369,18 @@ jobs:
 
           New-Item -Path .cargo -ItemType Directory -Force
           $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
+          
+          # assumes that there already are a `.cargo/config.toml`-file, with `[env]` block
+          $cargoConfig = Get-Content .cargo/config.toml
+          $envIndex = $cargoConfig | Select-String -Pattern "\[env\]" | Select-Object -First 1 -ExpandProperty LineNumber
+          $envIndex -= 1
+          $includeLine = "LIBRARY_PATH = `"${pwd_slash}/libgcc_mock`""
+          $cargoConfig = $cargoConfig[0..$envIndex] + $includeLine + $cargoConfig[($envIndex+1)..($cargoConfig.Count-1)]
+          $cargoConfig | Set-Content .cargo/config.toml -Encoding utf8
+          
           @"
           [target.x86_64-pc-windows-gnu]
           linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
-
-          [env]
-          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
           "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
         env:
           RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}

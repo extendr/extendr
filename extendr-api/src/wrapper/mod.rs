@@ -68,7 +68,7 @@ where
     T::IntoIter: ExactSizeIterator,
     T::Item: Into<Robj>,
 {
-    single_threaded(|| unsafe {
+    unsafe {
         let values = values.into_iter();
         let mut res = Robj::alloc_vector(sexptype, values.len());
         let sexp = res.get_mut();
@@ -76,7 +76,7 @@ where
             SET_VECTOR_ELT(sexp, i as R_xlen_t, val.into().get());
         }
         res
-    })
+    }
 }
 
 macro_rules! make_conversions {

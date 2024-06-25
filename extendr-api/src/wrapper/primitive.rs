@@ -28,7 +28,7 @@ impl Primitive {
     /// }
     /// ```
     pub fn from_string(val: &str) -> Result<Self> {
-        single_threaded(|| unsafe {
+        unsafe {
             // Primitives have a special "SYMVALUE" entry in their symbol.
             let sym = Symbol::from_string(val);
             let symvalue = Robj::from_sexp(SYMVALUE(sym.get()));
@@ -37,7 +37,7 @@ impl Primitive {
             } else {
                 Err(Error::ExpectedPrimitive(sym.into()))
             }
-        })
+        }
     }
 
     // There is currently no way to convert a primitive to a string.

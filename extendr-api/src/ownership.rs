@@ -276,7 +276,7 @@ mod test {
     #[test]
     fn basic_test() {
         test! {
-            single_threaded(|| unsafe {
+             unsafe {
                 {
                     let mut own = OWNERSHIP.lock().expect("lock failed");
                     own.check_objects();
@@ -332,14 +332,14 @@ mod test {
                     assert_eq!(own.ref_count(sexp2), 1);
                 }
                 Rf_unprotect(2);
-            });
+            };
         }
     }
 
     #[test]
     fn collection_test() {
         test! {
-            single_threaded(|| unsafe {
+             unsafe {
                 {
                     let mut own = OWNERSHIP.lock().expect("protect failed");
                     own.check_objects();
@@ -373,7 +373,7 @@ mod test {
                 }
 
                 Rf_unprotect(1);
-            });
+            };
         }
     }
 }

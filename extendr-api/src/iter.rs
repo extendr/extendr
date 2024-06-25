@@ -58,10 +58,10 @@ impl StrIter {
 
 // Get a string reference from a `CHARSXP`
 pub(crate) fn str_from_strsxp<'a>(sexp: SEXP, index: usize) -> Option<&'a str> {
-    single_threaded(|| unsafe {
+    unsafe {
         let charsxp = STRING_ELT(sexp, index as _);
         rstr::charsxp_to_str(charsxp)
-    })
+    }
 }
 
 impl Iterator for StrIter {
