@@ -14,6 +14,6 @@ pub(crate) fn extendr_function(mut func: ItemFn, opts: &ExtendrOptions) -> Token
     TokenStream::from(quote! {
         #func
 
-        # ( #wrappers )*
+        #(#wrappers)*
     })
 }

@@ -33,6 +33,8 @@ pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
 // Generate wrappers for a specific function.
+///
+/// Applies the attributes provided (and removes them). (`default = "NULL"`)
 pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
     prefix: &str,
@@ -268,7 +270,7 @@ pub(crate) fn make_function_wrappers(
                 rust_name: #rust_name_str,
                 r_name: #r_name_str,
                 mod_name: #c_name_str,
-                args: args,
+                args,
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as *const u8,
                 wrap_name: #wrap_name_str,
