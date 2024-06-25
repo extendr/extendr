@@ -37,18 +37,6 @@ macro_rules! r {
 /// or a global variable if no such variable exists.
 ///
 /// Variables with embedded "." may not work.
-/*
-TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
-      test outside of R process, so this doc test is disabled for now. See #211
-      for the details.
-*/
-/// ```no_run
-/// use extendr_api::prelude::*;
-/// test! {
-///     current_env().set_local(sym!(myvar), 1.0);
-///     assert_eq!(var!(myvar), Ok(r!(1.0)));
-/// }
-/// ```
 #[macro_export]
 macro_rules! var {
     ($($tokens: tt)*) => {{
