@@ -1,7 +1,7 @@
 # Integration Tests for Calling Extendr from an R Package
 
 [![R build status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 
 This package serves as a test to see whether an R package using extendr can successfully build, run, and pass `R CMD check` on all major platforms.
 
