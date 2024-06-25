@@ -17,6 +17,7 @@ pub struct Primitive {
 }
 
 impl Primitive {
+    #[cfg(feature = "non-api")]
     /// Make a Primitive object from a string.
     /// ```
     /// use extendr_api::prelude::*;

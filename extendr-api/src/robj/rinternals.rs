@@ -209,6 +209,7 @@ pub trait Rinternals: Types + Conversions {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// If this object is a promise, evaluate it, otherwise return the object.
     /// ```
     /// use extendr_api::prelude::*;

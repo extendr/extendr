@@ -1,6 +1,7 @@
 use crate as extendr_api;
 use crate::*;
 
+#[cfg(feature = "non-api")]
 /// Get a global variable from global_env() and ancestors.
 /// If the result is a promise, evaulate the promise.
 ///
@@ -17,6 +18,7 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     global_env().find_var(key)?.eval_promise()
 }
 
+#[cfg(feature = "non-api")]
 /// Get a local variable from current_env() and ancestors.
 ///
 /// If the result is a promise, evaulate the promise.
