@@ -135,14 +135,6 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
 }
 
 /// The base environment; formerly `R_NilValue`
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string("+"))));
-/// }
-/// ```
 pub fn base_env() -> Environment {
     unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
 }

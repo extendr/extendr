@@ -55,9 +55,48 @@ fn non_api_rinternals_promise() {
 }
 
 #[cfg(test)]
-fn non_api_getsexp() {
+fn non_api_getsexp_rtype() {
     with_r(|| {
         assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
         assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
+    });
+}
+
+#[cfg(test)]
+fn non_api_rmacros() {
+    with_r(|| {
+        // The "iris" dataset is a dataframe.
+        assert_eq!(global!(iris)?.is_frame(), true);
+    });
+}
+
+/// In `extendr-api/lib.rs` there was a section with this
+///
+/// > You can call R functions and primitives using the [call!] macro.
+#[cfg(test)]
+fn non_api_lib_README() {
+    with_r(|| {
+        // As one R! macro call
+        let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
+
+        // As many parameterized calls.
+        let mut formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0));
+        formula.set_class(["formula"])?;
+        let plant_growth = global!(PlantGrowth)?;
+        let model = call!("lm", formula, plant_growth)?;
+        let confint2 = call!("confint", model)?;
+
+        assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
+    });
+}
+
+#[cfg(test)]
+fn non_api_base_env() {
+    with_r(|| {
+        global_env().set_local(sym!(x), "hello");
+        assert_eq!(
+            base_env().local(sym!(+)),
+            Ok(r!(Primitive::from_string("+")))
+        );
     });
 }

@@ -47,13 +47,6 @@ macro_rules! var {
 /// Get a global variable.
 ///
 /// Variables with embedded "." may not work.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///      // The "iris" dataset is a dataframe.
-///      assert_eq!(global!(iris)?.is_frame(), true);
-/// }
-/// ```
 #[macro_export]
 macro_rules! global {
     ($($tokens: tt)*) => {{
