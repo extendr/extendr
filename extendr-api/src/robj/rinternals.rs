@@ -168,7 +168,7 @@ pub trait Rinternals: Types + Conversions {
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
-        // Alterative:
+        // Alternative:
         // let mut env: Robj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
