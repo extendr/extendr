@@ -37,9 +37,10 @@ impl Default for StrIter {
 impl StrIter {
     /// Make an empty str iterator.
     pub fn new(len: usize) -> Self {
+        let vector = if len == 0 { nil_value() } else { na_string() };
         unsafe {
             Self {
-                vector: ().into(),
+                vector,
                 i: 0,
                 len,
                 levels: R_NilValue,
@@ -81,6 +82,8 @@ impl Iterator for StrIter {
                 None
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 str_from_strsxp(vector, i)
+            } else if vector == R_NaString {
+                Some(<&str>::na())
             } else if TYPEOF(vector) == SEXPTYPE::CHARSXP {
                 rstr::charsxp_to_str(vector)
             } else if Rf_isFactor(vector).into() {
@@ -222,13 +225,25 @@ mod tests {
         with_r(|| {
             let single_charsxp = blank_string();
             let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(&s1);
             let single_charsxp = blank_scalar_string();
             let s2: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
-            // dbg!(&s2);
             assert_eq!(s1, s2);
             assert_eq!(s1.len(), 1);
             assert_eq!(s2.len(), 1);
+        });
+    }
+
+    #[test]
+    fn test_new_constructor() {
+        with_r(|| {
+            let str_iter = StrIter::new(10);
+            assert_eq!(str_iter.collect::<Vec<_>>().len(), 10);
+            let str_iter = StrIter::new(0);
+            let str_iter_collect = str_iter.collect::<Vec<_>>();
+            assert_eq!(str_iter_collect.len(), 0);
+            assert!(str_iter_collect.is_empty());
+            let mut str_iter = StrIter::new(0);
+            assert!(str_iter.next().is_none());
         });
     }
 }
