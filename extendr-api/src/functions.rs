@@ -253,23 +253,21 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 /// }
 /// ```
 pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
-    {
-        let env = Environment::new_with_parent(global_env());
-        for (i, &v) in values.iter().enumerate() {
-            let key = Symbol::from_string(format!("param.{}", i));
-            env.set_local(key, v);
-        }
-
-        let expr = parse(code)?;
-        let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expressions() {
-            for lang in expr.values() {
-                res = lang.eval_with_env(&env)?
-            }
-        }
-
-        Ok(res)
+    let env = Environment::new_with_parent(global_env());
+    for (i, &v) in values.iter().enumerate() {
+        let key = Symbol::from_string(format!("param.{}", i));
+        env.set_local(key, v);
     }
+
+    let expr = parse(code)?;
+    let mut res = Robj::from(());
+    if let Some(expr) = expr.as_expressions() {
+        for lang in expr.values() {
+            res = lang.eval_with_env(&env)?
+        }
+    }
+
+    Ok(res)
 }
 
 /// Find a function or primitive that may be in a namespace.
