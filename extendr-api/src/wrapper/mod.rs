@@ -96,11 +96,32 @@ macro_rules! make_conversions {
             }
         }
 
+        // We can convert a mutable reference to any wrapper to a Robj by cloning the robj pointer
+        impl From<&mut $typename> for Robj {
+            /// Make an robj from a wrapper.
+            fn from(val: &mut $typename) -> Self {
+                val.robj.to_owned()
+            }
+        }
+
         impl TryFrom<&Robj> for $typename {
             type Error = crate::Error;
 
             /// Make a wrapper from a robj if it matches.
             fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.$isfunc() {
+                    Ok($typename { robj: robj.clone() })
+                } else {
+                    Err(Error::$errname(robj.clone()))
+                }
+            }
+        }
+
+        impl TryFrom<&mut Robj> for $typename {
+            type Error = crate::Error;
+
+            /// Make a wrapper from a robj if it matches.
+            fn try_from(robj: &mut Robj) -> Result<Self> {
                 if robj.$isfunc() {
                     Ok($typename { robj: robj.clone() })
                 } else {
