@@ -33,6 +33,31 @@ now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is mar
 - You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
 - You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
+- We no longer promise that the R API is accessed in a thread-safe way. From now on,
+we recommend that code that uses extendR to allocate, mutate, or modify `Robj`s to be
+wrapped in `single_threaded`. [[#674]](https://github.com/extendr/extendr/pull/674)
+Furthermore, the implementation of `single_threaded` is orthogonal to extendr's
+internals; One may roll their own implementation, e.g. this is a reference
+implementation that uses reentrant mutex from `parking_lot`:
+
+```rust
+/// A global lock, that should represent the global lock on the R-API.
+/// It is not tied to an actual instance of R.
+static R_API_LOCK: parking_lot::ReentrantMutex<()> = parking_lot::ReentrantMutex::new(());
+
+pub fn single_threaded<F, R>(f: F) -> R
+where
+    F: FnOnce() -> R,
+{
+    // `parking_lot`'s Mutex is without poisoning, and reentrant mutex is useful
+    // when there are nested calls to `single_threaded`.
+    let _guard = R_API_LOCK.lock();
+    f()
+}
+```
+
+extendR no longer contains any invocation to `single_threaded`,  therefore it
+falls on the user of extendR to uphold assurances of thread-safety.
 
 ### Fixed
 
