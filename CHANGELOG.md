@@ -14,6 +14,9 @@
 - feature `non-api` that gives access to non-API items; Requires compile-time generation of bindings
 [[#754]](https://github.com/extendr/extendr/pull/754)
 - `TryFrom<&Robj>` for `StrIter`, `HashMap<K, Robj>` for `K = String` and `K = &str` [[#759]](https://github.com/extendr/extendr/pull/759)
+- Added conversion for `&mut Robj -> Robj` and `&mut List -> Robj`. [[#779]](https://github.com/extendr/extendr/pull/779)
+This adds the convenience, when `.set_class` / `.set_attrib` returns a mutable
+reference object, it may be converted to `Robj` / `List` via `into_robj()` (or `.into()` if type inference allows).
 
 ### Changed
 
