@@ -42,13 +42,14 @@ full-functionality = ["graphics", "either", "ndarray", "faer", "num-complex", "s
 # Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
 # of non-API items in packages. You may enable this feature, to generate
 # bindings to these non-API items, and their usage in extendr
-non-api = ["libR-sys/non-api"]
+# BEWARE: this feature does not work, as `bindgen` use in extendr is deprecated
+non-api = []
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
 
 # The minimal set of features without all optional ones
-tests-minimal = ["libR-sys/use-bindgen"]
+tests-minimal = []
 
 # All features to test except for graphics; graphics tests are currently unstable
 # and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
@@ -60,7 +61,7 @@ tests-graphics = ["tests-minimal", "graphics"]
 tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
-features = ["full-functionality", "libR-sys/use-bindgen"]
+features = ["full-functionality"]
 
 [[test]]
 name  = "non_api_tests"

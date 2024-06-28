@@ -40,6 +40,8 @@ now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is mar
 - You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
 - You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
+- It is no longer possible to generate bindings as part of the compilation of
+extendr. Feature `non-api` is broken.
 
 ### Fixed
 
