@@ -255,9 +255,3 @@ jobs:
           working-directory: 'tests/rextendr'
           check-dir: '"rextendr_check"'
           error-on: '"${{ steps.error-on.outputs.level }}"'
-  bindgen:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Do nothing
-        run: echo "This is an empty job."
