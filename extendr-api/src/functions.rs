@@ -69,7 +69,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// [`Robj::double_colon`]: Operators::double_colon
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
     let key = key.into();
-    let res = single_threaded(|| call!(".getNamespace", key.clone()));
+    let res = call!(".getNamespace", key.clone());
     if let Ok(res) = res {
         Ok(res.try_into()?)
     } else {
@@ -119,10 +119,10 @@ pub fn empty_env() -> Environment {
 /// ```
 #[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
-    single_threaded(|| unsafe {
+    unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
         Robj::from_sexp(env).try_into().unwrap()
-    })
+    }
 }
 
 // R_NewEnv is available as of R 4.1.0. For the older version, we call an R function `new.env()`.
@@ -202,7 +202,7 @@ pub fn blank_scalar_string() -> Robj {
 /// }
 /// ```
 pub fn parse(code: &str) -> Result<Expressions> {
-    single_threaded(|| unsafe {
+    unsafe {
         use libR_sys::*;
         let mut status = ParseStatus::PARSE_NULL;
         let status_ptr = &mut status as *mut _;
@@ -212,7 +212,7 @@ pub fn parse(code: &str) -> Result<Expressions> {
             ParseStatus::PARSE_OK => parsed.try_into(),
             _ => Err(Error::ParseError(code.into())),
         }
-    })
+    }
 }
 
 /// Parse a string into an R executable object and run it.
@@ -225,16 +225,14 @@ pub fn parse(code: &str) -> Result<Expressions> {
 /// }
 /// ```
 pub fn eval_string(code: &str) -> Result<Robj> {
-    single_threaded(|| {
-        let expr = parse(code)?;
-        let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expressions() {
-            for lang in expr.values() {
-                res = lang.eval()?
-            }
+    let expr = parse(code)?;
+    let mut res = Robj::from(());
+    if let Some(expr) = expr.as_expressions() {
+        for lang in expr.values() {
+            res = lang.eval()?
         }
-        Ok(res)
-    })
+    }
+    Ok(res)
 }
 
 /// Parse a string into an R executable object and run it using
@@ -249,23 +247,21 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 /// }
 /// ```
 pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
-    single_threaded(|| {
-        let env = Environment::new_with_parent(global_env());
-        for (i, &v) in values.iter().enumerate() {
-            let key = Symbol::from_string(format!("param.{}", i));
-            env.set_local(key, v);
-        }
+    let env = Environment::new_with_parent(global_env());
+    for (i, &v) in values.iter().enumerate() {
+        let key = Symbol::from_string(format!("param.{}", i));
+        env.set_local(key, v);
+    }
 
-        let expr = parse(code)?;
-        let mut res = Robj::from(());
-        if let Some(expr) = expr.as_expressions() {
-            for lang in expr.values() {
-                res = lang.eval_with_env(&env)?
-            }
+    let expr = parse(code)?;
+    let mut res = Robj::from(());
+    if let Some(expr) = expr.as_expressions() {
+        for lang in expr.values() {
+            res = lang.eval_with_env(&env)?
         }
+    }
 
-        Ok(res)
-    })
+    Ok(res)
 }
 
 /// Find a function or primitive that may be in a namespace.

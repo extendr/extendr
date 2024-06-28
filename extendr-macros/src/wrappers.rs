@@ -140,17 +140,17 @@ pub(crate) fn make_function_wrappers(
     let rng_start = opts
         .use_rng
         .then(|| {
-            quote!(single_threaded(|| unsafe {
+            quote!(unsafe {
                 extendr_api::GetRNGstate();
-            });)
+            };)
         })
         .unwrap_or_default();
     let rng_end = opts
         .use_rng
         .then(|| {
-            quote!(single_threaded(|| unsafe {
+            quote!(unsafe {
                 extendr_api::PutRNGstate();
-            });)
+            };)
         })
         .unwrap_or_default();
 

@@ -8,7 +8,7 @@ pub struct Expressions {
 impl Expressions {
     /// Wrapper for creating Expressions (EXPRSXP) objects.
     pub fn new() -> Self {
-        Expressions::from_values([Robj::from(()); 0])
+        Expressions::from_values([] as [robj::Robj; 0])
     }
 
     /// Wrapper for creating Expressions (EXPRSXP) objects.

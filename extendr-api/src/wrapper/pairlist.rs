@@ -34,7 +34,7 @@ impl Pairlist {
         NV::IntoIter: DoubleEndedIterator,
         NV::Item: SymPair,
     {
-        crate::single_threaded(|| unsafe {
+        unsafe {
             let mut num_protects = 0;
             let mut res = R_NilValue;
             for nv in pairs.into_iter().rev() {
@@ -51,7 +51,7 @@ impl Pairlist {
             };
             Rf_unprotect(num_protects);
             res
-        })
+        }
     }
 
     /// Generate paits of names and values.

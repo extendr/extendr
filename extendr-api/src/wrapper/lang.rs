@@ -23,7 +23,7 @@ impl Language {
         T::IntoIter: DoubleEndedIterator,
         T::Item: Into<Robj>,
     {
-        single_threaded(|| unsafe {
+        unsafe {
             let mut res = R_NilValue;
             let mut num_protected = 0;
             for val in values.into_iter().rev() {
@@ -34,7 +34,7 @@ impl Language {
             let robj = Robj::from_sexp(res);
             Rf_unprotect(num_protected);
             Language { robj }
-        })
+        }
     }
 
     pub fn iter(&self) -> PairlistIter {

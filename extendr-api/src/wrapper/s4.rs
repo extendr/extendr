@@ -120,10 +120,10 @@ impl S4 {
     {
         let name = name.into();
         let value = value.into();
-        single_threaded(|| unsafe {
+        unsafe {
             catch_r_error(|| R_do_slot_assign(self.get(), name.get(), value.get()))
                 .map(|_| self.clone())
-        })
+        }
     }
 
     /// Check if a named slot exists.
