@@ -92,3 +92,12 @@ where
         )
     }
 }
+
+impl<T> From<Option<Dataframe<T>>> for Robj {
+    fn from(value: Option<Dataframe<T>>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
