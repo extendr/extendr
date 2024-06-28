@@ -29,6 +29,7 @@ pub struct Function {
 }
 
 impl Function {
+    #[cfg(feature = "non-api")]
     /// Make a function from parts.
     /// ```
     /// use extendr_api::prelude::*;

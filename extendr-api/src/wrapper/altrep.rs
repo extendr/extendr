@@ -155,7 +155,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 fn manifest(x: SEXP) -> SEXP {
     single_threaded(|| unsafe {
         Rf_protect(x);
-        let len = XLENGTH_EX(x);
+        let len = XLENGTH(x);
         let data2 = Rf_allocVector(TYPEOF(x), len as R_xlen_t);
         Rf_protect(data2);
         match TYPEOF(x) {

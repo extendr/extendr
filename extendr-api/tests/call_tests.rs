@@ -1,6 +1,7 @@
 use extendr_api::prelude::*;
 
 #[test]
+#[cfg(feature = "non-api")]
 fn formula_test() {
     test! {
         // As one R! macro call
