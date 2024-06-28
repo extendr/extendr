@@ -5,7 +5,8 @@
             Douglas Bates and John Chambers},
   year   = {2024},
   note   = {R package version 1.0.12},
-  url    = {https://CRAN.R-project.org/package=Rcpp}
+  url    = {https://CRAN.R-project.org/package=Rcpp},
+  doi    = {10.32614/CRAN.package.Rcpp}
 }
   @article{rcpp_jss,
   title   = {{Rcpp}: Seamless {R} and {C++} Integration},
@@ -37,15 +38,21 @@
   pages   = {28-36},
   doi     = {10.1080/00031305.2017.1375990}
 }
-  @manual{r_cite,
-  title        = {R: A Language and Environment for Statistical
-                  Computing},
-  author       = {{R Core Team}},
-  organization = {R Foundation for Statistical Computing},
-  address      = {Vienna, Austria},
-  year         = 2023,
-  url          = {https://www.R-project.org}
+
+@article{ihaka_r_1996,
+	title = {R: {A} {Language} for {Data} {Analysis} and {Graphics}},
+	volume = {5},
+	url = {https://www.tandfonline.com/doi/abs/10.1080/10618600.1996.10474713},
+	doi = {10.1080/10618600.1996.10474713},
+	number = {3},
+	journal = {Journal of Computational and Graphical Statistics},
+	author = {Ihaka, Ross and Gentleman, Robert},
+	year = {1996},
+	note = {Publisher: Taylor \& Francis
+\_eprint: https://www.tandfonline.com/doi/pdf/10.1080/10618600.1996.10474713},
+	pages = {299--314},
 }
+
 @software{vriesAndriePagerank2021,
   title    = {Andrie/Pagerank},
   author   = {family=Vries, given=Andrie, prefix=de, useprefix=false},
@@ -60,14 +67,16 @@
   author = {Davis Vaughan and Jim Hester and Romain François},
   year   = {2023},
   note   = {R package version 0.4.7},
-  url    = {https://CRAN.R-project.org/package=cpp11}
+  url    = {https://CRAN.R-project.org/package=cpp11},
+  doi    = {10.32614/cran.package.cpp11}
 }
 @manual{rJava,
   title  = {rJava: Low-Level R to Java Interface},
   author = {Simon Urbanek},
   year   = {2023},
   note   = {R package version 1.0-10},
-  url    = {https://CRAN.R-project.org/package=rJava}
+  url    = {https://CRAN.R-project.org/package=rJava},
+  doi    = {10.32614/cran.package.rjava}
 }
 
   @manual{v8_cran,
@@ -75,14 +84,16 @@
   author = {Jeroen Ooms},
   year   = {2023},
   note   = {R package version 4.4.1},
-  url    = {https://CRAN.R-project.org/package=V8}
+  url    = {https://CRAN.R-project.org/package=V8},
+  doi    = {10.32614/cran.package.v8}
 }
 @manual{reticulate_cran,
   title  = {reticulate: Interface to 'Python'},
   author = {Kevin Ushey and JJ Allaire and Yuan Tang},
   year   = {2023},
   note   = {R package version 1.34.0},
-  url    = {https://CRAN.R-project.org/package=reticulate}
+  url    = {https://CRAN.R-project.org/package=reticulate},
+  doi    =  {10.32614/CRAN.package.reticulate}
 }
   @article{perkelWhyScientistsAre2020,
   title        = {Why Scientists Are Turning to {{Rust}}},
@@ -139,7 +150,8 @@
   volume = {24},
   number = {216},
   pages = {1--45},
-  url = {http://jmlr.org/papers/v24/22-0512.html}
+  url = {http://jmlr.org/papers/v24/22-0512.html},
+  doi = {10.3929/ethz-b-000585774}
 }
  @Manual{hellorust_cran,
     title = {hellorust: Minimal Examples of Using Rust Code in R},
@@ -147,12 +159,14 @@
     year = {2023},
     note = {R package version 1.2.0},
     url = {https://CRAN.R-project.org/package=hellorust},
+    doi = {10.32614/cran.package.hellorust}
   }
   @Manual{usethis_cran,
   title = {usethis: Automate Package and Project Setup},
   author = {Hadley Wickham and Jennifer Bryan and Malcolm Barrett and Andy Teucher},
   year = {2023},
   note = {https://usethis.r-lib.org, https://github.com/r-lib/usethis},
+  doi = {10.32614/cran.package.usethis}
 }
 @Manual{rinside_cran,
   title = {RInside: C++ Classes to Embed R in C++ (and C) Applications},
@@ -160,6 +174,7 @@
   year = {2023},
   note = {R package version 0.2.18},
   url = {https://CRAN.R-project.org/package=RInside},
+  doi = {10.32614/cran.package.rinside}
 }
 @Manual{geos_cran,
   title = {geos: Open Source Geometry Engine ('GEOS') R API},
@@ -167,6 +182,7 @@
   year = {2022},
   note = {R package version 0.2.2},
   url = {https://CRAN.R-project.org/package=geos},
+  doi = {10.32614/cran.package.geos}
 }
 @inproceedings{eval_rust_for_custom_abm,
   title = {On {{Evaluating Rust}} as a {{Programming Language}} for the {{Future}} of {{Massive Agent-Based Simulations}}},
@@ -201,12 +217,21 @@
   abstract = {Summary: We present Rust-Bio, the first general purpose bioinformatics library for the innovative Rust programming language. Rust-Bio leverages the unique combination of speed, memory safety and high-level syntax offered by Rust to provide a fast and safe set of bioinformatics algorithms and data structures with a focus on sequence analysis.Availability and implementation: Rust-Bio is available open source under the MIT license at https://rust-bio.github.io.Contact: koester@jimmy.harvard.eduSupplementary information: Supplementary data are available at Bioinformatics online.}
 }
 
-@misc{rust_disease_spread_model_indsci_sim,
-  AUTHOR = {Snehal Shekatkar, Bhalchandra Pujari, Mihir Arjunwadkar, Dhiraj Kumar Hazra, Pinaki Chaudhuri, Sitabhra Sinha, Gautam I Menon, Anupama Sharma, Vishwesha Guttal},
-  TITLE = {INDSCI-SIM A state-level epidemiological model for India},
-  YEAR = {2020},
-  NOTE = {Ongoing Study at \url{https://indscicov.in/indscisim}}
+@article{rust_disease_spread_model_indsci_sim,
+	title = {Modelling the first wave of {COVID}-19 in {India}},
+	volume = {18},
+	url = {https://doi.org/10.1371/journal.pcbi.1010632},
+	doi = {10.1371/journal.pcbi.1010632},
+	abstract = {Estimating the burden of COVID-19 in India is difficult because the extent to which cases and deaths have been undercounted is hard to assess. Here, we use a 9-component, age-stratified, contact-structured epidemiological compartmental model, which we call the INDSCI-SIM model, to analyse the first wave of COVID-19 spread in India. We use INDSCI-SIM, together with Bayesian methods, to obtain optimal fits to daily reported cases and deaths across the span of the first wave of the Indian pandemic, over the period Jan 30, 2020 to Feb 15, 2021. We account for lock-downs and other non-pharmaceutical interventions (NPIs), an overall increase in testing as a function of time, the under-counting of cases and deaths, and a range of age-specific infection-fatality ratios. We first use our model to describe data from all individual districts of the state of Karnataka, benchmarking our calculations using data from serological surveys. We then extend this approach to aggregated data for Karnataka state. We model the progress of the pandemic across the cities of Delhi, Mumbai, Pune, Bengaluru and Chennai, and then for India as a whole. We estimate that deaths were undercounted by a factor between 2 and 5 across the span of the first wave, converging on 2.2 as a representative multiplier that accounts for the urban-rural gradient. We also estimate an overall under-counting of cases by a factor of between 20 and 25 towards the end of the first wave. Our estimates of the infection fatality ratio (IFR) are in the range 0.05—0.15, broadly consistent with previous estimates but substantially lower than values that have been estimated for other LMIC countries. We find that approximately 35\% of India had been infected overall by the end of the first wave, results broadly consistent with those from serosurveys. These results contribute to the understanding of the long-term trajectory of COVID-19 in India.},
+	number = {10},
+	journal = {PLOS Computational Biology},
+	author = {Hazra, Dhiraj Kumar and Pujari, Bhalchandra S. and Shekatkar, Snehal M. and Mozaffer, Farhina and Sinha, Sitabhra and Guttal, Vishwesha and Chaudhuri, Pinaki and Menon, Gautam I.},
+	month = oct,
+	year = {2022},
+	note = {Publisher: Public Library of Science},
+	pages = {1--35},
 }
+
 @inproceedings{epirust_paper,
   title = {{{EpiRust}}: {{Towards A Framework For Large-scale Agent-based Epidemiological Simulations Using Rust Language}}},
   shorttitle = {{{EpiRust}}},
@@ -224,6 +249,7 @@
     year = {2023},
     note = {R package version 1.12.0-2},
     url = {https://CRAN.R-project.org/package=gifski},
+    doi = {10.32614/cran.package.gifski}
   }
   @online{forth_african_2022-1,
   title = {African Swine Fever Virus – Variants on the Rise},

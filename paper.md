@@ -87,7 +87,7 @@ An overview of the 'extendr' crates and packages as well as comprehensive API do
 
 R provides tools for compiling and embedding Fortran, C, and C++ code, with binding through R's C-API. However, these raw bindings are not easy for users to navigate.
 This makes frameworks facilitating interfacing other languages to R extremely popular.
-Rcpp [@rcpp_cran] and cpp11 [@cpp11] for C++, Java via rJava [@rJava], Python with `reticulate` [@reticulate_cran], and JavaScript on the V8 runtime and the
+Rcpp [@rcpp_jss] and cpp11 [@cpp11] for C++, Java via rJava [@rJava], Python with `reticulate` [@reticulate_cran], and JavaScript on the V8 runtime and the
 V8 R-package [@v8_cran] are among the most used.
 In contrast, bindings between Rust and R, such as [`gifski`](https://crates.io/crates/gifski) [@gifski_cran], are currently mostly written by hand.
 
