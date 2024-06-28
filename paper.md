@@ -107,7 +107,6 @@ highly performant geometric primitives and algorithms written and optimized in R
 
 Another example of scientific work enabled by 'extendr' is the [`changeforest`](https://github.com/mlondschien/changeforest/) package [@JMLR:v24:22-0512].
 
-
 # Design
 
 ## Overview
@@ -116,11 +115,11 @@ The extendr project provides a suite of software packages, where the aim is to p
 for interfacing Rust to R that is comparable in scope to the R/C++ interfaces provided by Rcpp and cpp11.
 It consists of the following components:
 
-- extendr-api: a Rust crate integrating R's data model in Rust, which underlies the functionality of extendr
-- extendr-macros: a Rust crate responsible for auto-generating R wrappers for embedding Rust within R code
-- extendr-engine: a Rust crate that enables launching R sessions from within Rust code, similar to `RInside` [@rinside_cran]
-- rextendr: an R package that simplifies the process of embedding Rust code within an R package, including helping the user to adhere to CRAN rules for publishing Rust-powered R packages
-- libR-sys: a Rust crate providing auto-generated Rust bindings to R's C-API
+- `extendr-api`: a Rust crate integrating R's data model in Rust, which underlies the functionality of extendr
+- `extendr-macros`: a Rust crate responsible for auto-generating R wrappers for embedding Rust within R code
+- `extendr-engine`: a Rust crate that enables launching R sessions from within Rust code, similar to `RInside` [@rinside_cran]
+- `rextendr`: an R package that simplifies the process of embedding Rust code within an R package, including helping the user to adhere to CRAN rules for publishing Rust-powered R packages
+- `libR-sys`: a Rust crate providing auto-generated Rust bindings to R's C-API
 
 Using extendr requires both Rust and R to be installed, but no further dependencies are required.
 API documentation for all the extendr packages are available at [extendr.github.io](https://extendr.github.io/),
