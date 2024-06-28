@@ -101,7 +101,7 @@ ergonomic API design inspired by features from Rcpp and cpp11.
 
 Several existing projects already utilize 'extendr'.
 The DataFrame library [Polars](https://pola.rs/) has bindings to Python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars))
-and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
+and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with 'extendr'.
 The CRAN package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/) provides bindings to [`geo-rust`](https://crates.io/crates/geo), allowing R users to take advantage of
 highly performant geometric primitives and algorithms written and optimized in Rust.
 
@@ -121,9 +121,9 @@ It consists of the following components:
 - `rextendr`: an R package that simplifies the process of embedding Rust code within an R package, including helping the user to adhere to CRAN rules for publishing Rust-powered R packages
 - `libR-sys`: a Rust crate providing auto-generated Rust bindings to R's C-API
 
-Using extendr requires both Rust and R to be installed, but no further dependencies are required.
-API documentation for all the extendr packages are available at [extendr.github.io](https://extendr.github.io/),
-and the repositories for extendr-packages are freely available from GitHub [github.com/extendr](https://github.com/extendr/),
+Using 'extendr' requires both Rust and R to be installed, but no further dependencies are required.
+API documentation for all the 'extendr' packages are available at [extendr.github.io](https://extendr.github.io/),
+and the repositories for 'extendr'-packages are freely available from GitHub [github.com/extendr](https://github.com/extendr/),
 under an MIT license.  All hardware/software platforms supported by Rust and R are also supported by extendr.
 
 ## Technical details
@@ -171,7 +171,7 @@ which ensures that the resulting R package is fully CRAN-compliant.
 # Getting started
 
 Ensure that both [R](https://www.r-project.org) and [Rust](https://www.rust-lang.org/tools/install) are installed.
-Then in an R terminal, the rextendr package can be installed via:
+Then in an R terminal, the `rextendr` package can be installed via:
 
 ```r
 install.packages("rextendr") 
