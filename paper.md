@@ -100,7 +100,7 @@ However, these implementations differ from 'extendr' in that 'extendr' aims at p
 ergonomic API design inspired by features from Rcpp and cpp11.
 
 Several existing projects already utilize 'extendr'.
-The DataFrame library [Polars](https://pola.rs/) has bindings to python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars))
+The DataFrame library [Polars](https://pola.rs/) has bindings to Python (via [`py-polars`](https://github.com/pola-rs/polars/tree/main/py-polars))
 and to R via [`polars`](https://github.com/pola-rs/r-polars), where the latter is built with extendr.
 The CRAN package [`rsgeo`](https://cran.r-project.org/web/packages/rsgeo/) provides bindings to [`geo-rust`](https://crates.io/crates/geo), allowing R users to take advantage of
 highly performant geometric primitives and algorithms written and optimized in Rust.
