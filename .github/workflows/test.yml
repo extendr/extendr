@@ -38,6 +38,9 @@ jobs:
           # R-devel requires LD_LIBRARY_PATH
           - { os: ubuntu-latest,   r: 'devel',   rust-version: 'stable' }
           - { os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable' }
+
+
+
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       REXTENDR_SKIP_DEV_TESTS: TRUE
@@ -58,7 +61,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
