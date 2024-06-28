@@ -18,10 +18,6 @@ on:
 jobs:
   # All tests under this job are run with pre-computed libR-sys bindings.
   tests_no_bindgen:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
-
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +36,9 @@ jobs:
           # R-devel requires LD_LIBRARY_PATH
           - { os: ubuntu-latest,   r: 'devel',   rust-version: 'stable' }
           - { os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable' }
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
     
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
