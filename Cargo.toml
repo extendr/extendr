@@ -17,7 +17,6 @@ authors = [
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/extendr/extendr"
-rust-version = "1.70"
 
 [workspace.dependencies]
 # When updating extendr's version, this version also needs to be updated
