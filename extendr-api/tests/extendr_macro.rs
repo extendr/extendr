@@ -130,6 +130,7 @@ fn tests_with_successful_outcomes() {
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
+#[ignore = "panicíng in FFI is now automatically abort instead of UB"]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
     single_threaded(|| unsafe {
