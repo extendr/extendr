@@ -2,14 +2,7 @@ use super::*;
 
 /// Wrapper for creating primitive objects.
 ///
-/// Make a primitive object, or NULL if not available.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     let builtin = r!(Primitive::from_string("+"));
-///     let special = r!(Primitive::from_string("if"));
-/// }
-/// ```
+/// Make a primitive object, or `NULL` if not available
 ///
 #[derive(PartialEq, Clone)]
 pub struct Primitive {
@@ -17,6 +10,7 @@ pub struct Primitive {
 }
 
 impl Primitive {
+    #[cfg(feature = "non-api")]
     /// Make a Primitive object from a string.
     /// ```
     /// use extendr_api::prelude::*;

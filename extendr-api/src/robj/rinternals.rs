@@ -163,24 +163,13 @@ pub trait Rinternals: Types + Conversions {
     ///
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let iris_dataframe = global_env()
-    ///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();
-    ///    assert_eq!(iris_dataframe.is_frame(), true);
-    ///    assert_eq!(iris_dataframe.len(), 5);
     ///
-    ///    // Note: this may crash on some versions of windows which don't support unwinding.
-    ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
-    /// }
-    /// ```
     fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
         let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
-        // Alterative:
+        // Alternative:
         // let mut env: Robj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
@@ -210,6 +199,7 @@ pub trait Rinternals: Types + Conversions {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// If this object is a promise, evaluate it, otherwise return the object.
     /// ```
     /// use extendr_api::prelude::*;

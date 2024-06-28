@@ -28,6 +28,7 @@ impl Promise {
         })
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the code to be executed from the promise.
     pub fn code(&self) -> Robj {
         unsafe {
@@ -36,6 +37,7 @@ impl Promise {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the environment for the execution from the promise.
     pub fn environment(&self) -> Environment {
         unsafe {
@@ -44,6 +46,7 @@ impl Promise {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the value of the promise, once executed.
     pub fn value(&self) -> Robj {
         unsafe {
@@ -52,6 +55,7 @@ impl Promise {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the seen flag (avoids recursion).
     pub fn seen(&self) -> i32 {
         unsafe {
@@ -60,6 +64,7 @@ impl Promise {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// If this promise has not been evaluated, evaluate it, otherwise return the value.
     /// ```
     /// use extendr_api::prelude::*;
@@ -81,9 +86,13 @@ impl Promise {
 
 impl std::fmt::Debug for Promise {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Promise")
-            .field("code", &self.code())
-            .field("environment", &self.environment())
-            .finish()
+        let mut result = f.debug_struct("Promise");
+
+        #[cfg(feature = "non-api")]
+        {
+            let result = result.field("code", &self.code());
+            let result = result.field("environment", &self.environment());
+        }
+        result.finish()
     }
 }

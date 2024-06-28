@@ -8,7 +8,36 @@
 
 ## Changed
 
-- Potentially breaking: `RArray::from_parts` no longer requires a pointer to the underlying data vector [[#657]](https://github.com/extendr/extendr/pull/657)
+- [_Potentially breaking_]: `RArray::from_parts` no longer requires a pointer to the underlying data
+  vector [[#657]](https://github.com/extendr/extendr/pull/657)
+- `#[extendr(use_try_from = true)` is now the default setting, therefore the option `use_try_from` has been removed [[#759]](https://github.com/extendr/extendr/pull/759)
+
+#### Breaking changes
+
+- R-devel Non-API changes:
+  - R's C API is being formalized. While the changes are formalized, non-API functions are hidden behind a feature flag to prevent removal from CRAN.
+  - Non-API [changes are in flux in R-devel](https://github.com/r-devel/r-svn/blob/71afe1e304b11f7febaa536e96817c63a7c1c7ab/src/library/tools/R/sotools.R#L564), however, CRAN has set a July 9th date to remove any package that uses non-API functions. This includes almost every extendr based package on CRAN.
+  - See [[Rd] clarifying and adjusting the C API for R](https://stat.ethz.ch/pipermail/r-devel/2024-June/083449.html)
+  - [nonAPI.txt](https://github.com/r-devel/r-svn/blob/f36c203d3a53a74d56a81d4f97a68d24993e0652/src/library/tools/R/sotools.R#L564) functions are hidden behind the `non-api` feature flag.
+  - Removed from default include (but may not be limited to):
+    - `global_var()`, `local_var()`, `base_env()`, various `Environment`, `Function`, `Primitive`, and `Promise` methods.
+- `Attributes` trait now returns a mutable reference
+  to `Self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in
+  place, and then return an untyped owned pointer (Robj). Instead, now we return `&mut Self`.
+- In `AltRep` the `unserialize_ex`, `set_parent`, `set_envflags` are
+now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
+- Floating point numbers with decimal part can no longer be converted to integer types via
+  rounding [[#757]](https://github.com/extendr/extendr/pull/757)
+- You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
+- You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
+- It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
+
+### Fixed
+
+- returning `&Self` or `&mut Self` from a method in an `#[extendr]`-impl would
+result in unintended cloning  [[#614]](https://github.com/extendr/extendr/issues/614)
+- `TryFrom<&Robj>` and `FromRobj` for integer scalars now correctly handles conversions
+  from `f64` [[#757]](https://github.com/extendr/extendr/pull/757)
 
 ## 0.6.0
 
