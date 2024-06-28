@@ -2,7 +2,6 @@
 name = "xtask"
 description = "Facilitates extendr-developer tasks through `cargo`"
 license.workspace = true
-rust-version.workspace = true
 repository.workspace = true
 version.workspace = true
 edition.workspace = true
