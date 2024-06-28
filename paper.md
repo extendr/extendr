@@ -60,7 +60,7 @@ GIF encoding [@gifski_cran], and agent-based models of disease spread [@eval_rus
 
 However, typical workflows in research domains, such as disease modelling, often rely on higher-level programming languages due to lower entry barriers.
 This results in broader adoption within scientific communities, compared to the use of low-level languages like C++ and Rust.
-The statistical programming language[R]( https://www.r-project.org) is one of the most widely used
+The statistical programming language [R]( https://www.r-project.org) is one of the most widely used
 high-level languages in research. R's official interpreter is written in C, and it provides a C API as well as
 tools for building dynamic libraries in Fortran/C/C++ natively.
 The 'Extending R' book [@chambers2017extending] also describes interfacing with other languages
