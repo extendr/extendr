@@ -17,7 +17,7 @@ on:
 # used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
 jobs:
   # All tests under this job are run with pre-computed libR-sys bindings.
-  tests:
+  tests_no_bindgen:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
