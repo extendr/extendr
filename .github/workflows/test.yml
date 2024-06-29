@@ -19,29 +19,46 @@ jobs:
   # All tests under this job are run with pre-computed libR-sys bindings.
   tests_no_bindgen:
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
-
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { os: windows-latest, r: 'release', rust-version: 'stable-msvc', rtools-version: '44' }
-          - { os: windows-latest, r: 'devel',   rust-version: 'stable-msvc', rtools-version: '44' }
-          - { os: windows-latest, r: 'oldrel',  rust-version: 'stable-msvc', rtools-version: '43' }
+          - {
+              os: windows-latest,
+              r: "release",
+              rust-version: "stable-msvc",
+              rtools-version: "44",
+            }
+          - {
+              os: windows-latest,
+              r: "devel",
+              rust-version: "stable-msvc",
+              rtools-version: "44",
+            }
+          - {
+              os: windows-latest,
+              r: "oldrel",
+              rust-version: "stable-msvc",
+              rtools-version: "43",
+            }
 
-          - { os: macOS-latest,   r: 'release', rust-version: 'stable' }
-          # - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
-          # - {os: macOS-latest,   r: 'devel', rust-version: 'stable'}
-          # - {os: macOS-latest,   r: 'oldrel', rust-version: 'stable'}
-
-          - { os: ubuntu-latest,   r: 'release', rust-version: 'stable', check_fmt: true }
-          - { os: ubuntu-latest,   r: 'release', rust-version: 'nightly' }
+          - { os: macOS-latest, r: "release", rust-version: "stable" }
+          - {
+              os: ubuntu-latest,
+              r: "release",
+              rust-version: "stable",
+              check_fmt: true,
+            }
+          - {
+              os: ubuntu-latest,
+              r: "release",
+              rust-version: "nightly",
+              extra-args: ["-Zdoctest-xcompile"],
+            }
           # R-devel requires LD_LIBRARY_PATH
-          - { os: ubuntu-latest,   r: 'devel',   rust-version: 'stable' }
-          - { os: ubuntu-latest,   r: 'oldrel',  rust-version: 'stable' }
-
-
+          - { os: ubuntu-latest, r: "devel", rust-version: "stable" }
+          - { os: ubuntu-latest, r: "oldrel", rust-version: "stable" }
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -55,7 +72,7 @@ jobs:
       # E.g.: BUILD_TARGETS=i686-pc-windows-gnu,x86_64-pc-windows-gnu builds two times,
       # each time providing '--target=*-pc-windows-gnu' flag to cargo.
       BUILD_TARGETS: default
-    
+
     # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
       run:
@@ -111,17 +128,17 @@ jobs:
           #  1. Change the linker name to "x86_64-w64-mingw32.static.posix-gcc.exe".
           #  2. Add empty libgcc_s.a and libgcc_eh.a, and add them to the compiler's
           #     library search paths via `LIBRARY_PATH` envvar.
-          # 
-          # The first tweak is needed because Rtools42 doesn't contain 
-          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker 
+          #
+          # The first tweak is needed because Rtools42 doesn't contain
+          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker
           # for the `x86_64-pc-windows-gnu` target.
-          #  
+          #
           # If we use the Rtools' toolchain, the second tweak is also required.
           # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
-          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the 
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the
           # compilation settings. So, in order to please the compiler, we need
           # to add empty `libgcc_eh` or `libgcc_s` to the library search paths.
-          # 
+          #
           # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 
           New-Item -Path libgcc_mock -Type Directory
@@ -141,7 +158,7 @@ jobs:
           RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
 
       # This is required for ubuntu r-devel
-      # 'Del alias:R' removes 'R' alias which prevents running R 
+      # 'Del alias:R' removes 'R' alias which prevents running R
       - name: Configure Linux
         if: startsWith(runner.os, 'linux')
         run: |
@@ -168,7 +185,7 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here. 
+            # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here.
             ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
 
@@ -191,8 +208,7 @@ jobs:
         with:
           cache-version: 4
           working-directory: tests/rextendr
-      
-      
+
       # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
       - name: Check R version
         id: error-on
@@ -238,10 +254,10 @@ jobs:
                 "\" }"),
 
               # uncomment this line when we need to depend on the dev version of libR-sys
-              # 'libR-sys = { git = "https://github.com/extendr/libR-sys", features = array("non-api", 1) }',
+              # 'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
 
               sep = ";")
-          
+
           patch.crates_io <- paste0("REXTENDR_PATCH_CRATES_IO=", patch.crates_io)
 
           github_env_file <- Sys.getenv("GITHUB_ENV")
@@ -254,190 +270,6 @@ jobs:
         uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
-          working-directory: 'tests/rextendr'
+          working-directory: "tests/rextendr"
           check-dir: '"rextendr_check"'
           error-on: '"${{ steps.error-on.outputs.level }}"'
-
-  # All tests under this job are run with R devel and freshly generated bindings.
-  # Run bindgen tests without cross-compilation.
-  # Cross-compilation prevents from running doc tests
-  # if toolchain does not match target (Windows x86_64/i686 case), see
-  #  > https://github.com/rust-lang/rust/issues/64245
-  #  > https://github.com/rust-lang/cargo/issues/7040
-  bindgen:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} w/ bindgen (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }} ${{join(matrix.config.rust-targets, ',')}})
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - { os: ubuntu-latest,  r: 'devel',   rust-version: 'stable' }
-          - { os: macOS-latest,   r: 'devel',   rust-version: 'stable' }
-          - { os: windows-latest, r: 'release', rust-version: 'stable-msvc',  rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '44' }
-          - { os: windows-latest, r: 'devel',   rust-version: 'stable-msvc',  rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '44' }
-          # When the MSVC target is used, since it's cross-compilation from MSVC
-          # to GNU, the doc tests are usually skipped. Adding `-Zdoctest-xcompile`
-          # lets the doctests run, which accordingly require the nightly toolchain.
-          - { os: windows-latest, r: 'release', rust-version: 'nightly-msvc', rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '44', extra-args: [ '-Zdoctest-xcompile' ] }
-          - { os: windows-latest, r: 'oldrel',  rust-version: 'nightly-msvc', rust-targets: [ 'x86_64-pc-windows-gnu' ], rtools-version: '43', extra-args: [ '-Zdoctest-xcompile' ] }
-
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-
-    # PowerShell core is available on all platforms and can be used to unify scripts
-    defaults:
-      run:
-        shell: pwsh
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.config.rust-version }}
-
-      # 1. Update rustup
-      # 2. For each target add respective toolchain &
-      #    update target for that toolchain
-      - name: Set up Rust targets
-        run: |
-          $targets = $env:RUST_TARGETS.Split(',')
-          foreach ($target in $targets) {
-            echo "::group::Setting up $env:RUST_TOOLCHAIN $target"
-            if ($target -ne '') {
-              rustup target add $target --toolchain "$env:RUST_TOOLCHAIN"
-              if(!$?) {
-                throw "Last exit code $LASTEXITCODE"
-              }
-            }
-            echo "::endgroup::"
-          }
-        env:
-          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          rtools-version: ${{ matrix.config.rtools-version }}
-          use-public-rspm: true
-          windows-path-include-mingw: false
-
-      - name: Configure Windows
-        if: startsWith(runner.os, 'Windows')
-        run: |
-          $rtools_home = "C:\rtools${{ matrix.config.rtools-version }}"
-
-          echo "::group::Setting up x86_64"
-          # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
-          echo "${rtools_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          echo "${rtools_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
-          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "::endgroup::"
-          
-          # The following lines add two tweaks:
-          #
-          #  1. Change the linker name to "x86_64-w64-mingw32.static.posix-gcc.exe".
-          #  2. Add empty libgcc_s.a and libgcc_eh.a, and add them to the compiler's
-          #     library search paths via `LIBRARY_PATH` envvar.
-          # 
-          # The first tweak is needed because Rtools42 doesn't contain 
-          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker 
-          # for the `x86_64-pc-windows-gnu` target.
-          #  
-          # If we use the Rtools' toolchain, the second tweak is also required.
-          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
-          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the 
-          # compilation settings. So, in order to please the compiler, we need
-          # to add empty `libgcc_eh` or `libgcc_s` to the library search paths.
-          # 
-          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
-
-          New-Item -Path libgcc_mock -Type Directory
-          New-Item -Path libgcc_mock\libgcc_eh.a -Type File
-          New-Item -Path libgcc_mock\libgcc_s.a -Type File
-
-          New-Item -Path .cargo -ItemType Directory -Force
-          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
-          @"
-          [target.x86_64-pc-windows-gnu]
-          linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
-
-          [env]
-          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
-          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
-        env:
-          RUST_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
-
-      - name: Configure Linux
-        if: startsWith(runner.os, 'linux')
-        run: |
-          Del alias:R
-          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      # 1. Retrieve targets
-      # 2. Retrieve 'libclang' paths
-      # 3. For each target run
-      # 3.1 Select correct $target & $toolchain
-      # 3.x Run build commands, checking for errors, providing explicit toolchain & target
-      - name: Build
-        run: |
-          . ./ci-cargo.ps1
-          $targets = $env:BUILD_TARGETS.Split(',')
-          $toolchain = $env:RUST_TOOLCHAIN
-          $itt = 0..($targets.Length - 1)
-          foreach($i in $itt) {
-            if ($targets[$i] -eq "") {
-              $target = 'default'
-            }
-            else {
-              $target = $targets[$i]
-            }
-
-            ci-cargo +$toolchain build --manifest-path extendr-api/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-api for $toolchain/$target"
-          
-            ci-cargo +$toolchain build --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Build extendr-engine for $toolchain/$target"
-          
-          }
-        env:
-          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-
-      # Identical to the build process, but running more test commands
-      # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
-      - name: Run tests
-        run: |
-          . ./ci-cargo.ps1
-          $targets = $env:BUILD_TARGETS.Split(',')
-          $toolchain = $env:RUST_TOOLCHAIN
-          $itt = 0..($targets.Length - 1)
-          foreach($i in $itt) {
-            if ($targets[$i] -eq "") {
-              $target = 'default'
-            }
-            else {
-              $target = $targets[$i]
-            }
-
-            ci-cargo +$toolchain test --manifest-path extendr-engine/Cargo.toml --features tests-all $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-engine \w tests-all for $target target"
-
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests for $target target"
-
-            # graphics tests requires --test-threads=1
-            ci-cargo +$toolchain test graphics_tests:: --manifest-path extendr-api/Cargo.toml --features tests-graphics $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture --test-threads=1 -ActionName "Test extendr-api \w graphics for $target target"
-
-            ci-cargo +$toolchain test --manifest-path extendr-api/Cargo.toml --features tests-minimal $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target"
-            ci-cargo +$toolchain test test_result_list --manifest-path extendr-api/Cargo.toml --features tests-minimal,result_list $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target with `result_list` feature"
-            ci-cargo +$toolchain test test_result_condition --manifest-path extendr-api/Cargo.toml --features tests-minimal,result_condition $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-api \w tests-minimal for $target target with `result_condition` feature"
-                      
-            ci-cargo +$toolchain test --manifest-path extendr-macros/Cargo.toml  $(if($target -ne 'default') {"--target=$target"} ) $env:EXTRA_ARGS '--' --nocapture -ActionName "Test extendr-macros for $target target"
-          
-          }
-        env:
-          BUILD_TARGETS: ${{ join(matrix.config.rust-targets, ',') }}
-          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
-          EXTRA_ARGS: ${{ join(matrix.config.extra-args, ',') }}

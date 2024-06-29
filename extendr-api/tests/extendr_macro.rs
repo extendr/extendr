@@ -127,9 +127,14 @@ fn tests_with_successful_outcomes() {
     }
 }
 
+// This behavior is now handled in Rust nightly 1.81 making catch_r_error() unusable.
+// For previous versions this is useful.
+// See related: https://rust-lang.zulipchat.com/#narrow/stream/122651-general/topic/default.20PR.20description.20feedback
+// TODO: revisit when formalized
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
+#[ignore = "panicking in FFI is now automatically abort instead of undefined behavior"]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
     single_threaded(|| unsafe {
