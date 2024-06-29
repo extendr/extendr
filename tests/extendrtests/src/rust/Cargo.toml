@@ -3,7 +3,7 @@ resolver = "2"
 
 [package]
 name = "extendrtests"
-version = "0.6.0"
+version = "0.7.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
@@ -16,11 +16,8 @@ publish = false
 crate-type = ["staticlib"]
 
 [dependencies]
-extendr-api = { version = "*", features = ["graphics", "ndarray", "either"] }
-
-# TODO: I couldn't find any nice way to add the condition based on the R version
-# except for using libR-sys just for "DEP_R_*" envvars.
-libR-sys = "*"
+extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
+faer = "0.19"
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
