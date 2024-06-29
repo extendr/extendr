@@ -9,6 +9,6 @@ authors.workspace = true
 publish = false
 
 [dependencies]
-clap = { version = "4.4.6", features = ["derive"] }
+clap = { version = "4.4", features = ["derive"] }
 toml_edit = "0.22"
-xshell = "0.2.5"
+xshell = "0.2"
