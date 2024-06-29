@@ -128,7 +128,7 @@ fn tests_with_successful_outcomes() {
 }
 
 // This behavior is now handled in Rust nightly 1.81 making catch_r_error() unusable.
-// For previous versions this is useful. 
+// For previous versions this is useful.
 // See related: https://rust-lang.zulipchat.com/#narrow/stream/122651-general/topic/default.20PR.20description.20feedback
 // TODO: revisit when formalized
 // Win32 does not support catch_unwind.
