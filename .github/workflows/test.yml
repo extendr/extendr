@@ -53,8 +53,7 @@ jobs:
           - {
               os: ubuntu-latest,
               r: "release",
-              rust-version: "nightly-msvc",
-              rust-targets: ["x86_64-unknown-linux-msvc"],
+              rust-version: "nightly",
               extra-args: ["-Zdoctest-xcompile"],
             }
           # R-devel requires LD_LIBRARY_PATH
