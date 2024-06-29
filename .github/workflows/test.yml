@@ -29,36 +29,56 @@ jobs:
               r: "release",
               rust-version: "stable-msvc",
               rtools-version: "44",
+              features: "full-functionality",
             }
           - {
               os: windows-latest,
               r: "devel",
               rust-version: "stable-msvc",
               rtools-version: "44",
+              features: "default",
             }
           - {
               os: windows-latest,
               r: "oldrel",
               rust-version: "stable-msvc",
               rtools-version: "43",
+              features: "default",
             }
 
-          - { os: macOS-latest, r: "release", rust-version: "stable" }
+          - {
+              os: macOS-latest,
+              r: "release",
+              rust-version: "stable",
+              features: "full-functionality",
+            }
           - {
               os: ubuntu-latest,
               r: "release",
               rust-version: "stable",
+              features: "full-functionality",
               check_fmt: true,
             }
           - {
               os: ubuntu-latest,
               r: "release",
               rust-version: "nightly",
+              features: "full-functionality",
               extra-args: ["-Zdoctest-xcompile"],
             }
           # R-devel requires LD_LIBRARY_PATH
-          - { os: ubuntu-latest, r: "devel", rust-version: "stable" }
-          - { os: ubuntu-latest, r: "oldrel", rust-version: "stable" }
+          - {
+              os: ubuntu-latest,
+              r: "devel",
+              rust-version: "stable",
+              features: "default",
+            }
+          - {
+              os: ubuntu-latest,
+              r: "oldrel",
+              rust-version: "stable",
+              features: "default",
+            }
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -186,7 +206,7 @@ jobs:
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
             # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here.
-            ci-cargo test $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
+            ci-cargo test --features ${{ matrix.config.features }} $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
           }
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
