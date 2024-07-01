@@ -182,7 +182,7 @@ pub(crate) fn extendr_impl(
         impl TryFrom<Robj> for &#self_ty {
             type Error = extendr_api::Error;
 
-            fn try_from(robj: Robj) -> Result<Self> {
+            fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                 Self::try_from(&robj)
             }
         }
@@ -190,7 +190,7 @@ pub(crate) fn extendr_impl(
         impl TryFrom<Robj> for &mut #self_ty {
             type Error = extendr_api::Error;
 
-            fn try_from(mut robj: Robj) -> Result<Self> {
+            fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                 Self::try_from(&mut robj)
             }
         }
@@ -198,7 +198,7 @@ pub(crate) fn extendr_impl(
         // Output conversion function for this type.
         impl TryFrom<&Robj> for &#self_ty {
             type Error = extendr_api::Error;
-            fn try_from(robj: &Robj) -> Result<Self> {
+            fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                 use extendr_api::ExternalPtr;
                 unsafe {
                     let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
@@ -210,7 +210,7 @@ pub(crate) fn extendr_impl(
         // Input conversion function for a mutable reference to this type.
         impl TryFrom<&mut Robj> for &mut #self_ty {
             type Error = extendr_api::Error;
-            fn try_from(robj: &mut Robj) -> Result<Self> {
+            fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
                 use extendr_api::ExternalPtr;
                 unsafe {
                     let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
