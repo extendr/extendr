@@ -1,0 +1,68 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Reimert
+  given-names: Mossa Merhi
+  orcid: "https://orcid.org/0009-0007-9297-1523"
+- family-names: Parry
+  given-names: Josiah D.
+  orcid: "https://orcid.org/0000-0001-9910-865X"
+- family-names: Denwood
+  given-names: Matt
+  orcid: "https://orcid.org/0000-0001-5212-4273"
+- family-names: Gussmann
+  given-names: Maya Katrin
+  orcid: "https://orcid.org/0000-0001-5634-5903"
+- family-names: Wilke
+  given-names: Claus O.
+  orcid: "https://orcid.org/0000-0002-7470-9261"
+- family-names: Kosenkov
+  given-names: Ilia
+  orcid: "https://orcid.org/0000-0001-5563-7840"
+- family-names: Milton
+  given-names: Michael
+  orcid: "https://orcid.org/0000-0002-8965-2595"
+- family-names: Thomason
+  given-names: Amy
+  orcid: "https://orcid.org/0000-0001-8240-1614"
+doi: 10.5281/zenodo.12584076
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Reimert
+    given-names: Mossa Merhi
+    orcid: "https://orcid.org/0009-0007-9297-1523"
+  - family-names: Parry
+    given-names: Josiah D.
+    orcid: "https://orcid.org/0000-0001-9910-865X"
+  - family-names: Denwood
+    given-names: Matt
+    orcid: "https://orcid.org/0000-0001-5212-4273"
+  - family-names: Gussmann
+    given-names: Maya Katrin
+    orcid: "https://orcid.org/0000-0001-5634-5903"
+  - family-names: Wilke
+    given-names: Claus O.
+    orcid: "https://orcid.org/0000-0002-7470-9261"
+  - family-names: Kosenkov
+    given-names: Ilia
+    orcid: "https://orcid.org/0000-0001-5563-7840"
+  - family-names: Milton
+    given-names: Michael
+    orcid: "https://orcid.org/0000-0002-8965-2595"
+  - family-names: Thomason
+    given-names: Amy
+    orcid: "https://orcid.org/0000-0001-8240-1614"
+  date-published: 2024-07-01
+  doi: 10.21105/joss.06394
+  issn: 2475-9066
+  issue: 99
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 6394
+  title: "extendr: Frictionless bindings for R and Rust"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.06394"
+  volume: 9
+title: "extendr: Frictionless bindings for R and Rust"
