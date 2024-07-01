@@ -256,7 +256,7 @@ pub(crate) fn make_function_wrappers(
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-            let mut args = vec![
+            let args = vec![
                 #( #meta_args, )*
             ];
 
