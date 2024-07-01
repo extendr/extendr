@@ -95,7 +95,7 @@ In contrast, bindings between Rust and R, such as [`gifski`](https://crates.io/c
 We note that other software packages providing bindings between R and Rust exist.
 The Rust crate / R-package `roxido` / [`cargo`](https://github.com/dbdahl/cargo-framework) [@cargo_cran] provides a mechanism for embedding Rust code within R packages.
 The [savvy](https://github.com/yutannihilation/savvy) interface represents a distilled byproduct of 'extendr'.
-However, 'extendr' difffers from these implementations in that 'extendr' aims at providing an opinionated API, with a focus on an
+However, 'extendr' differs from these implementations in that 'extendr' aims at providing an opinionated API, with a focus on an
 ergonomic API design inspired by features from Rcpp and cpp11.
 
 Several existing projects already utilize 'extendr'.
