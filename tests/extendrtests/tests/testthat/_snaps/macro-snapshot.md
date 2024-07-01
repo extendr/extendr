@@ -2605,7 +2605,7 @@
                       hidden: false,
                   })
           }
-          fn fetch_rownames(x: RMatrix<f64>) -> Robj {
+          fn fetch_rownames(x: RMatrix<f64>) -> Option<Strings> {
               x.get_rownames()
           }
           #[no_mangle]
@@ -2685,12 +2685,12 @@
                       r_name: "fetch_rownames",
                       mod_name: "fetch_rownames",
                       args: args,
-                      return_type: "Robj",
+                      return_type: "Option",
                       func_ptr: wrap__fetch_rownames as *const u8,
                       hidden: false,
                   })
           }
-          fn fetch_colnames(x: RMatrix<f64>) -> Robj {
+          fn fetch_colnames(x: RMatrix<f64>) -> Option<Strings> {
               x.get_colnames()
           }
           #[no_mangle]
@@ -2770,7 +2770,7 @@
                       r_name: "fetch_colnames",
                       mod_name: "fetch_colnames",
                       args: args,
-                      return_type: "Robj",
+                      return_type: "Option",
                       func_ptr: wrap__fetch_colnames as *const u8,
                       hidden: false,
                   })
