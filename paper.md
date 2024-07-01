@@ -69,8 +69,8 @@ such as Python and Julia.
 The strength of R is its ecosystem of packages, the vast majority of which are available from [CRAN](https://cran.r-project.org).
 They are primarily written by research scientists, specialists, and professionals.
 Another important use case of R packages is being a front-end for other languages.
-Automated toolings that provide scaffolding and boilerplate code are widely used to simplify cross-language integration.
-For example, embedding C++ code is a good way to resolve performance bottlenecks within R packages, and it can be easily accomplished using cpp11 [@cpp11] or Rcpp [@rcpp_jss].
+Automated tooling that provides scaffolding and boilerplate code is widely used to simplify cross-language integration.
+For example, embedding C++ code is a good way to resolve performance bottlenecks within R packages, and this can be easily accomplished using cpp11 [@cpp11] or Rcpp [@rcpp_jss].
 Rust demonstrates similar performance to C++, but it also offers other beneficial features such as declarative memory management, which provides compile-time guarantees for memory safety in the absence of a garbage collector.
 
 We note that other scientific computing communities have already introduced plug-ins for Rust, including Python via [PyO3](https://github.com/PyO3/pyo3),
@@ -92,11 +92,10 @@ V8 R-package [@v8_cran] are among the most used.
 In contrast, bindings between Rust and R, such as [`gifski`](https://crates.io/crates/gifski) [@gifski_cran], are currently mostly written by hand.
 
 
-We note that there exist other software packages providing bindings between R and Rust.
+We note that other software packages providing bindings between R and Rust exist.
 The Rust crate / R-package `roxido` / [`cargo`](https://github.com/dbdahl/cargo-framework) [@cargo_cran] provides a mechanism for embedding Rust code within R packages.
-
 The [savvy](https://github.com/yutannihilation/savvy) interface represents a distilled byproduct of 'extendr'.
-However, these implementations differ from 'extendr' in that 'extendr' aims at providing an opinionated API, with a focus on an
+However, 'extendr' difffers from these implementations in that 'extendr' aims at providing an opinionated API, with a focus on an
 ergonomic API design inspired by features from Rcpp and cpp11.
 
 Several existing projects already utilize 'extendr'.
@@ -121,7 +120,7 @@ It consists of the following components:
 - `rextendr`: an R package that simplifies the process of embedding Rust code within an R package, including helping the user to adhere to CRAN rules for publishing Rust-powered R packages
 - `libR-sys`: a Rust crate providing auto-generated Rust bindings to R's C-API
 
-Using 'extendr' requires both Rust and R to be installed, but no further dependencies are required.
+Using 'extendr' requires both Rust and R to be installed, but no other dependencies are required.
 API documentation for all the 'extendr' packages are available at [extendr.github.io](https://extendr.github.io/),
 and the repositories for 'extendr'-packages are freely available from GitHub [github.com/extendr](https://github.com/extendr/),
 under an MIT license.  All hardware/software platforms supported by Rust and R are also supported by extendr.
@@ -138,15 +137,15 @@ A C-function is callable in R if it returns an `SEXP` and all of its arguments
 are `SEXP` - these are opaque pointers to an internal R representation of data.
 These are callable in R via `.Call`. A Rust function that is exported to R must
 have all of its arguments and return values convertible to `SEXP`. Annotating
-it with `#[extendr]` will add a callable C-function in R, that converts the
+it with `#[extendr]` will add a callable C-function in R that converts the
 custom data types into `SEXP` types.
 
-The `rextendr` package also provides R-level functions `rust_source`, which allows
-arbitrary Rust code to be evaluated returning the last value in the block, and
-`rust_function`, which compiles, wraps and returns arbitrary Rust functions as
+The `rextendr` package also provides R-level functions: `rust_source`, which allows
+arbitrary Rust code to be evaluated, returning the last value in the block; and
+`rust_function`, which compiles, wraps, and returns arbitrary Rust functions as
 callable R functions. These two functions are very similar in scope to the
 `evalCpp` and `cppFunction` functions provided by Rcpp, and are very versatile,
-as they can also be used to include 3rd party crates.
+as they can also be used to include third-party crates.
 
 ## Creating Rust-powered R packages
 
@@ -162,8 +161,8 @@ within which the Rust functions are invoked via the `.Call` foreign function int
 For many R package authors, being able to publish their code on CRAN is essential.
 However, CRAN has strict rules for publishing packages, including that the number
 of threads that a package uses at build & testing must not exceed 2. Uniquely, Rust
-has a package manager, which means that R packages have 3rd party dependencies external to R and CRAN.
-These must be vendored to ensure package stability (see ["Using Rust in CRAN packages
+has a package manager, which means that R packages have third-party dependencies external to R and CRAN.
+These must be "vendored" to ensure package stability (see ["Using Rust in CRAN packages
 "](https://cran.r-project.org/web/packages/using_rust.html)). The `rextendr::use_cran_defaults()`
 and `rextendr::vendor_pkgs()` will ensure that dependencies are built entirely offline and from vendored sources,
 which ensures that the resulting R package is fully CRAN-compliant.
@@ -206,7 +205,7 @@ Project lead Amy Thomason received a grant from the R-consortium
 
 Mossa Merhi Reimert received funding from the Danish Food and Veterinary Administration for his PhD project.
 
-Claus O. Wilke acknowledges funding from The University of Texas at Austin (Reeder Centennial Fellowship in Systematic and Evolutionary Biology, Blumberg Centennial Professor in Molecular Evolution).
+Claus O. Wilke acknowledges funding from the University of Texas at Austin (Reeder Centennial Fellowship in Systematic and Evolutionary Biology, Blumberg Centennial Professor in Molecular Evolution).
 
 We would like to acknowledge Jeroen Ooms for his [hellorust](https://github.com/r-rust/hellorust) [@hellorust_cran], and continuous maintenance of a hand-written embedding of Rust in an R proof-of-concept project.
 Their [github.com/r-rust](https://github.com/r-rust) contains several examples
