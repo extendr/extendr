@@ -28,7 +28,7 @@ authors:
   - name: Michael Milton
     orcid: 0000-0002-8965-2595
     affiliation: 5
-  - name: Andy Thomason
+  - name: Amy Thomason
     orcid: 0000-0001-8240-1614
     affiliation: 6
 affiliations:
@@ -201,7 +201,7 @@ rextendr::document()
 
 # Acknowledgements
 
-Project lead Andy Thomason received a grant from the R-consortium
+Project lead Amy Thomason received a grant from the R-consortium
 [@consortiumConsortiumFundedProject2023].
 
 Mossa Merhi Reimert received funding from the Danish Food and Veterinary Administration for his PhD project.
