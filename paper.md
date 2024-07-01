@@ -38,11 +38,11 @@ affiliations:
     index: 2
   - name: "Department of Integrative Biology, The University of Texas at Austin, Austin, TX, USA"
     index: 3
-  - name: "No affiliation"
+  - name: "Independent researcher, Finland"
     index: 4
-  - name: "Walter and Eliza Hall Institute of Medical Research"
+  - name: "Walter and Eliza Hall Institute of Medical Research, Australia"
     index: 5
-  - name: "Atomic Increment Ltd."
+  - name: "Atomic Increment Ltd., United Kingdom"
     index: 6
 date: \today
 bibliography: paper.bib
