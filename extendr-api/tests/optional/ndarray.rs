@@ -1,4 +1,4 @@
-
+#![cfg(test)]
 use extendr_api::prelude::*;
 
 #[test]
