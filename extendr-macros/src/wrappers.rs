@@ -38,7 +38,7 @@ pub const WRAP_PREFIX: &str = "wrap__";
 ///
 /// It also processes (and removes) attributes on the [`Signature`] provided, e.g.
 ///
-/// - `fn foo(#[extendr(default = "NULL")]` arg1: Robj)` will be processed.
+/// - `fn foo(#[default = "NULL"]` arg1: Robj)` will be processed.
 ///
 /// [`Signature`]: syn::Signature
 ///
