@@ -27,7 +27,7 @@
 
 ### Changed
 
-- [_Potentially breaking_]: `RArray::from_parts` no longer requires a pointer to the underlying data
+- \[_Potentially breaking_\]: `RArray::from_parts` no longer requires a pointer to the underlying data
   vector [[#657]](https://github.com/extendr/extendr/pull/657)
 - `#[extendr(use_try_from = true)` is now the default setting, therefore the option `use_try_from` has been removed [[#759]](https://github.com/extendr/extendr/pull/759)
 
