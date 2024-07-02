@@ -16,7 +16,7 @@
 
 - Arguments can be (mutable) typed slices such as `&[Rbool]`, `&mut [Rint]` etc. [[#790]](https://github.com/extendr/extendr/pull/790)
 - New optional `faer` feature which enables conversion between `faer` matrix and `RMatrix<f64>` [[#706]](https://github.com/extendr/extendr/pull/706)
-- Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self`
+- Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self` [[#730]](https://github.com/extendr/extendr/pull/730)
 - Adds `From<T> for Robj` for impl blocks marked with `#[extendr]` macro
 - The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
@@ -64,7 +64,7 @@ result in unintended cloning  [[#614]](https://github.com/extendr/extendr/issues
 
 ### Added
 
-- `ALTLIST` support allowing users to represent structs as R list objects
+- `ALTLIST` support allowing users to represent structs as R list objects [[#600]](https://github.com/extendr/extendr/pull/600)
 - [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480)
 - `PartialOrd` trait implementation for `Rfloat`, `Rint` and `Rbool`. `Rfloat` and `Rint` gained `min()` and `max()` methods [[#573]](https://github.com/extendr/extendr/pull/573)
 - `use_rng` option for the `extendr` attribute macro, which enables the use of
