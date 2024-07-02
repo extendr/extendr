@@ -32,7 +32,16 @@ use crate::extendr_options::ExtendrOptions;
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
-// Generate wrappers for a specific function.
+/// Generate wrappers for a specific function.
+///
+/// This function generates the `extern "C" fn`-wrappers for the given functions.
+///
+/// It also processes (and removes) attributes on the [`Signature`] provided, e.g.
+///
+/// - `fn foo(#[extendr(default = "NULL")]` arg1: Robj)` will be processed.
+///
+/// [`Signature`]: syn::Signature
+///
 pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
@@ -120,6 +129,7 @@ pub(crate) fn make_function_wrappers(
     let actual_args: Punctuated<Expr, Token![,]> =
         inputs.iter().filter_map(translate_actual).collect();
 
+    // this also processes `default` attribute on function arguments
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
@@ -407,6 +417,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
+            // pop the `default` attribute on parameters
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
             } else {
@@ -499,9 +510,8 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
 // eg. #[default="xyz"]
 // Remove the attribute from the list.
 fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> {
-    let mut new_attrs = Vec::new();
     let mut res = None;
-    for a in attrs.drain(0..) {
+    for (index, a) in attrs.clone().into_iter().enumerate() {
         if let syn::Meta::NameValue(ref nv) = a.meta {
             if nv.path.is_ident(name) {
                 if let Expr::Lit(ExprLit {
@@ -510,14 +520,12 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                 }) = nv.value
                 {
                     res = Some(litstr.value());
-                    continue;
+                    attrs.remove(index);
+                    return res;
                 }
             }
         }
-
-        new_attrs.push(a);
     }
-    *attrs = new_attrs;
     res
 }
 
