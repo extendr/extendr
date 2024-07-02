@@ -34,20 +34,21 @@
           #[cfg(use_r_altlist)]
           impl VecUsize {}
           impl TryFrom<Robj> for &VecUsize {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut VecUsize {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &VecUsize {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<VecUsize> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -55,8 +56,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut VecUsize {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<VecUsize> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -65,6 +67,7 @@
           }
           impl From<VecUsize> for Robj {
               fn from(value: VecUsize) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<VecUsize> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "VecUsize").unwrap();
@@ -163,7 +166,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -285,7 +288,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -415,7 +418,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -581,7 +584,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__dbls_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -671,7 +674,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__strings_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -765,7 +768,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__list_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1019,7 +1022,7 @@
           fn meta__test_derive_into_dataframe(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1108,7 +1111,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__test_into_robj_dataframe(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1348,7 +1351,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -1432,7 +1435,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1526,7 +1529,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1617,7 +1620,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_owned(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1711,7 +1714,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1805,7 +1808,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1899,7 +1902,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1993,7 +1996,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2095,7 +2098,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2213,7 +2216,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref_offset(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2325,7 +2328,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref2(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2353,20 +2356,21 @@
                   })
           }
           impl TryFrom<Robj> for &Wrapper {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut Wrapper {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &Wrapper {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<Wrapper> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -2374,8 +2378,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut Wrapper {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<Wrapper> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -2384,6 +2389,7 @@
           }
           impl From<Wrapper> for Robj {
               fn from(value: Wrapper) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<Wrapper> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "Wrapper").unwrap();
@@ -2583,7 +2589,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2668,7 +2674,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_rownames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2753,7 +2759,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_colnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2844,7 +2850,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__change_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3031,7 +3037,7 @@
           fn meta__leak_arg2_try_implicit_strings(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3137,7 +3143,7 @@
           fn meta__leak_arg2_try_implicit_doubles(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3233,7 +3239,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3323,7 +3329,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3417,7 +3423,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_positive_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3511,7 +3517,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_negative_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3689,7 +3695,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__type_aware_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3860,7 +3866,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3945,7 +3951,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4030,7 +4036,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4115,7 +4121,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmatfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4200,7 +4206,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__rmat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4285,7 +4291,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__robj_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4370,7 +4376,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__matref_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4644,7 +4650,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__euclidean_dist(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4827,7 +4833,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__raw_identifier_in_fn_args(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4912,7 +4918,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__true(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Test raw identifiers (`r#`) as function names are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @export",
@@ -4992,7 +4998,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__false(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5163,7 +5169,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__hello_submodule(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Return string `\"Hello world!\"` to R.\n @export",
@@ -5289,7 +5295,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -5373,7 +5379,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5469,7 +5475,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5492,20 +5498,21 @@
                   })
           }
           impl TryFrom<Robj> for &MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut MySubmoduleClass {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<MySubmoduleClass> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -5513,8 +5520,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<MySubmoduleClass> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -5523,6 +5531,7 @@
           }
           impl From<MySubmoduleClass> for Robj {
               fn from(value: MySubmoduleClass) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<MySubmoduleClass> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
@@ -5693,7 +5702,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__middle_zero(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5788,7 +5797,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__logicals_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5887,7 +5896,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__floats_mean(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -6054,7 +6063,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__hello_world(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6125,7 +6134,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__do_nothing(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6201,7 +6210,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6286,7 +6295,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__int_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6371,7 +6380,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__bool_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6456,7 +6465,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6541,7 +6550,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6626,7 +6635,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6708,7 +6717,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6781,7 +6790,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6857,7 +6866,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6942,7 +6951,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7035,7 +7044,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_doubles_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7133,7 +7142,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_integers_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7231,7 +7240,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_logicals_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7325,7 +7334,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__doubles_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7414,7 +7423,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__complexes_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7503,7 +7512,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__integers_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7592,7 +7601,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__logicals_not(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7677,7 +7686,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_default(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7775,7 +7784,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__special_param_names(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7867,7 +7876,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____00__special_function_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Test wrapping of special function name\n @name f__00__special_function_name\n @export",
@@ -7940,7 +7949,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__test_rename_mymod(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8016,7 +8025,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8101,7 +8110,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__add_5_if_not_null(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8232,7 +8241,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -8316,7 +8325,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8410,7 +8419,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8502,7 +8511,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__me(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8590,7 +8599,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__restore_from_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8678,7 +8687,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8701,20 +8710,21 @@
               })
       }
       impl TryFrom<Robj> for &MyClass {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut MyClass {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &MyClass {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<MyClass> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -8722,8 +8732,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClass {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<MyClass> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -8732,6 +8743,7 @@
       }
       impl From<MyClass> for Robj {
           fn from(value: MyClass) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClass").unwrap();
@@ -8835,7 +8847,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -8917,7 +8929,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass____name_test(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8940,20 +8952,21 @@
               })
       }
       impl TryFrom<Robj> for &__MyClass {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut __MyClass {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &__MyClass {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<__MyClass> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -8961,8 +8974,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut __MyClass {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<__MyClass> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -8971,6 +8985,7 @@
       }
       impl From<__MyClass> for Robj {
           fn from(value: __MyClass) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<__MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "__MyClass").unwrap();
@@ -9082,7 +9097,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -9164,7 +9179,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -9187,20 +9202,21 @@
               })
       }
       impl TryFrom<Robj> for &MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut MyClassUnexported {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<MyClassUnexported> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -9208,8 +9224,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<MyClassUnexported> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -9218,6 +9235,7 @@
       }
       impl From<MyClassUnexported> for Robj {
           fn from(value: MyClassUnexported) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<MyClassUnexported> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
@@ -9313,7 +9331,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__my_device(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
