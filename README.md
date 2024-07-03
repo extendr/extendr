@@ -86,8 +86,6 @@ and interfaces.
 This library aims to provide an interface that will be familiar to
 first-time users of Rust or indeed any compiled language.
 
-Anyone who knows the R library should be able to write R extensions.
-
 ## Goals of the project
 
 Instead of wrapping R objects, we convert to Rust native objects
