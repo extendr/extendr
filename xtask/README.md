@@ -47,7 +47,7 @@ Runs `R CMD check` tests in `tests/extendrtests`.
 
 ## `doc`
 
-Generates documentation as seen on [/extendr.github.io](https://extendr.github.io/extendr/extendr_api/), meaning it will enable feature `full-functionality`,
+Generates documentation as seen on [extendr.github.io](https://extendr.github.io/extendr/extendr_api/), meaning it will enable feature `full-functionality`,
 which includes all the optional dependencies, plus all the additive features.
 
 ## `msrv`
