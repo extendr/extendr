@@ -1,4 +1,4 @@
-# extendr - A safe and user friendly R extension interface using Rust
+# `extendr` - A safe and user friendly R extension interface using Rust
 
 [![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](https://img.shields.io/crates/v/extendr-api.svg)](https://crates.io/crates/extendr-api)
@@ -8,7 +8,7 @@
 
 [![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
 
-## Welcome!
+## Welcome
 
 extendR is a suite of software packages, see the website [extendR](https://extendr.github.io/) for an overview.
 
@@ -101,7 +101,7 @@ pub fn my_sum(v: &[f64]) -> f64 {
 }
 ```
 
-You can interact in more detail with R objects using the RObj
+You can interact in more detail with R objects using the `Robj`
 type which wraps the native R object type. This supports a large
 subset of the R internals functions, but wrapped to prevent
 accidental segfaults and failures.
@@ -116,5 +116,5 @@ You can also get in contact via our [Discord server](https://discord.gg/7hmApuc)
 
 ### Development
 
-The documentation for the latest development version of `extendr-api` is available here: 
+The documentation for the latest development version of `extendr-api` is available here:
 <https://extendr.github.io/extendr/extendr_api/>
