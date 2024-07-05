@@ -10,7 +10,7 @@ pub fn R(item: TokenStream, expand_params: bool) -> TokenStream {
         Err(_) => {
             // If not a string, expand the tokens to make a string.
             let src = format!("{}", item);
-            return quote!(eval_string(#src));
+            return quote!(extendr_api::functions::eval_string(#src));
         }
     };
 
@@ -39,12 +39,12 @@ pub fn R(item: TokenStream, expand_params: bool) -> TokenStream {
     }
 
     if expressions.is_empty() {
-        quote!(eval_string(#src))
+        quote!(extendr_api::functions::eval_string(#src))
     } else {
         quote!(
             {
                 let params = &[#expressions];
-                eval_string_with_params(#src, params)
+                extendr_api::functions::eval_string_with_params(#src, params)
             }
         )
     }

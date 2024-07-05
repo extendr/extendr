@@ -1,3 +1,4 @@
+use crate as extendr_api;
 use crate::conversions::try_into_int::ConversionError;
 use crate::scalar::*;
 use crate::*;

@@ -212,10 +212,10 @@ pub(crate) fn make_function_wrappers(
             #rng_start
 
             let wrap_result_state: std::result::Result<
-                std::result::Result<Robj, extendr_api::Error>,
+                std::result::Result<extendr_api::Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, extendr_api::Error> {
                     #(#convert_args)*
                     #return_type_conversion
                 }))

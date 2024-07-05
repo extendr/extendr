@@ -27,20 +27,20 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
 
     // Emit the conversion trait impl
     Ok(TokenStream::from(quote!(
-        impl std::convert::TryFrom<&Robj> for #struct_name {
+        impl std::convert::TryFrom<&extendr_api::Robj> for #struct_name {
             type Error = extendr_api::Error;
 
-            fn try_from(value: &Robj) -> extendr_api::Result<Self> {
+            fn try_from(value: &extendr_api::Robj) -> extendr_api::Result<Self> {
                 Ok(#struct_name {
                     #(#tokens),*
                 })
             }
         }
 
-        impl std::convert::TryFrom<Robj> for #struct_name {
+        impl std::convert::TryFrom<extendr_api::Robj> for #struct_name {
             type Error = extendr_api::Error;
 
-            fn try_from(value: Robj) -> extendr_api::Result<Self> {
+            fn try_from(value: extendr_api::Robj) -> extendr_api::Result<Self> {
                 Ok(#struct_name {
                     #(#tokens),*
                 })

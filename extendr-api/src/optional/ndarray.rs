@@ -194,6 +194,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate as extendr_api;
     use ndarray::array;
     use rstest::rstest;
 

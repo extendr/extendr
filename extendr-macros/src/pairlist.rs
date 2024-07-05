@@ -21,10 +21,10 @@ pub fn pairlist(item: TokenStream) -> TokenStream {
         .collect::<Vec<Expr>>();
 
     if pairs.is_empty() {
-        TokenStream::from(quote!(Pairlist::from(())))
+        TokenStream::from(quote!(extendr_api::wrapper::Pairlist::from(())))
     } else {
         TokenStream::from(quote!(
-            Pairlist::from_pairs(&[# ( #pairs ),*])
+            extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])
         ))
     }
 }
