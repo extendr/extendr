@@ -1,5 +1,5 @@
 //! An ergonomic, opinionated, safe and user-friendly wrapper to the R-API
-//! 
+//!
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
