@@ -158,7 +158,8 @@ pub trait Rinternals: Types + Conversions {
 
     /// Find a variable in an environment.
     ///
-    /// See also [global_var()].
+    // //TODO: fix me, as this variable is hidden behind non-api as of this writing
+    // See also [global_var()].
     ///
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.

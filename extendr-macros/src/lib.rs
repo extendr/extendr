@@ -80,7 +80,7 @@ use syn::{parse_macro_input, Item};
 /// [`extendr-fn`]: ./extendr_function/fn.extendr_function.html
 /// [`extendr-impl`]: ./extendr_impl/fn.extendr_impl.html
 ///
-/// There is also [extendr_module!], which is used for defining what rust
+/// There is also [`macro@extendr_module`], which is used for defining what rust
 /// wrapped items should be visible to the surrounding R-package.
 ///
 #[proc_macro_attribute]
@@ -102,7 +102,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Define a module and export symbols to R
 /// Example:
-///```ignore
+///```dont_run
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
@@ -112,7 +112,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// Outputs:
 ///
-/// ```ignore
+/// ```dont_run
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
