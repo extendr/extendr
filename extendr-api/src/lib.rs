@@ -1,9 +1,5 @@
-//!
-//! A safe and user friendly R extension interface.
-//!
-//! * Build rust extensions to R.
-//! * Convert R packages to Rust crates.
-//!
+//! An ergonomic, opinionated, safe and user-friendly wrapper to the R-API
+//! 
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
@@ -308,7 +304,6 @@
 //! These features are experimental and are subject to change.
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
-
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]
