@@ -1,12 +1,6 @@
-# extendr-api
+# `extendr-api`
 
-A safe and user friendly R extension interface.
-
-* Build rust extensions to R.
-* Convert R packages to Rust crates.
-
-This library aims to provide an interface that will be familiar to
-first-time users of Rust or indeed any compiled language.
+`extendr-api` is an opinionated, ergonomic, and safe interface to R API.
 
 ## Installation
 
@@ -15,8 +9,15 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.6"
+extendr-api = "0.7"
 ```
+
+## About
+
+On the [extendr homepage](https://extendr.github.io/) there is a [comprehensive user-guide](https://extendr.github.io/user-guide/).
+
+The [API documentation on doc.rs](https://docs.rs/extendr-api/latest/extendr_api/), and for
+[development API documentation](https://extendr.github.io/extendr/extendr_api/).
 
 ## Overview
 
