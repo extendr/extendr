@@ -16,7 +16,7 @@ use crate::extendr;
 /// macro to an `impl` block (supported with `enum`s and `struct`s), the
 /// methods in the impl block are made available as functions in an
 /// environment.
-/// 
+///
 ///
 /// On the R side, an environment with the same name of the inherent
 /// implementation is created. The environment has functions within it

@@ -175,7 +175,7 @@ macro_rules! reprintln {
 /// `#[cfg(test)]`) or in doc strings. If it is used in library code that
 /// gets incorporated into an R package, R CMD check will complain about
 /// non-API calls.
-/// 
+///
 /// [`extendr_engine`]: https://extendr.github.io/extendr/extendr_engine/
 #[macro_export]
 macro_rules! test {
