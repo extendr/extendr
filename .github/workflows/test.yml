@@ -210,7 +210,7 @@ jobs:
                $testArgs += "--test-threads=1"
             }
             # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here.
-            ci-cargo test --features ${{ matrix.config.features }} @( $testArgs ) $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture -ActionName "Testing for $target target"
+            ci-cargo test --features ${{ matrix.config.features }} $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture @( $testArgs ) -ActionName "Testing for $target target"
           }
 
       # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
