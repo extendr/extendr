@@ -1,8 +1,9 @@
 # `extendr-engine`
 
-This crate facilitates embedding an R process together with a Rust binary.
-It is not meant to be used within rust-powered R-packages. Rather, this crate
-may be used to embed R in a Rust application.
+This crate facilitates embedding an R process together with a standalone binaries.
+In rust-powered R-packages, the R code calls Rust, and thus there is already an
+accompanying R process. Instead, this is meant to be used in unit tests, integration
+test and binaries that are standalone from R code.
 
 **This crate does not adhere to the non-API requirements of CRAN.**
 

@@ -1,8 +1,8 @@
-//! Embeds an a single R process
+//! Embeds a a single R process
 //!
 //! Using R's C-API requires the embedding of the R runtime.
 //! Thus, when using bindings in `libR-sys`, it is necessary that
-//! either the an R process is the caller, or that the process instantiates
+//! either the a R process is the caller, or that the process instantiates
 //! an accompanying R process. Otherwise, a run-time error occurs e.g.
 //! `(signal: 11, SIGSEGV: invalid memory reference)` or
 //!
@@ -43,7 +43,7 @@
 //!
 //! ## Binaries
 //!
-//! In an binary program, one may use [`start_r`] directly in the `main`-function.
+//! In a binary program, one may use [`start_r`] directly in the `main`-function.
 //!
 //! There is no `end_r`, as we terminate the R process setup, when the parent
 //! process terminates.
