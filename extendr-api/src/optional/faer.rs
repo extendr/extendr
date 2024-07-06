@@ -126,9 +126,9 @@ impl From<RMatrix<i32>> for Mat<f64> {
 
 #[cfg(test)]
 mod test {
+    use crate as extendr_api;
     use crate::*;
     use faer::{mat, Mat, MatRef};
-    use crate as extendr_api;
 
     #[test]
     fn test_rmatrix_to_faer_mat() {
