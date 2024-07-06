@@ -61,13 +61,19 @@ mod test {
         // Naked R!
         assert_eq!(
             format!("{}", R(quote!(data.frame), true)),
-            format!("{}", quote!(extendr_api::functions::eval_string("data . frame")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("data . frame"))
+            )
         );
 
         // Quoted R!
         assert_eq!(
             format!("{}", R(quote!("data.frame"), true)),
-            format!("{}", quote!(extendr_api::functions::eval_string("data.frame")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("data.frame"))
+            )
         );
 
         // Param R!
@@ -85,13 +91,19 @@ mod test {
         // Unquoted R!
         assert_eq!(
             format!("{}", R(quote!(r#""hello""#), true)),
-            format!("{}", quote!(extendr_api::functions::eval_string("\"hello\"")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("\"hello\""))
+            )
         );
 
         // Rraw!
         assert_eq!(
             format!("{}", R(quote!("a <- {{1}}"), false)),
-            format!("{}", quote!(extendr_api::functions::eval_string("a <- {{1}}")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("a <- {{1}}"))
+            )
         );
     }
 }
