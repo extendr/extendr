@@ -1,4 +1,4 @@
-use extendr_api::{list, test, List, Result};
+use extendr_api::{list, test, List};
 
 #[test]
 fn test_list() {

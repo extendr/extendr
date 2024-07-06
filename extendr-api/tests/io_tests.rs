@@ -2,7 +2,7 @@ use ::extendr_api::io::Load;
 
 #[test]
 fn test_save() {
-    use extendr_api::{io::PstreamFormat, io::Save, test, Result, Robj};
+    use extendr_api::{io::PstreamFormat, io::Save, test, Robj};
     test! {
         let mut w = Vec::new();
         Robj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_ascii_format, 3, None)?;
@@ -21,7 +21,7 @@ fn test_save() {
 
 #[test]
 fn test_load() {
-    use extendr_api::{io::PstreamFormat, test, Result, Robj};
+    use extendr_api::{io::PstreamFormat, test, Robj};
     test! {
         let text = r#"A
 3

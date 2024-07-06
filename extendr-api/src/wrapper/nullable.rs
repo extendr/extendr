@@ -1,4 +1,5 @@
 use super::*;
+use crate as extendr_api;
 
 /// Wrapper for handling potentially NULL values.
 /// ```

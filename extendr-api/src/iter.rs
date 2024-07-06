@@ -215,7 +215,6 @@ impl AsStrIter for Robj {}
 
 #[cfg(test)]
 mod tests {
-    use crate as extendr_api;
     use extendr_engine::with_r;
 
     use super::*;
