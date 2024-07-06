@@ -205,8 +205,8 @@ jobs:
         run: |
           . ./ci-cargo.ps1
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
-            $features = ${{ matrix.config.features }}
-            if (-eq $features "full-functionality") {
+            $features = "${{ matrix.config.features }}"
+            if ($features -eq "full-functionality") {
                $testArgs += "--test-threads=1"
             }
             # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here.
