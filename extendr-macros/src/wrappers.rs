@@ -33,14 +33,15 @@ pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
 // Generate wrappers for a specific function.
+///
+/// Applies the attributes provided (and removes them). (`default = "NULL"`)
 pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
-    wrappers: &mut Vec<ItemFn>,
     prefix: &str,
     attrs: &[syn::Attribute],
     sig: &mut syn::Signature,
     self_ty: Option<&syn::Type>,
-) -> syn::Result<()> {
+) -> syn::Result<Vec<ItemFn>> {
     let rust_name = sig.ident.clone();
 
     let r_name_str = if let Some(r_name) = opts.r_name.as_ref() {
@@ -55,9 +56,12 @@ pub(crate) fn make_function_wrappers(
         sig.ident.clone()
     };
 
+    let mut wrappers: Vec<ItemFn> = Vec::new();
     let mod_name = sanitize_identifier(mod_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
+
+    let wrap_name_str = wrap_name.to_string();
 
     let rust_name_str = format!("{}", rust_name);
     let c_name_str = format!("{}", mod_name);
@@ -120,6 +124,7 @@ pub(crate) fn make_function_wrappers(
     let actual_args: Punctuated<Expr, Token![,]> =
         inputs.iter().filter_map(translate_actual).collect();
 
+    // also process `default` attribute on function arguments
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
@@ -256,7 +261,7 @@ pub(crate) fn make_function_wrappers(
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-            let mut args = vec![
+            let args = vec![
                 #( #meta_args, )*
             ];
 
@@ -265,15 +270,16 @@ pub(crate) fn make_function_wrappers(
                 rust_name: #rust_name_str,
                 r_name: #r_name_str,
                 mod_name: #c_name_str,
-                args: args,
+                args,
                 return_type: #return_type_string,
-                func_ptr: #wrap_name as * const u8,
+                func_ptr: #wrap_name as *const u8,
+                wrap_name: #wrap_name_str,
                 hidden: false,
             })
         }
     ));
 
-    Ok(())
+    Ok(wrappers)
 }
 
 // Extract doc strings from attributes.
@@ -300,7 +306,7 @@ pub fn get_doc_string(attrs: &[syn::Attribute]) -> String {
     res
 }
 
-pub fn get_return_type(sig: &syn::Signature) -> String {
+pub(crate) fn get_return_type(sig: &syn::Signature) -> String {
     match &sig.output {
         syn::ReturnType::Default => "()".into(),
         syn::ReturnType::Type(_, ref rettype) => type_name(rettype),
@@ -331,7 +337,7 @@ pub fn mangled_type_name(type_: &Type) -> String {
 // Fred<'a> -> Fred
 // &[i32] -> _hex_hex_hex_hex
 //
-pub fn type_name(type_: &Type) -> String {
+pub(crate) fn type_name(type_: &Type) -> String {
     match type_ {
         Type::Path(syn::TypePath { path, .. }) => {
             if let Some(ident) = path.get_ident() {
@@ -383,7 +389,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
 ///
 /// For example `mut x: Vec<i32>`, the alias is `x`, but the `mut` would still
 /// be present if only the `Ident` of `PatType` was used.
-fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
+pub(crate) fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
     Ok(match pat {
         syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
         _ => {
@@ -407,6 +413,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
+            // pop the `default` attribute on parameters
             let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
             } else {
@@ -498,10 +505,9 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
 // Get a single named literal from a list of attributes.
 // eg. #[default="xyz"]
 // Remove the attribute from the list.
-fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> {
-    let mut new_attrs = Vec::new();
+pub(crate) fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> {
     let mut res = None;
-    for a in attrs.drain(0..) {
+    for (index, a) in attrs.clone().into_iter().enumerate() {
         if let syn::Meta::NameValue(ref nv) = a.meta {
             if nv.path.is_ident(name) {
                 if let Expr::Lit(ExprLit {
@@ -510,20 +516,18 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                 }) = nv.value
                 {
                     res = Some(litstr.value());
+                    attrs.remove(index);
                     continue;
                 }
             }
         }
-
-        new_attrs.push(a);
     }
-    *attrs = new_attrs;
     res
 }
 
 // Remove the raw identifier prefix (`r#`) from an [`Ident`]
 // If the `Ident` does not start with the prefix, it is returned as is.
-fn sanitize_identifier(ident: Ident) -> Ident {
+pub(crate) fn sanitize_identifier(ident: Ident) -> Ident {
     static PREFIX: &str = "r#";
     let (ident, span) = (ident.to_string(), ident.span());
     let ident = match ident.strip_prefix(PREFIX) {

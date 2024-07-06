@@ -449,17 +449,18 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
-        let wrapped_name = format!("wrap__{}", func.mod_name);
-        make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+        let wrapped_name = &func.wrap_name;
+        make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name);
     }
 
     for imp in metadata.impls {
         for func in imp.methods {
-            let wrapped_name = format!("wrap__{}__{}", imp.name, func.mod_name);
-            make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+            let wrapped_name = func.wrap_name;
+            make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name);
         }
     }
 
+    // https://stackoverflow.com/questions/76131176/registering-native-routines-why-null-terminate-arrays
     rmethods.push(libR_sys::R_CallMethodDef {
         name: std::ptr::null(),
         fun: None,

@@ -1,7 +1,7 @@
 extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{ItemFn, ItemImpl};
+use syn::ItemImpl;
 
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
@@ -154,7 +154,7 @@ pub(crate) fn extendr_impl(
     //     }
     // }
     // ```
-    let mut wrappers: Vec<ItemFn> = Vec::new();
+    let mut wrappers: Vec<_> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
             method_meta_names.push(format_ident!(
@@ -163,14 +163,14 @@ pub(crate) fn extendr_impl(
                 self_ty_name,
                 method.sig.ident
             ));
-            wrappers::make_function_wrappers(
+            let wrapper = wrappers::make_function_wrappers(
                 opts,
-                &mut wrappers,
                 prefix.as_str(),
                 &method.attrs,
                 &mut method.sig,
                 Some(self_ty),
             )?;
+            wrappers.extend(wrapper);
         }
     }
 
@@ -223,7 +223,7 @@ pub(crate) fn extendr_impl(
         #item_impl
 
         // Function wrappers
-        #( #wrappers )*
+        #(#wrappers)*
 
         #conversion_impls
 
