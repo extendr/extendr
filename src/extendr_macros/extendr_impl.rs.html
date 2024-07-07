@@ -258,6 +258,8 @@
 <a href="#258" id="258">258</a>
 <a href="#259" id="259">259</a>
 <a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
 </pre></div><pre class="rust"><code><span class="kw">extern crate </span>proc_macro;
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::{format_ident, quote};
@@ -266,13 +268,17 @@
 <span class="kw">use </span><span class="kw">crate</span>::extendr_options::ExtendrOptions;
 <span class="kw">use </span><span class="kw">crate</span>::wrappers;
 
+<span class="attr">#[allow(unused_imports)]
+</span><span class="kw">use </span><span class="kw">crate</span>::extendr;
+
 <span class="doccomment">/// Make inherent implementations available to R
 ///
-/// The extendr_impl function is used to make inherent implementations
-/// avaialble to R as an environment. By adding the [`extendr`] attribute
+/// The `extendr_impl` function is used to make inherent implementations
+/// available to R as an environment. By adding the [`macro@extendr`] attribute
 /// macro to an `impl` block (supported with `enum`s and `struct`s), the
 /// methods in the impl block are made available as functions in an
 /// environment.
+///
 ///
 /// On the R side, an environment with the same name of the inherent
 /// implementation is created. The environment has functions within it
@@ -282,7 +288,7 @@
 /// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
-/// ```ignore
+/// ```dont_run
 /// use extendr_api::prelude::*;
 ///
 /// // a struct that will be used internal the People struct
@@ -300,7 +306,6 @@
 /// #[extendr]
 /// /// @export
 /// impl People {
-///
 ///     // instantiate a new struct with an empty vector
 ///     fn new() -&gt; Self {
 ///         let vec: Vec&lt;Person&gt; = Vec::new();
@@ -341,7 +346,6 @@
 ///     fn print_self(&amp;self) -&gt; String {
 ///         format!("{:?}", self.0)
 ///     }
-///
 /// }
 ///
 /// // Macro to generate exports.

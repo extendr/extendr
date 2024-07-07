@@ -1088,7 +1088,6 @@
 <a href="#1088" id="1088">1088</a>
 <a href="#1089" id="1089">1089</a>
 <a href="#1090" id="1090">1090</a>
-<a href="#1091" id="1091">1091</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -1906,7 +1905,6 @@
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///
     ///    let mut robj = r!("hello");
     ///    robj.set_attrib(sym!(xyz), 1);
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));

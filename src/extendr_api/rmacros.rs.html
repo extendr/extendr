@@ -198,6 +198,8 @@
 <a href="#198" id="198">198</a>
 <a href="#199" id="199">199</a>
 <a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//!
 //! rmacros - a set of macros to call actual R functions in a rusty way.
 //!
@@ -375,6 +377,8 @@
 /// `#[cfg(test)]`) or in doc strings. If it is used in library code that
 /// gets incorporated into an R package, R CMD check will complain about
 /// non-API calls.
+///
+/// [`extendr_engine`]: https://extendr.github.io/extendr/extendr_engine/
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules!</span> test {
     () =&gt; {
