@@ -102,6 +102,7 @@ impl TryFrom<Vec<i32>> for Integers {
 
 #[cfg(test)]
 mod tests {
+    use crate as extendr_api;
     use crate::prelude::*;
 
     #[test]

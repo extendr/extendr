@@ -103,6 +103,7 @@ impl TryFrom<Vec<f64>> for Doubles {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate as extendr_api;
 
     #[test]
     fn test_vec_f64_doubles_conversion() {

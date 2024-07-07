@@ -85,7 +85,7 @@ macro_rules! append_lang {
     };
 }
 
-/// A macro for constructing R langage objects.
+/// A macro for constructing R language objects.
 ///
 /// Example:
 /// ```

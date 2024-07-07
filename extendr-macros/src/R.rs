@@ -10,7 +10,7 @@ pub fn R(item: TokenStream, expand_params: bool) -> TokenStream {
         Err(_) => {
             // If not a string, expand the tokens to make a string.
             let src = format!("{}", item);
-            return quote!(eval_string(#src));
+            return quote!(extendr_api::functions::eval_string(#src));
         }
     };
 
@@ -39,12 +39,12 @@ pub fn R(item: TokenStream, expand_params: bool) -> TokenStream {
     }
 
     if expressions.is_empty() {
-        quote!(eval_string(#src))
+        quote!(extendr_api::functions::eval_string(#src))
     } else {
         quote!(
             {
                 let params = &[#expressions];
-                eval_string_with_params(#src, params)
+                extendr_api::functions::eval_string_with_params(#src, params)
             }
         )
     }
@@ -61,13 +61,19 @@ mod test {
         // Naked R!
         assert_eq!(
             format!("{}", R(quote!(data.frame), true)),
-            format!("{}", quote!(eval_string("data . frame")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("data . frame"))
+            )
         );
 
         // Quoted R!
         assert_eq!(
             format!("{}", R(quote!("data.frame"), true)),
-            format!("{}", quote!(eval_string("data.frame")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("data.frame"))
+            )
         );
 
         // Param R!
@@ -77,7 +83,7 @@ mod test {
                 "{}",
                 quote!({
                     let params = &[&extendr_api::Robj::from(1)];
-                    eval_string_with_params("a <-  param.0 ", params)
+                    extendr_api::functions::eval_string_with_params("a <-  param.0 ", params)
                 })
             )
         );
@@ -85,13 +91,19 @@ mod test {
         // Unquoted R!
         assert_eq!(
             format!("{}", R(quote!(r#""hello""#), true)),
-            format!("{}", quote!(eval_string("\"hello\"")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("\"hello\""))
+            )
         );
 
         // Rraw!
         assert_eq!(
             format!("{}", R(quote!("a <- {{1}}"), false)),
-            format!("{}", quote!(eval_string("a <- {{1}}")))
+            format!(
+                "{}",
+                quote!(extendr_api::functions::eval_string("a <- {{1}}"))
+            )
         );
     }
 }

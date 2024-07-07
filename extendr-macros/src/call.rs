@@ -50,17 +50,17 @@ pub fn call(item: TokenStream) -> TokenStream {
 
     // Use eval_string to convert the literal string into a callable object.
     let caller = &call.caller;
-    let caller = quote!(eval_string(#caller));
+    let caller = quote!(extendr_api::functions::eval_string(#caller));
 
     // Use the "call" method of Robj to call the function or primitive.
     // This will error if the object is not callable.
     let res = if pairs.is_empty() {
         quote!(
-            (#caller).and_then(|caller| caller.call(Pairlist::new()))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::new()))
         )
     } else {
         quote!(
-            (#caller).and_then(|caller| caller.call(Pairlist::from_pairs(&[# ( #pairs ),*])))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])))
         )
     };
 
