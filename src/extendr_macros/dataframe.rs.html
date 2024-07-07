@@ -64,33 +64,33 @@
         a.push(f.ident.clone());
     }
     <span class="macro">quote!</span> {
-        <span class="kw">impl </span>IntoDataFrameRow&lt;#structname&gt; <span class="kw">for </span>Vec&lt;#structname&gt;
+        <span class="kw">impl </span>extendr_api::wrapper::IntoDataFrameRow&lt;#structname&gt; <span class="kw">for </span>Vec&lt;#structname&gt;
         {
-            <span class="kw">fn </span>into_dataframe(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Dataframe&lt;#structname&gt;&gt; {
+            <span class="kw">fn </span>into_dataframe(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;extendr_api::wrapper::Dataframe&lt;#structname&gt;&gt; {
                 #(<span class="kw">let </span><span class="kw-2">mut </span>#a = Vec::with_capacity(<span class="self">self</span>.len());)*
                 <span class="kw">for </span>val <span class="kw">in </span><span class="self">self </span>{
                     #(#a.push(val.#a);)*
                 }
-                <span class="kw">let </span>caller = eval_string(<span class="string">"data.frame"</span>)<span class="question-mark">?</span>;
-                <span class="kw">let </span>res = caller.call(Pairlist::from_pairs(<span class="kw-2">&amp;</span>[
+                <span class="kw">let </span>caller = extendr_api::functions::eval_string(<span class="string">"data.frame"</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[
                     #((<span class="macro">stringify!</span>(#a), extendr_api::robj::Robj::from(#a))),*
                 ]))<span class="question-mark">?</span>;
                 res.try_into()
             }
         }
 
-        <span class="kw">impl</span>&lt;I&gt; IntoDataFrameRow&lt;#structname&gt; <span class="kw">for </span>(I,)
+        <span class="kw">impl</span>&lt;I&gt; extendr_api::wrapper::IntoDataFrameRow&lt;#structname&gt; <span class="kw">for </span>(I,)
         <span class="kw">where
             </span>I : ExactSizeIterator&lt;Item=#structname&gt;,
         {
             <span class="doccomment">/// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-            </span><span class="kw">fn </span>into_dataframe(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Dataframe&lt;#structname&gt;&gt; {
+            </span><span class="kw">fn </span>into_dataframe(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;extendr_api::wrapper::Dataframe&lt;#structname&gt;&gt; {
                 #(<span class="kw">let </span><span class="kw-2">mut </span>#a = Vec::with_capacity(<span class="self">self</span>.<span class="number">0</span>.len());)*
                 <span class="kw">for </span>val <span class="kw">in </span><span class="self">self</span>.<span class="number">0 </span>{
                     #(#a.push(val.#a);)*
                 }
-                <span class="kw">let </span>caller = eval_string(<span class="string">"data.frame"</span>)<span class="question-mark">?</span>;
-                <span class="kw">let </span>res = caller.call(Pairlist::from_pairs(<span class="kw-2">&amp;</span>[
+                <span class="kw">let </span>caller = extendr_api::functions::eval_string(<span class="string">"data.frame"</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[
                     #((<span class="macro">stringify!</span>(#a), extendr_api::robj::Robj::from(#a))),*
                 ]))<span class="question-mark">?</span>;
                 res.try_into()

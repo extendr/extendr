@@ -1347,7 +1347,7 @@
     </span><span class="kw">pub fn </span>mode_on(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">if </span>Rf_NoDevices() != <span class="number">0 </span>{
-                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(Robj::from(())))
             } <span class="kw">else </span>{
                 GEMode(<span class="number">1</span>, <span class="self">self</span>.inner());
                 <span class="prelude-val">Ok</span>(())
@@ -1359,7 +1359,7 @@
     </span><span class="kw">pub fn </span>mode_off(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">if </span>Rf_NoDevices() != <span class="number">0 </span>{
-                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(Robj::from(())))
             } <span class="kw">else </span>{
                 GEMode(<span class="number">0</span>, <span class="self">self</span>.inner());
                 <span class="prelude-val">Ok</span>(())
@@ -1376,7 +1376,7 @@
     </span><span class="kw">pub fn </span>get_device(number: i32) -&gt; <span class="prelude-ty">Result</span>&lt;Device&gt; {
         <span class="kw">unsafe </span>{
             <span class="kw">if </span>number &lt; <span class="number">0 </span>|| number &gt;= Rf_NumDevices() {
-                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(<span class="macro">r!</span>(())))
+                <span class="prelude-val">Err</span>(Error::NoGraphicsDevices(Robj::from(())))
             } <span class="kw">else </span>{
                 <span class="prelude-val">Ok</span>(Device {
                     inner: GEgetDevice(number),

@@ -114,6 +114,7 @@
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::scalar::{Rfloat, Scalar};
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>std::iter::FromIterator;
@@ -219,6 +220,7 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use crate as </span>extendr_api;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_vec_f64_doubles_conversion() {

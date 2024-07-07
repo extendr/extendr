@@ -327,6 +327,7 @@
 <a href="#327" id="327">327</a>
 <a href="#328" id="328">328</a>
 <a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
 </pre></div><pre class="rust"><code><span class="doccomment">/*!
 Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarray/latest/ndarray/) crate, which offers native Rust array types and numerical computation routines.
 
@@ -523,6 +524,7 @@ For all array uses in Rust, refer to the [`ndarray::ArrayBase`] documentation, w
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use crate as </span>extendr_api;
     <span class="kw">use </span>ndarray::array;
     <span class="kw">use </span>rstest::rstest;
 

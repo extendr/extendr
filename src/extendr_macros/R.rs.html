@@ -95,6 +95,18 @@
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>proc_macro2::TokenStream;
 <span class="kw">use </span>quote::quote;
 <span class="kw">use </span>syn::{parse_quote, punctuated::Punctuated, Expr, Token};
@@ -107,7 +119,7 @@
         <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
             <span class="comment">// If not a string, expand the tokens to make a string.
             </span><span class="kw">let </span>src = <span class="macro">format!</span>(<span class="string">"{}"</span>, item);
-            <span class="kw">return </span><span class="macro">quote!</span>(eval_string(#src));
+            <span class="kw">return </span><span class="macro">quote!</span>(extendr_api::functions::eval_string(#src));
         }
     };
 
@@ -136,12 +148,12 @@
     }
 
     <span class="kw">if </span>expressions.is_empty() {
-        <span class="macro">quote!</span>(eval_string(#src))
+        <span class="macro">quote!</span>(extendr_api::functions::eval_string(#src))
     } <span class="kw">else </span>{
         <span class="macro">quote!</span>(
             {
                 <span class="kw">let </span>params = <span class="kw-2">&amp;</span>[#expressions];
-                eval_string_with_params(#src, params)
+                extendr_api::functions::eval_string_with_params(#src, params)
             }
         )
     }
@@ -158,13 +170,19 @@
         // Naked R!
         </span><span class="macro">assert_eq!</span>(
             <span class="macro">format!</span>(<span class="string">"{}"</span>, R(<span class="macro">quote!</span>(data.frame), <span class="bool-val">true</span>)),
-            <span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="macro">quote!</span>(eval_string(<span class="string">"data . frame"</span>)))
+            <span class="macro">format!</span>(
+                <span class="string">"{}"</span>,
+                <span class="macro">quote!</span>(extendr_api::functions::eval_string(<span class="string">"data . frame"</span>))
+            )
         );
 
         <span class="comment">// Quoted R!
         </span><span class="macro">assert_eq!</span>(
             <span class="macro">format!</span>(<span class="string">"{}"</span>, R(<span class="macro">quote!</span>(<span class="string">"data.frame"</span>), <span class="bool-val">true</span>)),
-            <span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="macro">quote!</span>(eval_string(<span class="string">"data.frame"</span>)))
+            <span class="macro">format!</span>(
+                <span class="string">"{}"</span>,
+                <span class="macro">quote!</span>(extendr_api::functions::eval_string(<span class="string">"data.frame"</span>))
+            )
         );
 
         <span class="comment">// Param R!
@@ -174,7 +192,7 @@
                 <span class="string">"{}"</span>,
                 <span class="macro">quote!</span>({
                     <span class="kw">let </span>params = <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>extendr_api::Robj::from(<span class="number">1</span>)];
-                    eval_string_with_params(<span class="string">"a &lt;-  param.0 "</span>, params)
+                    extendr_api::functions::eval_string_with_params(<span class="string">"a &lt;-  param.0 "</span>, params)
                 })
             )
         );
@@ -182,13 +200,19 @@
         <span class="comment">// Unquoted R!
         </span><span class="macro">assert_eq!</span>(
             <span class="macro">format!</span>(<span class="string">"{}"</span>, R(<span class="macro">quote!</span>(<span class="string">r#""hello""#</span>), <span class="bool-val">true</span>)),
-            <span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="macro">quote!</span>(eval_string(<span class="string">"\"hello\""</span>)))
+            <span class="macro">format!</span>(
+                <span class="string">"{}"</span>,
+                <span class="macro">quote!</span>(extendr_api::functions::eval_string(<span class="string">"\"hello\""</span>))
+            )
         );
 
         <span class="comment">// Rraw!
         </span><span class="macro">assert_eq!</span>(
             <span class="macro">format!</span>(<span class="string">"{}"</span>, R(<span class="macro">quote!</span>(<span class="string">"a &lt;- {{1}}"</span>), <span class="bool-val">false</span>)),
-            <span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="macro">quote!</span>(eval_string(<span class="string">"a &lt;- {{1}}"</span>)))
+            <span class="macro">format!</span>(
+                <span class="string">"{}"</span>,
+                <span class="macro">quote!</span>(extendr_api::functions::eval_string(<span class="string">"a &lt;- {{1}}"</span>))
+            )
         );
     }
 }

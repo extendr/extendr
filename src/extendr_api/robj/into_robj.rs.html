@@ -830,6 +830,7 @@
 <a href="#830" id="830">830</a>
 <a href="#831" id="831">831</a>
 <a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::scalar::Scalar;
 <span class="kw">use </span><span class="kw">crate</span>::single_threaded;
@@ -1553,6 +1554,7 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use crate as </span>extendr_api;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_vec_rint_to_robj() {

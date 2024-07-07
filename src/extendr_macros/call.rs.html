@@ -118,17 +118,17 @@
 
     <span class="comment">// Use eval_string to convert the literal string into a callable object.
     </span><span class="kw">let </span>caller = <span class="kw-2">&amp;</span>call.caller;
-    <span class="kw">let </span>caller = <span class="macro">quote!</span>(eval_string(#caller));
+    <span class="kw">let </span>caller = <span class="macro">quote!</span>(extendr_api::functions::eval_string(#caller));
 
     <span class="comment">// Use the "call" method of Robj to call the function or primitive.
     // This will error if the object is not callable.
     </span><span class="kw">let </span>res = <span class="kw">if </span>pairs.is_empty() {
         <span class="macro">quote!</span>(
-            (#caller).and_then(|caller| caller.call(Pairlist::new()))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::new()))
         )
     } <span class="kw">else </span>{
         <span class="macro">quote!</span>(
-            (#caller).and_then(|caller| caller.call(Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])))
         )
     };
 

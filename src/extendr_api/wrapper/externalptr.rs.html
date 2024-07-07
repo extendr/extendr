@@ -477,7 +477,7 @@
 
             <span class="comment">// This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            </span><span class="kw">let </span>robj = Robj::make_external_ptr(Box::into_raw(boxed), <span class="macro">r!</span>(()));
+            </span><span class="kw">let </span>robj = Robj::make_external_ptr(Box::into_raw(boxed), Robj::from(()));
 
             <span class="kw">extern </span><span class="string">"C" </span><span class="kw">fn </span>finalizer&lt;T&gt;(x: SEXP) {
                 <span class="kw">unsafe </span>{

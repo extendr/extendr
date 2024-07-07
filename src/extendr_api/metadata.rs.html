@@ -371,6 +371,10 @@
 <a href="#371" id="371">371</a>
 <a href="#372" id="372">372</a>
 <a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Module metadata
 //!
 //! This data is returned by get_module_metadata()
@@ -448,6 +452,7 @@
 
 <span class="kw">impl </span>From&lt;Arg&gt; <span class="kw">for </span>Robj {
     <span class="kw">fn </span>from(val: Arg) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">let </span><span class="kw-2">mut </span>result = List::from_values(<span class="kw-2">&amp;</span>[<span class="macro">r!</span>(val.name), <span class="macro">r!</span>(val.arg_type)]);
         result
             .set_names(<span class="kw-2">&amp;</span>[<span class="string">"name"</span>, <span class="string">"arg_type"</span>])
@@ -458,6 +463,7 @@
 
 <span class="kw">impl </span>From&lt;Func&gt; <span class="kw">for </span>Robj {
     <span class="kw">fn </span>from(val: Func) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">let </span><span class="kw-2">mut </span>result = List::from_values(<span class="kw-2">&amp;</span>[
             <span class="macro">r!</span>(val.doc),
             <span class="macro">r!</span>(val.rust_name),
@@ -484,6 +490,7 @@
 
 <span class="kw">impl </span>From&lt;Impl&gt; <span class="kw">for </span>Robj {
     <span class="kw">fn </span>from(val: Impl) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">let </span><span class="kw-2">mut </span>result = List::from_values(<span class="kw-2">&amp;</span>[
             <span class="macro">r!</span>(val.doc),
             <span class="macro">r!</span>(val.name),
@@ -498,6 +505,7 @@
 
 <span class="kw">impl </span>From&lt;Metadata&gt; <span class="kw">for </span>Robj {
     <span class="kw">fn </span>from(val: Metadata) -&gt; <span class="self">Self </span>{
+        <span class="kw">use crate as </span>extendr_api;
         <span class="kw">let </span><span class="kw-2">mut </span>result = List::from_values(<span class="kw-2">&amp;</span>[
             <span class="macro">r!</span>(val.name),
             <span class="macro">r!</span>(List::from_values(val.functions)),

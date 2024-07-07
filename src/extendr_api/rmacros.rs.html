@@ -204,7 +204,7 @@
 
 /// Convert a rust expression to an R object.
 ///
-/// Shorthand for Robj::from(x).
+/// Shorthand for `Robj::from(x)`.
 ///
 /// Example:
 /// ```
@@ -229,7 +229,7 @@
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules!</span> r {
     (<span class="macro-nonterminal">$e</span>: expr) =&gt; {
-        Robj::from(<span class="macro-nonterminal">$e</span>)
+        extendr_api::Robj::from(<span class="macro-nonterminal">$e</span>)
     };
 }
 
@@ -386,7 +386,7 @@
 
             <span class="comment">// this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
-            </span><span class="kw">fn </span>test&lt;F: FnOnce() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;&gt;(f: F) {
+            </span><span class="kw">fn </span>test&lt;F: FnOnce() -&gt; extendr_api::Result&lt;()&gt;&gt;(f: F) {
                 extendr_engine::start_r();
                 f().unwrap();
             }

@@ -747,10 +747,10 @@
             </span>#rng_start
 
             <span class="kw">let </span>wrap_result_state: std::result::Result&lt;
-                std::result::Result&lt;Robj, extendr_api::Error&gt;,
+                std::result::Result&lt;extendr_api::Robj, extendr_api::Error&gt;,
                 Box&lt;<span class="kw">dyn </span>std::any::Any + Send&gt;
             &gt; = <span class="kw">unsafe </span>{
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(<span class="kw">move </span>|| -&gt; std::result::Result&lt;Robj, extendr_api::Error&gt; {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(<span class="kw">move </span>|| -&gt; std::result::Result&lt;extendr_api::Robj, extendr_api::Error&gt; {
                     #(#convert_args)*
                     #return_type_conversion
                 }))

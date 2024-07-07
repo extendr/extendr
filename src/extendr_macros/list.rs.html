@@ -42,7 +42,7 @@
     <span class="kw">let </span>nv = list.names_and_values();
 
     <span class="kw">if </span>nv.is_empty() {
-        TokenStream::from(<span class="macro">quote!</span>(List::default()))
+        TokenStream::from(<span class="macro">quote!</span>(extendr_api::wrapper::List::default()))
     } <span class="kw">else </span>{
         <span class="kw">let </span>values: Vec&lt;proc_macro2::TokenStream&gt; = nv
             .iter()

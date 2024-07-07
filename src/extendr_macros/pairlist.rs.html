@@ -51,10 +51,10 @@
         .collect::&lt;Vec&lt;Expr&gt;&gt;();
 
     <span class="kw">if </span>pairs.is_empty() {
-        TokenStream::from(<span class="macro">quote!</span>(Pairlist::from(())))
+        TokenStream::from(<span class="macro">quote!</span>(extendr_api::wrapper::Pairlist::from(())))
     } <span class="kw">else </span>{
         TokenStream::from(<span class="macro">quote!</span>(
-            Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])
+            extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])
         ))
     }
 }
