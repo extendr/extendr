@@ -20,8 +20,8 @@
 //! See [`WRAP_PREFIX`], and note that `prefix` is set specifically for methods in
 //! `extendr`-impl blocks, while for functions have no prefix.
 //!
-//! [`R_NilValue`]: ::libR_sys::R_NilValue
-//! [`SEXP`]: ::libR_sys::SEXP
+//! [`R_NilValue`]: https://extendr.github.io/libR-sys/libR_sys/static.R_NilValue.html
+//! [`SEXP`]: https://extendr.github.io/libR-sys/libR_sys/type.SEXP.html
 
 use proc_macro2::Ident;
 use quote::{format_ident, quote};

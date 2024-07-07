@@ -6,13 +6,17 @@ use syn::{ItemFn, ItemImpl};
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
+#[allow(unused_imports)]
+use crate::extendr;
+
 /// Make inherent implementations available to R
 ///
-/// The extendr_impl function is used to make inherent implementations
-/// avaialble to R as an environment. By adding the [`extendr`] attribute
+/// The `extendr_impl` function is used to make inherent implementations
+/// available to R as an environment. By adding the [`macro@extendr`] attribute
 /// macro to an `impl` block (supported with `enum`s and `struct`s), the
 /// methods in the impl block are made available as functions in an
 /// environment.
+///
 ///
 /// On the R side, an environment with the same name of the inherent
 /// implementation is created. The environment has functions within it
@@ -22,7 +26,7 @@ use crate::wrappers;
 /// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
-/// ```ignore
+/// ```dont_run
 /// use extendr_api::prelude::*;
 ///
 /// // a struct that will be used internal the People struct
@@ -40,7 +44,6 @@ use crate::wrappers;
 /// #[extendr]
 /// /// @export
 /// impl People {
-///
 ///     // instantiate a new struct with an empty vector
 ///     fn new() -> Self {
 ///         let vec: Vec<Person> = Vec::new();
@@ -81,7 +84,6 @@ use crate::wrappers;
 ///     fn print_self(&self) -> String {
 ///         format!("{:?}", self.0)
 ///     }
-///
 /// }
 ///
 /// // Macro to generate exports.
