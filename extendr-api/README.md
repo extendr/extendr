@@ -1,12 +1,6 @@
-# extendr-api
+# `extendr-api`
 
-A safe and user friendly R extension interface.
-
-* Build rust extensions to R.
-* Convert R packages to Rust crates.
-
-This library aims to provide an interface that will be familiar to
-first-time users of Rust or indeed any compiled language.
+`extendr-api` is an opinionated, ergonomic, and safe interface to R API.
 
 ## Installation
 
@@ -15,15 +9,24 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.6"
+extendr-api = "0.7"
 ```
+
+## About
+
+On the [extendr homepage](https://extendr.github.io/) there is a [comprehensive user-guide](https://extendr.github.io/user-guide/).
+
+The [API documentation on doc.rs](https://docs.rs/extendr-api/latest/extendr_api/), and for
+[development API documentation](https://extendr.github.io/extendr/extendr_api/).
 
 ## Overview
 
-See [Robj] for much of the content of this crate.
-[Robj] provides a safe wrapper for the R object type.
+See `Robj` for much of the content of this crate.
+`Robj` provides a safe wrapper for the R object type.
 
 Use attributes and macros to export to R.
+
+For a module named `mymodule` (typically in a file named `mymodule.rs`)
 
 ```rust
 use extendr_api::prelude::*;
@@ -46,8 +49,8 @@ In R:
 result <- fred(1)
 ```
 
-[Robj] is a wrapper for R objects.
-The r!() and R!() macros let you build R objects
+`Robj` is a wrapper for R objects.
+The `r!()` and `R!()` macros let you build R objects
 using Rust and R syntax respectively.
 
 ```rust
@@ -145,10 +148,10 @@ test! {
 }
 ```
 
-The [R!] macro lets you embed R code in Rust
-and takes Rust expressions in {{ }} pairs.
+The `R!` macro lets you embed R code in Rust
+and takes Rust expressions in `{{ }}` pairs.
 
-The [Rraw!] macro will not expand the {{ }} pairs.
+The `Rraw!` macro will not expand the `{{ }}` pairs.
 
 ```rust
 use extendr_api::prelude::*;
@@ -178,7 +181,7 @@ test! {
 }
 ```
 
-The [r!] macro converts a rust object to an R object
+The `r!` macro converts a rust object to an R object
 and takes parameters.
 
 ```rust
@@ -190,7 +193,7 @@ test! {
 }
 ```
 
-You can call R functions and primitives using the [call!] macro.
+You can call R functions and primitives using the `call!` macro.
 
 ```rust
 use extendr_api::prelude::*;
@@ -211,11 +214,11 @@ test! {
 
 Rust has a concept of "Owned" and "Borrowed" objects.
 
-Owned objects, such as [Vec] and [String] allocate memory
+Owned objects, such as `Vec` and `String` allocate memory
 which is released when the object lifetime ends.
 
-Borrowed objects such as &[i32] and &str are just pointers
-to annother object's memory and can't live longer than the
+Borrowed objects such as `&[i32]` and `&str` are fat pointers
+to another object's memory and can't live longer than the
 object they reference.
 
 Borrowed objects are much faster than owned objects and use less
