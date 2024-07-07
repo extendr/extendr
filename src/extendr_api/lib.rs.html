@@ -1015,16 +1015,7 @@
 <a href="#1015" id="1015">1015</a>
 <a href="#1016" id="1016">1016</a>
 <a href="#1017" id="1017">1017</a>
-<a href="#1018" id="1018">1018</a>
-<a href="#1019" id="1019">1019</a>
-<a href="#1020" id="1020">1020</a>
-<a href="#1021" id="1021">1021</a>
-<a href="#1022" id="1022">1022</a>
-</pre></div><pre class="rust"><code><span class="doccomment">//!
-//! A safe and user friendly R extension interface.
-//!
-//! * Build rust extensions to R.
-//! * Convert R packages to Rust crates.
+</pre></div><pre class="rust"><code><span class="doccomment">//! An ergonomic, opinionated, safe and user-friendly wrapper to the R-API
 //!
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
@@ -1330,7 +1321,6 @@
 //! These features are experimental and are subject to change.
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
-
 </span><span class="attr">#![doc(
     html_logo_url = <span class="string">"https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 </span>)]
