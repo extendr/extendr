@@ -6,6 +6,10 @@
 
 ### Changed
 
+- Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
+return `Option<Strings>` instead of opaque `Robj`.
+[[#801]](https://github.com/extendr/extendr/pull/790)
+
 ### Fixed
 
 ### Deprecated
