@@ -540,6 +540,15 @@ impl<T, D> DerefMut for RArray<T, D> {
     }
 }
 
+impl<T, D> From<Option<RArray<T, D>>> for Robj {
+    fn from(value: Option<RArray<T, D>>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -18,6 +18,15 @@ macro_rules! gen_vector_wrapper_impl {
             }
         }
 
+        impl From<Option<$type>> for Robj {
+            fn from(value: Option<$type>) -> Self {
+                match value {
+                    None => nil_value(),
+                    Some(value) => value.into(),
+                }
+            }
+        }
+
         impl $type {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]

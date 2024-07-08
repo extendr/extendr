@@ -267,6 +267,15 @@ impl<T> From<ExternalPtr<T>> for Robj {
     }
 }
 
+impl<T> From<Option<ExternalPtr<T>>> for Robj {
+    fn from(value: Option<ExternalPtr<T>>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
+
 impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)

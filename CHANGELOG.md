@@ -4,6 +4,8 @@
 
 ### Added
 
+- `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
+
 ### Changed
 
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
