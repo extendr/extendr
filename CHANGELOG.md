@@ -4,6 +4,7 @@
 
 ### Added
 
+- `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
 - Arguments can be (mutable) typed slices such as `&[Rbool]`, `&mut [Rint]` etc. [[#790]](https://github.com/extendr/extendr/pull/790)
 - New optional `faer` feature which enables conversion between `faer` matrix and `RMatrix<f64>` [[#706]](https://github.com/extendr/extendr/pull/706)
 - Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self`
