@@ -75,6 +75,7 @@ impl From<&Arg> for RArg {
 
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[r!(val.name), r!(val.arg_type)]);
         result
             .set_names(&["name", "arg_type"])
@@ -85,6 +86,7 @@ impl From<Arg> for Robj {
 
 impl From<Func> for Robj {
     fn from(val: Func) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.doc),
             r!(val.rust_name),
@@ -111,6 +113,7 @@ impl From<Func> for Robj {
 
 impl From<Impl> for Robj {
     fn from(val: Impl) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.doc),
             r!(val.name),
@@ -125,6 +128,7 @@ impl From<Impl> for Robj {
 
 impl From<Metadata> for Robj {
     fn from(val: Metadata) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.name),
             r!(List::from_values(val.functions)),

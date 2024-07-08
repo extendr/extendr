@@ -721,6 +721,7 @@ impl From<Vec<Rstr>> for Robj {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate as extendr_api;
 
     #[test]
     fn test_vec_rint_to_robj() {

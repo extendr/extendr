@@ -51,7 +51,7 @@
 // * Wrappers and init functions for all methods.
 // * A single init function that calls the other init functions for the methods.
 // * An input conversion from an external pointer to a reference and a move of that type.
-// * An output converstion from that type to an owned external pointer object.
+// * An output conversion from that type to an owned external pointer object.
 // * A finalizer for that type to free memory allocated.
 
 #[allow(non_snake_case)]
@@ -77,10 +77,10 @@ use syn::{parse_macro_input, Item};
 /// - `fn` for wrapped rust-functions, see [`extendr-fn`]
 /// - `impl`-blocks, see [`extendr-impl`]
 ///
-/// [`extendr-fn`]: extendr-macros/extendr_function/fn.extendr_function.html
-/// [`extendr-impl`]: extendr_impl/fn.extendr_impl.html
+/// [`extendr-fn`]: ./extendr_function/fn.extendr_function.html
+/// [`extendr-impl`]: ./extendr_impl/fn.extendr_impl.html
 ///
-/// There is also [extendr_module!], which is used for defining what rust
+/// There is also [`macro@extendr_module`], which is used for defining what rust
 /// wrapped items should be visible to the surrounding R-package.
 ///
 #[proc_macro_attribute]
@@ -102,7 +102,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Define a module and export symbols to R
 /// Example:
-///```ignore
+///```dont_run
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
@@ -112,7 +112,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// Outputs:
 ///
-/// ```ignore
+/// ```dont_run
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {

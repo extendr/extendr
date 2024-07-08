@@ -4,7 +4,7 @@
 
 /// Convert a rust expression to an R object.
 ///
-/// Shorthand for Robj::from(x).
+/// Shorthand for `Robj::from(x)`.
 ///
 /// Example:
 /// ```
@@ -29,7 +29,7 @@
 #[macro_export]
 macro_rules! r {
     ($e: expr) => {
-        Robj::from($e)
+        extendr_api::Robj::from($e)
     };
 }
 
@@ -175,6 +175,8 @@ macro_rules! reprintln {
 /// `#[cfg(test)]`) or in doc strings. If it is used in library code that
 /// gets incorporated into an R package, R CMD check will complain about
 /// non-API calls.
+///
+/// [`extendr_engine`]: https://extendr.github.io/extendr/extendr_engine/
 #[macro_export]
 macro_rules! test {
     () => {
@@ -186,7 +188,7 @@ macro_rules! test {
 
             // this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
-            fn test<F: FnOnce() -> Result<()>>(f: F) {
+            fn test<F: FnOnce() -> extendr_api::Result<()>>(f: F) {
                 extendr_engine::start_r();
                 f().unwrap();
             }

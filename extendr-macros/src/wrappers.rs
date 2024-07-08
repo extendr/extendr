@@ -20,8 +20,8 @@
 //! See [`WRAP_PREFIX`], and note that `prefix` is set specifically for methods in
 //! `extendr`-impl blocks, while for functions have no prefix.
 //!
-//! [`R_NilValue`]: ::libR_sys::R_NilValue
-//! [`SEXP`]: ::libR_sys::SEXP
+//! [`R_NilValue`]: https://extendr.github.io/libR-sys/libR_sys/static.R_NilValue.html
+//! [`SEXP`]: https://extendr.github.io/libR-sys/libR_sys/type.SEXP.html
 
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
@@ -212,10 +212,10 @@ pub(crate) fn make_function_wrappers(
             #rng_start
 
             let wrap_result_state: std::result::Result<
-                std::result::Result<Robj, extendr_api::Error>,
+                std::result::Result<extendr_api::Robj, extendr_api::Error>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<Robj, extendr_api::Error> {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, extendr_api::Error> {
                     #(#convert_args)*
                     #return_type_conversion
                 }))
@@ -256,7 +256,7 @@ pub(crate) fn make_function_wrappers(
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-            let mut args = vec![
+            let args = vec![
                 #( #meta_args, )*
             ];
 

@@ -34,20 +34,21 @@
           #[cfg(use_r_altlist)]
           impl VecUsize {}
           impl TryFrom<Robj> for &VecUsize {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut VecUsize {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &VecUsize {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<VecUsize> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -55,8 +56,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut VecUsize {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<VecUsize> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -65,6 +67,7 @@
           }
           impl From<VecUsize> for Robj {
               fn from(value: VecUsize) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<VecUsize> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "VecUsize").unwrap();
@@ -108,12 +111,12 @@
           pub extern "C" fn wrap__new_usize(robj: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
@@ -163,7 +166,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -233,12 +236,12 @@
           pub extern "C" fn wrap__tst_altstring() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(tst_altstring())) }),
                   )
@@ -285,7 +288,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -363,12 +366,12 @@
           pub extern "C" fn wrap__tst_altinteger() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(tst_altinteger())) }),
                   )
@@ -415,7 +418,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -526,12 +529,12 @@
           pub extern "C" fn wrap__dbls_named(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -581,7 +584,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__dbls_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -616,12 +619,12 @@
           pub extern "C" fn wrap__strings_named(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -671,7 +674,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__strings_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -705,12 +708,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -765,7 +768,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__list_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -895,18 +898,18 @@
                   )
               }
           }
-          impl IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
-              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
+          impl extendr_api::wrapper::IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
+              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.len());
                   let mut y = Vec::with_capacity(self.len());
                   for val in self {
                       x.push(val.x);
                       y.push(val.y);
                   }
-                  let caller = eval_string("data.frame")?;
+                  let caller = extendr_api::functions::eval_string("data.frame")?;
                   let res = caller
                       .call(
-                          Pairlist::from_pairs(
+                          extendr_api::wrapper::Pairlist::from_pairs(
                               &[
                                   ("x", extendr_api::robj::Robj::from(x)),
                                   ("y", extendr_api::robj::Robj::from(y)),
@@ -916,22 +919,22 @@
                   res.try_into()
               }
           }
-          impl<I> IntoDataFrameRow<MyStruct> for (I,)
+          impl<I> extendr_api::wrapper::IntoDataFrameRow<MyStruct> for (I,)
           where
               I: ExactSizeIterator<Item = MyStruct>,
           {
               /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-              fn into_dataframe(self) -> Result<Dataframe<MyStruct>> {
+              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.0.len());
                   let mut y = Vec::with_capacity(self.0.len());
                   for val in self.0 {
                       x.push(val.x);
                       y.push(val.y);
                   }
-                  let caller = eval_string("data.frame")?;
+                  let caller = extendr_api::functions::eval_string("data.frame")?;
                   let res = caller
                       .call(
-                          Pairlist::from_pairs(
+                          extendr_api::wrapper::Pairlist::from_pairs(
                               &[
                                   ("x", extendr_api::robj::Robj::from(x)),
                                   ("y", extendr_api::robj::Robj::from(y)),
@@ -962,12 +965,12 @@
           pub extern "C" fn wrap__test_derive_into_dataframe() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(test_derive_into_dataframe())) }),
                   )
@@ -1019,7 +1022,7 @@
           fn meta__test_derive_into_dataframe(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1053,12 +1056,12 @@
           pub extern "C" fn wrap__test_into_robj_dataframe() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(test_into_robj_dataframe())) }),
                   )
@@ -1108,7 +1111,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__test_into_robj_dataframe(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1296,12 +1299,12 @@
           pub extern "C" fn wrap__Wrapper__new() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(<Wrapper>::new())) }),
                   )
@@ -1348,7 +1351,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -1369,12 +1372,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1432,7 +1435,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1464,12 +1467,12 @@
           pub extern "C" fn wrap__Wrapper__a(_self: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1526,7 +1529,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1555,12 +1558,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1617,7 +1620,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_owned(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1646,12 +1649,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1711,7 +1714,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1740,12 +1743,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1805,7 +1808,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1834,12 +1837,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1899,7 +1902,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -1928,12 +1931,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -1993,7 +1996,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2023,12 +2026,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -2095,7 +2098,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2131,12 +2134,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -2213,7 +2216,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref_offset(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2253,12 +2256,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -2325,7 +2328,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref2(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2353,20 +2356,21 @@
                   })
           }
           impl TryFrom<Robj> for &Wrapper {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut Wrapper {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &Wrapper {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<Wrapper> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -2374,8 +2378,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut Wrapper {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<Wrapper> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -2384,6 +2389,7 @@
           }
           impl From<Wrapper> for Robj {
               fn from(value: Wrapper) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<Wrapper> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "Wrapper").unwrap();
@@ -2528,12 +2534,12 @@
           pub extern "C" fn wrap__fetch_dimnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -2583,7 +2589,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2605,7 +2611,7 @@
                       hidden: false,
                   })
           }
-          fn fetch_rownames(x: RMatrix<f64>) -> Robj {
+          fn fetch_rownames(x: RMatrix<f64>) -> Option<Strings> {
               x.get_rownames()
           }
           #[no_mangle]
@@ -2613,12 +2619,12 @@
           pub extern "C" fn wrap__fetch_rownames(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -2668,7 +2674,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_rownames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2685,12 +2691,12 @@
                       r_name: "fetch_rownames",
                       mod_name: "fetch_rownames",
                       args: args,
-                      return_type: "Robj",
+                      return_type: "Option",
                       func_ptr: wrap__fetch_rownames as *const u8,
                       hidden: false,
                   })
           }
-          fn fetch_colnames(x: RMatrix<f64>) -> Robj {
+          fn fetch_colnames(x: RMatrix<f64>) -> Option<Strings> {
               x.get_colnames()
           }
           #[no_mangle]
@@ -2698,12 +2704,12 @@
           pub extern "C" fn wrap__fetch_colnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -2753,7 +2759,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_colnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2770,7 +2776,7 @@
                       r_name: "fetch_colnames",
                       mod_name: "fetch_colnames",
                       args: args,
-                      return_type: "Robj",
+                      return_type: "Option",
                       func_ptr: wrap__fetch_colnames as *const u8,
                       hidden: false,
                   })
@@ -2789,12 +2795,12 @@
           pub extern "C" fn wrap__change_dimnames(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -2844,7 +2850,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__change_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -2963,12 +2969,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
@@ -3031,7 +3037,7 @@
           fn meta__leak_arg2_try_implicit_strings(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3069,12 +3075,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let __y_robj = extendr_api::robj::Robj::from_sexp(_y);
@@ -3137,7 +3143,7 @@
           fn meta__leak_arg2_try_implicit_doubles(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3175,12 +3181,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3233,7 +3239,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3265,12 +3271,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3323,7 +3329,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3355,12 +3361,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3417,7 +3423,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_positive_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3449,12 +3455,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3511,7 +3517,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_negative_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3634,12 +3640,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _input_robj = extendr_api::robj::Robj::from_sexp(input);
@@ -3689,7 +3695,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__type_aware_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3805,12 +3811,12 @@
           pub extern "C" fn wrap__mat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3860,7 +3866,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3890,12 +3896,12 @@
           pub extern "C" fn wrap__mat_to_rmat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -3945,7 +3951,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -3975,12 +3981,12 @@
           pub extern "C" fn wrap__mat_to_robj(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -4030,7 +4036,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4060,12 +4066,12 @@
           pub extern "C" fn wrap__mat_to_rmatfloat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -4115,7 +4121,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmatfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4145,12 +4151,12 @@
           pub extern "C" fn wrap__rmat_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -4200,7 +4206,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__rmat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4230,12 +4236,12 @@
           pub extern "C" fn wrap__robj_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -4285,7 +4291,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__robj_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4315,12 +4321,12 @@
           pub extern "C" fn wrap__matref_to_mat(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -4370,7 +4376,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__matref_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4589,12 +4595,12 @@
           pub extern "C" fn wrap__euclidean_dist(a: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _a_robj = extendr_api::robj::Robj::from_sexp(a);
@@ -4644,7 +4650,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__euclidean_dist(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4765,12 +4771,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
@@ -4827,7 +4833,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__raw_identifier_in_fn_args(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -4860,12 +4866,12 @@
           pub extern "C" fn wrap__true() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(r#true())) }),
                   )
@@ -4912,7 +4918,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__true(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Test raw identifiers (`r#`) as function names are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @export",
@@ -4937,12 +4943,12 @@
           pub extern "C" fn wrap__false(r#type: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _type_robj = extendr_api::robj::Robj::from_sexp(r#type);
@@ -4992,7 +4998,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__false(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5111,12 +5117,12 @@
           pub extern "C" fn wrap__hello_submodule() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(hello_submodule())) }),
                   )
@@ -5163,7 +5169,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__hello_submodule(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Return string `\"Hello world!\"` to R.\n @export",
@@ -5237,12 +5243,12 @@
           pub extern "C" fn wrap__MySubmoduleClass__new() -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > { Ok(extendr_api::Robj::from(<MySubmoduleClass>::new())) }),
                   )
@@ -5289,7 +5295,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = ::alloc::vec::Vec::new();
+              let args = ::alloc::vec::Vec::new();
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -5310,12 +5316,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -5373,7 +5379,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5407,12 +5413,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -5469,7 +5475,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5492,20 +5498,21 @@
                   })
           }
           impl TryFrom<Robj> for &MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&robj)
               }
           }
           impl TryFrom<Robj> for &mut MySubmoduleClass {
-              type Error = Error;
-              fn try_from(mut robj: Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
                   Self::try_from(&mut robj)
               }
           }
           impl TryFrom<&Robj> for &MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: &Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &ExternalPtr<MySubmoduleClass> = robj.try_into()?;
                       external_ptr.try_addr()
@@ -5513,8 +5520,9 @@
               }
           }
           impl TryFrom<&mut Robj> for &mut MySubmoduleClass {
-              type Error = Error;
-              fn try_from(robj: &mut Robj) -> Result<Self> {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let external_ptr: &mut ExternalPtr<MySubmoduleClass> = robj.try_into()?;
                       external_ptr.try_addr_mut()
@@ -5523,6 +5531,7 @@
           }
           impl From<MySubmoduleClass> for Robj {
               fn from(value: MySubmoduleClass) -> Self {
+                  use extendr_api::ExternalPtr;
                   unsafe {
                       let mut res: ExternalPtr<MySubmoduleClass> = ExternalPtr::new(value);
                       res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
@@ -5638,12 +5647,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _integers_robj = extendr_api::robj::Robj::from_sexp(integers);
@@ -5693,7 +5702,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__middle_zero(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5733,12 +5742,12 @@
           ) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _logicals_robj = extendr_api::robj::Robj::from_sexp(logicals);
@@ -5788,7 +5797,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__logicals_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -5832,12 +5841,12 @@
           pub extern "C" fn wrap__floats_mean(x: extendr_api::SEXP) -> extendr_api::SEXP {
               use extendr_api::robj::*;
               let wrap_result_state: std::result::Result<
-                  std::result::Result<Robj, extendr_api::Error>,
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
                   Box<dyn std::any::Any + Send>,
               > = unsafe {
                   std::panic::catch_unwind(
                       std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          Robj,
+                          extendr_api::Robj,
                           extendr_api::Error,
                       > {
                           let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -5887,7 +5896,7 @@
           }
           #[allow(non_snake_case)]
           fn meta__floats_mean(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let mut args = <[_]>::into_vec(
+              let args = <[_]>::into_vec(
                   #[rustc_box]
                   ::alloc::boxed::Box::new([
                       extendr_api::metadata::Arg {
@@ -6002,12 +6011,12 @@
       pub extern "C" fn wrap__hello_world() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(hello_world())) }),
               )
@@ -6054,7 +6063,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__hello_world(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6073,12 +6082,12 @@
       pub extern "C" fn wrap__do_nothing() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(do_nothing())) }),
               )
@@ -6125,7 +6134,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__do_nothing(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6146,12 +6155,12 @@
       pub extern "C" fn wrap__double_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6201,7 +6210,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6231,12 +6240,12 @@
       pub extern "C" fn wrap__int_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6286,7 +6295,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__int_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6316,12 +6325,12 @@
       pub extern "C" fn wrap__bool_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6371,7 +6380,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__bool_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6401,12 +6410,12 @@
       pub extern "C" fn wrap__char_scalar(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6456,7 +6465,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6486,12 +6495,12 @@
       pub extern "C" fn wrap__char_vec(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6541,7 +6550,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6571,12 +6580,12 @@
       pub extern "C" fn wrap__double_vec(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6626,7 +6635,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6656,12 +6665,12 @@
       pub extern "C" fn wrap__try_rfloat_na() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(try_rfloat_na())) }),
               )
@@ -6708,7 +6717,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6729,12 +6738,12 @@
       pub extern "C" fn wrap__try_rint_na() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(try_rint_na())) }),
               )
@@ -6781,7 +6790,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -6802,12 +6811,12 @@
       pub extern "C" fn wrap__check_rfloat_na(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6857,7 +6866,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6887,12 +6896,12 @@
       pub extern "C" fn wrap__check_rint_na(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -6942,7 +6951,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -6975,12 +6984,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -7035,7 +7044,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_doubles_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7073,12 +7082,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -7133,7 +7142,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_integers_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7171,12 +7180,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -7231,7 +7240,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_logicals_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7270,12 +7279,12 @@
       pub extern "C" fn wrap__doubles_square(input: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _input_robj = extendr_api::robj::Robj::from_sexp(input);
@@ -7325,7 +7334,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__doubles_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7359,12 +7368,12 @@
       pub extern "C" fn wrap__complexes_square(input: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _input_robj = extendr_api::robj::Robj::from_sexp(input);
@@ -7414,7 +7423,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__complexes_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7448,12 +7457,12 @@
       pub extern "C" fn wrap__integers_square(input: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _input_robj = extendr_api::robj::Robj::from_sexp(input);
@@ -7503,7 +7512,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__integers_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7537,12 +7546,12 @@
       pub extern "C" fn wrap__logicals_not(input: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _input_robj = extendr_api::robj::Robj::from_sexp(input);
@@ -7592,7 +7601,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__logicals_not(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7622,12 +7631,12 @@
       pub extern "C" fn wrap__check_default(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -7677,7 +7686,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_default(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7715,12 +7724,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let __x_robj = extendr_api::robj::Robj::from_sexp(_x);
@@ -7775,7 +7784,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__special_param_names(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -7812,12 +7821,12 @@
       pub extern "C" fn wrap____00__special_function_name() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(__00__special_function_name())) }),
               )
@@ -7867,7 +7876,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____00__special_function_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Test wrapping of special function name\n @name f__00__special_function_name\n @export",
@@ -7888,12 +7897,12 @@
       pub extern "C" fn wrap__test_rename_mymod() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(test_rename())) }),
               )
@@ -7940,7 +7949,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__test_rename_mymod(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -7961,12 +7970,12 @@
       pub extern "C" fn wrap__get_default_value(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -8016,7 +8025,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8046,12 +8055,12 @@
       pub extern "C" fn wrap__add_5_if_not_null(x: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -8101,7 +8110,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__add_5_if_not_null(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8180,12 +8189,12 @@
       pub extern "C" fn wrap__MyClass__new() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(<MyClass>::new())) }),
               )
@@ -8232,7 +8241,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -8253,12 +8262,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -8316,7 +8325,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8348,12 +8357,12 @@
       pub extern "C" fn wrap__MyClass__a(_self: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -8410,7 +8419,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8437,12 +8446,12 @@
       pub extern "C" fn wrap__MyClass__me(_self: extendr_api::SEXP) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -8502,7 +8511,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__me(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8531,12 +8540,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _robj_robj = extendr_api::robj::Robj::from_sexp(robj);
@@ -8590,7 +8599,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__restore_from_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8619,12 +8628,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _x_robj = extendr_api::robj::Robj::from_sexp(x);
@@ -8678,7 +8687,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8701,20 +8710,21 @@
               })
       }
       impl TryFrom<Robj> for &MyClass {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut MyClass {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &MyClass {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<MyClass> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -8722,8 +8732,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClass {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<MyClass> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -8732,6 +8743,7 @@
       }
       impl From<MyClass> for Robj {
           fn from(value: MyClass) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClass").unwrap();
@@ -8783,12 +8795,12 @@
       pub extern "C" fn wrap____MyClass__new() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(<__MyClass>::new())) }),
               )
@@ -8835,7 +8847,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -8855,12 +8867,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -8917,7 +8929,7 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass____name_test(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -8940,20 +8952,21 @@
               })
       }
       impl TryFrom<Robj> for &__MyClass {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut __MyClass {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &__MyClass {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<__MyClass> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -8961,8 +8974,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut __MyClass {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<__MyClass> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -8971,6 +8985,7 @@
       }
       impl From<__MyClass> for Robj {
           fn from(value: __MyClass) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<__MyClass> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "__MyClass").unwrap();
@@ -9030,12 +9045,12 @@
       pub extern "C" fn wrap__MyClassUnexported__new() -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > { Ok(extendr_api::Robj::from(<MyClassUnexported>::new())) }),
               )
@@ -9082,7 +9097,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = ::alloc::vec::Vec::new();
+          let args = ::alloc::vec::Vec::new();
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -9102,12 +9117,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
@@ -9164,7 +9179,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {
@@ -9187,20 +9202,21 @@
               })
       }
       impl TryFrom<Robj> for &MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&robj)
           }
       }
       impl TryFrom<Robj> for &mut MyClassUnexported {
-          type Error = Error;
-          fn try_from(mut robj: Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
               Self::try_from(&mut robj)
           }
       }
       impl TryFrom<&Robj> for &MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: &Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &ExternalPtr<MyClassUnexported> = robj.try_into()?;
                   external_ptr.try_addr()
@@ -9208,8 +9224,9 @@
           }
       }
       impl TryFrom<&mut Robj> for &mut MyClassUnexported {
-          type Error = Error;
-          fn try_from(robj: &mut Robj) -> Result<Self> {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let external_ptr: &mut ExternalPtr<MyClassUnexported> = robj.try_into()?;
                   external_ptr.try_addr_mut()
@@ -9218,6 +9235,7 @@
       }
       impl From<MyClassUnexported> for Robj {
           fn from(value: MyClassUnexported) -> Self {
+              use extendr_api::ExternalPtr;
               unsafe {
                   let mut res: ExternalPtr<MyClassUnexported> = ExternalPtr::new(value);
                   res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
@@ -9256,12 +9274,12 @@
       ) -> extendr_api::SEXP {
           use extendr_api::robj::*;
           let wrap_result_state: std::result::Result<
-              std::result::Result<Robj, extendr_api::Error>,
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
               Box<dyn std::any::Any + Send>,
           > = unsafe {
               std::panic::catch_unwind(
                   std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                      Robj,
+                      extendr_api::Robj,
                       extendr_api::Error,
                   > {
                       let _welcome_message_robj = extendr_api::robj::Robj::from_sexp(
@@ -9313,7 +9331,7 @@
       }
       #[allow(non_snake_case)]
       fn meta__my_device(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let mut args = <[_]>::into_vec(
+          let args = <[_]>::into_vec(
               #[rustc_box]
               ::alloc::boxed::Box::new([
                   extendr_api::metadata::Arg {

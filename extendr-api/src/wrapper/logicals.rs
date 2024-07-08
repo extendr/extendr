@@ -93,7 +93,12 @@ impl TryFrom<Vec<bool>> for Logicals {
 
 #[cfg(test)]
 mod tests {
-    use crate::prelude::*;
+    use crate as extendr_api;
+    use crate::r;
+    use crate::scalar::Rbool;
+    use crate::Rinternals;
+    use extendr_api::test;
+    use extendr_api::Logicals;
 
     #[test]
     fn from_iterator() {

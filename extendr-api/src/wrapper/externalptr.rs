@@ -130,7 +130,7 @@ impl<T> ExternalPtr<T> {
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
+            let robj = Robj::make_external_ptr(Box::into_raw(boxed), Robj::from(()));
 
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {

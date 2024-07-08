@@ -71,8 +71,9 @@ impl_into_integerish!(f64, u8);
 
 #[cfg(test)]
 mod try_into_int_tests {
+    use crate as extendr_api;
     use crate::conversions::try_into_int::{ConversionError, FloatToInt};
-    use crate::{test, CanBeNA, Result};
+    use crate::{test, CanBeNA};
 
     type ConversionResult<T, E> = std::result::Result<T, E>;
 

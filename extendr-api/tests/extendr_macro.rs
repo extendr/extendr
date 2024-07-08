@@ -1,4 +1,11 @@
-use extendr_api::prelude::*;
+use extendr_api::call;
+use extendr_api::extendr;
+use extendr_api::extendr_module;
+use extendr_api::Rinternals;
+use extendr_api::Robj;
+use extendr_api::NA_INTEGER;
+use extendr_api::NA_REAL;
+use extendr_api::{prelude::Rint, r, test, GetSexp, Integers};
 
 #[extendr]
 fn test_i32(val: i32) -> i32 {
@@ -137,7 +144,9 @@ fn tests_with_successful_outcomes() {
 #[ignore = "panicking in FFI is now automatically abort instead of undefined behavior"]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
-    single_threaded(|| unsafe {
+
+    use extendr_api::{catch_r_error, list, pairlist};
+    extendr_api::single_threaded(|| unsafe {
         test! {
             let old_hook = std::panic::take_hook();
 
@@ -162,6 +171,8 @@ fn tests_with_unsuccessful_outcomes() {
 
 #[test]
 fn test_call_macro() {
+    use extendr_api::Length;
+    use extendr_api::Operators;
     test! {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
