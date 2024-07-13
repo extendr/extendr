@@ -32,6 +32,7 @@ fn type_aware_sum(input : Either<Integers, Doubles>) -> Either<Rint, Rfloat> {
 */
 use crate::prelude::*;
 use crate::{Error, Robj};
+use either::*;
 
 impl<'a, L, R> TryFrom<&'a Robj> for Either<L, R>
 where
