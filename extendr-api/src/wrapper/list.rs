@@ -194,7 +194,7 @@ impl List {
 }
 
 pub trait IntoList {
-    fn to_list(&self) -> List;
+    fn into_list(&self) -> List;
 }
 
 impl<T: IntoList> ToVectorValue for T {
@@ -206,7 +206,7 @@ impl<T: IntoList> ToVectorValue for T {
     where
         Self: Sized,
     {
-        unsafe { self.to_list().get() }
+        unsafe { self.into_list().get() }
     }
 }
 

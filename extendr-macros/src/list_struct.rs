@@ -3,8 +3,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::{Data, DeriveInput};
 
-/// Implementation of the TryFromRobj macro. Refer to the documentation there
-pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
+/// Implementation of the TryFromList macro. Refer to the documentation there
+pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
     let ast = syn::parse::<DeriveInput>(item)?;
     let inside = if let Data::Struct(inner) = ast.data {
@@ -27,30 +27,28 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
 
     // Emit the conversion trait impl
     Ok(TokenStream::from(quote!(
-        impl std::convert::TryFrom<&extendr_api::Robj> for #struct_name {
-            type Error = extendr_api::Error;
+        impl std::convert::TryFrom<&::extendr_api::List> for #struct_name {
+            type Error = ::extendr_api::Error;
 
-            fn try_from(value: &extendr_api::Robj) -> extendr_api::Result<Self> {
+            fn try_from(value: &::extendr_api::List) -> ::extendr_api::Result<Self> {
                 Ok(#struct_name {
                     #(#tokens),*
                 })
             }
         }
 
-        impl std::convert::TryFrom<extendr_api::Robj> for #struct_name {
-            type Error = extendr_api::Error;
+        impl std::convert::TryFrom<::extendr_api::List> for #struct_name {
+            type Error = ::extendr_api::Error;
 
-            fn try_from(value: extendr_api::Robj) -> extendr_api::Result<Self> {
-                Ok(#struct_name {
-                    #(#tokens),*
-                })
+            fn try_from(value: ::extendr_api::List) -> ::extendr_api::Result<Self> {
+                (&value).try_into()
             }
         }
     )))
 }
 
 /// Implementation of the IntoRobj macro. Refer to the documentation there
-pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
+pub fn derive_into_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
     let ast = syn::parse::<DeriveInput>(item)?;
     let inside = if let Data::Struct(inner) = ast.data {
@@ -74,14 +72,14 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
 
     // The only thing we emit from this macro is the conversion trait impl
     Ok(TokenStream::from(quote!(
-        impl std::convert::From<&#struct_name> for extendr_api::Robj {
+        impl std::convert::From<&#struct_name> for ::extendr_api::List {
             fn from(value: &#struct_name) -> Self {
-                extendr_api::List::from_pairs([#(#tokens),*]).into()
+                ::extendr_api::List::from_pairs([#(#tokens),*]).into()
             }
         }
-        impl std::convert::From<#struct_name> for extendr_api::Robj {
+        impl std::convert::From<#struct_name> for ::extendr_api::List {
             fn from(value: #struct_name) -> Self {
-                extendr_api::List::from_pairs([#(#tokens),*]).into()
+                (&value).into()
             }
         }
     )))

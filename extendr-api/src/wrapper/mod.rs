@@ -46,7 +46,7 @@ pub use externalptr::ExternalPtr;
 pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;
-pub use list::{FromList, List, ListIter};
+pub use list::{FromList, IntoList, List, ListIter};
 pub use logicals::Logicals;
 pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
 pub use nullable::Nullable;
