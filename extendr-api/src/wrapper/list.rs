@@ -193,6 +193,23 @@ impl List {
     }
 }
 
+pub trait IntoList {
+    fn to_list(&self) -> List;
+}
+
+impl<T: IntoList> ToVectorValue for T {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::VECSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.to_list().get() }
+    }
+}
+
 impl IntoIterator for List {
     type IntoIter = NamedListIter;
     type Item = (&'static str, Robj);
