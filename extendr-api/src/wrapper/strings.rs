@@ -159,3 +159,13 @@ impl From<Option<Strings>> for Robj {
         }
     }
 }
+
+impl IntoIterator for Strings {
+    type Item = &'static str;
+
+    type IntoIter = StrIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.robj.as_str_iter().unwrap()
+    }
+}
