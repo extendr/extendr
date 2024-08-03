@@ -260,7 +260,6 @@ impl<T> TryFrom<Robj> for &mut ExternalPtr<T> {
     }
 }
 
-
 impl<T> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
