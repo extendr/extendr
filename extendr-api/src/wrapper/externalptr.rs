@@ -116,6 +116,23 @@ impl<T> DerefMut for ExternalPtr<T> {
     }
 }
 
+/// This is used by R to drop `ExternalPtr<_>` and also to implement the `Drop` for `ExternalPtr<_>`.
+extern "C" fn finalizer<T>(x: SEXP) {
+    unsafe {
+        let ptr = R_ExternalPtrAddr(x).cast::<T>();
+
+        // Free the `tag`, which is the type-name
+        R_SetExternalPtrTag(x, R_NilValue);
+
+        // Convert the pointer to a box and drop it implictly.
+        // This frees up the memory we have used and calls the "T::drop" method if there is one.
+        drop(Box::from_raw(ptr));
+
+        // Now set the pointer in ExternalPTR to C `NULL`
+        R_ClearExternalPtr(x);
+    }
+}
+
 impl<T> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
@@ -131,22 +148,6 @@ impl<T> ExternalPtr<T> {
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
             let robj = Robj::make_external_ptr(Box::into_raw(boxed), Robj::from(()));
-
-            extern "C" fn finalizer<T>(x: SEXP) {
-                unsafe {
-                    let ptr = R_ExternalPtrAddr(x).cast::<T>();
-
-                    // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(x, R_NilValue);
-
-                    // Convert the pointer to a box and drop it implictly.
-                    // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(Box::from_raw(ptr));
-
-                    // Now set the pointer in ExternalPTR to C `NULL`
-                    R_ClearExternalPtr(x);
-                }
-            }
 
             // Tell R about our finalizer
             robj.register_c_finalizer(Some(finalizer::<T>));
@@ -263,7 +264,7 @@ impl<T> TryFrom<Robj> for ExternalPtr<T> {
 
 impl<T> From<ExternalPtr<T>> for Robj {
     fn from(val: ExternalPtr<T>) -> Self {
-        val.robj
+        val.robj.clone()
     }
 }
 
@@ -291,6 +292,12 @@ impl<T> AsRef<T> for ExternalPtr<T> {
 impl<T> AsMut<T> for ExternalPtr<T> {
     fn as_mut(&mut self) -> &mut T {
         self.addr_mut()
+    }
+}
+
+impl<T> Drop for ExternalPtr<T> {
+    fn drop(&mut self) {
+        finalizer::<T>(unsafe { self.get_mut() })
     }
 }
 
