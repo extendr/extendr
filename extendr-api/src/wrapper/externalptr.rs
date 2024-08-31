@@ -360,4 +360,30 @@ mod tests {
             )
         });
     }
+
+    //   #[test]
+    //   fn test_drop_of_box_raw() {
+    //     with_r(|| {
+    //       let box_a = Box::new(A);
+    //       // Box::leak(box_a);
+    //       let pointer_a = Box::into_raw(box_a);
+
+    //       unsafe { Box::from_raw(pointer_a) };
+    //     });
+    //   }
+
+    #[test]
+    fn test_drop_of_box_raw() {
+        struct A;
+
+        impl Drop for A {
+            fn drop(&mut self) {
+                rprintln!("A `struct A` was just destroyed");
+            }
+        }
+
+        with_r(|| {
+            ExternalPtr::new(A);
+        });
+    }
 }
