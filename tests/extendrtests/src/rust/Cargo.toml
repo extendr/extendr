@@ -21,6 +21,7 @@ faer = "0.19"
 
 [features]
 full-functionality = []
+serde = []
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
