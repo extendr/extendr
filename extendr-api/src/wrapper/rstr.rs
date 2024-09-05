@@ -100,6 +100,12 @@ impl Deref for Rstr {
     }
 }
 
+impl PartialEq<Rstr> for Rstr {
+    fn eq(&self, other: &Rstr) -> bool {
+        self.robj.eq(&other.robj)
+    }
+}
+
 impl PartialEq<str> for Rstr {
     /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &str) -> bool {
@@ -107,9 +113,24 @@ impl PartialEq<str> for Rstr {
     }
 }
 
-impl PartialEq<Rstr> for Rstr {
+impl PartialEq<Rstr> for &str {
+    /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &Rstr) -> bool {
-        self.robj.eq(&other.robj)
+        *self == other.as_str()
+    }
+}
+
+impl PartialEq<&str> for Rstr {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &&str) -> bool {
+        self.as_str() == *other
+    }
+}
+
+impl PartialEq<Rstr> for &&str {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &Rstr) -> bool {
+        **self == other.as_str()
     }
 }
 
