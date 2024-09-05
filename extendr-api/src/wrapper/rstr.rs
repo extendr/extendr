@@ -117,6 +117,12 @@ impl PartialEq<str> for Rstr {
     }
 }
 
+impl PartialEq<Rstr> for Rstr {
+    fn eq(&self, other: &Rstr) -> bool {
+        self.robj.eq(other.robj)
+    }
+}
+
 impl std::fmt::Debug for Rstr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_na() {
