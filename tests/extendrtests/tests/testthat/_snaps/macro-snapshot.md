@@ -2418,6 +2418,87 @@
                       methods,
                   });
           }
+          fn externalptr_use_ref_manually() -> ExternalPtr<i32> {
+              let extptr = ExternalPtr::new(1);
+              let robj: Robj = extptr.into();
+              let extptr2: &ExternalPtr<i32> = robj.try_into().unwrap();
+              extptr2.clone()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__externalptr_use_ref_manually() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(externalptr_use_ref_manually())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "externalptr_use_ref_manually",
+                              ),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__externalptr_use_ref_manually(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "externalptr_use_ref_manually",
+                      r_name: "externalptr_use_ref_manually",
+                      mod_name: "externalptr_use_ref_manually",
+                      args: args,
+                      return_type: "ExternalPtr",
+                      func_ptr: wrap__externalptr_use_ref_manually as *const u8,
+                      hidden: false,
+                  })
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
