@@ -100,16 +100,6 @@ impl Deref for Rstr {
     }
 }
 
-impl<T> PartialEq<T> for Rstr
-where
-    T: AsRef<str>,
-{
-    /// Compare a `Rstr` with a `Rstr`.
-    fn eq(&self, other: &T) -> bool {
-        self.as_str() == other.as_ref()
-    }
-}
-
 impl PartialEq<str> for Rstr {
     /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &str) -> bool {
@@ -119,7 +109,7 @@ impl PartialEq<str> for Rstr {
 
 impl PartialEq<Rstr> for Rstr {
     fn eq(&self, other: &Rstr) -> bool {
-        self.robj.eq(other.robj)
+        self.robj.eq(&other.robj)
     }
 }
 
