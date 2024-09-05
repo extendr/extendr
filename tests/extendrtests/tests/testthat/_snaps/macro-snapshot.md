@@ -5634,6 +5634,298 @@
               unsafe { extendr_api::register_call_methods(info, get_submodule_metadata()) };
           }
       }
+      mod to_unique_character {
+          use extendr_api::prelude::*;
+          fn to_unique_rstr(r_char_vec: Strings) -> usize {
+              let capacity = r_char_vec.len();
+              let mut seen: Vec<Rstr> = Vec::with_capacity(capacity);
+              let mut n_unique = 0;
+              for word in r_char_vec.into_iter().cloned() {
+                  if !seen.contains(&word) {
+                      n_unique += 1;
+                      seen.push(word);
+                  }
+              }
+              n_unique
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__to_unique_rstr(
+              r_char_vec: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _r_char_vec_robj = extendr_api::robj::Robj::from_sexp(
+                              r_char_vec,
+                          );
+                          Ok(
+                              extendr_api::Robj::from(
+                                  to_unique_rstr(_r_char_vec_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "to_unique_rstr"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__to_unique_rstr(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "r_char_vec",
+                          arg_type: "Strings",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "to_unique_rstr",
+                      r_name: "to_unique_rstr",
+                      mod_name: "to_unique_rstr",
+                      args: args,
+                      return_type: "usize",
+                      func_ptr: wrap__to_unique_rstr as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn to_unique_str(r_char_vec: StrIter) -> usize {
+              let capacity = r_char_vec.len();
+              let mut seen: Vec<&str> = Vec::with_capacity(capacity);
+              let mut n_unique = 0;
+              for word in r_char_vec {
+                  if !seen.contains(&word) {
+                      n_unique += 1;
+                      seen.push(word);
+                  }
+              }
+              n_unique
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__to_unique_str(
+              r_char_vec: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _r_char_vec_robj = extendr_api::robj::Robj::from_sexp(
+                              r_char_vec,
+                          );
+                          Ok(
+                              extendr_api::Robj::from(
+                                  to_unique_str(_r_char_vec_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = {
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "to_unique_str"),
+                          );
+                          res
+                      };
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__to_unique_str(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "r_char_vec",
+                          arg_type: "StrIter",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "to_unique_str",
+                      r_name: "to_unique_str",
+                      mod_name: "to_unique_str",
+                      args: args,
+                      return_type: "usize",
+                      func_ptr: wrap__to_unique_str as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_to_unique_character_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__to_unique_rstr(&mut functions);
+              meta__to_unique_str(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_to_unique_character_metadata",
+                      mod_name: "get_to_unique_character_metadata",
+                      r_name: "get_to_unique_character_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_to_unique_character_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_to_unique_character_wrappers",
+                      mod_name: "make_to_unique_character_wrappers",
+                      r_name: "make_to_unique_character_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_to_unique_character_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "to_unique_character",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_to_unique_character_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_to_unique_character_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_to_unique_character_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_to_unique_character_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_to_unique_character_extendr(
+              info: *mut extendr_api::DllInfo,
+          ) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_to_unique_character_metadata())
+              };
+          }
+      }
       mod typedsliceargs {
           use extendr_api::prelude::*;
           fn middle_zero(integers: &mut [Rint]) {
@@ -9399,6 +9691,7 @@
           functions.extend(externalptr::get_externalptr_metadata().functions);
           functions.extend(matrix::get_matrix_metadata().functions);
           functions.extend(typedsliceargs::get_typedsliceargs_metadata().functions);
+          functions.extend(to_unique_character::get_to_unique_character_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
           impls.extend(dataframe::get_dataframe_metadata().impls);
@@ -9411,6 +9704,7 @@
           impls.extend(externalptr::get_externalptr_metadata().impls);
           impls.extend(matrix::get_matrix_metadata().impls);
           impls.extend(typedsliceargs::get_typedsliceargs_metadata().impls);
+          impls.extend(to_unique_character::get_to_unique_character_metadata().impls);
           functions
               .push(extendr_api::metadata::Func {
                   doc: "Metadata access function.",
