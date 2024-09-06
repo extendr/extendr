@@ -102,7 +102,7 @@ impl Deref for Rstr {
 
 impl PartialEq<Rstr> for Rstr {
     fn eq(&self, other: &Rstr) -> bool {
-        self.robj.eq(&other.robj)
+        unsafe { self.robj.get() == other.robj.get() }
     }
 }
 
