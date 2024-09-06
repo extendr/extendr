@@ -145,6 +145,14 @@ impl TryFrom<&Robj> for StrIter {
     }
 }
 
+impl TryFrom<Robj> for StrIter {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
 pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector
