@@ -100,7 +100,7 @@ impl<T> Slices for ExternalPtr<T> {}
 /// dollar() etc.
 impl<T> Operators for ExternalPtr<T> {}
 
-impl<T> Deref for ExternalPtr<T> {
+impl<T: 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
@@ -109,14 +109,14 @@ impl<T> Deref for ExternalPtr<T> {
     }
 }
 
-impl<T> DerefMut for ExternalPtr<T> {
+impl<T: 'static> DerefMut for ExternalPtr<T> {
     /// This allows us to treat the Robj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
     }
 }
 
-impl<T> ExternalPtr<T> {
+impl<T: 'static> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -130,14 +130,21 @@ impl<T> ExternalPtr<T> {
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), Robj::from(()));
+            let mut robj = Robj::make_external_ptr(Box::into_raw(boxed), Robj::from(()));
+
+            // TODO: put this in `prot`, instead of protection using `ownership`-module
+            let raw_type_id = Raw::from_bytes(
+                std::mem::transmute::<_, [u8; 16]>(std::any::TypeId::of::<T>()).as_slice(),
+            );
+            robj.set_attrib("rust_type_id", raw_type_id).unwrap();
+            let robj = robj;
 
             extern "C" fn finalizer<T>(x: SEXP) {
                 unsafe {
                     let ptr = R_ExternalPtrAddr(x).cast::<T>();
 
                     // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(x, R_NilValue);
+                    R_SetExternalPtrTag(x, std::any::type_name::<T>().into_robj().get());
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
@@ -276,19 +283,19 @@ impl<T> From<Option<ExternalPtr<T>>> for Robj {
     }
 }
 
-impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
+impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
     }
 }
 
-impl<T> AsRef<T> for ExternalPtr<T> {
+impl<T: 'static> AsRef<T> for ExternalPtr<T> {
     fn as_ref(&self) -> &T {
         self.addr()
     }
 }
 
-impl<T> AsMut<T> for ExternalPtr<T> {
+impl<T: 'static> AsMut<T> for ExternalPtr<T> {
     fn as_mut(&mut self) -> &mut T {
         self.addr_mut()
     }
