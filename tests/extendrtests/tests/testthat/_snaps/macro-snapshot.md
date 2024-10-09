@@ -135,12 +135,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "new_usize"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -219,10 +219,10 @@
           }
           impl AltStringImpl for StringInts {
               fn elt(&self, index: usize) -> Rstr {
-                  {
-                      let res = ::alloc::fmt::format(format_args!("{0}", index));
-                      res
-                  }
+                  ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(format_args!("{0}", index));
+                          res
+                      })
                       .into()
               }
           }
@@ -257,12 +257,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "tst_altstring"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -387,12 +387,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "tst_altinteger"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -553,12 +553,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "dbls_named"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -643,12 +643,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "strings_named"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -737,12 +737,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "list_named"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -986,7 +986,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -994,7 +994,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1077,7 +1077,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -1085,7 +1085,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1320,12 +1320,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "new"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1404,12 +1404,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "set_a"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1498,12 +1498,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "a"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1589,12 +1589,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "me_owned"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1662,8 +1662,14 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .me_ref();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1683,12 +1689,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "me_ref"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1756,8 +1762,14 @@
                                   <&mut Wrapper>::try_from(&mut _self_robj),
                               )
                               .me_mut();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1777,12 +1789,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "me_mut"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1850,8 +1862,14 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .me_explicit_ref();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1871,12 +1889,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "me_explicit_ref"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -1944,8 +1962,14 @@
                                   <&mut Wrapper>::try_from(&mut _self_robj),
                               )
                               .me_explicit_mut();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1965,12 +1989,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "me_explicit_mut"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2040,14 +2064,26 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .max_ref(_other_robj.try_into()?);
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -2067,12 +2103,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "max_ref"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2152,20 +2188,38 @@
                                   _other_robj.try_into()?,
                                   __offset_robj.try_into()?,
                               );
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_offset)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_offset),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_offset));
@@ -2185,12 +2239,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "max_ref_offset"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2270,14 +2324,26 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .max_ref2(_other_robj.try_into()?);
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -2297,12 +2363,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "max_ref2"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2507,19 +2573,23 @@
           impl<'a> DeviceDriver for MyDevice<'a> {
               fn activate(&mut self, _dd: DevDesc) {
                   let welcome_message = self.welcome_message;
-                  print_r_output({
-                      let res = ::alloc::fmt::format(
-                          format_args!("message from device: {0}", welcome_message),
-                      );
-                      res
-                  });
+                  print_r_output(
+                      ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("message from device: {0}", welcome_message),
+                          );
+                          res
+                      }),
+                  );
                   print_r_output("\n");
               }
               fn close(&mut self, _dd: DevDesc) {
-                  print_r_output({
-                      let res = ::alloc::fmt::format(format_args!("good bye..."));
-                      res
-                  });
+                  print_r_output(
+                      ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(format_args!("good bye..."));
+                          res
+                      }),
+                  );
                   print_r_output("\n");
               }
           }
@@ -2558,12 +2628,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "fetch_dimnames"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2643,12 +2713,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "fetch_rownames"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2728,12 +2798,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "fetch_colnames"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2819,12 +2889,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "change_dimnames"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3001,7 +3071,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3009,7 +3079,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3107,7 +3177,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3115,7 +3185,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3205,7 +3275,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3213,7 +3283,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3295,7 +3365,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3303,7 +3373,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3389,7 +3459,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3397,7 +3467,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3483,7 +3553,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -3491,7 +3561,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3664,12 +3734,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "type_aware_sum"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3835,12 +3905,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "mat_to_mat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -3920,12 +3990,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "mat_to_rmat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4005,12 +4075,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "mat_to_robj"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4090,12 +4160,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "mat_to_rmatfloat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4175,12 +4245,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "rmat_to_mat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4260,12 +4330,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "robj_to_mat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4345,12 +4415,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "matref_to_mat"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4619,12 +4689,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "euclidean_dist"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4799,7 +4869,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -4807,7 +4877,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4887,12 +4957,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "r#true"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -4967,12 +5037,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "r#false"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5138,12 +5208,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "hello_submodule"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5264,12 +5334,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "new"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5348,12 +5418,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "set_a"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5444,12 +5514,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "a"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5671,12 +5741,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "middle_zero"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5766,12 +5836,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "logicals_sum"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -5865,12 +5935,12 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!("User function panicked: {0}", "floats_mean"),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -6032,12 +6102,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "hello_world"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6103,12 +6173,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "do_nothing"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6179,12 +6249,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "double_scalar"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6264,12 +6334,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "int_scalar"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6349,12 +6419,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "bool_scalar"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6434,12 +6504,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "char_scalar"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6519,12 +6589,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "char_vec"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6604,12 +6674,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "double_vec"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6686,12 +6756,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "try_rfloat_na"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6759,12 +6829,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "try_rint_na"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6835,12 +6905,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "check_rfloat_na"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -6920,12 +6990,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "check_rint_na"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7013,12 +7083,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "get_doubles_element"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7111,12 +7181,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "get_integers_element"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7209,12 +7279,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "get_logicals_element"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7303,12 +7373,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "doubles_square"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7392,12 +7462,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "complexes_square"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7481,12 +7551,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "integers_square"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7570,12 +7640,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "logicals_not"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7655,12 +7725,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "check_default"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7753,12 +7823,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "special_param_names"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7842,7 +7912,7 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!(
                               "User function panicked: {0}",
@@ -7850,7 +7920,7 @@
                           ),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7918,12 +7988,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "test.rename.rlike"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -7994,12 +8064,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "get_default_value"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8079,12 +8149,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "add_5_if_not_null"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8210,12 +8280,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "new"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8294,12 +8364,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "set_a"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8388,12 +8458,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "a"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8459,10 +8529,13 @@
                               <&MyClass>::try_from(&_self_robj),
                           )
                           .me();
-                      if std::ptr::addr_eq(
-                          extendr_api::R_ExternalPtrAddr(_self),
-                          std::ptr::from_ref(return_ref_to_self),
-                      ) {
+                      let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                          .cast::<Box<dyn std::any::Any>>()
+                          .as_ref()
+                          .unwrap()
+                          .downcast_ref::<MyClass>()
+                          .unwrap();
+                      if std::ptr::addr_eq(arg_ref, std::ptr::from_ref(return_ref_to_self)) {
                           return Ok(extendr_api::Robj::from_sexp(_self));
                       }
                       Err(Error::ExpectedExternalPtrReference)
@@ -8480,12 +8553,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "me"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8568,12 +8641,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "restore_from_robj"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8656,12 +8729,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "get_default_value"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8816,12 +8889,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "new"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -8898,12 +8971,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "__name_test"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -9066,12 +9139,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "new"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -9148,12 +9221,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "a"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
@@ -9300,12 +9373,12 @@
               }
               Err(unwind_err) => {
                   drop(unwind_err);
-                  let err_string = {
+                  let err_string = ::alloc::__export::must_use({
                       let res = ::alloc::fmt::format(
                           format_args!("User function panicked: {0}", "my_device"),
                       );
                       res
-                  };
+                  });
                   extendr_api::handle_panic(
                       err_string.as_str(),
                       || {
