@@ -229,29 +229,63 @@ impl<T: 'static> ExternalPtr<T> {
     }
 }
 
-impl<T> TryFrom<&Robj> for &ExternalPtr<T> {
+impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(value: &Robj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
+
+        // type checking that could be optional
+        if !value.has_attrib("rust_type_id") {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
+        let raw_type_id = value.get_attrib("rust_type_id").unwrap();
+        let raw_type_id = raw_type_id.as_raw_slice().unwrap();
+        let expected_type_id = std::any::TypeId::of::<T>();
+        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) };
+        let expected_type_id = expected_type_id.as_slice();
+        if expected_type_id != raw_type_id {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
         unsafe { Ok(std::mem::transmute(value)) }
     }
 }
 
-impl<T> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
+impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(value: &mut Robj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
+
+        // type checking that could be optional
+        if !value.has_attrib("rust_type_id") {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
+        let raw_type_id = value.get_attrib("rust_type_id").unwrap();
+        let raw_type_id = raw_type_id.as_raw_slice().unwrap();
+        let expected_type_id = std::any::TypeId::of::<T>();
+        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) };
+        let expected_type_id = expected_type_id.as_slice();
+        if expected_type_id != raw_type_id {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
         unsafe { Ok(std::mem::transmute(value)) }
     }
 }
 
-impl<T> TryFrom<&Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
@@ -260,7 +294,7 @@ impl<T> TryFrom<&Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
