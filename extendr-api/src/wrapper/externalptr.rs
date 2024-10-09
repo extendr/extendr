@@ -266,10 +266,9 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
         }
 
         // type checking that could be optional
-        if !value.has_attrib("rust_type_id") {
-            return Err(Error::ExpectedExternalPtr(value.clone()));
-        }
-        let raw_type_id = value.get_attrib("rust_type_id").unwrap();
+        let Some(raw_type_id) = value.get_attribute("rust_type_id") else {
+           return Err(Error::ExpectedExternalPtr(value.clone()));
+        };
         let raw_type_id = raw_type_id.as_raw_slice().unwrap();
         // these lines extract the type ID of `T` and store is as a slice for us to compare against
         let expected_type_id = std::any::TypeId::of::<T>();
