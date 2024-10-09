@@ -238,10 +238,9 @@ impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
         }
 
         // type checking that could be optional
-        if !value.has_attrib("rust_type_id") {
+        let Some(raw_type_id) = value.get_attrib("rust_type_id") else {
             return Err(Error::ExpectedExternalPtr(value.clone()));
-        }
-        let raw_type_id = value.get_attrib("rust_type_id").unwrap();
+        };
         let raw_type_id = raw_type_id.as_raw_slice().unwrap();
         let expected_type_id = std::any::TypeId::of::<T>();
         let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) };
@@ -266,13 +265,14 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
         }
 
         // type checking that could be optional
-        let Some(raw_type_id) = value.get_attribute("rust_type_id") else {
-           return Err(Error::ExpectedExternalPtr(value.clone()));
+        let Some(raw_type_id) = value.get_attrib("rust_type_id") else {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
         };
         let raw_type_id = raw_type_id.as_raw_slice().unwrap();
         // these lines extract the type ID of `T` and store is as a slice for us to compare against
         let expected_type_id = std::any::TypeId::of::<T>();
-        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) }.as_slice();
+        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) };
+        let expected_type_id = expected_type_id.as_slice();
         // now we compare the expected type ID with what we found. If they do not match, we return an error
         if expected_type_id != raw_type_id {
             return Err(Error::ExpectedExternalPtrType(
