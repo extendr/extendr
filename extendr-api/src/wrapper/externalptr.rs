@@ -141,9 +141,12 @@ impl<T: 'static> ExternalPtr<T> {
                 }))
             };
 
-            extern "C" fn finalizer<T>(x: SEXP) {
+            extern "C" fn finalizer(x: SEXP) {
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(x).cast::<T>();
+                    let ptr = R_ExternalPtrAddr(x).cast::<Box<dyn Any>>();
+
+                    // Free the `tag`, which is the type-name
+                    R_SetExternalPtrTag(x, R_NilValue);
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
@@ -155,7 +158,7 @@ impl<T: 'static> ExternalPtr<T> {
             }
 
             // Tell R about our finalizer
-            robj.register_c_finalizer(Some(finalizer::<T>));
+            robj.register_c_finalizer(Some(finalizer));
 
             // Return an object in a wrapper.
             Self {
@@ -209,7 +212,7 @@ impl<T: 'static> ExternalPtr<T> {
                 .cast::<Box<dyn Any>>()
                 .as_ref()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
-                .map(|x| x.downcast_ref().unwrap())
+                .map(|x| x.downcast_ref::<T>().unwrap())
         }
     }
 
@@ -225,7 +228,7 @@ impl<T: 'static> ExternalPtr<T> {
                 .cast::<Box<dyn Any>>()
                 .as_mut()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
-                .map(|x| x.downcast_mut().unwrap())
+                .map(|x| x.downcast_mut::<T>().unwrap())
         }
     }
 }
@@ -282,7 +285,7 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
             ));
         }
 
-        unsafe { Ok(std::mem::transmute::<&mut Robj, &mut ExternalPtr<_>>(value)) }
+        unsafe { Ok(std::mem::transmute::<&mut Robj, &mut ExternalPtr<T>>(value)) }
     }
 }
 
