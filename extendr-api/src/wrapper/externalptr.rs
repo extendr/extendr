@@ -137,7 +137,7 @@ impl<T> ExternalPtr<T> {
                     let ptr = R_ExternalPtrAddr(x).cast::<T>();
 
                     // Free the `tag`, which is the type-name
-                    R_SetExternalPtrTag(x, R_NilValue);
+                    R_SetExternalPtrTag(x, std::any::type_name::<T>().into_robj().get());
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
