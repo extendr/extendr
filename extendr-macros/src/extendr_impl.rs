@@ -1,13 +1,9 @@
-extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
 
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
-
-#[allow(unused_imports)]
-use crate::extendr;
 
 /// Make inherent implementations available to R
 ///
