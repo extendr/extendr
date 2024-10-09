@@ -271,9 +271,10 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
         }
         let raw_type_id = value.get_attrib("rust_type_id").unwrap();
         let raw_type_id = raw_type_id.as_raw_slice().unwrap();
+        // these lines extract the type ID of `T` and store is as a slice for us to compare against
         let expected_type_id = std::any::TypeId::of::<T>();
-        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) };
-        let expected_type_id = expected_type_id.as_slice();
+        let expected_type_id = unsafe { std::mem::transmute::<_, [u8; 16]>(expected_type_id) }.as_slice();
+        // now we compare the expected type ID with what we found. If they do not match, we return an error
         if expected_type_id != raw_type_id {
             return Err(Error::ExpectedExternalPtrType(
                 value.clone(),
