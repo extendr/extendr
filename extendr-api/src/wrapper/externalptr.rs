@@ -241,7 +241,7 @@ impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
 
-        //TODO: check type
+        // check type by downcasting
         let boxed_ptr = unsafe {
             value
                 .external_ptr_addr::<Box<dyn Any>>()
@@ -269,7 +269,7 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
 
-        //TODO: check type
+        // check type by downcasting
         let boxed_ptr = unsafe {
             value
                 .external_ptr_addr::<Box<dyn Any>>()
