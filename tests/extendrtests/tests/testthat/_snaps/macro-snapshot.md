@@ -2484,11 +2484,203 @@
                       methods,
                   });
           }
+          fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
+              ExternalPtr::new(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__create_numeric_externalptr(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  create_numeric_externalptr(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "create_numeric_externalptr",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__create_numeric_externalptr(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "create_numeric_externalptr",
+                      r_name: "create_numeric_externalptr",
+                      mod_name: "create_numeric_externalptr",
+                      args: args,
+                      return_type: "ExternalPtr",
+                      func_ptr: wrap__create_numeric_externalptr as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
+              x.into_iter().sum()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__sum_integer_externalptr(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  sum_integer_externalptr(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "sum_integer_externalptr",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__sum_integer_externalptr(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "ExternalPtr",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "sum_integer_externalptr",
+                      r_name: "sum_integer_externalptr",
+                      mod_name: "sum_integer_externalptr",
+                      args: args,
+                      return_type: "Rint",
+                      func_ptr: wrap__sum_integer_externalptr as *const u8,
+                      hidden: false,
+                  })
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
               let mut functions = Vec::new();
               let mut impls = Vec::new();
+              meta__create_numeric_externalptr(&mut functions);
+              meta__sum_integer_externalptr(&mut functions);
               meta__Wrapper(&mut impls);
               functions
                   .push(extendr_api::metadata::Func {
