@@ -103,7 +103,7 @@ mod tests;
 /// If you avoid using unsafe functions it is more likely that you will avoid
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
-///
+#[derive(Hash)]
 pub struct Robj {
     inner: SEXP,
 }

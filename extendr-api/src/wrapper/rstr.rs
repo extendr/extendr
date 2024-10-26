@@ -12,7 +12,7 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Clone)]
+#[derive(Clone, Hash)]
 pub struct Rstr {
     pub(crate) robj: Robj,
 }
