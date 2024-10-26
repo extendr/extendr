@@ -6,8 +6,10 @@
 
 - `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
 
+
 ### Changed
 
+- Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
 return `Option<Strings>` instead of opaque `Robj`.
 [[#801]](https://github.com/extendr/extendr/pull/790)

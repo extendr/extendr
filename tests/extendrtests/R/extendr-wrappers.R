@@ -159,6 +159,10 @@ logicals_sum <- function(logicals) .Call(wrap__logicals_sum, logicals)
 
 floats_mean <- function(x) .Call(wrap__floats_mean, x)
 
+to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
+
+to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

@@ -15,8 +15,20 @@ publish = false
 [lib]
 crate-type = ["staticlib"]
 
+[features]
+full-functionality = []
+serde = []
+faer = []
+graphics = []
+ndarray = []
+
 [dependencies]
-extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
+extendr-api = { version = "*", features = [
+    "graphics",
+    "ndarray",
+    "faer",
+    "either",
+] }
 faer = "0.19"
 
 [patch.crates-io]
@@ -31,4 +43,3 @@ extendr-api = { path = "../../../../extendr-api" }
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
-

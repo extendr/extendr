@@ -100,20 +100,40 @@ impl Deref for Rstr {
     }
 }
 
-impl<T> PartialEq<T> for Rstr
-where
-    T: AsRef<str>,
-{
-    /// Compare a `Rstr` with a `Rstr`.
-    fn eq(&self, other: &T) -> bool {
-        self.as_str() == other.as_ref()
+/// Defer comparison to R's string interner
+impl PartialEq<Rstr> for Rstr {
+    fn eq(&self, other: &Rstr) -> bool {
+        unsafe { self.robj.get() == other.robj.get() }
     }
 }
 
+/// Let performant than comparing [Rstr] directly as
+/// we need to convert [Rstr] to a string slice first
 impl PartialEq<str> for Rstr {
     /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &str) -> bool {
         self.as_str() == other
+    }
+}
+
+impl PartialEq<Rstr> for &str {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &Rstr) -> bool {
+        *self == other.as_str()
+    }
+}
+
+impl PartialEq<&str> for Rstr {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &&str) -> bool {
+        self.as_str() == *other
+    }
+}
+
+impl PartialEq<Rstr> for &&str {
+    /// Compare a `Rstr` with a string slice.
+    fn eq(&self, other: &Rstr) -> bool {
+        **self == other.as_str()
     }
 }
 
