@@ -1,5 +1,5 @@
 (function() {
-    var implementors = Object.fromEntries([["extendr_api",[["impl&lt;'a&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.209/serde/ser/trait.SerializeStruct.html\" title=\"trait serde::ser::SerializeStruct\">SerializeStruct</a> for <a class=\"struct\" href=\"extendr_api/serializer/struct.SerializeStruct.html\" title=\"struct extendr_api::serializer::SerializeStruct\">SerializeStruct</a>&lt;'a&gt;"]]]]);
+    var implementors = Object.fromEntries([["extendr_api",[["impl&lt;'a&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.213/serde/ser/trait.SerializeStruct.html\" title=\"trait serde::ser::SerializeStruct\">SerializeStruct</a> for <a class=\"struct\" href=\"extendr_api/serializer/struct.SerializeStruct.html\" title=\"struct extendr_api::serializer::SerializeStruct\">SerializeStruct</a>&lt;'a&gt;"]]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
