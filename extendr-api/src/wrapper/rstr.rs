@@ -17,6 +17,9 @@ pub struct Rstr {
     pub(crate) robj: Robj,
 }
 
+/// Implement equality check by deferring to R's string intern
+impl Eq for Rstr {}
+
 /// Returns a rust string-slice based on the provided `SEXP`, which is of type
 /// [`SEXPTYPE::CHARSXP`]. Note that the length of a `CHARSXP` is exactly
 /// the number of non-null bytes in said R character.
