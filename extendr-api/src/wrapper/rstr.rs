@@ -100,12 +100,15 @@ impl Deref for Rstr {
     }
 }
 
+/// Defer comparison to R's string interner
 impl PartialEq<Rstr> for Rstr {
     fn eq(&self, other: &Rstr) -> bool {
         unsafe { self.robj.get() == other.robj.get() }
     }
 }
 
+/// Let performant than comparing [Rstr] directly as
+/// we need to convert [Rstr] to a string slice first
 impl PartialEq<str> for Rstr {
     /// Compare a `Rstr` with a string slice.
     fn eq(&self, other: &str) -> bool {
