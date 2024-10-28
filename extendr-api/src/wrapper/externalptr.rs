@@ -224,7 +224,7 @@ impl<T: 'static> ExternalPtr<T> {
     /// When the underlying pointer is C `NULL`.
     pub fn try_addr_mut(&mut self) -> Result<&mut T> {
         unsafe {
-            R_ExternalPtrAddr(self.robj.get())
+            R_ExternalPtrAddr(self.robj.get_mut())
                 .cast::<Box<dyn Any>>()
                 .as_mut()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
