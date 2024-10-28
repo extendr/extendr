@@ -17,7 +17,7 @@ crate-type = ["staticlib"]
 
 [features]
 full-functionality = []
-serde = []
+serde = ["extendr-api/serde"]
 faer = []
 graphics = []
 ndarray = []

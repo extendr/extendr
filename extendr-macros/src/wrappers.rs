@@ -189,8 +189,14 @@ pub(crate) fn make_function_wrappers(
             let return_ref_to_self = #call_name(#actual_args);
 
             #(
+            let arg_ref = extendr_api::R_ExternalPtrAddr(#sexp_args)
+                .cast::<Box<dyn std::any::Any>>()
+                .as_ref()
+                .unwrap()
+                .downcast_ref::<#self_ty>()
+                .unwrap();
             if std::ptr::addr_eq(
-                extendr_api::R_ExternalPtrAddr(#sexp_args),
+                arg_ref,
                 std::ptr::from_ref(return_ref_to_self)) {
                     return Ok(extendr_api::Robj::from_sexp(#sexp_args))
                 }

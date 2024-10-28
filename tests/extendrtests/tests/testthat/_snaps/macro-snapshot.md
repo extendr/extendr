@@ -1662,8 +1662,14 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .me_ref();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1756,8 +1762,14 @@
                                   <&mut Wrapper>::try_from(&mut _self_robj),
                               )
                               .me_mut();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1850,8 +1862,14 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .me_explicit_ref();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -1944,8 +1962,14 @@
                                   <&mut Wrapper>::try_from(&mut _self_robj),
                               )
                               .me_explicit_mut();
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
@@ -2040,14 +2064,26 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .max_ref(_other_robj.try_into()?);
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -2152,20 +2188,38 @@
                                   _other_robj.try_into()?,
                                   __offset_robj.try_into()?,
                               );
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_offset)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_offset),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_offset));
@@ -2270,14 +2324,26 @@
                                   <&Wrapper>::try_from(&_self_robj),
                               )
                               .max_ref2(_other_robj.try_into()?);
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(_self),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(_self));
                           }
+                          let arg_ref = extendr_api::R_ExternalPtrAddr(other)
+                              .cast::<Box<dyn std::any::Any>>()
+                              .as_ref()
+                              .unwrap()
+                              .downcast_ref::<Wrapper>()
+                              .unwrap();
                           if std::ptr::addr_eq(
-                              extendr_api::R_ExternalPtrAddr(other),
+                              arg_ref,
                               std::ptr::from_ref(return_ref_to_self),
                           ) {
                               return Ok(extendr_api::Robj::from_sexp(other));
@@ -2450,7 +2516,7 @@
                   }
                   Err(unwind_err) => {
                       drop(unwind_err);
-                      let err_string = {
+                      let err_string = ::alloc::__export::must_use({
                           let res = ::alloc::fmt::format(
                               format_args!(
                                   "User function panicked: {0}",
@@ -2458,7 +2524,7 @@
                               ),
                           );
                           res
-                      };
+                      });
                       extendr_api::handle_panic(
                           err_string.as_str(),
                           || {
@@ -2499,11 +2565,203 @@
                       hidden: false,
                   })
           }
+          fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
+              ExternalPtr::new(x)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__create_numeric_externalptr(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  create_numeric_externalptr(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "create_numeric_externalptr",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__create_numeric_externalptr(
+              metadata: &mut Vec<extendr_api::metadata::Func>,
+          ) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "Doubles",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "create_numeric_externalptr",
+                      r_name: "create_numeric_externalptr",
+                      mod_name: "create_numeric_externalptr",
+                      args: args,
+                      return_type: "ExternalPtr",
+                      func_ptr: wrap__create_numeric_externalptr as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
+              x.into_iter().sum()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__sum_integer_externalptr(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  sum_integer_externalptr(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "sum_integer_externalptr",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__sum_integer_externalptr(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "ExternalPtr",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "sum_integer_externalptr",
+                      r_name: "sum_integer_externalptr",
+                      mod_name: "sum_integer_externalptr",
+                      args: args,
+                      return_type: "Rint",
+                      func_ptr: wrap__sum_integer_externalptr as *const u8,
+                      hidden: false,
+                  })
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
               let mut functions = Vec::new();
               let mut impls = Vec::new();
+              meta__create_numeric_externalptr(&mut functions);
+              meta__sum_integer_externalptr(&mut functions);
               meta__Wrapper(&mut impls);
               functions
                   .push(extendr_api::metadata::Func {
@@ -8836,10 +9094,13 @@
                               <&MyClass>::try_from(&_self_robj),
                           )
                           .me();
-                      if std::ptr::addr_eq(
-                          extendr_api::R_ExternalPtrAddr(_self),
-                          std::ptr::from_ref(return_ref_to_self),
-                      ) {
+                      let arg_ref = extendr_api::R_ExternalPtrAddr(_self)
+                          .cast::<Box<dyn std::any::Any>>()
+                          .as_ref()
+                          .unwrap()
+                          .downcast_ref::<MyClass>()
+                          .unwrap();
+                      if std::ptr::addr_eq(arg_ref, std::ptr::from_ref(return_ref_to_self)) {
                           return Ok(extendr_api::Robj::from_sexp(_self));
                       }
                       Err(Error::ExpectedExternalPtrReference)
