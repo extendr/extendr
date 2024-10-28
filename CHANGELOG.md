@@ -4,6 +4,7 @@
 
 ### Added
 
+- `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` <https://github.com/extendr/extendr/pull/833>
 - `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
 
 ### Changed
