@@ -12,9 +12,15 @@ use super::*;
 /// }
 /// ```
 ///
-#[derive(Clone)]
+#[derive(Clone, Eq)]
 pub struct Rstr {
     pub(crate) robj: Robj,
+}
+
+impl std::hash::Hash for Rstr {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_str().hash(state);
+    }
 }
 
 /// Returns a rust string-slice based on the provided `SEXP`, which is of type
