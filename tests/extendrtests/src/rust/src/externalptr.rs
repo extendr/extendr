@@ -97,8 +97,21 @@ fn externalptr_use_ref_manually() -> ExternalPtr<i32> {
     extptr2.clone()
 }
 
+#[extendr]
+fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
+    ExternalPtr::new(x)
+}
+
+#[extendr]
+fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
+    x.into_iter().sum()
+}
+
 // Macro to generate exports
 extendr_module! {
     mod externalptr;
     impl Wrapper;
+
+    fn create_numeric_externalptr;
+    fn sum_integer_externalptr;
 }
