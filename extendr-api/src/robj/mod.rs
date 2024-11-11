@@ -104,6 +104,7 @@ mod tests;
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
 ///
+#[derive(Eq, Hash)]
 pub struct Robj {
     inner: SEXP,
 }
