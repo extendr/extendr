@@ -1,7 +1,5 @@
-use std::convert::From;
-use std::iter::FromIterator;
-
 use super::*;
+use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]
 pub struct Strings {
@@ -155,5 +153,15 @@ impl From<Option<Strings>> for Robj {
             Some(value_strings) => value_strings.into(),
             None => nil_value(),
         }
+    }
+}
+
+impl IntoIterator for Strings {
+    type Item = &'static str;
+
+    type IntoIter = StrIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.robj.as_str_iter().unwrap()
     }
 }
