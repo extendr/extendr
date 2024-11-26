@@ -31,6 +31,10 @@ extendr-api = { version = "*", features = [
 ] }
 faer = "0.19"
 
+[features]
+# dummy feature for compatibility with extendr-api's feature
+full-functionality = []
+
 [patch.crates-io]
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
