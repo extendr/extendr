@@ -593,8 +593,39 @@ macro_rules! impl_try_from_robj_for_arrays {
                 Ok(value)
             }
         }
+
+        // TODO: the following can be integrated into `impl_try_from_robj` later
+
+        impl<const N: usize> TryFrom<Robj> for [$slice_type; N] {
+            type Error = Error;
+
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
+            }
+        }
+
+        impl<const N: usize> TryFrom<&Robj> for Option<[$slice_type; N]> {
+            type Error = Error;
+
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<[$slice_type; N]>::try_from(robj)?))
+                }
+            }
+        }
+
+        impl<const N: usize> TryFrom<Robj> for Option<[$slice_type; N]> {
+            type Error = Error;
+
+            fn try_from(robj: Robj) -> Result<Self> {
+                Self::try_from(&robj)
+            }
+        }
     };
 }
+
 impl_try_from_robj_for_arrays!(Rint);
 impl_try_from_robj_for_arrays!(Rfloat);
 impl_try_from_robj_for_arrays!(Rbool);
