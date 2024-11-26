@@ -8,7 +8,6 @@
 - `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` <https://github.com/extendr/extendr/pull/833>
 - `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
 
-
 ### Changed
 
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
@@ -19,6 +18,8 @@ return `Option<Strings>` instead of opaque `Robj`.
 ### Fixed
 
 ### Deprecated
+
+- Removed `from_sexp_ref()` from the public API. `from_sexp_ref()` is an unsafe method and is for internal use only. [#855]](https://github.com/extendr/extendr/pull/855)
 
 ## 0.7.0
 
