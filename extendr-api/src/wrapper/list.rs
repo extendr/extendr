@@ -206,6 +206,52 @@ impl List {
     }
 }
 
+impl<T> TryFrom<&List> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: &List) -> Result<Self> {
+        let value = value
+            .iter()
+            .map(|(name, value)| -> Result<(&str, T)> { value.try_into().map(|x| (name, x)) })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        Ok(value)
+    }
+}
+
+impl<T> TryFrom<&List> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+    fn try_from(value: &List) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+// The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
+// it requires returning a reference to a owned (moved) value
+
+impl TryFrom<&List> for HashMap<&str, Robj> {
+    type Error = Error;
+
+    fn try_from(value: &List) -> Result<Self> {
+        Ok(value.iter().collect())
+    }
+}
+
+impl TryFrom<&List> for HashMap<String, Robj> {
+    type Error = Error;
+    fn try_from(value: &List) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
 impl IntoIterator for List {
     type IntoIter = NamedListIter;
     type Item = (&'static str, Robj);
