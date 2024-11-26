@@ -88,12 +88,17 @@ impl List {
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
-    pub fn from_hashmap<K>(val: HashMap<K, Robj>) -> Result<Self>
+    pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
+        V: IntoRobj,
         K: Into<String>,
     {
-        let mut res: Self = Self::from_values(val.values());
-        res.set_names(val.into_keys().map(|k| k.into()))?;
+        let (names, values): (Vec<_>, Vec<_>) = val
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into_robj()))
+            .unzip();
+        let mut res: Self = Self::from_values(values);
+        res.set_names(names)?;
         Ok(res)
     }
 
