@@ -104,6 +104,7 @@ mod tests;
 /// panics and segfaults. We will take great trouble to ensure that this
 /// is true.
 ///
+#[repr(transparent)]
 pub struct Robj {
     inner: SEXP,
 }
@@ -222,9 +223,14 @@ impl Robj {
         })
     }
 
-    /// A ref of an robj can be constructed from a ref to a SEXP
+    /// A reference of an [`Robj`] can be constructed from a reference to a [`SEXP`]
     /// as they have the same layout.
-    pub fn from_sexp_ref(sexp: &SEXP) -> &Self {
+    ///
+    /// # SAFETY
+    ///
+    /// Unlike [`from_sexp`], this does not protect the converted [`SEXP`]. Therefore, one
+    /// must invoke [`ownership::protect`] manually, if necessary.
+    pub(crate) unsafe fn from_sexp_ref(sexp: &SEXP) -> &Self {
         unsafe { std::mem::transmute(sexp) }
     }
 }
