@@ -194,7 +194,15 @@ impl List {
     /// }
     /// ```
     pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
-        self.iter().collect::<HashMap<&str, Robj>>()
+        self.as_robj().try_into().unwrap()
+    }
+
+    pub fn try_into_hashmap<V>(self) -> Result<HashMap<&'static str, V>>
+    where
+        V: TryFrom<Robj, Error = error::Error>,
+    {
+        let value: HashMap<&str, _> = self.as_robj().try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k, v)).collect())
     }
 }
 
