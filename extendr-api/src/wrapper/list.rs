@@ -180,7 +180,7 @@ impl List {
         })
     }
 
-    /// Convert a List into a HashMap, consuming the list.
+    /// Convert a `List` into a `HashMap`, consuming the list.
     ///
     /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
     /// - If there are some duplicated names (including no name, which will be translated as `""`) of elements, only one of those will be preserved.
@@ -195,14 +195,6 @@ impl List {
     /// ```
     pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
         self.as_robj().try_into().unwrap()
-    }
-
-    pub fn try_into_hashmap<V>(self) -> Result<HashMap<&'static str, V>>
-    where
-        V: TryFrom<Robj, Error = error::Error>,
-    {
-        let value: HashMap<&str, _> = self.as_robj().try_into()?;
-        Ok(value.into_iter().map(|(k, v)| (k, v)).collect())
     }
 }
 
