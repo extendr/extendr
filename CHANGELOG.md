@@ -19,8 +19,7 @@ return `Option<Strings>` instead of opaque `Robj`.
 
 ### Deprecated
 
-- Removed `from_sexp_ref` from public API. This is a completely unsound function, and uses of it must not
-used otherwise. [[#855]](https://github.com/extendr/extendr/pull/855)
+- Removed `from_sexp_ref()` from the public API. `from_sexp_ref()` is an unsafe method and is for internal use only. [#855]](https://github.com/extendr/extendr/pull/855)
 
 ## 0.7.0
 
