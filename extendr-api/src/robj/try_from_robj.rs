@@ -579,3 +579,5 @@ impl TryFrom<&Robj> for HashMap<&str, Robj> {
             .collect::<HashMap<&str, Robj>>())
     }
 }
+// Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
+impl_try_from_robj_tuples!((1, 12));
