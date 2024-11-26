@@ -594,7 +594,7 @@ where
 {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: &Robj) -> Result<Self> {
         let value: List = value.try_into()?;
 
         let value = value
@@ -683,7 +683,7 @@ impl_try_from_robj_tuples!((1, 12));
 impl TryFrom<&Robj> for HashMap<&str, Robj> {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: &Robj) -> Result<Self> {
         let value: List = value.try_into()?;
         Ok(value.into_iter().collect())
     }
