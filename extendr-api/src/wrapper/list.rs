@@ -175,6 +175,42 @@ impl List {
         })
     }
 
+    /// Get a reference to an element in the list.
+    pub fn elt_ref<'a>(&'a self, i: usize) -> Result<&'a Robj> {
+        if i >= self.robj.len() {
+            Err(Error::OutOfRange(self.robj.clone()))
+        } else {
+            unsafe {
+                let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
+                let robj_ref = std::mem::transmute::<SEXP, &Robj>(sexp);
+                // Despite the surrounding list being protected, we ought to protect
+                // the extracted elements, just in case that the list goes out of scope,
+                // but the element extracted is still in play.
+                // Although the lifetime annotation ought to catch this issue at compile time.
+                ownership::protect(sexp);
+                Ok(robj_ref)
+            }
+        }
+    }
+
+    /// Get a mutable reference to an element in the list.
+    pub fn elt_mut<'a>(&'a self, i: usize) -> Result<&'a mut Robj> {
+        if i >= self.robj.len() {
+            Err(Error::OutOfRange(self.robj.clone()))
+        } else {
+            unsafe {
+                let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
+                let robj_ref = std::mem::transmute::<SEXP, &mut Robj>(sexp);
+                // Despite the surrounding list being protected, we ought to protect
+                // the extracted elements, just in case that the list goes out of scope,
+                // but the element extracted is still in play.
+                // Although the lifetime annotation ought to catch this issue at compile time.
+                ownership::protect(sexp);
+                Ok(robj_ref)
+            }
+        }
+    }
+
     /// Convert a List into a HashMap, consuming the list.
     ///
     /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
@@ -402,6 +438,20 @@ impl Deref for List {
     /// Lists behave like slices of Robj.
     fn deref(&self) -> &Self::Target {
         self.as_slice()
+    }
+}
+
+impl std::ops::Index<usize> for List {
+    type Output = Robj;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        self.elt_ref(index).unwrap()
+    }
+}
+
+impl std::ops::IndexMut<usize> for List {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        self.elt_mut(index).unwrap()
     }
 }
 
