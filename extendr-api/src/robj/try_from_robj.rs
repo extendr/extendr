@@ -546,7 +546,6 @@ impl_try_from_robj!(
     Rint, Rfloat, Rbool, Rcplx,
     f32, f64,
     Vec::<String>,
-    HashMap::<String, Robj>, HashMap::<&str, Robj>,
     Vec::<Rint>, Vec::<Rfloat>, Vec::<Rbool>, Vec::<Rcplx>, Vec::<u8>, Vec::<i32>, Vec::<f64>,
     &[Rint], &[Rfloat], &[Rbool], &[Rcplx], &[u8], &[i32], &[f64],
     &mut [Rint], &mut [Rfloat], &mut [Rbool], &mut [Rcplx], &mut [u8], &mut [i32], &mut [f64],
@@ -557,25 +556,31 @@ impl_try_from_robj!(
 // One should prefer `List::from_hashmap` instead,
 // and this `impl` should be deprecated next.
 
-impl TryFrom<&Robj> for HashMap<String, Robj> {
+impl<T> TryFrom<&Robj> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
     type Error = Error;
-    fn try_from(robj: &Robj) -> Result<Self> {
-        Ok(robj
-            .as_list()
-            .map(|l| l.iter())
-            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
-            .map(|(k, v)| (k.to_string(), v))
-            .collect::<HashMap<String, Robj>>())
+
+    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+        let value: List = value.try_into()?;
+
+        let value = value
+            .iter()
+            .map(|(name, value)| -> Result<(&str, T)> { value.try_into().map(|x| (name, x)) })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        Ok(value)
     }
 }
 
-impl TryFrom<&Robj> for HashMap<&str, Robj> {
+impl<T> TryFrom<&Robj> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
     type Error = Error;
-    fn try_from(robj: &Robj) -> Result<Self> {
-        Ok(robj
-            .as_list()
-            .map(|l| l.iter())
-            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
-            .collect::<HashMap<&str, Robj>>())
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
     }
 }
