@@ -350,6 +350,43 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
                     ))
                 }
             }
+
+            // TODO: the following impls are borrowed from `impl_try_from_robj`
+            // find a way to reuse that code, possibly
+
+            impl<#(#types),*> TryFrom<Robj> for (#(#types,)*)
+            where
+                #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),* {
+                type Error = Error;
+
+                fn try_from(robj: Robj) -> Result<Self> {
+                    Self::try_from(&robj)
+                }
+            }
+
+            impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
+            where
+            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+                type Error = Error;
+
+                fn try_from(robj: &Robj) -> Result<Self> {
+                    if robj.is_null() || robj.is_na() {
+                        Ok(None)
+                    } else {
+                        Ok(Some(<(#(#types,)*)>::try_from(robj)?))
+                    }
+                }
+            }
+
+            impl<#(#types),*> TryFrom<Robj> for Option<(#(#types,)*)>
+            where
+            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+                type Error = Error;
+
+                fn try_from(robj: Robj) -> Result<Self> {
+                    Self::try_from(&robj)
+                }
+            }
         })
     }))
 }
