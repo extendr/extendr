@@ -589,7 +589,7 @@ macro_rules! impl_try_from_robj_for_arrays {
                 let value: &[$slice_type] = value.try_into()?;
                 let value: Self = value
                     .try_into()
-                    .map_err(|_error| Error::TryFromSliceError)?;
+                    .map_err(|error| format!("{}", error).to_string())?;
                 Ok(value)
             }
         }
