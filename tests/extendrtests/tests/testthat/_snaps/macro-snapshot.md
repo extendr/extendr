@@ -6269,6 +6269,311 @@
               };
           }
       }
+      mod tuple_conversions {
+          use extendr_api::prelude::*;
+          /// @export
+          fn sum_triplet_ints(
+              x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32),
+          ) -> Rint {
+              Rint::from(x.0 + x.1)
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__sum_triplet_ints(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(sum_triplet_ints(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "sum_triplet_ints"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__sum_triplet_ints(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_28i32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_29",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " @export",
+                      rust_name: "sum_triplet_ints",
+                      r_name: "sum_triplet_ints",
+                      mod_name: "sum_triplet_ints",
+                      args: args,
+                      return_type: "Rint",
+                      func_ptr: wrap__sum_triplet_ints as *const u8,
+                      hidden: false,
+                  })
+          }
+          pub struct Point {
+              x: f64,
+              y: f64,
+          }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for Point {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_struct_field2_finish(
+                      f,
+                      "Point",
+                      "x",
+                      &self.x,
+                      "y",
+                      &&self.y,
+                  )
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for Point {
+              #[inline]
+              fn clone(&self) -> Point {
+                  Point {
+                      x: ::core::clone::Clone::clone(&self.x),
+                      y: ::core::clone::Clone::clone(&self.y),
+                  }
+              }
+          }
+          impl TryFrom<Robj> for Point {
+              type Error = extendr_api::Error;
+              fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+                  let dbl_vec = Doubles::try_from(value)?;
+                  let x = dbl_vec[0].inner();
+                  let y = dbl_vec[1].inner();
+                  Ok(Point { x, y })
+              }
+          }
+          impl TryFrom<&Robj> for Point {
+              type Error = extendr_api::Error;
+              fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+                  value.clone().try_into()
+              }
+          }
+          /// @export
+          fn sum_points(x: (Point, Point)) -> Doubles {
+              let Point { x: x1, y: y1 } = x.0;
+              let Point { x: x2, y: y2 } = x.1;
+              Doubles::from_values([x1 + x2, y1 + y2])
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__sum_points(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(sum_points(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "sum_points"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__sum_points(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_28Point_2cPoint_29",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: " @export",
+                      rust_name: "sum_points",
+                      r_name: "sum_points",
+                      mod_name: "sum_points",
+                      args: args,
+                      return_type: "Doubles",
+                      func_ptr: wrap__sum_points as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_tuple_conversions_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__sum_triplet_ints(&mut functions);
+              meta__sum_points(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_tuple_conversions_metadata",
+                      mod_name: "get_tuple_conversions_metadata",
+                      r_name: "get_tuple_conversions_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_tuple_conversions_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_tuple_conversions_wrappers",
+                      mod_name: "make_tuple_conversions_wrappers",
+                      r_name: "make_tuple_conversions_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_tuple_conversions_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "tuple_conversions",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_tuple_conversions_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_tuple_conversions_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_tuple_conversions_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_tuple_conversions_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_tuple_conversions_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe {
+                  extendr_api::register_call_methods(info, get_tuple_conversions_metadata())
+              };
+          }
+      }
       mod typedsliceargs {
           use extendr_api::prelude::*;
           fn middle_zero(integers: &mut [Rint]) {
@@ -10034,9 +10339,10 @@
           functions.extend(optional_faer::get_optional_faer_metadata().functions);
           functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
           functions.extend(submodule::get_submodule_metadata().functions);
+          functions.extend(tuple_conversions::get_tuple_conversions_metadata().functions);
+          functions.extend(typedsliceargs::get_typedsliceargs_metadata().functions);
           functions.extend(externalptr::get_externalptr_metadata().functions);
           functions.extend(matrix::get_matrix_metadata().functions);
-          functions.extend(typedsliceargs::get_typedsliceargs_metadata().functions);
           functions.extend(to_unique_character::get_to_unique_character_metadata().functions);
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
@@ -10047,9 +10353,10 @@
           impls.extend(optional_faer::get_optional_faer_metadata().impls);
           impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
           impls.extend(submodule::get_submodule_metadata().impls);
+          impls.extend(tuple_conversions::get_tuple_conversions_metadata().impls);
+          impls.extend(typedsliceargs::get_typedsliceargs_metadata().impls);
           impls.extend(externalptr::get_externalptr_metadata().impls);
           impls.extend(matrix::get_matrix_metadata().impls);
-          impls.extend(typedsliceargs::get_typedsliceargs_metadata().impls);
           impls.extend(to_unique_character::get_to_unique_character_metadata().impls);
           functions
               .push(extendr_api::metadata::Func {
