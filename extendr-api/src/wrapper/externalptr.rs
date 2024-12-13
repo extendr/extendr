@@ -247,7 +247,7 @@ impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
                 .external_ptr_addr::<Box<dyn Any>>()
                 .cast_const()
                 .as_ref()
-                .unwrap()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
         };
 
         if boxed_ptr.downcast_ref::<T>().is_none() {
@@ -275,7 +275,7 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
                 .external_ptr_addr::<Box<dyn Any>>()
                 .cast_const()
                 .as_ref()
-                .unwrap()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
         };
 
         if boxed_ptr.downcast_ref::<T>().is_none() {
