@@ -580,16 +580,27 @@ impl TryFrom<&Robj> for HashMap<&str, Robj> {
     }
 }
 
-impl<const N: usize> TryFrom<&Robj> for [f64; N] {
-    type Error = Error;
+macro_rules! impl_try_from_robj_for_arrays {
+    ($slice_type:ty) => {
+        impl<const N: usize> TryFrom<&Robj> for [$slice_type; N] {
+            type Error = Error;
 
-    fn try_from(value: &Robj) -> Result<Self> {
-        let value: &[f64] = value.try_into()?;
-        let value: Self = value
-            .try_into()
-            .map_err(|_error| Error::TryFromSliceError)?;
-        Ok(value)
-    }
+            fn try_from(value: &Robj) -> Result<Self> {
+                let value: &[$slice_type] = value.try_into()?;
+                let value: Self = value
+                    .try_into()
+                    .map_err(|_error| Error::TryFromSliceError)?;
+                Ok(value)
+            }
+        }
+    };
 }
+impl_try_from_robj_for_arrays!(Rint);
+impl_try_from_robj_for_arrays!(Rfloat);
+impl_try_from_robj_for_arrays!(Rbool);
+impl_try_from_robj_for_arrays!(Rcplx);
+impl_try_from_robj_for_arrays!(u8);
+impl_try_from_robj_for_arrays!(i32);
+impl_try_from_robj_for_arrays!(f64);
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
 impl_try_from_robj_tuples!((1, 12));
