@@ -36,4 +36,4 @@ jobs:
       - name: Verify minimum rust version
         run: |
           . ./ci-cargo.ps1
-          ci-cargo msrv --path extendr-api --output-format minimal verify -ActionName "Verify Rust MSRV"
+          ci-cargo msrv --path extendr-api --output-format minimal verify  --rust-version 1.65 -ActionName "Verify Rust MSRV"
