@@ -579,5 +579,17 @@ impl TryFrom<&Robj> for HashMap<&str, Robj> {
             .collect::<HashMap<&str, Robj>>())
     }
 }
+
+impl<const N: usize> TryFrom<&Robj> for [f64; N] {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: &[f64] = value.try_into()?;
+        let value: Self = value
+            .try_into()
+            .map_err(|_error| Error::TryFromSliceError)?;
+        Ok(value)
+    }
+}
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
 impl_try_from_robj_tuples!((1, 12));

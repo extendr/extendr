@@ -89,6 +89,8 @@ pub enum Error {
 
     #[cfg(feature = "either")]
     EitherError(Box<Error>, Box<Error>),
+    /// See [`std::array::TryFromSliceError`]
+    TryFromSliceError,
 }
 
 impl std::fmt::Display for Error {
@@ -170,6 +172,8 @@ impl std::fmt::Display for Error {
                 write!(f, "It is only possible to return a reference to self.")
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+
+            Error::TryFromSliceError => write!(f, "???"),
             Error::Other(str) => write!(f, "{}", str),
 
             Error::ExpectedWholeNumber(robj, conversion_error) => {
