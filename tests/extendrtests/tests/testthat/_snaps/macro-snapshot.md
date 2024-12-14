@@ -6271,7 +6271,6 @@
       }
       mod tuple_conversions {
           use extendr_api::prelude::*;
-          /// @export
           fn sum_triplet_ints(
               x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32),
           ) -> Rint {
@@ -6349,7 +6348,7 @@
               );
               metadata
                   .push(extendr_api::metadata::Func {
-                      doc: " @export",
+                      doc: "",
                       rust_name: "sum_triplet_ints",
                       r_name: "sum_triplet_ints",
                       mod_name: "sum_triplet_ints",
@@ -6402,7 +6401,6 @@
                   value.clone().try_into()
               }
           }
-          /// @export
           fn sum_points(x: (Point, Point)) -> Doubles {
               let Point { x: x1, y: y1 } = x.0;
               let Point { x: x2, y: y2 } = x.1;
@@ -6480,7 +6478,7 @@
               );
               metadata
                   .push(extendr_api::metadata::Func {
-                      doc: " @export",
+                      doc: "",
                       rust_name: "sum_points",
                       r_name: "sum_points",
                       mod_name: "sum_points",
