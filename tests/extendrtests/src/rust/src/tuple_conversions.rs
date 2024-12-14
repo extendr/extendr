@@ -1,6 +1,5 @@
 use extendr_api::prelude::*;
 
-/// @export
 #[extendr]
 fn sum_triplet_ints(x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32)) -> Rint {
     Rint::from(x.0 + x.1)
@@ -29,7 +28,6 @@ impl TryFrom<&Robj> for Point {
     }
 }
 
-/// @export
 #[extendr]
 fn sum_points(x: (Point, Point)) -> Doubles {
     let Point { x: x1, y: y1 } = x.0;

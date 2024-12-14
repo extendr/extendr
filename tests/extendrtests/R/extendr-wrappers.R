@@ -145,10 +145,8 @@ false <- function(type) .Call(wrap__false, type)
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
-#' @export
 sum_triplet_ints <- function(x) .Call(wrap__sum_triplet_ints, x)
 
-#' @export
 sum_points <- function(x) .Call(wrap__sum_points, x)
 
 middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
