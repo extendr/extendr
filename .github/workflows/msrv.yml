@@ -9,9 +9,9 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - "**.rs"
-      - "**/Cargo.toml"
+    # paths:
+    #   - "**.rs"
+    #   - "**/Cargo.toml"
   workflow_dispatch:
 
 concurrency:
