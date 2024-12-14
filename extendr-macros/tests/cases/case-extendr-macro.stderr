@@ -80,7 +80,7 @@ error: Only struct is supported
 56 | | }
    | |_^
 
-error: Only struct is supported
+error: Only `struct` is supported
   --> tests/cases/case-extendr-macro.rs:59:1
    |
 59 | / enum FooEnum2 {
