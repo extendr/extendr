@@ -73,6 +73,7 @@ pub enum Error {
     MustNotBeNA(Robj),
     ExpectedWholeNumber(Robj, ConversionError),
     ExpectedNonZeroLength(Robj),
+    ExpectedLength(usize),
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
@@ -150,6 +151,7 @@ impl std::fmt::Display for Error {
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
+            Error::ExpectedLength(len) => write!(f, "Expected length: {len}"),
             Error::OutOfLimits(robj) => write!(f, "The value is too big: {:?}", robj),
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 

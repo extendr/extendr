@@ -145,6 +145,16 @@ false <- function(type) .Call(wrap__false, type)
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
+sum_triplet_ints <- function(x) .Call(wrap__sum_triplet_ints, x)
+
+sum_points <- function(x) .Call(wrap__sum_points, x)
+
+middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
+
+logicals_sum <- function(logicals) .Call(wrap__logicals_sum, logicals)
+
+floats_mean <- function(x) .Call(wrap__floats_mean, x)
+
 create_numeric_externalptr <- function(x) .Call(wrap__create_numeric_externalptr, x)
 
 sum_integer_externalptr <- function(x) .Call(wrap__sum_integer_externalptr, x)
@@ -156,12 +166,6 @@ fetch_colnames <- function(x) .Call(wrap__fetch_colnames, x)
 fetch_rownames <- function(x) .Call(wrap__fetch_rownames, x)
 
 change_dimnames <- function(x) .Call(wrap__change_dimnames, x)
-
-middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
-
-logicals_sum <- function(logicals) .Call(wrap__logicals_sum, logicals)
-
-floats_mean <- function(x) .Call(wrap__floats_mean, x)
 
 to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 

@@ -7,6 +7,7 @@
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking <https://github.com/extendr/extendr/pull/853>
 - `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` <https://github.com/extendr/extendr/pull/833>
 - `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
+- Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 
 ### Changed
 

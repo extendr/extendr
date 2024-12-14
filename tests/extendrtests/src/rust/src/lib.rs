@@ -13,6 +13,7 @@ mod optional_ndarray;
 mod raw_identifiers;
 mod submodule;
 mod to_unique_character;
+mod tuple_conversions;
 mod typedsliceargs;
 
 // Return string `"Hello world!"` to R.
@@ -354,8 +355,9 @@ extendr_module! {
     use optional_faer;
     use raw_identifiers;
     use submodule;
+    use tuple_conversions;
+    use typedsliceargs;
     use externalptr;
     use matrix;
-    use typedsliceargs;
     use to_unique_character;
 }
