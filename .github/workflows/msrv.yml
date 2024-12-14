@@ -35,4 +35,5 @@ jobs:
           crate: cargo-msrv
       - name: Verify minimum rust version
         run: |
-          cargo msrv --path extendr-api --output-format=minimal verify
+          . ./ci-cargo.ps1
+          ci-cargo msrv --path extendr-api --output-format minimal verify
