@@ -61,7 +61,7 @@ pub(crate) fn make_function_wrappers(
 
     let rust_name_str = format!("{}", rust_name);
     let c_name_str = format!("{}", mod_name);
-let wrap_name_str = format!("{}", wrap_name);
+    let wrap_name_str = format!("{}", wrap_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
 

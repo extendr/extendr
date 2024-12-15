@@ -65,7 +65,7 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
     let mut tokens = Vec::<TokenStream2>::with_capacity(inside.fields.len());
 
     for field in inside.fields {
-let mut ignore = false;
+        let mut ignore = false;
 
         let field_attributes = &field.attrs;
         for (attrib_id, attrib) in field_attributes.iter().enumerate() {
