@@ -160,7 +160,11 @@ fn write_function_wrapper(
         )?;
     }
 
-    write!(w, "{}", func.c_name)?;
+    if use_symbols {
+        write!(w, "{}", func.c_name)?;
+    } else {
+        write!(w, "\"{}\"", func.c_name)?;
+    }
 
     if !func.args.is_empty() {
         write!(w, ", {}", join_str(actual_args, ", "))?;
@@ -222,7 +226,11 @@ fn write_method_wrapper(
     }
 
     // Here no processing is needed because of `wrap__` prefix
-    write!(w, "{}", func.c_name)?;
+    if use_symbols {
+        write!(w, "{}", func.c_name)?;
+    } else {
+        write!(w, "\"{}\"", func.c_name)?;
+    }
 
     if actual_args.len() != 0 {
         write!(w, ", {}", join_str(actual_args, ", "))?;
