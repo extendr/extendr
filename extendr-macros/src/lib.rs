@@ -263,6 +263,10 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// instantiation of a rust type, by an R list with fields corresponding to
 /// said type.
 ///
+/// Supported field attributes
+///
+/// - `#[into_robj(ignore)]` omits the field from being added to the R `list()`
+///
 /// # Details
 ///
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
@@ -270,7 +274,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
 /// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
-#[proc_macro_derive(IntoRobj)]
+#[proc_macro_derive(IntoRobj, attributes(into_robj))]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     match list_struct::derive_into_robj(item) {
         Ok(result) => result,
