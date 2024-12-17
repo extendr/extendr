@@ -89,6 +89,8 @@ pub enum Error {
 
     #[cfg(feature = "either")]
     EitherError(Box<Error>, Box<Error>),
+    /// See [`std::array::TryFromSliceError`]
+    TryFromSliceError(String),
 }
 
 impl std::fmt::Display for Error {
@@ -170,6 +172,8 @@ impl std::fmt::Display for Error {
                 write!(f, "It is only possible to return a reference to self.")
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+            // this is very unlikely to occur, and it would just say: Rust error: could not convert slice to array
+            Error::TryFromSliceError(std_error) => write!(f, "Rust error: {}", std_error),
             Error::Other(str) => write!(f, "{}", str),
 
             Error::ExpectedWholeNumber(robj, conversion_error) => {

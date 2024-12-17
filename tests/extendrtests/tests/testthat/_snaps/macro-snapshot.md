@@ -6488,6 +6488,660 @@
                       hidden: false,
                   })
           }
+          fn round_trip_array_u8(x: [u8; 4]) -> [u8; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_u8(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(round_trip_array_u8(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_u8",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_u8(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bu8_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_u8",
+                      r_name: "round_trip_array_u8",
+                      mod_name: "round_trip_array_u8",
+                      args: args,
+                      return_type: "_5bu8_3b4_5d",
+                      func_ptr: wrap__round_trip_array_u8 as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_f64(x: [f64; 4]) -> [f64; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_f64(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_f64(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_f64",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_f64(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bf64_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_f64",
+                      r_name: "round_trip_array_f64",
+                      mod_name: "round_trip_array_f64",
+                      args: args,
+                      return_type: "_5bf64_3b4_5d",
+                      func_ptr: wrap__round_trip_array_f64 as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_i32(x: [i32; 4]) -> [i32; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_i32(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_i32(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_i32",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_i32(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bi32_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_i32",
+                      r_name: "round_trip_array_i32",
+                      mod_name: "round_trip_array_i32",
+                      args: args,
+                      return_type: "_5bi32_3b4_5d",
+                      func_ptr: wrap__round_trip_array_i32 as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_rint(x: [Rint; 4]) -> [Rint; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_rint(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_rint(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_rint",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_rint(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bRint_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_rint",
+                      r_name: "round_trip_array_rint",
+                      mod_name: "round_trip_array_rint",
+                      args: args,
+                      return_type: "_5bRint_3b4_5d",
+                      func_ptr: wrap__round_trip_array_rint as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_rfloat(x: [Rfloat; 4]) -> [Rfloat; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_rfloat(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_rfloat(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_rfloat",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_rfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bRfloat_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_rfloat",
+                      r_name: "round_trip_array_rfloat",
+                      mod_name: "round_trip_array_rfloat",
+                      args: args,
+                      return_type: "_5bRfloat_3b4_5d",
+                      func_ptr: wrap__round_trip_array_rfloat as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_rbool(x: [Rbool; 4]) -> [Rbool; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_rbool(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_rbool(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_rbool",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_rbool(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bRbool_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_rbool",
+                      r_name: "round_trip_array_rbool",
+                      mod_name: "round_trip_array_rbool",
+                      args: args,
+                      return_type: "_5bRbool_3b4_5d",
+                      func_ptr: wrap__round_trip_array_rbool as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn round_trip_array_rcplx(x: [Rcplx; 4]) -> [Rcplx; 4] {
+              x
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__round_trip_array_rcplx(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  round_trip_array_rcplx(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "round_trip_array_rcplx",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__round_trip_array_rcplx(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "_5bRcplx_3b4_5d",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "round_trip_array_rcplx",
+                      r_name: "round_trip_array_rcplx",
+                      mod_name: "round_trip_array_rcplx",
+                      args: args,
+                      return_type: "_5bRcplx_3b4_5d",
+                      func_ptr: wrap__round_trip_array_rcplx as *const u8,
+                      hidden: false,
+                  })
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_tuple_conversions_metadata() -> extendr_api::metadata::Metadata {
@@ -6495,6 +7149,13 @@
               let mut impls = Vec::new();
               meta__sum_triplet_ints(&mut functions);
               meta__sum_points(&mut functions);
+              meta__round_trip_array_f64(&mut functions);
+              meta__round_trip_array_i32(&mut functions);
+              meta__round_trip_array_rbool(&mut functions);
+              meta__round_trip_array_rcplx(&mut functions);
+              meta__round_trip_array_rfloat(&mut functions);
+              meta__round_trip_array_rint(&mut functions);
+              meta__round_trip_array_u8(&mut functions);
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Metadata access function.",
