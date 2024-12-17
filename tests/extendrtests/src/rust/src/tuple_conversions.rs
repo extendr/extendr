@@ -37,43 +37,36 @@ fn sum_points(x: (Point, Point)) -> Doubles {
 
 
 #[extendr]
-/// @export
 fn round_trip_array_u8(x: [u8; 4]) -> [u8; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_f64(x: [f64; 4]) -> [f64; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_i32(x: [i32; 4]) -> [i32; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_rint(x: [Rint; 4]) -> [Rint; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_rfloat(x: [Rfloat; 4]) -> [Rfloat; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_rbool(x: [Rbool; 4]) -> [Rbool; 4] {
     x
 }
 
 #[extendr]
-/// @export
 fn round_trip_array_rcplx(x: [Rcplx; 4]) -> [Rcplx; 4] {
     x
 }

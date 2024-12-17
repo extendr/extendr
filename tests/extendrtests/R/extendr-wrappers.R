@@ -149,25 +149,18 @@ sum_triplet_ints <- function(x) .Call(wrap__sum_triplet_ints, x)
 
 sum_points <- function(x) .Call(wrap__sum_points, x)
 
-#' @export
 round_trip_array_f64 <- function(x) .Call(wrap__round_trip_array_f64, x)
 
-#' @export
 round_trip_array_i32 <- function(x) .Call(wrap__round_trip_array_i32, x)
 
-#' @export
 round_trip_array_rbool <- function(x) .Call(wrap__round_trip_array_rbool, x)
 
-#' @export
 round_trip_array_rcplx <- function(x) .Call(wrap__round_trip_array_rcplx, x)
 
-#' @export
 round_trip_array_rfloat <- function(x) .Call(wrap__round_trip_array_rfloat, x)
 
-#' @export
 round_trip_array_rint <- function(x) .Call(wrap__round_trip_array_rint, x)
 
-#' @export
 round_trip_array_u8 <- function(x) .Call(wrap__round_trip_array_u8, x)
 
 middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
