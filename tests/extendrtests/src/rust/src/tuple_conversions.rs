@@ -35,7 +35,6 @@ fn sum_points(x: (Point, Point)) -> Doubles {
     Doubles::from_values([x1 + x2, y1 + y2])
 }
 
-
 #[extendr]
 fn round_trip_array_u8(x: [u8; 4]) -> [u8; 4] {
     x
@@ -70,7 +69,6 @@ fn round_trip_array_rbool(x: [Rbool; 4]) -> [Rbool; 4] {
 fn round_trip_array_rcplx(x: [Rcplx; 4]) -> [Rcplx; 4] {
     x
 }
-
 
 extendr_module! {
     mod tuple_conversions;
