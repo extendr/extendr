@@ -1,3 +1,4 @@
+#![cfg(test)]
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 
