@@ -587,6 +587,9 @@ macro_rules! impl_try_from_robj_for_arrays {
 
             fn try_from(value: &Robj) -> Result<Self> {
                 let value: &[$slice_type] = value.try_into()?;
+                if value.len() != N {
+                    return Err(Error::ExpectedLength(N));
+                }
                 let value: Self = value
                     .try_into()
                     .map_err(|error| format!("{}", error).to_string())?;
