@@ -10,6 +10,7 @@
 - Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 - Added conversions of `[T;N]` where `T` is `Rint`, `Rfloat`, `Rbool`, `Rcplx`, `u8`,
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
+- An ignore field attribute to the macro `derive(IntoRobj)` called `#[into_robj(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 
 ### Changed
 
