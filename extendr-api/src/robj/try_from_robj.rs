@@ -677,6 +677,9 @@ impl_try_from_robj_for_arrays!(f64);
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
 impl_try_from_robj_tuples!((1, 12));
 
+// The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
+// it requires returning a reference to a owned (moved) value
+
 impl TryFrom<&Robj> for HashMap<&str, Robj> {
     type Error = Error;
 
