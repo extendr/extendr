@@ -899,7 +899,9 @@
               }
           }
           impl extendr_api::wrapper::IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
-              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
+              fn into_dataframe(
+                  self,
+              ) -> extendr_api::Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.len());
                   let mut y = Vec::with_capacity(self.len());
                   for val in self {
@@ -924,7 +926,9 @@
               I: ExactSizeIterator<Item = MyStruct>,
           {
               /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
+              fn into_dataframe(
+                  self,
+              ) -> extendr_api::Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.0.len());
                   let mut y = Vec::with_capacity(self.0.len());
                   for val in self.0 {
