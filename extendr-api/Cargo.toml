@@ -62,7 +62,3 @@ tests-all = ["tests", "graphics"]
 
 [package.metadata.docs.rs]
 features = ["full-functionality"]
-
-[[test]]
-name  = "non_api_tests"
-required-features = ["non-api"]
