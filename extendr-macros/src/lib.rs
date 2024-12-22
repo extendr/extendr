@@ -340,7 +340,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             {
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     let list: List = robj.try_into()?;
                     if list.len() != #n {
                         return Err(Error::ExpectedLength(#n));
@@ -359,7 +359,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
                 #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),* {
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }
@@ -369,7 +369,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
@@ -383,7 +383,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }
