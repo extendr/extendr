@@ -33,6 +33,10 @@ jobs:
       - uses: baptiste0928/cargo-install@v3
         with:
           crate: cargo-msrv
+
+      - name: Check if extendr can be built
+        run: cargo build --manifest-path ./extendr-api/Cargo.toml
+
       - name: Verify minimum rust version
         run: |
           . ./ci-cargo.ps1
