@@ -23,7 +23,6 @@ permissions:
 
 jobs:
   test-min-rust-version:
-    # PowerShell core is available on all platforms and can be used to unify scripts
     defaults:
       run:
         shell: pwsh
@@ -34,16 +33,14 @@ jobs:
         with:
           crate: cargo-msrv
 
+      # Default R installation has been removed from OS image starting with 24.04
+      # https://github.com/actions/runner-images/issues/10636
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: 'release'
 
-      - name: Check if extendr can be built
-        run: cargo build --manifest-path ./extendr-api/Cargo.toml
-
       - name: Verify minimum rust version
         run: |
           . ./ci-cargo.ps1
-          ci-cargo msrv verify --log-level debug --manifest-path ./extendr-api/Cargo.toml --output-format json -ActionName "Verify Rust MSRV"
-          # ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
+          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
