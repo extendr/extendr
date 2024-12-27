@@ -37,11 +37,6 @@ impl robj::GetSexp for UnsafeExternalPtr {
     }
 }
 
-impl Types for UnsafeExternalPtr {} // required for Attributes
-impl Length for UnsafeExternalPtr {} // required for Attributes
-/// `set_attrib`
-impl Attributes for UnsafeExternalPtr {}
-
 impl UnsafeExternalPtr {
     /// Returns the opaque pointer stored in this `externalptr`.
     pub fn addr(&self) -> *mut std::ffi::c_void {
@@ -94,6 +89,17 @@ impl UnsafeExternalPtr {
         Ok(externalptr)
     }
 }
+
+impl std::fmt::Pointer for UnsafeExternalPtr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Pointer::fmt(&self.addr(), f)
+    }
+}
+
+impl Types for UnsafeExternalPtr {} // required for Attributes
+impl Length for UnsafeExternalPtr {} // required for Attributes
+/// `set_attrib`
+impl Attributes for UnsafeExternalPtr {}
 
 impl TryFrom<&Robj> for UnsafeExternalPtr {
     type Error = Error;
