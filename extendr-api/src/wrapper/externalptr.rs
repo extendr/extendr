@@ -121,20 +121,22 @@ impl<T: 'static> ExternalPtr<T> {
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via `register_c_finalizer`.
     ///
-    /// An ExternalPtr behaves like a Box except that the information is
+    /// An `ExternalPtr` behaves like a Box except that the information is
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
         let boxed_any: Box<dyn Any> = Box::new(val);
         Self::from_boxed_any(boxed_any)
     }
 
-    /// Returns an externalptr from an owned, raw pointer.
-
+    /// Returns an `externalptr` from an owned, raw pointer.
     pub unsafe fn from_raw(raw: *mut T) -> Self {
         let boxed_any = unsafe { Box::from_raw(raw) };
         Self::from_boxed_any(boxed_any)
     }
 
+    /// Returns an `ExternalPtr` based on a fat pointer.
+    ///
+    /// This is the internal implementation of constructing an Rust-safe `externalptr`.
     fn from_boxed_any(boxed_any: Box<dyn Any>) -> Self {
         single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.

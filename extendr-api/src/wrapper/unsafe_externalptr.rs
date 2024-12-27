@@ -12,6 +12,11 @@
 //!
 use super::*;
 
+/// A direct representation of R's `externalptr`.
+/// This is named "unsafe", as it does not carry type-id information necessary for
+/// safe transmuting the stored pointer into typed references (`&T` / `&mut T`, etc.).
+///
+/// Prefer `[ExternalPtr]` for must use-cases.
 #[repr(transparent)]
 pub struct UnsafeExternalPtr {
     pub(crate) robj: Robj,
@@ -55,14 +60,20 @@ impl UnsafeExternalPtr {
         unsafe { R_ExternalPtrProtected(self.robj.get()) }
     }
 
-    pub fn set_addr(&self, raw: *mut std::ffi::c_void) {
-        unsafe { R_SetExternalPtrAddr(self.robj.get(), raw) }
+    /// Set the stored opaque C pointer, and return the previous contained pointer.
+    /// Note that the contained pointer must be dropped manually.
+    pub fn set_addr(&self, raw: *mut std::ffi::c_void) -> *mut std::ffi::c_void {
+        let previous_addr = self.addr();
+        unsafe { R_SetExternalPtrAddr(self.robj.get(), raw) };
+        previous_addr
     }
 
+    /// Set the "tag" of the `externalptr`
     pub fn set_tag(&self, tag: SEXP) {
         unsafe { R_SetExternalPtrTag(self.robj.get(), tag) }
     }
 
+    /// Set the "protected" of the `externalptr`
     pub fn set_protected(&self, protected: SEXP) {
         unsafe { R_SetExternalPtrProtected(self.robj.get(), protected) }
     }
@@ -71,6 +82,11 @@ impl UnsafeExternalPtr {
 impl UnsafeExternalPtr {
     /// Returns a new, owned `externalptr`, with type information corresponding to `T`.
     ///
+    /// # Safety
+    ///
+    /// It is on the caller that the given type `T` is indeed the stored pointer in this `externalptr`.
+    /// There is no way to ensure that this is the case otherwise, and therefore invoking this method
+    /// is deemed unsafe.
     unsafe fn try_into_externalptr<T>(self) -> Result<ExternalPtr<T>>
     where
         T: 'static,
