@@ -28,6 +28,7 @@ pub mod rstr;
 pub mod s4;
 pub mod strings;
 pub mod symbol;
+pub mod unsafe_externalptr;
 pub mod wrapper_macros;
 
 pub use self::rstr::Rstr;
@@ -57,4 +58,5 @@ pub use raw::Raw;
 pub use s4::S4;
 pub use strings::Strings;
 pub use symbol::Symbol;
+pub use unsafe_externalptr::UnsafeExternalPtr;
 pub use wrapper_macros::*;
