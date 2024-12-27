@@ -117,17 +117,28 @@ impl<T: 'static> DerefMut for ExternalPtr<T> {
 }
 
 impl<T: 'static> ExternalPtr<T> {
-    /// Construct an external pointer object from any type T.
+    /// Construct an external pointer object from any type `T`.
     /// In this case, the R object owns the data and will drop the Rust object
-    /// when the last reference is removed via register_c_finalizer.
+    /// when the last reference is removed via `register_c_finalizer`.
     ///
     /// An ExternalPtr behaves like a Box except that the information is
     /// tracked by a R object.
     pub fn new(val: T) -> Self {
+        let boxed_any: Box<dyn Any> = Box::new(val);
+        Self::from_boxed_any(boxed_any)
+    }
+
+    /// Returns an externalptr from an owned, raw pointer.
+
+    pub unsafe fn from_raw(raw: *mut T) -> Self {
+        let boxed_any = unsafe { Box::from_raw(raw) };
+        Self::from_boxed_any(boxed_any)
+    }
+
+    fn from_boxed_any(boxed_any: Box<dyn Any>) -> Self {
         single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.
-            let boxed: Box<dyn Any> = Box::new(val);
-            let boxed: Box<Box<dyn Any>> = Box::new(boxed);
+            let boxed: Box<Box<dyn Any>> = Box::new(boxed_any);
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
@@ -150,10 +161,12 @@ impl<T: 'static> ExternalPtr<T> {
 
                     // Convert the pointer to a box and drop it implictly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
-                    drop(Box::from_raw(ptr));
+                    if !ptr.is_null() {
+                        drop(Box::from_raw(ptr));
 
-                    // Now set the pointer in ExternalPTR to C `NULL`
-                    R_ClearExternalPtr(x);
+                        // Now set the pointer in ExternalPTR to C `NULL`
+                        R_ClearExternalPtr(x);
+                    }
                 }
             }
 
@@ -167,8 +180,6 @@ impl<T: 'static> ExternalPtr<T> {
             }
         })
     }
-
-    // TODO: make a constructor for references?
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
     pub fn tag(&self) -> Robj {
