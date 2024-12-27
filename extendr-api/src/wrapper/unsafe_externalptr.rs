@@ -96,11 +96,11 @@ impl UnsafeExternalPtr {
         if self.addr().is_null() {
             return Err(Error::ExpectedExternalNonNullPtr(self.robj));
         }
-        // assume the given type is correct
-        let addr = self.addr().cast::<T>();
         // steal the pointer, and amend the type information
+        let addr = self.set_addr(std::ptr::null_mut());
+        // assume the given type is correct
+        let addr = addr.cast::<T>();
         let externalptr = ExternalPtr::from_raw(addr);
-        self.set_addr(std::ptr::null_mut());
 
         Ok(externalptr)
     }
