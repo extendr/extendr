@@ -17,6 +17,31 @@ pub struct UnsafeExternalPtr {
     pub(crate) robj: Robj,
 }
 
+impl robj::GetSexp for UnsafeExternalPtr {
+    unsafe fn get(&self) -> SEXP {
+        self.robj.get()
+    }
+
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.robj.get_mut()
+    }
+
+    /// Get a reference to a Robj for this type.
+    fn as_robj(&self) -> &Robj {
+        &self.robj
+    }
+
+    /// Get a mutable reference to a Robj for this type.
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        &mut self.robj
+    }
+}
+
+impl Types for UnsafeExternalPtr {} // required for Attributes
+impl Length for UnsafeExternalPtr {} // required for Attributes
+/// `set_attrib`
+impl Attributes for UnsafeExternalPtr {}
+
 impl UnsafeExternalPtr {
     /// Returns the opaque pointer stored in this `externalptr`.
     pub fn addr(&self) -> *mut std::ffi::c_void {
