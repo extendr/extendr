@@ -7,9 +7,4 @@ test_that("unsafe externalptr", {
     unsafe_externalptr_to_strings(unsafe_externalptr),
     msg
   )
-  externalptr <- unsafe_externalptr_to_safe_externalptr(unsafe_externalptr)
-  # expect_equal(
-  #   externalptr_as_raw(externalptr),
-  #   msg
-  # )
 })

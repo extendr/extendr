@@ -15,11 +15,6 @@ fn unsafe_externalptr_to_strings(value: UnsafeExternalPtr) -> Strings {
 }
 
 #[extendr]
-fn unsafe_externalptr_to_safe_externalptr(value: UnsafeExternalPtr) -> ExternalPtr<Raw> {
-    unsafe { value.try_into_externalptr().unwrap() }
-}
-
-#[extendr]
 fn externalptr_as_raw(value: ExternalPtr<Raw>) -> Strings {
     let raw_robj = value.as_raw().unwrap();
     Strings::from_values([Rstr::from_string(
@@ -30,6 +25,5 @@ fn externalptr_as_raw(value: ExternalPtr<Raw>) -> Strings {
 extendr_module! {
     mod unsafe_externalptr;
     fn unsafe_externalptr_to_strings;
-    fn unsafe_externalptr_to_safe_externalptr;
     fn externalptr_as_raw;
 }
