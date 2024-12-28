@@ -79,33 +79,6 @@ impl UnsafeExternalPtr {
     }
 }
 
-impl UnsafeExternalPtr {
-    /// Returns a new, owned `externalptr`, with type information corresponding to `T`.
-    ///
-    /// # Safety
-    ///
-    /// It is on the caller that the given type `T` is indeed the stored pointer in this `externalptr`.
-    /// There is no way to ensure that this is the case otherwise, and therefore invoking this method
-    /// is deemed unsafe.
-    pub unsafe fn try_into_externalptr<T>(self) -> Result<ExternalPtr<T>>
-    where
-        T: 'static,
-    {
-        // don't need to check if the underlying Robj (SEXP) is an externalptr..
-
-        if self.addr().is_null() {
-            return Err(Error::ExpectedExternalNonNullPtr(self.robj));
-        }
-        // steal the pointer, and amend the type information
-        let addr = self.set_addr(std::ptr::null_mut());
-        // assume the given type is correct
-        let addr = addr.cast::<T>();
-        let externalptr = ExternalPtr::from_raw(addr);
-
-        Ok(externalptr)
-    }
-}
-
 impl std::fmt::Pointer for UnsafeExternalPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Pointer::fmt(&self.addr(), f)
