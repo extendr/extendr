@@ -185,6 +185,12 @@ to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 
+unsafe_externalptr_to_strings <- function(value) .Call(wrap__unsafe_externalptr_to_strings, value)
+
+unsafe_externalptr_to_safe_externalptr <- function(value) .Call(wrap__unsafe_externalptr_to_safe_externalptr, value)
+
+externalptr_as_raw <- function(value) .Call(wrap__externalptr_as_raw, value)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

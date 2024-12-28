@@ -43,3 +43,6 @@ extendr-api = { path = "../../../../extendr-api" }
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
+
+[profile.release]
+debug = true

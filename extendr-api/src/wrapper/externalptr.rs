@@ -161,7 +161,7 @@ impl<T: 'static> ExternalPtr<T> {
                     // Free the `tag`, which is the type-name
                     R_SetExternalPtrTag(x, R_NilValue);
 
-                    // Convert the pointer to a box and drop it implictly.
+                    // Convert the pointer to a box and drop it implicitly.
                     // This frees up the memory we have used and calls the "T::drop" method if there is one.
                     if !ptr.is_null() {
                         drop(Box::from_raw(ptr));
