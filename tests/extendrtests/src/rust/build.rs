@@ -53,6 +53,7 @@ fn main() {
     println!("cargo:r_version_patch={}", patch); // Becomes DEP_R_R_VERSION_PATCH
 
     if major >= 4 && minor >= 3 {
+        println!("cargo:rustc-check-cfg=cfg(use_r_altlist)");
         println!("cargo:rustc-cfg=use_r_altlist");
     }
 }
