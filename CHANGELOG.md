@@ -10,6 +10,7 @@
 - Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 - Added conversions of `[T;N]` where `T` is `Rint`, `Rfloat`, `Rbool`, `Rcplx`, `u8`,
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
+- Conversion from `Robj`/`List` to `HashMap<_, T>` for `T: TryFrom<Robj>` [[#854]](https://github.com/extendr/extendr/pull/854)
 
 ### Changed
 
