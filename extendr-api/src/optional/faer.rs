@@ -58,7 +58,7 @@ impl<'a> From<&'_ RMatrix<f64>> for MatRef<'a, f64> {
         let nrow = value.nrows();
         let ncol = value.ncols();
         let slice = value.as_typed_slice().expect("RMatrix should be doubles");
-        let mat_ref = faer::mat::from_column_major_slice::<f64>(slice, nrow, ncol);
+        let mat_ref = faer::mat::from_column_major_slice(slice, nrow, ncol);
         mat_ref
     }
 }
@@ -89,7 +89,7 @@ impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
         let ncols = rmat.ncols();
 
         if let Some(slice) = robj.as_typed_slice() {
-            let fmat = mat::from_column_major_slice::<f64>(slice, nrows, ncols);
+            let fmat = mat::from_column_major_slice(slice, nrows, ncols);
             Ok(fmat)
         } else {
             Err(Error::ExpectedReal(robj.clone()))
