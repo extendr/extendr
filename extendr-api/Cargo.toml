@@ -20,7 +20,7 @@ libc = { version = "0.2", optional = true }
 ndarray = { version = "0.15.3", optional = true }
 num-complex = { version = "0.4", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
-faer = { version = "0.19", optional = true }
+faer = { version = "0.20", optional = true }
 
 [dev-dependencies]
 extendr-engine = { path = "../extendr-engine" }
@@ -37,7 +37,14 @@ result_condition = []
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
 # but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
-full-functionality = ["graphics", "either", "ndarray", "faer", "num-complex", "serde"]
+full-functionality = [
+    "graphics",
+    "either",
+    "ndarray",
+    "faer",
+    "num-complex",
+    "serde",
+]
 
 # Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
 # of non-API items in packages. You may enable this feature, to generate
@@ -64,5 +71,5 @@ tests-all = ["tests", "graphics"]
 features = ["full-functionality"]
 
 [[test]]
-name  = "non_api_tests"
+name = "non_api_tests"
 required-features = ["non-api"]
