@@ -144,7 +144,7 @@ impl<T: 'static> ExternalPtr<T> {
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = {
+            let mut robj = {
                 let boxed_ptr = Box::into_raw(boxed);
                 let prot = Robj::from(());
                 let type_name: Robj = std::any::type_name::<T>().into();

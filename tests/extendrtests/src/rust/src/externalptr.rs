@@ -107,14 +107,6 @@ fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
     x.into_iter().sum()
 }
 
-#[extendr]
-fn externalptr_as_raw(value: ExternalPtr<Raw>) -> Strings {
-    let raw_robj = value.as_raw().unwrap();
-    Strings::from_values([Rstr::from_string(
-        &String::from_utf8_lossy(raw_robj.as_slice()).to_string(),
-    )])
-}
-
 // Macro to generate exports
 extendr_module! {
     mod externalptr;
@@ -122,5 +114,4 @@ extendr_module! {
 
     fn create_numeric_externalptr;
     fn sum_integer_externalptr;
-    fn externalptr_as_raw;
 }

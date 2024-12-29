@@ -85,6 +85,52 @@ impl std::fmt::Pointer for UnsafeExternalPtr {
     }
 }
 
+impl UnsafeExternalPtr {
+    unsafe fn make_externalptr<T>(value: T) -> Self {
+        let ptr = Box::into_raw(Box::new(value));
+        let tag = libR_sys::R_NilValue;
+        let prot = libR_sys::R_NilValue;
+
+        Self {
+            robj: Robj::from_sexp(R_MakeExternalPtr(ptr.cast(), tag, prot)),
+        }
+    }
+
+    pub unsafe fn set_finalizer(&mut self, finalizer: unsafe extern "C" fn(arg1: SEXP)) {
+        R_RegisterCFinalizerEx(self.get_mut(), Some(finalizer), Rboolean::TRUE)
+    }
+
+    pub unsafe extern "C" fn finalizer<T>(arg1: SEXP) {
+        let ptr = R_ExternalPtrAddr(arg1).cast::<T>();
+        R_SetExternalPtrTag(arg1, R_NilValue);
+        if !ptr.is_null() {
+            drop(Box::from_raw(ptr));
+
+            // Now set the pointer in ExternalPTR to C `NULL`
+            R_ClearExternalPtr(arg1);
+        }
+    }
+
+    unsafe extern "C" fn finalizer_opaque(arg1: SEXP) {
+        let ptr = R_ExternalPtrAddr(arg1).cast::<Box<dyn std::any::Any>>();
+        R_SetExternalPtrTag(arg1, R_NilValue);
+        if !ptr.is_null() {
+            drop(Box::from_raw(ptr));
+
+            // Now set the pointer in ExternalPTR to C `NULL`
+            R_ClearExternalPtr(arg1);
+        }
+    }
+
+    pub unsafe fn register_finalizer<T>(&mut self) {
+        self.set_finalizer(Self::finalizer::<T>);
+    }
+
+    pub unsafe fn register_opaque_finalizer(&mut self) {
+        self.set_finalizer(Self::finalizer_opaque);
+    }
+}
+
 impl Types for UnsafeExternalPtr {} // required for Attributes
 impl Length for UnsafeExternalPtr {} // required for Attributes
 /// `set_attrib`

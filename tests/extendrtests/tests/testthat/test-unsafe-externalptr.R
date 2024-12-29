@@ -8,3 +8,15 @@ test_that("unsafe externalptr", {
     msg
   )
 })
+
+
+test_that("raw as externalptr", {
+  msg <- "Hello World!"
+  raw_msg <- charToRaw(msg)
+  msg_as_externalptr <- .Internal(address(raw_msg))
+
+  expect_equal(
+    externalptr_as_raw(msg_as_externalptr),
+    msg
+  )
+})
