@@ -87,7 +87,7 @@ impl UnsafeExternalPtr {
     /// It is on the caller that the given type `T` is indeed the stored pointer in this `externalptr`.
     /// There is no way to ensure that this is the case otherwise, and therefore invoking this method
     /// is deemed unsafe.
-    unsafe fn try_into_externalptr<T>(self) -> Result<ExternalPtr<T>>
+    pub unsafe fn try_into_externalptr<T>(self) -> Result<ExternalPtr<T>>
     where
         T: 'static,
     {
