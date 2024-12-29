@@ -580,62 +580,71 @@ impl TryFrom<&Robj> for HashMap<&str, Robj> {
     }
 }
 
-macro_rules! impl_try_from_robj_for_arrays {
-    ($slice_type:ty) => {
-        impl<const N: usize> TryFrom<&Robj> for [$slice_type; N] {
-            type Error = Error;
+impl<const N: usize, T> TryFrom<&Robj> for [T; N]
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+    [T; N]: for<'a> std::convert::TryFrom<&'a [T]>,
+    for<'a> <[T; N] as std::convert::TryFrom<&'a [T]>>::Error: std::fmt::Debug,
+{
+    type Error = Error;
 
-            fn try_from(value: &Robj) -> Result<Self> {
-                let value: &[$slice_type] = value.try_into()?;
-                if value.len() != N {
-                    return Err(Error::ExpectedLength(N));
-                }
-                let value: Self = value
-                    .try_into()
-                    .map_err(|error| format!("{}", error).to_string())?;
-                Ok(value)
-            }
+    fn try_from(value: &Robj) -> Result<Self> {
+        let slice = value.as_typed_slice();
+        let Some(slice) = slice else {
+            return Err(Error::TypeMismatch(value.clone()));
+        };
+        if slice.len() != N {
+            return Err(Error::ExpectedLength(N));
         }
-
-        // TODO: the following can be integrated into `impl_try_from_robj` later
-
-        impl<const N: usize> TryFrom<Robj> for [$slice_type; N] {
-            type Error = Error;
-
-            fn try_from(robj: Robj) -> Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
-
-        impl<const N: usize> TryFrom<&Robj> for Option<[$slice_type; N]> {
-            type Error = Error;
-
-            fn try_from(robj: &Robj) -> Result<Self> {
-                if robj.is_null() || robj.is_na() {
-                    Ok(None)
-                } else {
-                    Ok(Some(<[$slice_type; N]>::try_from(robj)?))
-                }
-            }
-        }
-
-        impl<const N: usize> TryFrom<Robj> for Option<[$slice_type; N]> {
-            type Error = Error;
-
-            fn try_from(robj: Robj) -> Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
-    };
+        let value: Self = slice
+            .try_into()
+            .map_err(|error| format!("{:?}", error).to_string())?;
+        Ok(value)
+    }
 }
 
-impl_try_from_robj_for_arrays!(Rint);
-impl_try_from_robj_for_arrays!(Rfloat);
-impl_try_from_robj_for_arrays!(Rbool);
-impl_try_from_robj_for_arrays!(Rcplx);
-impl_try_from_robj_for_arrays!(u8);
-impl_try_from_robj_for_arrays!(i32);
-impl_try_from_robj_for_arrays!(f64);
+impl<const N: usize, T> TryFrom<Robj> for [T; N]
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+    [T; N]: for<'a> std::convert::TryFrom<&'a [T]>,
+    for<'a> <[T; N] as std::convert::TryFrom<&'a [T]>>::Error: std::fmt::Debug,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        (&robj).try_into()
+    }
+}
+
+impl<const N: usize, T> TryFrom<&Robj> for Option<[T; N]>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+    [T; N]: for<'a> std::convert::TryFrom<&'a [T]>,
+    for<'a> <[T; N] as std::convert::TryFrom<&'a [T]>>::Error: std::fmt::Debug,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_null() || robj.is_na() {
+            Ok(None)
+        } else {
+            Ok(Some(robj.try_into()?))
+        }
+    }
+}
+
+impl<const N: usize, T> TryFrom<Robj> for Option<[T; N]>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+    [T; N]: for<'a> std::convert::TryFrom<&'a [T]>,
+    for<'a> <[T; N] as std::convert::TryFrom<&'a [T]>>::Error: std::fmt::Debug,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        (&robj).try_into()
+    }
+}
 
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
 impl_try_from_robj_tuples!((1, 12));
