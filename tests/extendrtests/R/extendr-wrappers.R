@@ -173,8 +173,6 @@ create_numeric_externalptr <- function(x) .Call(wrap__create_numeric_externalptr
 
 sum_integer_externalptr <- function(x) .Call(wrap__sum_integer_externalptr, x)
 
-externalptr_as_raw <- function(value) .Call(wrap__externalptr_as_raw, value)
-
 fetch_dimnames <- function(x) .Call(wrap__fetch_dimnames, x)
 
 fetch_colnames <- function(x) .Call(wrap__fetch_colnames, x)
@@ -188,6 +186,8 @@ to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 
 unsafe_externalptr_to_strings <- function(value) .Call(wrap__unsafe_externalptr_to_strings, value)
+
+unsafe_externalptr_as_raw <- function(value) .Call(wrap__unsafe_externalptr_as_raw, value)
 
 #' Class for testing (exported)
 #' @examples
