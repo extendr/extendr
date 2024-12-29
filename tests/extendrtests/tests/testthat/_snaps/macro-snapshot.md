@@ -2755,6 +2755,100 @@
                       hidden: false,
                   })
           }
+          fn externalptr_as_raw(value: ExternalPtr<Raw>) -> Strings {
+              let raw_robj = value.as_raw().unwrap();
+              Strings::from_values([
+                  Rstr::from_string(&String::from_utf8_lossy(raw_robj.as_slice()).to_string()),
+              ])
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__externalptr_as_raw(
+              value: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _value_robj = extendr_api::robj::Robj::from_sexp(value);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  externalptr_as_raw(_value_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "externalptr_as_raw"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__externalptr_as_raw(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "value",
+                          arg_type: "ExternalPtr",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "externalptr_as_raw",
+                      r_name: "externalptr_as_raw",
+                      mod_name: "externalptr_as_raw",
+                      args: args,
+                      return_type: "Strings",
+                      func_ptr: wrap__externalptr_as_raw as *const u8,
+                      hidden: false,
+                  })
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
@@ -2762,6 +2856,7 @@
               let mut impls = Vec::new();
               meta__create_numeric_externalptr(&mut functions);
               meta__sum_integer_externalptr(&mut functions);
+              meta__externalptr_as_raw(&mut functions);
               meta__Wrapper(&mut impls);
               functions
                   .push(extendr_api::metadata::Func {
@@ -7710,107 +7805,12 @@
                       hidden: false,
                   })
           }
-          fn externalptr_as_raw(value: ExternalPtr<Raw>) -> Strings {
-              let raw_robj = value.as_raw().unwrap();
-              Strings::from_values([
-                  Rstr::from_string(&String::from_utf8_lossy(raw_robj.as_slice()).to_string()),
-              ])
-          }
-          #[no_mangle]
-          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-          pub extern "C" fn wrap__externalptr_as_raw(
-              value: extendr_api::SEXP,
-          ) -> extendr_api::SEXP {
-              use extendr_api::robj::*;
-              let wrap_result_state: std::result::Result<
-                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
-                  Box<dyn std::any::Any + Send>,
-              > = unsafe {
-                  std::panic::catch_unwind(
-                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
-                          extendr_api::Robj,
-                          extendr_api::Error,
-                      > {
-                          let _value_robj = extendr_api::robj::Robj::from_sexp(value);
-                          Ok(
-                              extendr_api::Robj::from(
-                                  externalptr_as_raw(_value_robj.try_into()?),
-                              ),
-                          )
-                      }),
-                  )
-              };
-              match wrap_result_state {
-                  Ok(Ok(zz)) => {
-                      return unsafe { zz.get() };
-                  }
-                  Ok(Err(conversion_err)) => {
-                      let err_string = conversion_err.to_string();
-                      drop(conversion_err);
-                      extendr_api::throw_r_error(&err_string);
-                  }
-                  Err(unwind_err) => {
-                      drop(unwind_err);
-                      let err_string = ::alloc::__export::must_use({
-                          let res = ::alloc::fmt::format(
-                              format_args!("User function panicked: {0}", "externalptr_as_raw"),
-                          );
-                          res
-                      });
-                      extendr_api::handle_panic(
-                          err_string.as_str(),
-                          || {
-                              #[cold]
-                              #[track_caller]
-                              #[inline(never)]
-                              const fn panic_cold_explicit() -> ! {
-                                  ::core::panicking::panic_explicit()
-                              }
-                              panic_cold_explicit();
-                          },
-                      );
-                  }
-              }
-              {
-                  ::core::panicking::panic_fmt(
-                      format_args!(
-                          "internal error: entered unreachable code: {0}",
-                          format_args!("internal extendr error, this should never happen."),
-                      ),
-                  );
-              }
-          }
-          #[allow(non_snake_case)]
-          fn meta__externalptr_as_raw(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "value",
-                          arg_type: "ExternalPtr",
-                          default: None,
-                      },
-                  ]),
-              );
-              metadata
-                  .push(extendr_api::metadata::Func {
-                      doc: "",
-                      rust_name: "externalptr_as_raw",
-                      r_name: "externalptr_as_raw",
-                      mod_name: "externalptr_as_raw",
-                      args: args,
-                      return_type: "Strings",
-                      func_ptr: wrap__externalptr_as_raw as *const u8,
-                      hidden: false,
-                  })
-          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_unsafe_externalptr_metadata() -> extendr_api::metadata::Metadata {
               let mut functions = Vec::new();
               let mut impls = Vec::new();
               meta__unsafe_externalptr_to_strings(&mut functions);
-              meta__externalptr_as_raw(&mut functions);
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Metadata access function.",
