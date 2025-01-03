@@ -30,7 +30,7 @@ impl Strings {
     }
 
     /// Constructs a new vector of size `len` with `NA` values
-    pub fn new_na_filled(len: usize) -> Strings {
+    pub fn new_with_na(len: usize) -> Strings {
         let iter = (0..len).map(|_| Rstr::na());
         Strings::from_values(iter)
     }
@@ -178,10 +178,10 @@ mod tests {
     }
 
     #[test]
-    fn new_na_filled() {
+    fn new_with_na() {
         use crate::na::CanBeNA;
         test! {
-            let vec = Strings::new_na_filled(10);
+            let vec = Strings::new_with_na(10);
             let manual_vec = (0..10).into_iter().map(|_| Rstr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());

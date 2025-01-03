@@ -46,7 +46,7 @@ macro_rules! gen_vector_wrapper_impl {
                 }
 
                 /// Constructs a new vector of size `len` with `NA` values
-                pub fn new_na_filled(len: usize) -> $type {
+                pub fn new_with_na(len: usize) -> $type {
                     let iter = (0..len).map(|_| <$primitive_type>::na());
                     <$type>::from_values(iter)
                 }

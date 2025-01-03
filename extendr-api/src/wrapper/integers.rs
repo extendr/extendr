@@ -166,9 +166,9 @@ mod tests {
     }
 
     #[test]
-    fn new_na_filled() {
+    fn new_with_na() {
         test! {
-            let vec = Integers::new_na_filled(10);
+            let vec = Integers::new_with_na(10);
             let manual_vec = (0..10).into_iter().map(|_| Rint::na()).collect::<Integers>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());

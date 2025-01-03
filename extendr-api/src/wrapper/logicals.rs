@@ -161,10 +161,10 @@ mod tests {
     }
 
     #[test]
-    fn new_na_filled() {
+    fn new_with_na() {
         use crate::na::CanBeNA;
         test! {
-            let vec = Logicals::new_na_filled(10);
+            let vec = Logicals::new_with_na(10);
             let manual_vec = (0..10).into_iter().map(|_| Rbool::na()).collect::<Logicals>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
