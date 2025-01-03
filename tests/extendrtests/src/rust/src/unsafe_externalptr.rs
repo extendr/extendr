@@ -16,7 +16,8 @@ fn unsafe_externalptr_to_strings(value: UnsafeExternalPtr) -> Strings {
 
 #[extendr]
 fn unsafe_externalptr_as_raw(value: UnsafeExternalPtr) -> Strings {
-    let value = unsafe { value.addr().cast::<Raw>().as_ref() }.unwrap();
+    let value = value.addr() as SEXP;
+    let value = Robj::from_sexp(value);
     let raw_robj = value
         .as_raw()
         .expect("the embedded pointer should be to a Raw R vector");

@@ -16,7 +16,7 @@ test_that("raw as externalptr", {
   msg_as_externalptr <- .Internal(address(raw_msg))
 
   expect_equal(
-    externalptr_as_raw(msg_as_externalptr),
+    unsafe_externalptr_as_raw(msg_as_externalptr),
     msg
   )
 })
