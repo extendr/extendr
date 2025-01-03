@@ -86,7 +86,7 @@ impl std::fmt::Pointer for UnsafeExternalPtr {
 }
 
 impl UnsafeExternalPtr {
-    unsafe fn make_externalptr<T>(value: T) -> Self {
+    pub unsafe fn new<T>(value: T) -> Self {
         let ptr = Box::into_raw(Box::new(value));
         let tag = libR_sys::R_NilValue;
         let prot = libR_sys::R_NilValue;
