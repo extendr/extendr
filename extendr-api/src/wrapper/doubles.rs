@@ -14,7 +14,7 @@ use std::iter::FromIterator;
 ///     let sum = vec.iter().sum::<Rfloat>();
 ///     assert_eq!(sum, 60.0);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Doubles {
     pub(crate) robj: Robj,
@@ -104,6 +104,26 @@ impl TryFrom<Vec<f64>> for Doubles {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Doubles::new(10);
+            assert_eq!(vec.is_number(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_na_filled() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Doubles::new_na_filled(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rfloat::na()).collect::<Doubles>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
 
     #[test]
     fn test_vec_f64_doubles_conversion() {

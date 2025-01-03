@@ -14,7 +14,7 @@ use std::iter::FromIterator;
 ///     let sum = vec.iter().sum::<Rint>();
 ///     assert_eq!(sum, 60);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,
@@ -162,6 +162,16 @@ mod tests {
             let vec = Integers::new(10);
             assert_eq!(vec.is_integer(), true);
             assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_na_filled() {
+        test! {
+            let vec = Integers::new_na_filled(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rint::na()).collect::<Integers>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
         }
     }
 

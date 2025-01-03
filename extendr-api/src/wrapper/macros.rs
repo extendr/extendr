@@ -38,9 +38,16 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "   assert_eq!(vec.len(), 10);"]
                 #[doc = "}"]
                 #[doc = "```"]
+                /// Constructs an empty vector of size `len` with default values
                 pub fn new(len: usize) -> $type {
                     // TODO: Check if impacts performance.
                     let iter = (0..len).map(|_| <$primitive_type>::default());
+                    <$type>::from_values(iter)
+                }
+
+                /// Constructs a new vector of size `len` with `NA` values
+                pub fn new_na_filled(len: usize) -> $type {
+                    let iter = (0..len).map(|_| <$primitive_type>::na());
                     <$type>::from_values(iter)
                 }
             }

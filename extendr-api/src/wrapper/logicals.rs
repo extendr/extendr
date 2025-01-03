@@ -15,7 +15,7 @@ use std::iter::FromIterator;
 ///     // Logicals behaves like &[Rbool]
 ///     assert_eq!(vec[1], false);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Logicals {
     pub(crate) robj: Robj,
@@ -157,6 +157,17 @@ mod tests {
             let vec = Logicals::new(10);
             assert_eq!(vec.is_logical(), true);
             assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_na_filled() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Logicals::new_na_filled(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rbool::na()).collect::<Logicals>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
         }
     }
 

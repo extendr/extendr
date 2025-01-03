@@ -11,7 +11,7 @@ use std::iter::FromIterator;
 ///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Complexes {
     pub(crate) robj: Robj,
@@ -92,6 +92,26 @@ impl TryFrom<Vec<c64>> for Complexes {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Complexes::new(10);
+            assert_eq!(vec.is_complex(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_na_filled() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Complexes::new_na_filled(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rcplx::na()).collect::<Complexes>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
 
     #[test]
     fn test_try_from_vec_c64_conversion() {
