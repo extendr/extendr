@@ -10,6 +10,8 @@
 - Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 - Added conversions of `[T;N]` where `T` is `Rint`, `Rfloat`, `Rbool`, `Rcplx`, `u8`,
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
+- Added `UnsafeExternalPtr` a type-unsafe variant of `ExternalPtr<T>` for use in passing foreign pointers to Rust. [[#869]](https://github.com/extendr/extendr/pull/869)
+- Added `std::fmt::Pointer` formating to `ExternalPtr<T>` and `UnsafeExternalPtr`, yielding pointer formatting when using `{:p}`. [[#869]](https://github.com/extendr/extendr/pull/869)
 
 ### Changed
 
