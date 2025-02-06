@@ -72,6 +72,8 @@ impl<T, D> RArray<T, D> {
 pub type RColumn<T> = RArray<T, [usize; 1]>;
 pub type RMatrix<T> = RArray<T, [usize; 2]>;
 pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
+pub type RMatrix4D<T> = RArray<T, [usize; 4]>;
+pub type RMatrix5D<T> = RArray<T, [usize; 5]>;
 
 impl<T> RMatrix<T>
 where
@@ -385,6 +387,60 @@ where
     }
 }
 
+impl<T> TryFrom<&Robj> for RMatrix4D<T>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if let Some(_slice) = robj.as_typed_slice() {
+            if let Some(dim) = robj.dim() {
+                if dim.len() != 4 {
+                    Err(Error::ExpectedMatrix4D(robj.clone()))
+                } else {
+                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                    Ok(RArray::from_parts(
+                        robj.clone(),
+                        [dim[0], dim[1], dim[2], dim[3]],
+                    ))
+                }
+            } else {
+                Err(Error::ExpectedMatrix4D(robj.clone()))
+            }
+        } else {
+            Err(Error::TypeMismatch(robj.clone()))
+        }
+    }
+}
+
+impl<T> TryFrom<&Robj> for RMatrix5D<T>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if let Some(_slice) = robj.as_typed_slice() {
+            if let Some(dim) = robj.dim() {
+                if dim.len() != 5 {
+                    Err(Error::ExpectedMatrix5D(robj.clone()))
+                } else {
+                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
+                    Ok(RArray::from_parts(
+                        robj.clone(),
+                        [dim[0], dim[1], dim[2], dim[3], dim[4]],
+                    ))
+                }
+            } else {
+                Err(Error::ExpectedMatrix5D(robj.clone()))
+            }
+        } else {
+            Err(Error::TypeMismatch(robj.clone()))
+        }
+    }
+}
+
 macro_rules! impl_try_from_robj_ref {
     ($($type : tt)*) => {
         $(
@@ -432,6 +488,8 @@ impl_try_from_robj_ref!(
     RMatrix
     RColumn
     RMatrix3D
+    RMatrix4D
+    RMatrix5D
 );
 
 impl<T, D> From<RArray<T, D>> for Robj {

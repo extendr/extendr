@@ -38,7 +38,7 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
+    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D,
 };
 
 #[cfg(use_r_altlist)]
