@@ -302,7 +302,6 @@ fn write_impl_wrapper(
     package_name: &str,
     use_symbols: bool,
 ) -> std::io::Result<()> {
-    println!("documenting for {}", imp.name);
     let exported = imp.doc.contains("@export");
 
     write_doc(w, imp.doc)?;
