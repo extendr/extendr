@@ -314,10 +314,7 @@ fn write_impl_wrapper(
     }
 
     let imp_name_fixed = sanitize_identifier(name);
-    if exported {
-        writeln!(w, "#' @rdname {}", name)?;
-        writeln!(w, "#' @usage NULL")?;
-    }
+
     // Using fixed name because it is exposed to R
     writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
 
@@ -328,6 +325,11 @@ fn write_impl_wrapper(
             // `imp.name` is passed as is and sanitized within the function
             write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
         }
+    }
+
+    if exported {
+        writeln!(w, "#' @rdname {}", name)?;
+        writeln!(w, "#' @usage NULL")?;
     }
 
     // This is needed no matter whether the user added `@export` or
