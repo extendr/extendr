@@ -235,6 +235,7 @@ pub(crate) fn extendr_impl(
                     doc: #doc_string,
                     name: #self_ty_name,
                     methods,
+                    methods_only: true
                 });
             }
         })
@@ -268,6 +269,7 @@ pub(crate) fn extendr_impl(
                     doc: #doc_string,
                     name: #self_ty_name,
                     methods,
+                    methods_only: false
                 });
             }
         })
