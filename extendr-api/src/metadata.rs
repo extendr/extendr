@@ -32,7 +32,6 @@ pub struct Impl {
     pub doc: &'static str,
     pub name: &'static str,
     pub methods: Vec<Func>,
-    pub methods_only: bool,
 }
 
 /// Module metadata.
@@ -295,7 +294,8 @@ fn write_method_wrapper(
     Ok(())
 }
 
-fn write_obj_wrapper(
+/// Generate a wrapper for an implementation block.
+fn write_impl_wrapper(
     w: &mut Vec<u8>,
     name: &str,
     impls: &[Impl],
@@ -346,54 +346,6 @@ fn write_obj_wrapper(
     Ok(())
 }
 
-/// Generate a wrapper for an implementation block.
-fn write_impl_wrapper(
-    w: &mut Vec<u8>,
-    imp: &Impl,
-    package_name: &str,
-    use_symbols: bool,
-) -> std::io::Result<()> {
-    let exported = imp.doc.contains("@export");
-
-    write_doc(w, imp.doc)?;
-
-    let imp_name_fixed = sanitize_identifier(imp.name);
-
-    if !imp.methods_only {
-        // Using fixed name because it is exposed to R
-        writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
-    }
-
-    for func in &imp.methods {
-        // write_doc(& mut w, func.doc)?;
-        // `imp.name` is passed as is and sanitized within the function
-        write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
-    }
-
-    if exported {
-        writeln!(w, "#' @rdname {}", imp.name)?;
-        writeln!(w, "#' @usage NULL")?;
-    }
-
-    if !imp.methods_only {
-        // This is needed no matter whether the user added `@export` or
-        // not; even if we don't export the class itself and its
-        // initializers, we always export the `$` method so the method is
-        // correctly added to the NAMESPACE.
-        writeln!(w, "#' @export")?;
-
-        // LHS with dollar operator is wrapped in ``, so pass name as is,
-        // but in the body `imp_name_fixed` is called as valid R function,
-        // so we pass preprocessed value
-        writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
-
-        writeln!(w, "#' @export")?;
-        writeln!(w, "`[[.{}` <- `$.{}`\n", imp.name, imp.name)?;
-    }
-
-    Ok(())
-}
-
 impl Metadata {
     pub fn make_r_wrappers(
         &self,
@@ -426,7 +378,7 @@ impl Metadata {
         }
 
         for impl_name in &self.impl_names() {
-            write_obj_wrapper(&mut w, impl_name, &self.impls, package_name, use_symbols)?;
+            write_impl_wrapper(&mut w, impl_name, &self.impls, package_name, use_symbols)?;
         }
 
         // for imp in &self.impls {
