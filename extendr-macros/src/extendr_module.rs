@@ -48,8 +48,13 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             #( #implmetanames(&mut impls); )*
 
             // Extends functions and impls with the submodules metadata
-            #( functions.extend(#usenames::#usemetanames().functions); )*
-            #( impls.extend(#usenames::#usemetanames().impls); )*
+            #(
+              let sub_mod_meta = #usenames::#usemetanames();
+              functions.extend(sub_mod_meta.functions);
+              impls.extend(sub_mod_meta.impls);
+            )*
+            // #( functions.extend(#usenames::#usemetanames().functions); )*
+            // #( impls.extend(#usenames::#usemetanames().impls); )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {

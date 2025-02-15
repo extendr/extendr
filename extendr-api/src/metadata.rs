@@ -295,6 +295,57 @@ fn write_method_wrapper(
     Ok(())
 }
 
+fn write_obj_wrapper(
+    w: &mut Vec<u8>,
+    name: &str,
+    impls: &[Impl],
+    package_name: &str,
+    use_symbols: bool,
+) -> std::io::Result<()> {
+    let mut exported = false;
+    {
+        let impls = impls.iter().filter(|imp| imp.name == name);
+        for imp in impls {
+            if !exported {
+                exported = imp.doc.contains("@export");
+            }
+            write_doc(w, imp.doc)?;
+        }
+    }
+
+    let imp_name_fixed = sanitize_identifier(name);
+    if exported {
+        writeln!(w, "#' @rdname {}", name)?;
+        writeln!(w, "#' @usage NULL")?;
+    }
+    // Using fixed name because it is exposed to R
+    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
+
+    let impls = impls.iter().filter(|imp| imp.name == name);
+    for imp in impls {
+        for func in &imp.methods {
+            // write_doc(& mut w, func.doc)?;
+            // `imp.name` is passed as is and sanitized within the function
+            write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
+        }
+    }
+
+    // This is needed no matter whether the user added `@export` or
+    // not; even if we don't export the class itself and its
+    // initializers, we always export the `$` method so the method is
+    // correctly added to the NAMESPACE.
+    writeln!(w, "#' @export")?;
+
+    // LHS with dollar operator is wrapped in ``, so pass name as is,
+    // but in the body `imp_name_fixed` is called as valid R function,
+    // so we pass preprocessed value
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", name, imp_name_fixed)?;
+
+    writeln!(w, "#' @export")?;
+    writeln!(w, "`[[.{}` <- `$.{}`\n", name, name)?;
+    Ok(())
+}
+
 /// Generate a wrapper for an implementation block.
 fn write_impl_wrapper(
     w: &mut Vec<u8>,
@@ -374,9 +425,23 @@ impl Metadata {
             write_function_wrapper(&mut w, func, package_name, use_symbols)?;
         }
 
-        for imp in &self.impls {
-            write_impl_wrapper(&mut w, imp, package_name, use_symbols)?;
+        for impl_name in &self.impl_names() {
+            write_obj_wrapper(&mut w, impl_name, &self.impls, package_name, use_symbols)?;
         }
+
+        // for imp in &self.impls {
+        //     write_impl_wrapper(&mut w, imp, package_name, use_symbols)?;
+        // }
         unsafe { Ok(String::from_utf8_unchecked(w)) }
+    }
+
+    fn impl_names<'a>(&'a self) -> Vec<&'a str> {
+        let mut vec: Vec<&str> = vec![];
+        for impls in &self.impls {
+            if !vec.contains(&impls.name) {
+                vec.push(&impls.name)
+            }
+        }
+        vec
     }
 }

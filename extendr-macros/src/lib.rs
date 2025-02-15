@@ -62,6 +62,7 @@ mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod extendr_options;
+mod extendr_struct;
 mod list;
 mod list_struct;
 mod pairlist;
@@ -91,6 +92,10 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
+        Item::Struct(str) => match extendr_struct::extendr_struct(str, &opts) {
+            Ok(result) => result,
+            Err(e) => e.into_compile_error().into(),
+        },
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
         Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
             Ok(result) => result,
