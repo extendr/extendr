@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 // Class for testing
 #[derive(Default, Debug, Clone, Copy)]
+#[extendr] // now required to create conversions
 struct Wrapper {
     a: i32,
 }
