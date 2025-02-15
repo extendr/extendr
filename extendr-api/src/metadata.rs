@@ -309,6 +309,7 @@ fn write_obj_wrapper(
             if !exported {
                 exported = imp.doc.contains("@export");
             }
+            println!("{}", imp.doc);
             write_doc(w, imp.doc)?;
         }
     }
