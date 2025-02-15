@@ -12,27 +12,6 @@
       mod altrep {
           use extendr_api::prelude::*;
           pub struct VecUsize(pub Vec<Option<usize>>);
-          #[automatically_derived]
-          impl ::core::fmt::Debug for VecUsize {
-              #[inline]
-              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                  ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
-              }
-          }
-          #[automatically_derived]
-          impl ::core::clone::Clone for VecUsize {
-              #[inline]
-              fn clone(&self) -> VecUsize {
-                  VecUsize(::core::clone::Clone::clone(&self.0))
-              }
-          }
-          impl AltrepImpl for VecUsize {
-              fn length(&self) -> usize {
-                  self.0.len()
-              }
-          }
-          #[cfg(use_r_altlist)]
-          impl VecUsize {}
           impl TryFrom<Robj> for &VecUsize {
               type Error = extendr_api::Error;
               fn try_from(robj: Robj) -> extendr_api::Result<Self> {
@@ -75,6 +54,27 @@
                   }
               }
           }
+          #[automatically_derived]
+          impl ::core::fmt::Debug for VecUsize {
+              #[inline]
+              fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                  ::core::fmt::Formatter::debug_tuple_field1_finish(f, "VecUsize", &&self.0)
+              }
+          }
+          #[automatically_derived]
+          impl ::core::clone::Clone for VecUsize {
+              #[inline]
+              fn clone(&self) -> VecUsize {
+                  VecUsize(::core::clone::Clone::clone(&self.0))
+              }
+          }
+          impl AltrepImpl for VecUsize {
+              fn length(&self) -> usize {
+                  self.0.len()
+              }
+          }
+          #[cfg(use_r_altlist)]
+          impl VecUsize {}
           #[allow(non_snake_case)]
           fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
               let mut methods = Vec::new();
@@ -1210,6 +1210,48 @@
           use extendr_api::prelude::*;
           struct Wrapper {
               a: i32,
+          }
+          impl TryFrom<Robj> for &Wrapper {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&robj)
+              }
+          }
+          impl TryFrom<Robj> for &mut Wrapper {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&mut robj)
+              }
+          }
+          impl TryFrom<&Robj> for &Wrapper {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &ExternalPtr<Wrapper> = robj.try_into()?;
+                      external_ptr.try_addr()
+                  }
+              }
+          }
+          impl TryFrom<&mut Robj> for &mut Wrapper {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &mut ExternalPtr<Wrapper> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
+                  }
+              }
+          }
+          impl From<Wrapper> for Robj {
+              fn from(value: Wrapper) -> Self {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let mut res: ExternalPtr<Wrapper> = ExternalPtr::new(value);
+                      res.set_attrib(class_symbol(), "Wrapper").unwrap();
+                      res.into()
+                  }
+              }
           }
           #[automatically_derived]
           impl ::core::default::Default for Wrapper {
@@ -2420,48 +2462,6 @@
                       func_ptr: wrap__Wrapper__max_ref2 as *const u8,
                       hidden: false,
                   })
-          }
-          impl TryFrom<Robj> for &Wrapper {
-              type Error = extendr_api::Error;
-              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                  Self::try_from(&robj)
-              }
-          }
-          impl TryFrom<Robj> for &mut Wrapper {
-              type Error = extendr_api::Error;
-              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-                  Self::try_from(&mut robj)
-              }
-          }
-          impl TryFrom<&Robj> for &Wrapper {
-              type Error = extendr_api::Error;
-              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let external_ptr: &ExternalPtr<Wrapper> = robj.try_into()?;
-                      external_ptr.try_addr()
-                  }
-              }
-          }
-          impl TryFrom<&mut Robj> for &mut Wrapper {
-              type Error = extendr_api::Error;
-              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let external_ptr: &mut ExternalPtr<Wrapper> = robj.try_into()?;
-                      external_ptr.try_addr_mut()
-                  }
-              }
-          }
-          impl From<Wrapper> for Robj {
-              fn from(value: Wrapper) -> Self {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let mut res: ExternalPtr<Wrapper> = ExternalPtr::new(value);
-                      res.set_attrib(class_symbol(), "Wrapper").unwrap();
-                      res.into()
-                  }
-              }
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper(impls: &mut Vec<extendr_api::metadata::Impl>) {
@@ -5528,6 +5528,48 @@
           struct MySubmoduleClass {
               a: i32,
           }
+          impl TryFrom<Robj> for &MySubmoduleClass {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&robj)
+              }
+          }
+          impl TryFrom<Robj> for &mut MySubmoduleClass {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&mut robj)
+              }
+          }
+          impl TryFrom<&Robj> for &MySubmoduleClass {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &ExternalPtr<MySubmoduleClass> = robj.try_into()?;
+                      external_ptr.try_addr()
+                  }
+              }
+          }
+          impl TryFrom<&mut Robj> for &mut MySubmoduleClass {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &mut ExternalPtr<MySubmoduleClass> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
+                  }
+              }
+          }
+          impl From<MySubmoduleClass> for Robj {
+              fn from(value: MySubmoduleClass) -> Self {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let mut res: ExternalPtr<MySubmoduleClass> = ExternalPtr::new(value);
+                      res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
+                      res.into()
+                  }
+              }
+          }
           #[automatically_derived]
           impl ::core::default::Default for MySubmoduleClass {
               #[inline]
@@ -5839,48 +5881,6 @@
                       func_ptr: wrap__MySubmoduleClass__a as *const u8,
                       hidden: false,
                   })
-          }
-          impl TryFrom<Robj> for &MySubmoduleClass {
-              type Error = extendr_api::Error;
-              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                  Self::try_from(&robj)
-              }
-          }
-          impl TryFrom<Robj> for &mut MySubmoduleClass {
-              type Error = extendr_api::Error;
-              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-                  Self::try_from(&mut robj)
-              }
-          }
-          impl TryFrom<&Robj> for &MySubmoduleClass {
-              type Error = extendr_api::Error;
-              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let external_ptr: &ExternalPtr<MySubmoduleClass> = robj.try_into()?;
-                      external_ptr.try_addr()
-                  }
-              }
-          }
-          impl TryFrom<&mut Robj> for &mut MySubmoduleClass {
-              type Error = extendr_api::Error;
-              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let external_ptr: &mut ExternalPtr<MySubmoduleClass> = robj.try_into()?;
-                      external_ptr.try_addr_mut()
-                  }
-              }
-          }
-          impl From<MySubmoduleClass> for Robj {
-              fn from(value: MySubmoduleClass) -> Self {
-                  use extendr_api::ExternalPtr;
-                  unsafe {
-                      let mut res: ExternalPtr<MySubmoduleClass> = ExternalPtr::new(value);
-                      res.set_attrib(class_symbol(), "MySubmoduleClass").unwrap();
-                      res.into()
-                  }
-              }
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass(impls: &mut Vec<extendr_api::metadata::Impl>) {
@@ -9734,6 +9734,48 @@
       struct MyClass {
           a: i32,
       }
+      impl TryFrom<Robj> for &MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &ExternalPtr<MyClass> = robj.try_into()?;
+                  external_ptr.try_addr()
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &mut ExternalPtr<MyClass> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
+              }
+          }
+      }
+      impl From<MyClass> for Robj {
+          fn from(value: MyClass) -> Self {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let mut res: ExternalPtr<MyClass> = ExternalPtr::new(value);
+                  res.set_attrib(class_symbol(), "MyClass").unwrap();
+                  res.into()
+              }
+          }
+      }
       #[automatically_derived]
       impl ::core::default::Default for MyClass {
           #[inline]
@@ -10311,48 +10353,6 @@
                   hidden: false,
               })
       }
-      impl TryFrom<Robj> for &MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&robj)
-          }
-      }
-      impl TryFrom<Robj> for &mut MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&mut robj)
-          }
-      }
-      impl TryFrom<&Robj> for &MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &ExternalPtr<MyClass> = robj.try_into()?;
-                  external_ptr.try_addr()
-              }
-          }
-      }
-      impl TryFrom<&mut Robj> for &mut MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &mut ExternalPtr<MyClass> = robj.try_into()?;
-                  external_ptr.try_addr_mut()
-              }
-          }
-      }
-      impl From<MyClass> for Robj {
-          fn from(value: MyClass) -> Self {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let mut res: ExternalPtr<MyClass> = ExternalPtr::new(value);
-                  res.set_attrib(class_symbol(), "MyClass").unwrap();
-                  res.into()
-              }
-          }
-      }
       #[allow(non_snake_case)]
       fn meta__MyClass(impls: &mut Vec<extendr_api::metadata::Impl>) {
           let mut methods = Vec::new();
@@ -10370,6 +10370,48 @@
               });
       }
       struct __MyClass {}
+      impl TryFrom<Robj> for &__MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut __MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &__MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &ExternalPtr<__MyClass> = robj.try_into()?;
+                  external_ptr.try_addr()
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut __MyClass {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &mut ExternalPtr<__MyClass> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
+              }
+          }
+      }
+      impl From<__MyClass> for Robj {
+          fn from(value: __MyClass) -> Self {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let mut res: ExternalPtr<__MyClass> = ExternalPtr::new(value);
+                  res.set_attrib(class_symbol(), "__MyClass").unwrap();
+                  res.into()
+              }
+          }
+      }
       #[automatically_derived]
       impl ::core::default::Default for __MyClass {
           #[inline]
@@ -10553,48 +10595,6 @@
                   hidden: false,
               })
       }
-      impl TryFrom<Robj> for &__MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&robj)
-          }
-      }
-      impl TryFrom<Robj> for &mut __MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&mut robj)
-          }
-      }
-      impl TryFrom<&Robj> for &__MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &ExternalPtr<__MyClass> = robj.try_into()?;
-                  external_ptr.try_addr()
-              }
-          }
-      }
-      impl TryFrom<&mut Robj> for &mut __MyClass {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &mut ExternalPtr<__MyClass> = robj.try_into()?;
-                  external_ptr.try_addr_mut()
-              }
-          }
-      }
-      impl From<__MyClass> for Robj {
-          fn from(value: __MyClass) -> Self {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let mut res: ExternalPtr<__MyClass> = ExternalPtr::new(value);
-                  res.set_attrib(class_symbol(), "__MyClass").unwrap();
-                  res.into()
-              }
-          }
-      }
       #[allow(non_snake_case)]
       fn meta____MyClass(impls: &mut Vec<extendr_api::metadata::Impl>) {
           let mut methods = Vec::new();
@@ -10609,6 +10609,48 @@
       }
       struct MyClassUnexported {
           a: i32,
+      }
+      impl TryFrom<Robj> for &MyClassUnexported {
+          type Error = extendr_api::Error;
+          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&robj)
+          }
+      }
+      impl TryFrom<Robj> for &mut MyClassUnexported {
+          type Error = extendr_api::Error;
+          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+              Self::try_from(&mut robj)
+          }
+      }
+      impl TryFrom<&Robj> for &MyClassUnexported {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &ExternalPtr<MyClassUnexported> = robj.try_into()?;
+                  external_ptr.try_addr()
+              }
+          }
+      }
+      impl TryFrom<&mut Robj> for &mut MyClassUnexported {
+          type Error = extendr_api::Error;
+          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let external_ptr: &mut ExternalPtr<MyClassUnexported> = robj.try_into()?;
+                  external_ptr.try_addr_mut()
+              }
+          }
+      }
+      impl From<MyClassUnexported> for Robj {
+          fn from(value: MyClassUnexported) -> Self {
+              use extendr_api::ExternalPtr;
+              unsafe {
+                  let mut res: ExternalPtr<MyClassUnexported> = ExternalPtr::new(value);
+                  res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
+                  res.into()
+              }
+          }
       }
       #[automatically_derived]
       impl ::core::default::Default for MyClassUnexported {
@@ -10803,48 +10845,6 @@
                   hidden: false,
               })
       }
-      impl TryFrom<Robj> for &MyClassUnexported {
-          type Error = extendr_api::Error;
-          fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&robj)
-          }
-      }
-      impl TryFrom<Robj> for &mut MyClassUnexported {
-          type Error = extendr_api::Error;
-          fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-              Self::try_from(&mut robj)
-          }
-      }
-      impl TryFrom<&Robj> for &MyClassUnexported {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &ExternalPtr<MyClassUnexported> = robj.try_into()?;
-                  external_ptr.try_addr()
-              }
-          }
-      }
-      impl TryFrom<&mut Robj> for &mut MyClassUnexported {
-          type Error = extendr_api::Error;
-          fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let external_ptr: &mut ExternalPtr<MyClassUnexported> = robj.try_into()?;
-                  external_ptr.try_addr_mut()
-              }
-          }
-      }
-      impl From<MyClassUnexported> for Robj {
-          fn from(value: MyClassUnexported) -> Self {
-              use extendr_api::ExternalPtr;
-              unsafe {
-                  let mut res: ExternalPtr<MyClassUnexported> = ExternalPtr::new(value);
-                  res.set_attrib(class_symbol(), "MyClassUnexported").unwrap();
-                  res.into()
-              }
-          }
-      }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported(impls: &mut Vec<extendr_api::metadata::Impl>) {
           let mut methods = Vec::new();
@@ -10989,34 +10989,48 @@
           meta__MyClass(&mut impls);
           meta____MyClass(&mut impls);
           meta__MyClassUnexported(&mut impls);
-          functions.extend(altrep::get_altrep_metadata().functions);
-          functions.extend(attributes::get_attributes_metadata().functions);
-          functions.extend(dataframe::get_dataframe_metadata().functions);
-          functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
-          functions.extend(optional_either::get_optional_either_metadata().functions);
-          functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
-          functions.extend(optional_faer::get_optional_faer_metadata().functions);
-          functions.extend(raw_identifiers::get_raw_identifiers_metadata().functions);
-          functions.extend(submodule::get_submodule_metadata().functions);
-          functions.extend(tuple_conversions::get_tuple_conversions_metadata().functions);
-          functions.extend(typedsliceargs::get_typedsliceargs_metadata().functions);
-          functions.extend(externalptr::get_externalptr_metadata().functions);
-          functions.extend(matrix::get_matrix_metadata().functions);
-          functions.extend(to_unique_character::get_to_unique_character_metadata().functions);
-          impls.extend(altrep::get_altrep_metadata().impls);
-          impls.extend(attributes::get_attributes_metadata().impls);
-          impls.extend(dataframe::get_dataframe_metadata().impls);
-          impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
-          impls.extend(optional_either::get_optional_either_metadata().impls);
-          impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
-          impls.extend(optional_faer::get_optional_faer_metadata().impls);
-          impls.extend(raw_identifiers::get_raw_identifiers_metadata().impls);
-          impls.extend(submodule::get_submodule_metadata().impls);
-          impls.extend(tuple_conversions::get_tuple_conversions_metadata().impls);
-          impls.extend(typedsliceargs::get_typedsliceargs_metadata().impls);
-          impls.extend(externalptr::get_externalptr_metadata().impls);
-          impls.extend(matrix::get_matrix_metadata().impls);
-          impls.extend(to_unique_character::get_to_unique_character_metadata().impls);
+          let sub_mod_meta = altrep::get_altrep_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = attributes::get_attributes_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = dataframe::get_dataframe_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = memory_leaks::get_memory_leaks_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = optional_either::get_optional_either_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = optional_ndarray::get_optional_ndarray_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = optional_faer::get_optional_faer_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = raw_identifiers::get_raw_identifiers_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = submodule::get_submodule_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = tuple_conversions::get_tuple_conversions_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = typedsliceargs::get_typedsliceargs_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = externalptr::get_externalptr_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = matrix::get_matrix_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
+          let sub_mod_meta = to_unique_character::get_to_unique_character_metadata();
+          functions.extend(sub_mod_meta.functions);
+          impls.extend(sub_mod_meta.impls);
           functions
               .push(extendr_api::metadata::Func {
                   doc: "Metadata access function.",
