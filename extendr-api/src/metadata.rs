@@ -32,6 +32,7 @@ pub struct Impl {
     pub doc: &'static str,
     pub name: &'static str,
     pub methods: Vec<Func>,
+    pub methods_only: bool,
 }
 
 /// Module metadata.
@@ -307,8 +308,10 @@ fn write_impl_wrapper(
 
     let imp_name_fixed = sanitize_identifier(imp.name);
 
-    // Using fixed name because it is exposed to R
-    writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
+    if !imp.methods_only {
+        // Using fixed name because it is exposed to R
+        writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
+    }
 
     for func in &imp.methods {
         // write_doc(& mut w, func.doc)?;
@@ -321,19 +324,21 @@ fn write_impl_wrapper(
         writeln!(w, "#' @usage NULL")?;
     }
 
-    // This is needed no matter whether the user added `@export` or
-    // not; even if we don't export the class itself and its
-    // initializers, we always export the `$` method so the method is
-    // correctly added to the NAMESPACE.
-    writeln!(w, "#' @export")?;
+    if !imp.methods_only {
+        // This is needed no matter whether the user added `@export` or
+        // not; even if we don't export the class itself and its
+        // initializers, we always export the `$` method so the method is
+        // correctly added to the NAMESPACE.
+        writeln!(w, "#' @export")?;
 
-    // LHS with dollar operator is wrapped in ``, so pass name as is,
-    // but in the body `imp_name_fixed` is called as valid R function,
-    // so we pass preprocessed value
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
+        // LHS with dollar operator is wrapped in ``, so pass name as is,
+        // but in the body `imp_name_fixed` is called as valid R function,
+        // so we pass preprocessed value
+        writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
 
-    writeln!(w, "#' @export")?;
-    writeln!(w, "`[[.{}` <- `$.{}`\n", imp.name, imp.name)?;
+        writeln!(w, "#' @export")?;
+        writeln!(w, "`[[.{}` <- `$.{}`\n", imp.name, imp.name)?;
+    }
 
     Ok(())
 }
