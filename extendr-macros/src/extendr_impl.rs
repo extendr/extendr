@@ -58,7 +58,7 @@ use crate::wrappers;
 ///         // return self
 ///         self
 ///     }
-///     
+///
 ///     // Convert the struct into a data.frame
 ///     fn into_df(&self) -> Robj {
 ///         let df = self.0.clone().into_dataframe();
@@ -218,38 +218,60 @@ pub(crate) fn extendr_impl(
         }
     };
 
-    let expanded = TokenStream::from(quote! {
-        // The impl itself copied from the source.
-        #item_impl
+    let expanded = if opts.impl_only {
+        TokenStream::from(quote! {
+            // The impl itself copied from the source.
+            #item_impl
 
-        // Function wrappers
-        #( #wrappers )*
+            // Function wrappers
+            #( #wrappers )*
 
-        #conversion_impls
 
-        // Output conversion function for this type.
-        impl From<#self_ty> for Robj {
-            fn from(value: #self_ty) -> Self {
-                use extendr_api::ExternalPtr;
-                unsafe {
-                    let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.into()
+            #[allow(non_snake_case)]
+            fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
+                let mut methods = Vec::new();
+                #( #method_meta_names(&mut methods); )*
+                impls.push(extendr_api::metadata::Impl {
+                    doc: #doc_string,
+                    name: #self_ty_name,
+                    methods,
+                });
+            }
+        })
+    } else {
+        TokenStream::from(quote! {
+            // The impl itself copied from the source.
+            #item_impl
+
+            // Function wrappers
+            #( #wrappers )*
+
+            #conversion_impls
+
+            // Output conversion function for this type.
+            impl From<#self_ty> for Robj {
+                fn from(value: #self_ty) -> Self {
+                    use extendr_api::ExternalPtr;
+                    unsafe {
+                        let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
+                        res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                        res.into()
+                    }
                 }
             }
-        }
 
-        #[allow(non_snake_case)]
-        fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
-            let mut methods = Vec::new();
-            #( #method_meta_names(&mut methods); )*
-            impls.push(extendr_api::metadata::Impl {
-                doc: #doc_string,
-                name: #self_ty_name,
-                methods,
-            });
-        }
-    });
+            #[allow(non_snake_case)]
+            fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
+                let mut methods = Vec::new();
+                #( #method_meta_names(&mut methods); )*
+                impls.push(extendr_api::metadata::Impl {
+                    doc: #doc_string,
+                    name: #self_ty_name,
+                    methods,
+                });
+            }
+        })
+    };
 
     //eprintln!("{}", expanded);
     Ok(expanded)
