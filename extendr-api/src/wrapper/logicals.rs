@@ -22,7 +22,7 @@ pub struct Logicals {
 }
 
 use SEXPTYPE::LGLSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Logicals, // Implements for
     scalar_type: Rbool,    // Element type
     primitive_type: i32,   // Raw element type
@@ -30,6 +30,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: LGLSXP,          // `SEXP`
     doc_name: logical,     // Singular type name used in docs
     altrep_constructor: make_altlogical_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Logicals,
+    collect_from_type: bool,
+    underlying_type: Rbool,
+    SEXP: LGLSXP,
+    assignment: |dest: &mut Rbool, val : bool| *dest = val.into()
 );
 
 impl Logicals {
@@ -88,35 +96,6 @@ impl TryFrom<Vec<bool>> for Logicals {
 
     fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
         Ok(Self { robj: value.into() })
-    }
-}
-
-impl FromIterator<bool> for Logicals {
-    fn from_iter<T: IntoIterator<Item = bool>>(iter: T) -> Self {
-        let values: Vec<bool> = iter.into_iter().collect();
-
-        let mut robj = Robj::alloc_vector(LGLSXP, values.len());
-        let dest: &mut [Rbool] = robj.as_typed_slice_mut().unwrap();
-
-        for (d, v) in dest.iter_mut().zip(values) {
-            *d = v.into();
-        }
-
-        Logicals { robj }
-    }
-}
-
-impl<'a> FromIterator<&'a bool> for Logicals {
-    fn from_iter<T: IntoIterator<Item = &'a bool>>(iter: T) -> Self {
-        let values: Vec<&'a bool> = iter.into_iter().collect();
-        let mut robj = Robj::alloc_vector(LGLSXP, values.len());
-        let dest: &mut [Rbool] = robj.as_typed_slice_mut().unwrap();
-
-        for (d, v) in dest.iter_mut().zip(values) {
-            *d = (*v).into();
-        }
-
-        Logicals { robj }
     }
 }
 

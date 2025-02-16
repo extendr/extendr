@@ -21,7 +21,7 @@ pub struct Doubles {
 }
 
 use libR_sys::SEXPTYPE::REALSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Doubles,
     scalar_type: Rfloat,
     primitive_type: f64,
@@ -29,6 +29,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: REALSXP,
     doc_name: double,
     altrep_constructor: make_altreal_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Doubles,
+    collect_from_type: f64,
+    underlying_type: f64,
+    SEXP: REALSXP,
+    assignment: |dest: &mut f64, val: f64| *dest = val
 );
 
 impl Doubles {
