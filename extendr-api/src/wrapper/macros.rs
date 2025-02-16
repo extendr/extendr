@@ -153,8 +153,6 @@ macro_rules! gen_vector_wrapper_impl {
             /// A more generalised iterator collector for small vectors.
             /// Generates a non-ALTREP vector.
             fn from_iter<T: IntoIterator<Item = $primitive_type>>(iter: T) -> Self {
-                // Collect into a vector first.
-                // TODO: specialise for ExactSizeIterator.
                 let values: Vec<$primitive_type> = iter.into_iter().collect();
 
                 let mut robj = Robj::alloc_vector($sexp, values.len());
@@ -162,6 +160,23 @@ macro_rules! gen_vector_wrapper_impl {
 
                 for (d, v) in dest.iter_mut().zip(values) {
                     *d = v;
+                }
+
+                $type { robj }
+            }
+        }
+        
+         impl<'a> FromIterator<&'a $primitive_type> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = &'a $primitive_type>>(iter: T) -> Self {
+                let values: Vec<&'a $primitive_type> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let dest: &mut [$primitive_type] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    *d = *v;
                 }
 
                 $type { robj }

@@ -108,7 +108,7 @@ mod tests {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Integers = (0..3).map(|i| i.into()).collect();
+            let vec : Integers = (0..3).collect();
             assert_eq!(vec, Integers::from_values([0, 1, 2]));
         }
     }

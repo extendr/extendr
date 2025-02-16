@@ -91,6 +91,36 @@ impl TryFrom<Vec<bool>> for Logicals {
     }
 }
 
+impl FromIterator<bool> for Logicals {
+    fn from_iter<T: IntoIterator<Item=bool>>(iter: T) -> Self {
+        let values: Vec<bool> = iter.into_iter().collect();
+
+        let mut robj = Robj::alloc_vector(LGLSXP, values.len());
+        let dest: &mut [Rbool] = robj.as_typed_slice_mut().unwrap();
+
+        for (d, v) in dest.iter_mut().zip(values) {
+            *d = v.into();
+        }
+
+        Logicals { robj }
+    }
+}
+
+impl<'a> FromIterator<&'a bool> for Logicals {
+    fn from_iter<T: IntoIterator<Item=&'a bool>>(iter: T) -> Self {
+        let values: Vec<&'a bool> = iter.into_iter().collect();
+        let mut robj = Robj::alloc_vector(LGLSXP, values.len());
+        let dest: &mut [Rbool] = robj.as_typed_slice_mut().unwrap();
+
+        for (d, v) in dest.iter_mut().zip(values) {
+            *d = (*v).into();
+        }
+
+        Logicals { robj }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use crate as extendr_api;
@@ -103,8 +133,18 @@ mod tests {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Logicals = (0..3).map(|i| (i % 2 == 0).into()).collect();
+            let vec : Logicals = (0..3).map(|i| i % 2 == 0).collect();
             assert_eq!(vec, Logicals::from_values([true, false, true]));
+        }
+    }
+
+    #[test]
+    fn from_iterator_ref() {
+        test! {
+            let src = vec![true, false, true];
+            let iter = src.iter();
+            let vec : Logicals = iter.collect();
+            assert_eq!(vec, Logicals::from_values(src));
         }
     }
 
