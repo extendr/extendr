@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| i.into()).collect::<Integers>();
+///     let mut vec = (0..5).collect::<Integers>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10);
 ///     assert_eq!(vec.elt(0), 10);
 ///     let sum = vec.iter().sum::<Rint>();

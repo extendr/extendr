@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
+///     let mut vec = (0..5).map(|i| c64::from(i as f64)).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
 /// ```  

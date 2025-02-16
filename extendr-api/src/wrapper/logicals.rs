@@ -9,7 +9,7 @@ use std::iter::FromIterator;
 /// use extendr_api::prelude::*;
 /// test! {
 ///     // Collect builds a Logicals from an iterator
-///     let mut vec = (0..5).map(|i| (i % 2 == 0).into()).collect::<Logicals>();
+///     let mut vec = (0..5).map(|i| (i % 2 == 0)).collect::<Logicals>();
 ///     // elt accesses a single element (altrep aware).
 ///     assert_eq!(vec.elt(0), true);
 ///     // Logicals behaves like &[Rbool]
