@@ -10,6 +10,8 @@
 - Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 - Added conversions of `[T;N]` where `T` is `Rint`, `Rfloat`, `Rbool`, `Rcplx`, `u8`,
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
+- `FromIterator<T>` and `FromIterator<&T>` for vector wrapper where `T` represents a matching underlying type (`bool`,
+  `i32`, `f64`, `c64`) [[#879]](https://github.com/extendr/extendr/pull/879)
 
 ### Changed
 
