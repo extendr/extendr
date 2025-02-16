@@ -92,7 +92,7 @@ impl TryFrom<Vec<bool>> for Logicals {
 }
 
 impl FromIterator<bool> for Logicals {
-    fn from_iter<T: IntoIterator<Item=bool>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = bool>>(iter: T) -> Self {
         let values: Vec<bool> = iter.into_iter().collect();
 
         let mut robj = Robj::alloc_vector(LGLSXP, values.len());
@@ -107,7 +107,7 @@ impl FromIterator<bool> for Logicals {
 }
 
 impl<'a> FromIterator<&'a bool> for Logicals {
-    fn from_iter<T: IntoIterator<Item=&'a bool>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = &'a bool>>(iter: T) -> Self {
         let values: Vec<&'a bool> = iter.into_iter().collect();
         let mut robj = Robj::alloc_vector(LGLSXP, values.len());
         let dest: &mut [Rbool] = robj.as_typed_slice_mut().unwrap();
@@ -119,7 +119,6 @@ impl<'a> FromIterator<&'a bool> for Logicals {
         Logicals { robj }
     }
 }
-
 
 #[cfg(test)]
 mod tests {

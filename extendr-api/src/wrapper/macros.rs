@@ -148,7 +148,7 @@ macro_rules! gen_vector_wrapper_impl {
                 $type { robj }
             }
         }
-        
+
          impl FromIterator<$primitive_type> for $type {
             /// A more generalised iterator collector for small vectors.
             /// Generates a non-ALTREP vector.
@@ -165,7 +165,7 @@ macro_rules! gen_vector_wrapper_impl {
                 $type { robj }
             }
         }
-        
+
          impl<'a> FromIterator<&'a $primitive_type> for $type {
             /// A more generalised iterator collector for small vectors.
             /// Generates a non-ALTREP vector.
