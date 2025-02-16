@@ -245,7 +245,7 @@ fn test_rstr() {
 #[test]
 fn test_doubles_from_iterator() {
     test! {
-        let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
+        let vec : Doubles = (0..3).map(|x| x as f64).collect();
         assert_eq!(vec, Doubles::from_values([0.0, 1.0, 2.0]));
     }
 }
@@ -306,7 +306,7 @@ mod num_complex {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Complexes = (0..3).map(|i| (i as f64).into()).collect();
+            let vec : Complexes = (0..3).map(|i| c64::from(i as f64)).collect();
             assert_eq!(vec, Complexes::from_values([0.0, 1.0, 2.0]));
         }
     }
