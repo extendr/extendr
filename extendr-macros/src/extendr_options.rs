@@ -5,6 +5,7 @@ pub(crate) struct ExtendrOptions {
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
     pub use_rng: bool,
+    pub impl_only: bool,
 }
 
 impl ExtendrOptions {
@@ -14,6 +15,7 @@ impl ExtendrOptions {
     ///
     /// - `r_name = "name"` which specifies the name of the wrapper on the R-side.
     /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
+    /// - `impl_only = bool` create wrappers for impl functions only
     ///
     pub fn parse(&mut self, meta: ParseNestedMeta) -> syn::parse::Result<()> {
         let value = meta.value()?;
@@ -45,6 +47,14 @@ impl ExtendrOptions {
                     Ok(())
                 } else {
                     Err(value.error("`use_rng` must be `true` or `false`"))
+                }
+            }
+            "impl_only" => {
+                if let Ok(LitBool { value, .. }) = value.parse() {
+                    self.impl_only = value;
+                    Ok(())
+                } else {
+                    Err(value.error("`impl_only` must be `true` or `false`"))
                 }
             }
             _ => Err(syn::Error::new_spanned(meta.path, "Unexpected key")),
