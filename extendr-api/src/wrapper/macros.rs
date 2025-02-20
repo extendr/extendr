@@ -151,4 +151,53 @@ macro_rules! gen_vector_wrapper_impl {
     }
 }
 
+macro_rules! gen_from_iterator_impl {
+    (
+        vector_type: $type : ident,
+        collect_from_type: $collect_from_type : ty,
+        underlying_type: $underlying_type : ty,
+        SEXP: $sexp : ident,
+        assignment: $assignment : expr
+    ) => {
+        impl FromIterator<$collect_from_type> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = $collect_from_type>>(iter: T) -> Self {
+                // Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                let values: Vec<$collect_from_type> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    $assignment(d, v)
+                }
+
+                $type { robj }
+            }
+        }
+
+        impl<'a> FromIterator<&'a $collect_from_type> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = &'a $collect_from_type>>(iter: T) -> Self {
+                // Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                let values: Vec<&'a $collect_from_type> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    $assignment(d, *v)
+                }
+
+                $type { robj }
+            }
+        }
+    };
+}
+
+pub(in crate::wrapper) use gen_from_iterator_impl;
 pub(in crate::wrapper) use gen_vector_wrapper_impl;

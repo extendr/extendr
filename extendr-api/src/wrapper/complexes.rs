@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
+///     let mut vec = (0..5).map(|i| c64::from(i as f64)).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
 /// ```  
@@ -18,7 +18,7 @@ pub struct Complexes {
 }
 
 use libR_sys::SEXPTYPE::CPLXSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Complexes,
     scalar_type: Rcplx,
     primitive_type: c64,
@@ -26,6 +26,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: CPLXSXP,
     doc_name: complex,
     altrep_constructor: make_altcomplex_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Complexes,
+    collect_from_type: c64,
+    underlying_type: Rcplx,
+    SEXP: CPLXSXP,
+    assignment: |dest: &mut Rcplx, val: c64| *dest = val.into()
 );
 
 impl Complexes {

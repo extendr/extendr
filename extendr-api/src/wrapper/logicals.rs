@@ -9,7 +9,7 @@ use std::iter::FromIterator;
 /// use extendr_api::prelude::*;
 /// test! {
 ///     // Collect builds a Logicals from an iterator
-///     let mut vec = (0..5).map(|i| (i % 2 == 0).into()).collect::<Logicals>();
+///     let mut vec = (0..5).map(|i| (i % 2 == 0)).collect::<Logicals>();
 ///     // elt accesses a single element (altrep aware).
 ///     assert_eq!(vec.elt(0), true);
 ///     // Logicals behaves like &[Rbool]
@@ -22,7 +22,7 @@ pub struct Logicals {
 }
 
 use SEXPTYPE::LGLSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Logicals, // Implements for
     scalar_type: Rbool,    // Element type
     primitive_type: i32,   // Raw element type
@@ -30,6 +30,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: LGLSXP,          // `SEXP`
     doc_name: logical,     // Singular type name used in docs
     altrep_constructor: make_altlogical_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Logicals,
+    collect_from_type: bool,
+    underlying_type: Rbool,
+    SEXP: LGLSXP,
+    assignment: |dest: &mut Rbool, val : bool| *dest = val.into()
 );
 
 impl Logicals {
@@ -103,8 +111,18 @@ mod tests {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Logicals = (0..3).map(|i| (i % 2 == 0).into()).collect();
+            let vec : Logicals = (0..3).map(|i| i % 2 == 0).collect();
             assert_eq!(vec, Logicals::from_values([true, false, true]));
+        }
+    }
+
+    #[test]
+    fn from_iterator_ref() {
+        test! {
+            let src = vec![true, false, true];
+            let iter = src.iter();
+            let vec : Logicals = iter.collect();
+            assert_eq!(vec, Logicals::from_values(src));
         }
     }
 

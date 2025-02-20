@@ -8,7 +8,7 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| i.into()).collect::<Integers>();
+///     let mut vec = (0..5).collect::<Integers>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10);
 ///     assert_eq!(vec.elt(0), 10);
 ///     let sum = vec.iter().sum::<Rint>();
@@ -21,7 +21,7 @@ pub struct Integers {
 }
 
 use libR_sys::SEXPTYPE::INTSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Integers, // Implements for
     scalar_type: Rint,     // Element type
     primitive_type: i32,   // Raw element type
@@ -29,6 +29,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: INTSXP,          // `SEXP`
     doc_name: integer,     // Singular type name used in docs
     altrep_constructor: make_altinteger_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Integers,
+    collect_from_type: i32,
+    underlying_type: i32,
+    SEXP: INTSXP,
+    assignment: |dest: &mut i32, val: i32| *dest = val
 );
 
 impl Integers {
@@ -108,7 +116,7 @@ mod tests {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Integers = (0..3).map(|i| i.into()).collect();
+            let vec : Integers = (0..3).collect();
             assert_eq!(vec, Integers::from_values([0, 1, 2]));
         }
     }
