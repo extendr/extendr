@@ -108,11 +108,26 @@ fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
     x.into_iter().sum()
 }
 
+mod submod {
+    use super::*;
+
+    #[extendr]
+    impl Wrapper {
+        pub fn a_10(&self) -> i32 {
+            self.a + 10
+        }
+    }
+    extendr_module! {
+      mod submod;
+      impl Wrapper;
+    }
+}
+
 // Macro to generate exports
 extendr_module! {
     mod externalptr;
     impl Wrapper;
-
+    use submod;
     fn create_numeric_externalptr;
     fn sum_integer_externalptr;
 }
