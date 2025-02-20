@@ -21,7 +21,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn fred;    
+//!    fn fred;
 //! }
 //!
 //! ```
@@ -41,26 +41,26 @@
 //!     // An R object with a single string "hello"
 //!     let character = r!("hello");
 //!     let character = r!(["hello", "goodbye"]);
-//!    
+//!
 //!     // An R integer object with a single number 1L.
 //!     // Note that in Rust, 1 is an integer and 1.0 is a real.
 //!     let integer = r!(1);
-//!    
+//!
 //!     // An R real object with a single number 1.
 //!     // Note that in R, 1 is a real and 1L is an integer.
 //!     let real = r!(1.0);
-//!    
+//!
 //!     // An R real vector.
 //!     let real_vector = r!([1.0, 2.0]);
 //!     let real_vector = &[1.0, 2.0].iter().collect_robj();
 //!     let real_vector = r!(vec![1.0, 2.0]);
-//!    
+//!
 //!     // An R function object.
 //!     let function = R!("function(x, y) { x + y }")?;
-//!    
+//!
 //!     // A named list using the list! macro.
 //!     let list = list!(a = 1, b = 2);
-//!    
+//!
 //!     // An unnamed list (of R objects) using the List wrapper.
 //!     let list = r!(List::from_values(vec![1, 2, 3]));
 //!     let list = r!(List::from_values(vec!["a", "b", "c"]));
@@ -82,11 +82,11 @@
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
 //!     assert_eq!(res, R!("1:100")?);
-//!    
+//!
 //!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
 //!     let res = r!(0 .. 100);
 //!     assert_eq!(res.len(), 100);
-//!    
+//!
 //!     // Using map is a super fast way to generate vectors.
 //!     let iter = (0..3).map(|i| format!("fred{}", i));
 //!     let character = iter.collect_robj();
@@ -115,13 +115,13 @@
 //! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0, 3.0]);
-//!    
+//!
 //!     // one-based indexing [[i]], returns an object.
 //!     assert_eq!(vals.index(1)?, r!(1.0));
-//!    
+//!
 //!     // one-based slicing [x], returns an object.
 //!     assert_eq!(vals.slice(1..=2)?, r!([1.0, 2.0]));
-//!    
+//!
 //!     // $ operator, returns an object
 //!     let list = list!(a = 1.0, b = "xyz");
 //!     assert_eq!(list.dollar("a")?, r!(1.0));
@@ -191,7 +191,7 @@
 //! test! {
 //!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
-//!    
+//!
 //!     // Here slice is a "borrowed" reference to the bytes in robj.
 //!     // and cannot live longer than robj.
 //!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
@@ -215,7 +215,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn things;    
+//!    fn things;
 //! }
 //!
 //!
@@ -253,7 +253,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn oups;    
+//!    fn oups;
 //! }
 //!
 //! ```
@@ -279,7 +279,7 @@
 //!
 //! # handling example for result_condition
 //! oups_handled <- function(a) {
-//!   val_or_err <- oups(1)  
+//!   val_or_err <- oups(1)
 //!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
@@ -760,6 +760,7 @@ mod tests {
         x
     }
 
+    #[extendr]
     struct Person {
         pub name: String,
     }

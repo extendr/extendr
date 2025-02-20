@@ -244,6 +244,7 @@ fn test_altlist() {
     use extendr_api::AltListImpl;
     with_r(|| {
         #[derive(Debug, Clone)]
+        #[extendr]
         pub struct VecUsize(pub Vec<Option<usize>>);
 
         // need to make the VecUsize object `.into_robj()`-able
