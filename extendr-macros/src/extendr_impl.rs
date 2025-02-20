@@ -1,9 +1,16 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
+use std::collections::HashMap;
+use std::sync::Mutex;
+use lazy_static::lazy_static;
 
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
+
+lazy_static! {
+  static ref CONVERSION_IMPLS: Mutex<HashMap<String, bool>> = Mutex::new(HashMap::new());
+}
 
 /// Make inherent implementations available to R
 ///
@@ -91,59 +98,59 @@ use crate::wrappers;
 /// }
 /// ```
 pub(crate) fn extendr_impl(
-    mut item_impl: ItemImpl,
-    opts: &ExtendrOptions,
+  mut item_impl: ItemImpl,
+  opts: &ExtendrOptions,
 ) -> syn::Result<TokenStream> {
     // Only `impl name { }` allowed
-    if item_impl.defaultness.is_some() {
-        return Err(syn::Error::new_spanned(
-            item_impl,
-            "default not allowed in #[extendr] impl",
-        ));
-    }
+  if item_impl.defaultness.is_some() {
+      return Err(syn::Error::new_spanned(
+          item_impl,
+          "default not allowed in #[extendr] impl",
+      ));
+  }
 
-    if item_impl.unsafety.is_some() {
-        return Err(syn::Error::new_spanned(
-            item_impl,
-            "unsafe not allowed in #[extendr] impl",
-        ));
-    }
+  if item_impl.unsafety.is_some() {
+      return Err(syn::Error::new_spanned(
+          item_impl,
+          "unsafe not allowed in #[extendr] impl",
+      ));
+  }
 
-    if item_impl.generics.const_params().count() != 0 {
-        return Err(syn::Error::new_spanned(
-            item_impl,
-            "const params not allowed in #[extendr] impl",
-        ));
-    }
+  if item_impl.generics.const_params().count() != 0 {
+      return Err(syn::Error::new_spanned(
+          item_impl,
+          "const params not allowed in #[extendr] impl",
+      ));
+  }
 
-    if item_impl.generics.type_params().count() != 0 {
-        return Err(syn::Error::new_spanned(
-            item_impl,
-            "type params not allowed in #[extendr] impl",
-        ));
-    }
+  if item_impl.generics.type_params().count() != 0 {
+      return Err(syn::Error::new_spanned(
+          item_impl,
+          "type params not allowed in #[extendr] impl",
+      ));
+  }
 
     // if item_impl.generics.lifetimes().count() != 0 {
     //     return quote! { compile_error!("lifetime params not allowed in #[extendr] impl"); }.into();
     // }
 
-    if item_impl.generics.where_clause.is_some() {
-        return Err(syn::Error::new_spanned(
-            item_impl,
-            "where clause not allowed in #[extendr] impl",
-        ));
-    }
+  if item_impl.generics.where_clause.is_some() {
+      return Err(syn::Error::new_spanned(
+          item_impl,
+          "where clause not allowed in #[extendr] impl",
+      ));
+  }
 
-    let self_ty = item_impl.self_ty.as_ref();
-    let self_ty_name = wrappers::type_name(self_ty);
-    let prefix = format!("{}__", self_ty_name);
-    let mut method_meta_names = Vec::new();
-    let doc_string = wrappers::get_doc_string(&item_impl.attrs);
+  let self_ty = item_impl.self_ty.as_ref();
+  let self_ty_name = wrappers::type_name(self_ty);
+  let prefix = format!("{}__", self_ty_name);
+  let mut method_meta_names = Vec::new();
+  let doc_string = wrappers::get_doc_string(&item_impl.attrs);
 
-    // Generate wrappers for methods.
+  // Generate wrappers for methods.
     // eg.
     // ```
-    // #[no_mangle]
+// #[no_mangle]
     // #[allow(non_snake_case)]
     // pub extern "C" fn wrap__Person__new() -> extendr_api::SEXP {
     //     unsafe {
@@ -152,107 +159,111 @@ pub(crate) fn extendr_impl(
     //     }
     // }
     // ```
-    let mut wrappers: Vec<ItemFn> = Vec::new();
-    for impl_item in &mut item_impl.items {
-        if let syn::ImplItem::Fn(ref mut method) = impl_item {
-            method_meta_names.push(format_ident!(
-                "{}{}__{}",
-                wrappers::META_PREFIX,
-                self_ty_name,
-                method.sig.ident
-            ));
-            wrappers::make_function_wrappers(
-                opts,
-                &mut wrappers,
-                prefix.as_str(),
-                &method.attrs,
-                &mut method.sig,
-                Some(self_ty),
-            )?;
-        }
-    }
+  let mut wrappers: Vec<ItemFn> = Vec::new();
+  for impl_item in &mut item_impl.items {
+      if let syn::ImplItem::Fn(ref mut method) = impl_item {
+          method_meta_names.push(format_ident!(
+              "{}{}__{}",
+              wrappers::META_PREFIX,
+              self_ty_name,
+              method.sig.ident
+          ));
+          wrappers::make_function_wrappers(
+              opts,
+              &mut wrappers,
+              prefix.as_str(),
+              &method.attrs,
+              &mut method.sig,
+              Some(self_ty),
+          )?;
+      }
+  }
 
-    let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
+  let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
 
-    let conversion_impls = quote! {
-        // Output conversion function for this type.
+  let mut conversion_impls = quote! {};
 
-        impl TryFrom<Robj> for &#self_ty {
-            type Error = extendr_api::Error;
+  {
+      let mut map = CONVERSION_IMPLS.lock().unwrap();
+      if !map.contains_key(&self_ty_name) {
+          conversion_impls = quote! {
+              // Output conversion function for this type.
 
-            fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
+              impl TryFrom<Robj> for &#self_ty {
+                  type Error = extendr_api::Error;
 
-        impl TryFrom<Robj> for &mut #self_ty {
-            type Error = extendr_api::Error;
+                  fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                      Self::try_from(&robj)
+                  }
+              }
 
-            fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-                Self::try_from(&mut robj)
-            }
-        }
+              impl TryFrom<Robj> for &mut #self_ty {
+                  type Error = extendr_api::Error;
 
-        // Output conversion function for this type.
-        impl TryFrom<&Robj> for &#self_ty {
-            type Error = extendr_api::Error;
-            fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
-                use extendr_api::ExternalPtr;
-                unsafe {
-                    let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
-                    external_ptr.try_addr()
-                }
-            }
-        }
+                  fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+                      Self::try_from(&mut robj)
+                  }
+              }
 
-        // Input conversion function for a mutable reference to this type.
-        impl TryFrom<&mut Robj> for &mut #self_ty {
-            type Error = extendr_api::Error;
-            fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
-                use extendr_api::ExternalPtr;
-                unsafe {
-                    let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
-                    external_ptr.try_addr_mut()
-                }
-            }
-        }
-    };
+              // Output conversion function for this type.
+              impl TryFrom<&Robj> for &#self_ty {
+                  type Error = extendr_api::Error;
+                  fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                      use extendr_api::ExternalPtr;
+                      unsafe {
+                          let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
+                          external_ptr.try_addr()
+                      }
+                  }
+              }
 
-    let expanded = TokenStream::from(quote! {
-        // The impl itself copied from the source.
-        #item_impl
+              // Input conversion function for a mutable reference to this type.
+              impl TryFrom<&mut Robj> for &mut #self_ty {
+                  type Error = extendr_api::Error;
+                  fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                      use extendr_api::ExternalPtr;
+                      unsafe {
+                          let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
+                          external_ptr.try_addr_mut()
+                      }
+                  }
+              }
 
-        // Function wrappers
-        #( #wrappers )*
+              // Output conversion function for this type.
+              impl From<#self_ty> for Robj {
+                  fn from(value: #self_ty) -> Self {
+                      use extendr_api::ExternalPtr;
+                      unsafe {
+                          let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
+                          res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                          res.into()
+                      }
+                  }
+              }
+          };
+          map.insert(self_ty_name.clone(), true);
+      }
+  }
 
-        #conversion_impls
+  let expanded = TokenStream::from(quote! {
+      #item_impl
+      #( #wrappers )*
+      #conversion_impls
 
-        // Output conversion function for this type.
-        impl From<#self_ty> for Robj {
-            fn from(value: #self_ty) -> Self {
-                use extendr_api::ExternalPtr;
-                unsafe {
-                    let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
-                    res.into()
-                }
-            }
-        }
-
-        #[allow(non_snake_case)]
-        fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
-            let mut methods = Vec::new();
-            #( #method_meta_names(&mut methods); )*
-            impls.push(extendr_api::metadata::Impl {
-                doc: #doc_string,
-                name: #self_ty_name,
-                methods,
-            });
-        }
-    });
+      #[allow(non_snake_case)]
+      fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
+          let mut methods = Vec::new();
+          #( #method_meta_names(&mut methods); )*
+          impls.push(extendr_api::metadata::Impl {
+              doc: #doc_string,
+              name: #self_ty_name,
+              methods,
+          });
+      }
+  });
 
     //eprintln!("{}", expanded);
-    Ok(expanded)
+  Ok(expanded)
 }
 
 // This structure contains parameters parsed from the #[extendr_module] definition.
