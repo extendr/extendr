@@ -123,6 +123,28 @@ mod submod {
     }
 }
 
+#[extendr]
+enum Animal {
+    Cat,
+    Dog,
+}
+
+#[extendr]
+impl Animal {
+    pub fn new_dog() -> Self {
+        Animal::Dog
+    }
+    pub fn new_cat() -> Self {
+        Animal::Cat
+    }
+    pub fn speak(&self) -> Strings {
+        match self {
+            Animal::Dog => Strings::from("woof"),
+            Animal::Cat => Strings::from("meow"),
+        }
+    }
+}
+
 // Macro to generate exports
 extendr_module! {
     mod externalptr;
@@ -130,4 +152,5 @@ extendr_module! {
     use submod;
     fn create_numeric_externalptr;
     fn sum_integer_externalptr;
+    impl Animal;
 }

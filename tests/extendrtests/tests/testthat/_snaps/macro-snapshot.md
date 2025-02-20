@@ -2945,6 +2945,310 @@
                   unsafe { extendr_api::register_call_methods(info, get_submod_metadata()) };
               }
           }
+          enum Animal {
+              Cat,
+              Dog,
+          }
+          impl TryFrom<Robj> for &Animal {
+              type Error = extendr_api::Error;
+              fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&robj)
+              }
+          }
+          impl TryFrom<Robj> for &mut Animal {
+              type Error = extendr_api::Error;
+              fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
+                  Self::try_from(&mut robj)
+              }
+          }
+          impl TryFrom<&Robj> for &Animal {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &ExternalPtr<Animal> = robj.try_into()?;
+                      external_ptr.try_addr()
+                  }
+              }
+          }
+          impl TryFrom<&mut Robj> for &mut Animal {
+              type Error = extendr_api::Error;
+              fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let external_ptr: &mut ExternalPtr<Animal> = robj.try_into()?;
+                      external_ptr.try_addr_mut()
+                  }
+              }
+          }
+          impl From<Animal> for Robj {
+              fn from(value: Animal) -> Self {
+                  use extendr_api::ExternalPtr;
+                  unsafe {
+                      let mut res: ExternalPtr<Animal> = ExternalPtr::new(value);
+                      res.set_attrib(class_symbol(), "Animal").unwrap();
+                      res.into()
+                  }
+              }
+          }
+          impl Animal {
+              pub fn new_dog() -> Self {
+                  Animal::Dog
+              }
+              pub fn new_cat() -> Self {
+                  Animal::Cat
+              }
+              pub fn speak(&self) -> Strings {
+                  match self {
+                      Animal::Dog => Strings::from("woof"),
+                      Animal::Cat => Strings::from("meow"),
+                  }
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Animal__new_dog() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(<Animal>::new_dog())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "new_dog"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Animal__new_dog(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "new_dog",
+                      r_name: "new_dog",
+                      mod_name: "new_dog",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Animal__new_dog as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Animal__new_cat() -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > { Ok(extendr_api::Robj::from(<Animal>::new_cat())) }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "new_cat"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Animal__new_cat(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = ::alloc::vec::Vec::new();
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "new_cat",
+                      r_name: "new_cat",
+                      mod_name: "new_cat",
+                      args: args,
+                      return_type: "Self",
+                      func_ptr: wrap__Animal__new_cat as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__Animal__speak(
+              _self: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  extendr_api::unwrap_or_throw_error(
+                                          <&Animal>::try_from(&_self_robj),
+                                      )
+                                      .speak(),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "speak"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__Animal__speak(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "self",
+                          arg_type: "Animal",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "speak",
+                      r_name: "speak",
+                      mod_name: "speak",
+                      args: args,
+                      return_type: "Strings",
+                      func_ptr: wrap__Animal__speak as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[allow(non_snake_case)]
+          fn meta__Animal(impls: &mut Vec<extendr_api::metadata::Impl>) {
+              let mut methods = Vec::new();
+              meta__Animal__new_dog(&mut methods);
+              meta__Animal__new_cat(&mut methods);
+              meta__Animal__speak(&mut methods);
+              impls
+                  .push(extendr_api::metadata::Impl {
+                      doc: "",
+                      name: "Animal",
+                      methods,
+                  });
+          }
           #[no_mangle]
           #[allow(non_snake_case)]
           pub fn get_externalptr_metadata() -> extendr_api::metadata::Metadata {
@@ -2953,6 +3257,7 @@
               meta__create_numeric_externalptr(&mut functions);
               meta__sum_integer_externalptr(&mut functions);
               meta__Wrapper(&mut impls);
+              meta__Animal(&mut impls);
               functions.extend(submod::get_submod_metadata().functions);
               impls.extend(submod::get_submod_metadata().impls);
               functions

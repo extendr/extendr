@@ -55,3 +55,11 @@ test_that("submodule impl for Wrapper exists", {
   x$set_a(10)
   expect_identical(x$a_10(), 20L)
 })
+
+test_that("enum wrapper for Animal works", {
+  cat <- Animal$new_cat()
+  expect_identical(cat$speak(), "meow")
+  dog <- Animal$new_dog()
+  expect_identical(dog$speak(), "woof")
+  expect_false(identical(cat, dog))
+})
