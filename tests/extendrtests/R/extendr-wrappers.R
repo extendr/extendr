@@ -293,6 +293,8 @@ Wrapper$max_ref_offset <- function(other, `_offset`) .Call(wrap__Wrapper__max_re
 
 Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
 
+Wrapper$a_10 <- function() .Call(wrap__Wrapper__a_10, self)
+
 #' @rdname Wrapper
 #' @usage NULL
 #' @export
