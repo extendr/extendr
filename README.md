@@ -44,6 +44,7 @@ declaration and the methods in the `impl`.
 ```rust
 use extendr_api::prelude::*;
 
+#[extendr]
 struct Person {
     pub name: String,
 }
