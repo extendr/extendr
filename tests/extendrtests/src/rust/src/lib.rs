@@ -203,6 +203,7 @@ fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
 
 // Class for testing
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClass {
     a: i32,
 }
@@ -251,6 +252,7 @@ impl MyClass {
 
 // Class for testing special names
 #[derive(Default, Debug)]
+#[extendr]
 struct __MyClass {}
 
 // Class for testing special names
@@ -267,6 +269,7 @@ impl __MyClass {
 
 // Class for testing (unexported)
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClassUnexported {
     a: i32,
 }

@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 // Class for testing
 #[derive(Default, Debug, Clone, Copy)]
+#[extendr]
 struct Wrapper {
     a: i32,
 }
