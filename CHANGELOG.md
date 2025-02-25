@@ -22,6 +22,8 @@ return `Option<Strings>` instead of opaque `Robj`.
 
 ### Fixed
 
+- Addresses change in R-Devel which turn [accessing 0 length vectors intto a segfault](https://github.com/wch/r-source/commit/d4dff56ff9d11ef96d67afccf8d9e8790d250664) <https://github.com/extendr/extendr/pull/883>
+
 ### Deprecated
 
 - Removed `from_sexp_ref()` from the public API. `from_sexp_ref()` is an unsafe method and is for internal use only. [#855]](https://github.com/extendr/extendr/pull/855)

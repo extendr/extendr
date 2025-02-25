@@ -777,6 +777,11 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
+                            // if the vector is empty return an empty slice
+                            if self.is_empty() {
+                                return Some(&[])
+                            }
+                            // otherwise get the slice
                             let ptr = $fn(self.get()) as *const $type;
                             Some(std::slice::from_raw_parts(ptr, self.len()))
                         }
@@ -789,8 +794,13 @@ macro_rules! make_typed_slice {
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
+                            if self.is_empty() {
+                                return Some(&mut []);
+                            }
                             let ptr = $fn(self.get_mut()) as *mut $type;
+
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
+
                         }
                     }
                     _ => None
