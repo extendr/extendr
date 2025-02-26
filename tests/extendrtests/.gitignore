@@ -41,5 +41,3 @@ vignettes/*.pdf
 # check dir
 check/
 src/rust/vendor
-src/Makevars
-src/Makevars.win
