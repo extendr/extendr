@@ -11,7 +11,7 @@ Description:
   Provides tests for extendr functionality used from
   within an R package.
 License: MIT + file LICENSE
-SystemRequirements: Rust
+SystemRequirements: Cargo (Rust's package manager), rustc
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
