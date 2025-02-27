@@ -1,4 +1,4 @@
-#[cfg(feature = "ndarray")]
+#[cfg(any(feature = "ndarray_0_15", feature = "ndarray_0_16"))]
 mod ndarray_try_from_tests {
     use extendr_api::prelude::*;
 

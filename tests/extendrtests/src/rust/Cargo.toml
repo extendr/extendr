@@ -25,7 +25,7 @@ ndarray = []
 [dependencies]
 extendr-api = { version = "*", features = [
     "graphics",
-    "ndarray",
+    "ndarray_0_16",
     "faer",
     "either",
 ] }

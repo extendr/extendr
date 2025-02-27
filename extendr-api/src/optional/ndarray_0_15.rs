@@ -4,7 +4,7 @@ Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarra
 To enable these conversions, you must first enable the `ndarray` feature for extendr:
 ```toml
 [dependencies]
-extendr-api = { version = "0.4", features = ["ndarray"] }
+extendr-api = { version = "0.4", features = ["ndarray_0_16"] }
 ```
 
 Specifically, extendr supports the following conversions:
@@ -55,8 +55,8 @@ fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {
 For all array uses in Rust, refer to the [`ndarray::ArrayBase`] documentation, which explains the usage for all of the above types.
 */
 #[doc(hidden)]
-use ndarray::prelude::*;
-use ndarray::{Data, ShapeBuilder};
+use ndarray_0_15::prelude::*;
+use ndarray_0_15::{Data, ShapeBuilder};
 
 use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
 use crate::*;
@@ -195,7 +195,7 @@ where
 mod test {
     use super::*;
     use crate as extendr_api;
-    use ndarray::array;
+    use ndarray_0_15::array;
     use rstest::rstest;
 
     #[rstest]
@@ -236,10 +236,10 @@ mod test {
     ) where
         DataType: Data,
         Error: std::fmt::Debug,
-        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>:
+        for<'a> ArrayView<'a, <DataType as ndarray_0_15::RawData>::Elem, DimType>:
             TryFrom<&'a Robj, Error = Error>,
         DimType: Dimension,
-        <DataType as ndarray::RawData>::Elem: PartialEq + std::fmt::Debug,
+        <DataType as ndarray_0_15::RawData>::Elem: PartialEq + std::fmt::Debug,
         Error: std::fmt::Debug,
     {
         // Tests for the R → Rust conversion

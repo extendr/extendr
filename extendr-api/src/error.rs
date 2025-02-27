@@ -84,8 +84,11 @@ pub enum Error {
     ExpectedExternalPtrReference,
     Other(String),
 
-    #[cfg(feature = "ndarray")]
-    NDArrayShapeError(ndarray::ShapeError),
+    #[cfg(feature = "ndarray_0_15")]
+    NDArrayShapeError(ndarray_0_15::ShapeError),
+
+    #[cfg(feature = "ndarray_0_16")]
+    NDArrayShapeError(ndarray_0_16::ShapeError),
 
     #[cfg(feature = "either")]
     EitherError(Box<Error>, Box<Error>),
@@ -184,7 +187,7 @@ impl std::fmt::Display for Error {
                 )
             }
 
-            #[cfg(feature = "ndarray")]
+            #[cfg(any(feature = "ndarray_0_15", feature = "ndarray_0_16"))]
             Error::NDArrayShapeError(shape_error) => {
                 write!(f, "NDArray failed with error: {}.", shape_error)
             }
