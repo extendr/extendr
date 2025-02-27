@@ -72,10 +72,10 @@ pub use super::scalar::*;
 pub use super::Nullable::*;
 
 #[cfg(feature = "ndarray")]
-pub use ::ndarray::*;
+pub use ::ndarray;
 
 #[cfg(feature = "either")]
 pub use ::either::*;
 
 #[cfg(feature = "faer")]
-pub use ::faer::*;
+pub use ::faer;
