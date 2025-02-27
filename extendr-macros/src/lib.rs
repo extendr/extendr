@@ -58,6 +58,7 @@
 mod R;
 mod call;
 mod dataframe;
+mod extendr_conversion;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -91,6 +92,8 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
+        Item::Struct(str) => extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts),
+        Item::Enum(enm) => extendr_conversion::extendr_type_conversion(Item::Enum(enm), &opts),
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
         Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
             Ok(result) => result,

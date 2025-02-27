@@ -299,6 +299,8 @@ Wrapper$max_ref_offset <- function(other, `_offset`) .Call(wrap__Wrapper__max_re
 
 Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
 
+Wrapper$a_10 <- function() .Call(wrap__Wrapper__a_10, self)
+
 #' @rdname Wrapper
 #' @usage NULL
 #' @export
@@ -306,6 +308,20 @@ Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
 
 #' @export
 `[[.Wrapper` <- `$.Wrapper`
+
+Animal <- new.env(parent = emptyenv())
+
+Animal$new_dog <- function() .Call(wrap__Animal__new_dog)
+
+Animal$new_cat <- function() .Call(wrap__Animal__new_cat)
+
+Animal$speak <- function() .Call(wrap__Animal__speak, self)
+
+#' @export
+`$.Animal` <- function (self, name) { func <- Animal[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Animal` <- `$.Animal`
 
 
 # nolint end

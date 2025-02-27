@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 // struct contains an inner vector of Option<usize>
 #[derive(Debug, Clone)]
+#[extendr]
 pub struct VecUsize(pub Vec<Option<usize>>);
 
 impl AltrepImpl for VecUsize {

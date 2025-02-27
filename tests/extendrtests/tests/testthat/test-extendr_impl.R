@@ -1,4 +1,4 @@
-test_that("return self reference",  {
+test_that("return self reference", {
   x <- Wrapper$new()
   x$set_a(10)
 
@@ -48,4 +48,18 @@ test_that("return the right reference with other parameters present", {
   max_class <- x$max_ref2(y)
   expect_identical(max_class, y)
   expect_false(isTRUE(identical(x, max_class)))
+})
+
+test_that("submodule impl for Wrapper exists", {
+  x <- Wrapper$new()
+  x$set_a(10)
+  expect_identical(x$a_10(), 20L)
+})
+
+test_that("enum wrapper for Animal works", {
+  cat <- Animal$new_cat()
+  expect_identical(cat$speak(), "meow")
+  dog <- Animal$new_dog()
+  expect_identical(dog$speak(), "woof")
+  expect_false(identical(cat, dog))
 })

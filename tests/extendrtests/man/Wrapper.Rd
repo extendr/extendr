@@ -6,7 +6,7 @@
 \alias{$.Wrapper}
 \title{Class for testing (exported)}
 \format{
-An object of class \code{environment} of length 11.
+An object of class \code{environment} of length 12.
 }
 \usage{
 Wrapper

@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 // Class for testing
 #[derive(Default, Debug, Clone, Copy)]
+#[extendr]
 struct Wrapper {
     a: i32,
 }
@@ -107,11 +108,49 @@ fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
     x.into_iter().sum()
 }
 
+mod submod {
+    use super::*;
+
+    #[extendr]
+    impl Wrapper {
+        pub fn a_10(&self) -> i32 {
+            self.a + 10
+        }
+    }
+    extendr_module! {
+      mod submod;
+      impl Wrapper;
+    }
+}
+
+#[extendr]
+enum Animal {
+    Cat,
+    Dog,
+}
+
+#[extendr]
+impl Animal {
+    pub fn new_dog() -> Self {
+        Animal::Dog
+    }
+    pub fn new_cat() -> Self {
+        Animal::Cat
+    }
+    pub fn speak(&self) -> Strings {
+        match self {
+            Animal::Dog => Strings::from("woof"),
+            Animal::Cat => Strings::from("meow"),
+        }
+    }
+}
+
 // Macro to generate exports
 extendr_module! {
     mod externalptr;
     impl Wrapper;
-
+    use submod;
     fn create_numeric_externalptr;
     fn sum_integer_externalptr;
+    impl Animal;
 }
