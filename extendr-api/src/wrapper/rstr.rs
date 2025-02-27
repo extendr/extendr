@@ -1,6 +1,6 @@
 use super::*;
 
-/// Wrapper for creating CHARSXP objects.
+/// Wrapper for creating `CHARSXP` objects.
 /// These are used only as the contents of a character
 /// vector.
 ///
