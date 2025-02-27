@@ -181,6 +181,12 @@ fetch_rownames <- function(x) .Call(wrap__fetch_rownames, x)
 
 change_dimnames <- function(x) .Call(wrap__change_dimnames, x)
 
+matrix_3d_return <- function(x) .Call(wrap__matrix_3d_return, x)
+
+matrix_4d_return <- function(x) .Call(wrap__matrix_4d_return, x)
+
+matrix_5d_return <- function(x) .Call(wrap__matrix_5d_return, x)
+
 to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
