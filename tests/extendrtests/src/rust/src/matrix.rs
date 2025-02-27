@@ -22,10 +22,28 @@ fn change_dimnames(mut x: RMatrix<f64>) -> Robj {
     x.to_owned()
 }
 
+#[extendr]
+fn matrix_3d_return(x: RMatrix3D<f64>) -> RMatrix3D<f64> {
+    x
+}
+
+#[extendr]
+fn matrix_4d_return(x: RMatrix4D<f64>) -> RMatrix4D<f64> {
+    x
+}
+
+#[extendr]
+fn matrix_5d_return(x: RMatrix5D<f64>) -> RMatrix5D<f64> {
+    x
+}
+
 extendr_module! {
     mod matrix;
     fn fetch_dimnames;
     fn fetch_colnames;
     fn fetch_rownames;
     fn change_dimnames;
+    fn matrix_3d_return;
+    fn matrix_4d_return;
+    fn matrix_5d_return;
 }
