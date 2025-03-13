@@ -186,40 +186,6 @@ impl Ownership {
         }
     }
 
-    // Garbage collect the tracking structures.
-    unsafe fn garbage_collect(&mut self) {
-        // println!("garbage_collect {} {}", self.cur_index, self.max_index);
-        let new_size = self.cur_index * 2 + EXTRA_PRESERVATION_SIZE;
-        let new_sexp = Rf_allocVector(VECSXP, new_size as R_xlen_t);
-        R_PreserveObject(new_sexp);
-        let old_sexp = self.preservation as SEXP;
-
-        let mut new_objects = HashMap::with_capacity(new_size);
-
-        // copy non-null elements to new vector and hashmap.
-        let mut j = 0;
-        for (addr, object) in self.objects.iter() {
-            if object.refcount != 0 {
-                SET_VECTOR_ELT(new_sexp, j as R_xlen_t, *addr as SEXP);
-                new_objects.insert(
-                    *addr,
-                    Object {
-                        refcount: object.refcount,
-                        index: j,
-                    },
-                );
-                j += 1;
-            }
-        }
-        // println!("j={}", j);
-
-        R_ReleaseObject(old_sexp);
-        self.preservation = new_sexp as usize;
-        self.cur_index = j;
-        self.max_index = new_size;
-        self.objects = new_objects;
-    }
-
     // Check the consistency of the model.
     #[allow(dead_code)]
     unsafe fn check_objects(&mut self) {
