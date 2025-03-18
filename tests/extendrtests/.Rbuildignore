@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^notebooks$
+^src/\.cargo$
+^src/rust/vendor$
