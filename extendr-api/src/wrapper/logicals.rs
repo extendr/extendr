@@ -15,7 +15,7 @@ use std::iter::FromIterator;
 ///     // Logicals behaves like &[Rbool]
 ///     assert_eq!(vec[1], false);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Logicals {
     pub(crate) robj: Robj,
@@ -75,7 +75,7 @@ impl DerefMut for Logicals {
     /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rbool;
+            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rbool;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

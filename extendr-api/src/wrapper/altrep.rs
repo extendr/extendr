@@ -122,9 +122,9 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
                 R_set_altrep_data2(x, data2);
-                DATAPTR(data2) as *mut u8
+                DATAPTR_RO(data2) as *mut u8
             } else {
-                DATAPTR(data2) as *mut u8
+                DATAPTR_RO(data2) as *mut u8
             }
         })
     }
@@ -137,7 +137,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 std::ptr::null()
             } else {
-                DATAPTR(data2) as *const u8
+                DATAPTR_RO(data2) as *const u8
             }
         }
     }

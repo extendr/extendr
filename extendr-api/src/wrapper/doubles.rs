@@ -14,7 +14,7 @@ use std::iter::FromIterator;
 ///     let sum = vec.iter().sum::<Rfloat>();
 ///     assert_eq!(sum, 60.0);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Doubles {
     pub(crate) robj: Robj,
@@ -84,7 +84,7 @@ impl DerefMut for Doubles {
     /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rfloat;
+            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rfloat;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

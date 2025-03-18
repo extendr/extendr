@@ -178,7 +178,7 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR(self.get_mut()) as *mut T;
+        let data = DATAPTR_RO(self.get_mut()) as *mut T;
         std::slice::from_raw_parts_mut(data, len)
     }
 }

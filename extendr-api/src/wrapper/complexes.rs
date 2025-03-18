@@ -11,7 +11,7 @@ use std::iter::FromIterator;
 ///     let mut vec = (0..5).map(|i| c64::from(i as f64)).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Complexes {
     pub(crate) robj: Robj,
@@ -72,7 +72,7 @@ impl DerefMut for Complexes {
     /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rcplx;
+            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rcplx;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

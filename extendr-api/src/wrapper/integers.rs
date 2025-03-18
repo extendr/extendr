@@ -14,7 +14,7 @@ use std::iter::FromIterator;
 ///     let sum = vec.iter().sum::<Rint>();
 ///     assert_eq!(sum, 60);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,
@@ -84,7 +84,7 @@ impl DerefMut for Integers {
     /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rint;
+            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
