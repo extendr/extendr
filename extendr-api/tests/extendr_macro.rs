@@ -214,6 +214,7 @@ fn test_metadata() {
             rust_name: "test_metadata_1",
             mod_name: "test_metadata_1",
             r_name: "test_metadata_1",
+            c_name: "wrap__test_metadata_1",
             args,
             return_type: "i32",
             func_ptr: wrap__test_metadata_1 as *const u8,
