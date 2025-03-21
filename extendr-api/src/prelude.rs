@@ -71,8 +71,11 @@ pub use super::scalar::*;
 
 pub use super::Nullable::*;
 
-#[cfg(feature = "ndarray")]
-pub use ::ndarray::*;
+#[cfg(feature = "ndarray_0_15")]
+pub use ::ndarray_0_15::*;
+
+#[cfg(feature = "ndarray_0_16")]
+pub use ::ndarray_0_16::*;
 
 #[cfg(feature = "either")]
 pub use ::either::*;
