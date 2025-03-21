@@ -584,6 +584,66 @@ where
     }
 }
 
+impl<T> Index<[usize; 3]> for RArray<T, [usize; 3]>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    type Output = T;
+
+    /// Zero-based indexing in row, column order.
+    ///
+    /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let matrix = RArray::new_matrix3d(3, 2, 2, |r, c, d| (r + c + d) as f64);
+    ///     assert_eq!(matrix[[0, 0, 0]], 0.);
+    ///     assert_eq!(matrix[[1, 0, 1]], 2.);
+    ///     assert_eq!(matrix[[2, 1, 1]], 4.);
+    /// }
+    /// ```
+    fn index(&self, index: [usize; 3]) -> &Self::Output {
+        unsafe {
+            self.data()
+                .as_ptr()
+                .add(self.offset(index))
+                .as_ref()
+                .unwrap()
+        }
+    }
+}
+
+impl<T> IndexMut<[usize; 3]> for RArray<T, [usize; 3]>
+where
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    /// Zero-based mutable indexing in row, column order.
+    ///
+    /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let mut matrix = RMatrix3D::new_matrix3d(3, 2, 2, |_, _, _| 0.);
+    ///    matrix[[0, 0, 0]] = 1.;
+    ///    matrix[[1, 0, 0]] = 2.;
+    ///    matrix[[2, 0, 0]] = 3.;
+    ///    matrix[[0, 1, 0]] = 4.;
+    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+    ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
+    /// }
+    /// ```
+    fn index_mut(&mut self, index: [usize; 3]) -> &mut Self::Output {
+        unsafe {
+            self.data_mut()
+                .as_mut_ptr()
+                .add(self.offset(index))
+                .as_mut()
+                .unwrap()
+        }
+    }
+}
+
+
 impl<T, D> Deref for RArray<T, D> {
     type Target = Robj;
 
