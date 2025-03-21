@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D`.
+- Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added <https://github.com/extendr/extendr/pull/875>
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking <https://github.com/extendr/extendr/pull/853>
 - `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` <https://github.com/extendr/extendr/pull/833>
