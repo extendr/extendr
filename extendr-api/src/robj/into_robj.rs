@@ -586,7 +586,7 @@ pub trait RobjItertools: Iterator {
     fn collect_rarray<const LEN: usize>(
         self,
         dims: [usize; LEN],
-    ) -> Result<RArray<Self::Item, [usize; LEN]>>
+    ) -> Result<RArray<Self::Item, LEN>>
     where
         Self: Iterator,
         Self: Sized,
