@@ -405,9 +405,6 @@ pub use libR_sys::PutRNGstate;
 #[doc(hidden)]
 pub use libR_sys::SEXP;
 
-// #[doc(hidden)]
-// use libR_sys::*;
-
 #[doc(hidden)]
 use std::ffi::CString;
 

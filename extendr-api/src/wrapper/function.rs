@@ -43,11 +43,11 @@ impl Function {
     /// ```
     pub fn from_parts(formals: Pairlist, body: Language, env: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
-            let sexp = Rf_allocSExp(SEXPTYPE::CLOSXP);
+            let sexp = libR_sys::Rf_allocSExp(SEXPTYPE::CLOSXP);
             let robj = Robj::from_sexp(sexp);
-            SET_FORMALS(sexp, formals.get());
-            SET_BODY(sexp, body.get());
-            SET_CLOENV(sexp, env.get());
+            libR_sys::SET_FORMALS(sexp, formals.get());
+            libR_sys::SET_BODY(sexp, body.get());
+            libR_sys::SET_CLOENV(sexp, env.get());
             Ok(Function { robj })
         })
     }

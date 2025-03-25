@@ -87,7 +87,7 @@ impl Environment {
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            SET_ENCLOS(sexp, parent.robj.get());
+            libR_sys::SET_ENCLOS(sexp, parent.robj.get());
         });
         self
     }
@@ -97,7 +97,7 @@ impl Environment {
     pub fn envflags(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            ENVFLAGS(sexp)
+            libR_sys::ENVFLAGS(sexp)
         }
     }
 
@@ -106,7 +106,7 @@ impl Environment {
     pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            SET_ENVFLAGS(sexp, flags);
+            libR_sys::SET_ENVFLAGS(sexp, flags);
         });
         self
     }
@@ -115,8 +115,8 @@ impl Environment {
     /// Iterate over an environment.
     pub fn iter(&self) -> EnvIter {
         unsafe {
-            let hashtab = Robj::from_sexp(HASHTAB(self.get()));
-            let frame = Robj::from_sexp(FRAME(self.get()));
+            let hashtab = Robj::from_sexp(libR_sys::HASHTAB(self.get()));
+            let frame = Robj::from_sexp(libR_sys::FRAME(self.get()));
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),

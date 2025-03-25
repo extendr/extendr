@@ -368,13 +368,13 @@ pub trait Rinternals: Types + Conversions {
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string(&self) -> bool {
-        unsafe { Rf_isValidString(self.get()).into() }
+        unsafe { libR_sys::Rf_isValidString(self.get()).into() }
     }
 
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string_f(&self) -> bool {
-        unsafe { Rf_isValidStringF(self.get()).into() }
+        unsafe { libR_sys::Rf_isValidStringF(self.get()).into() }
     }
 
     /// Return true if this is a vector.
