@@ -6,7 +6,6 @@ fn main() {
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_14)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
     println!("cargo:rustc-check-cfg=cfg(use_r_altlist)");
-    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_45)");
 
     // The R version information is needed to handle the API differences
     // between versions. `These DEP_R_R_VERSION_*` are provided by libR-sys
@@ -42,9 +41,5 @@ fn main() {
 
     if &*major >= "4" && &*minor >= "4" {
         println!("cargo:rustc-cfg=use_objsxp");
-    }
-
-    if &*major >= "4" && &*minor >= "5" {
-        println!("cargo:rustc-cfg=use_r_ge_version_45");
     }
 }
