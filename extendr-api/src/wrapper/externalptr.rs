@@ -18,8 +18,11 @@
 //! two instances of `ExternalPtr<T>` by value, `a.as_ref() == b.as_ref()`.
 //!
 use super::*;
+use libR_sys::{
+    R_ClearExternalPtr, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
+    R_MakeExternalPtr, R_NilValue, R_SetExternalPtrTag,
+};
 use std::{any::Any, fmt::Debug};
-
 /// Wrapper for creating R objects containing any Rust object.
 ///
 /// ```

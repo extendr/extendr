@@ -1,6 +1,6 @@
 //! Provide limited protection for multithreaded access to the R API.
-
 use crate::*;
+use libR_sys::{R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_protect, Rf_unprotect};
 use std::cell::Cell;
 use std::sync::Mutex;
 

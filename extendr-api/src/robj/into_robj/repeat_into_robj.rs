@@ -1,5 +1,5 @@
 use super::*;
-
+use libR_sys::Rcomplex;
 //TODO: It could be an idea to make this a attribute macro for users,
 // if they wish to specialise their own types as representable in R.
 

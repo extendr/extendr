@@ -1,5 +1,6 @@
 use super::scalar::{Rbool, Scalar};
 use super::*;
+use libR_sys::{R_xlen_t, DATAPTR_RO, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's logical vectors.

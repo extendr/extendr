@@ -1,7 +1,10 @@
 use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
-
+use libR_sys::{
+    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
+    COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
+};
 mod repeat_into_robj;
 
 /// Returns an `CHARSXP` based on the provided `&str`.

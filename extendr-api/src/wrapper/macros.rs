@@ -103,12 +103,13 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "}"]
                 #[doc = "```"]
                 pub fn elt(&self, index: usize) -> $scalar_type {
+                    use libR_sys::{R_xlen_t};
                     // Defensive check for oob
                     // This check will not be needed in later releases of R
                     if(index >= self.len()) {
                         <$scalar_type>::na()
                     } else {
-                        unsafe { [<$r_prefix _ELT>](self.get(), index as R_xlen_t).into() }
+                        unsafe { libR_sys::[<$r_prefix _ELT>](self.get(), index as R_xlen_t).into() }
                     }
                 }
             }

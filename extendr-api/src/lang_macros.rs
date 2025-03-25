@@ -4,8 +4,7 @@
 use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
-use libR_sys::*;
-
+use libR_sys::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
 #[macro_export]

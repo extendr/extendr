@@ -3,7 +3,6 @@
 
 use crate::robj::{GetSexp, Rinternals};
 use crate::*;
-use libR_sys::*;
 
 pub mod altrep;
 pub mod complexes;

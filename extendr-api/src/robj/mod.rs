@@ -14,17 +14,19 @@ use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
 use std::os::raw;
 
-use libR_sys::*;
-use SEXPTYPE::*;
+use libR_sys::{
+    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
+    Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
+    SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+};
 
+use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::*;
 pub use into_robj::*;
 pub use iter::*;
 pub use operators::Operators;
 use prelude::{c64, Rcplx};
 pub use rinternals::Rinternals;
-
-use crate::scalar::{Rbool, Rfloat, Rint};
-use crate::*;
 
 mod debug;
 mod into_robj;
@@ -165,7 +167,7 @@ pub trait Slices: GetSexp {
     /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR_RO(self.get()) as *const T;
+        let data = dataptr(self.get()) as *const T;
         std::slice::from_raw_parts(data, len)
     }
 
@@ -178,7 +180,7 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR_RO(self.get_mut()) as *mut T;
+        let data = dataptr(self.get_mut()) as *mut T;
         std::slice::from_raw_parts_mut(data, len)
     }
 }

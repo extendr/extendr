@@ -26,6 +26,7 @@ faer = { version = "0.20", optional = true }
 extendr-engine = { path = "../extendr-engine" }
 rstest = "0.22.0"
 
+
 [features]
 
 # Features to modify behaviour of returning Result<T,E> from extendr to R, instead of unwrap-throw_r_error().
@@ -66,6 +67,7 @@ tests-graphics = ["tests-minimal", "graphics"]
 
 # Literally all features to test
 tests-all = ["tests", "graphics"]
+
 
 [package.metadata.docs.rs]
 features = ["full-functionality"]

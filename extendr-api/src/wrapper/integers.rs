@@ -1,5 +1,8 @@
 use super::scalar::{Rint, Scalar};
 use super::*;
+use libR_sys::{
+    dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
+};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's integer vectors.
@@ -74,7 +77,7 @@ impl Deref for Integers {
     /// Treat Integers as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rint;
+            let ptr = dataptr(self.get()) as *const Rint;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -84,7 +87,7 @@ impl DerefMut for Integers {
     /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rint;
+            let ptr = dataptr(self.get_mut()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

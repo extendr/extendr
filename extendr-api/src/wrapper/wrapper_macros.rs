@@ -1,5 +1,6 @@
 use super::*;
 use crate as extendr_api;
+use libR_sys::{R_xlen_t, SET_VECTOR_ELT};
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
     let name = CString::new(name).unwrap();

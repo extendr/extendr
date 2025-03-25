@@ -314,9 +314,20 @@ pub mod io;
 pub mod iter;
 pub mod lang_macros;
 pub mod metadata;
+pub mod na;
+pub mod optional;
 pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
+pub mod robj;
+pub mod scalar;
+pub mod thread_safety;
+pub mod wrapper;
+
+pub use robj::Robj;
+pub use std::convert::{TryFrom, TryInto};
+pub use std::ops::Deref;
+pub use std::ops::DerefMut;
 
 #[cfg(feature = "serde")]
 pub mod serializer;
@@ -327,22 +338,7 @@ pub mod deserializer;
 #[cfg(feature = "graphics")]
 pub mod graphics;
 
-pub mod robj;
-pub mod scalar;
-pub mod thread_safety;
-pub mod wrapper;
-
-pub mod na;
-
-pub mod optional;
-
 pub(crate) mod conversions;
-
-pub use std::convert::{TryFrom, TryInto};
-pub use std::ops::Deref;
-pub use std::ops::DerefMut;
-
-pub use robj::Robj;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprecated
@@ -361,6 +357,7 @@ pub use wrapper::*;
 
 pub use extendr_macros::*;
 
+use libR_sys::{SEXPTYPE, SEXPTYPE::*};
 use scalar::Rbool;
 
 //////////////////////////////////////////////////
@@ -408,8 +405,8 @@ pub use libR_sys::PutRNGstate;
 #[doc(hidden)]
 pub use libR_sys::SEXP;
 
-#[doc(hidden)]
-use libR_sys::*;
+// #[doc(hidden)]
+// use libR_sys::*;
 
 #[doc(hidden)]
 use std::ffi::CString;
@@ -470,8 +467,8 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     );
 
     // This seems to allow both symbols and strings,
-    libR_sys::R_useDynamicSymbols(info, Rboolean::FALSE);
-    libR_sys::R_forceSymbols(info, Rboolean::FALSE);
+    libR_sys::R_useDynamicSymbols(info, libR_sys::Rboolean::FALSE);
+    libR_sys::R_forceSymbols(info, libR_sys::Rboolean::FALSE);
 }
 
 /// Type of R objects used by [Robj::rtype].
@@ -539,8 +536,8 @@ pub enum Rany<'a> {
 /// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
 pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
+    use libR_sys::SEXPTYPE::*;
     use Rtype::*;
-    use SEXPTYPE::*;
     match rtype {
         Null => NILSXP,
         Symbol => SYMSXP,
@@ -576,7 +573,6 @@ pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
 /// Convert R's SEXPTYPE to extendr's Rtype.
 pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
     use Rtype::*;
-    use SEXPTYPE::*;
     match sxptype {
         NILSXP => Null,
         SYMSXP => Symbol,
@@ -614,7 +610,7 @@ const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
+        libR_sys::Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -622,7 +618,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
+        libR_sys::REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 

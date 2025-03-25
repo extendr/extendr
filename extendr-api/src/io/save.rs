@@ -1,10 +1,12 @@
 //! Wrapper for R output streams.
 
-use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp};
-use libR_sys::*;
-use std::io::Write;
-
 use super::PstreamFormat;
+use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp};
+use libR_sys::{
+    R_NilValue, R_Serialize, R_outpstream_st, R_outpstream_t, R_pstream_data_t, R_pstream_format_t,
+    SEXP,
+};
+use std::io::Write;
 
 /// The hook will convert some objects into strings.
 pub struct WriteHook {

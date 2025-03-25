@@ -1,7 +1,9 @@
+use super::*;
+use libR_sys::{
+    R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
+};
 use std::convert::From;
 use std::iter::FromIterator;
-
-use super::*;
 
 #[derive(PartialEq, Clone)]
 pub struct Strings {

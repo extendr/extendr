@@ -2,6 +2,10 @@
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
 use crate::scalar::Scalar;
+use libR_sys::{
+    Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
+    TYPEOF,
+};
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.
@@ -612,6 +616,7 @@ mod tests {
     use super::*;
     use crate as extendr_api;
     use extendr_engine::with_r;
+    use libR_sys::Rf_PrintValue;
     use prelude::{Rcplx, Rfloat, Rint};
 
     #[test]

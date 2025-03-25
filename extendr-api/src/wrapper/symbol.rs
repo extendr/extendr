@@ -1,5 +1,14 @@
 use super::*;
-
+// NOTE all of these symbol constants should be in their own module
+use libR_sys::{
+    R_BaseSymbol, R_BraceSymbol, R_Bracket2Symbol, R_BracketSymbol, R_ClassSymbol, R_DeviceSymbol,
+    R_DimNamesSymbol, R_DimSymbol, R_DollarSymbol, R_DotsSymbol, R_DoubleColonSymbol,
+    R_LastvalueSymbol, R_LevelsSymbol, R_MissingArg, R_ModeSymbol, R_NaRmSymbol, R_NameSymbol,
+    R_NamesSymbol, R_NamespaceEnvSymbol, R_PackageSymbol, R_PreviousSymbol, R_QuoteSymbol,
+    R_RowNamesSymbol, R_SeedsSymbol, R_SortListSymbol, R_SourceSymbol, R_SpecSymbol,
+    R_TripleColonSymbol, R_TspSymbol, R_UnboundValue, R_dot_Method, R_dot_defined,
+    R_dot_packageName, R_dot_target, PRINTNAME, TYPEOF,
+};
 /// Wrapper for creating symbol objects.
 ///
 /// ```

@@ -17,7 +17,7 @@ pub(crate) struct DocumentMutHandle<'a> {
     shell: &'a Shell,
 }
 
-impl<'a> Drop for DocumentMutHandle<'a> {
+impl Drop for DocumentMutHandle<'_> {
     fn drop(&mut self) {
         let _rust_folder = self.shell.push_dir(RUST_FOLDER_PATH);
         self.shell

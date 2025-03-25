@@ -63,7 +63,7 @@
 //!     let device_driver = MyDevice {
 //!         welcome_message: welcome_message.as_str(),
 //!     };
-//!     
+//!
 //!     let device_descriptor = DeviceDescriptor::new();
 //!     let device = device_driver.create_device::<MyDevice>(device_descriptor, "my device");
 //! }
@@ -77,10 +77,18 @@
 //! ```
 
 use crate::*;
-use libR_sys::*;
 
 // These are used in the callback functions.
-pub use libR_sys::{DevDesc, R_GE_gcontext};
+pub use libR_sys::{
+    cetype_t, pGEDevDesc, pGEcontext, DevDesc, GECap, GECircle, GEExpressionHeight,
+    GEExpressionMetric, GEExpressionWidth, GELine, GEMathText, GEMetricInfo, GEMode, GENewPage,
+    GEPath, GEPolygon, GEPolyline, GERaster, GERect, GESetClip, GEStrHeight, GEStrMetric,
+    GEStrWidth, GESymbol, GEText, GEUnit, GEcurrentDevice, GEdeviceNumber, GEfromDeviceHeight,
+    GEfromDeviceWidth, GEfromDeviceX, GEfromDeviceY, GEgetDevice, GEtoDeviceHeight,
+    GEtoDeviceWidth, GEtoDeviceX, GEtoDeviceY, R_GE_gcontext, R_GE_lineend, R_GE_linejoin,
+    R_NilValue, Rf_NoDevices, Rf_NumDevices, LTY_BLANK, LTY_DASHED, LTY_DOTDASH, LTY_DOTTED,
+    LTY_LONGDASH, LTY_SOLID, LTY_TWODASH,
+};
 
 pub mod color;
 pub mod device_descriptor;
@@ -326,7 +334,7 @@ impl Context {
     /// Set the line end type.
     /// ```ignore
     ///   LineEnd::RoundCap
-    ///   LineEnd::ButtCap  
+    ///   LineEnd::ButtCap
     ///   LineEnd::SquareCap
     /// ```
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {

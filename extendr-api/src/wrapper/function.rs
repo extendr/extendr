@@ -1,5 +1,5 @@
 use super::*;
-
+use libR_sys::{get_closure_body, get_closure_env, get_closure_formals, Rf_lcons};
 /// Wrapper for creating functions (CLOSSXP).
 /// ```
 /// use extendr_api::prelude::*;
@@ -72,7 +72,11 @@ impl Function {
         unsafe {
             if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
-                Some(Robj::from_sexp(FORMALS(sexp)).try_into().unwrap())
+                Some(
+                    Robj::from_sexp(get_closure_formals(sexp))
+                        .try_into()
+                        .unwrap(),
+                )
             } else {
                 None
             }
@@ -84,7 +88,7 @@ impl Function {
         unsafe {
             if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
-                Some(Robj::from_sexp(BODY(sexp)))
+                Some(Robj::from_sexp(get_closure_body(sexp)))
             } else {
                 None
             }
@@ -97,7 +101,7 @@ impl Function {
             if self.rtype() == Rtype::Function {
                 let sexp = self.robj.get();
                 Some(
-                    Robj::from_sexp(CLOENV(sexp))
+                    Robj::from_sexp(get_closure_env(sexp))
                         .try_into()
                         .expect("Should be an environment"),
                 )

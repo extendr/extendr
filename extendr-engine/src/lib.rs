@@ -20,18 +20,18 @@
 //! #[test]
 //! fn testing_r_code() {
 //!     with_r(|| {
-//!     
+//!
 //!     });
 //! }
 //! ```
 //!
 //! Similarly with `test!` that is available in `extendr_api`, one may
 //!
-//! ```no_run   
+//! ```no_run
 //! #[test]
 //! fn testing_r_code() {
 //!     test! {
-//!     
+//!
 //!     };
 //! }
 //! ```
@@ -61,7 +61,9 @@
 //
 //
 
-use libR_sys::*;
+use libR_sys::{
+    setup_Rmainloop, R_CStackLimit, R_CleanTempDir, R_RunExitFinalizers, Rf_initialize_R,
+};
 use std::os::raw;
 use std::sync::Once;
 

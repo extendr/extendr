@@ -1,5 +1,8 @@
 use super::scalar::{Rfloat, Scalar};
 use super::*;
+use libR_sys::{
+    dataptr, R_xlen_t, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
+};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's double vectors.
@@ -20,7 +23,6 @@ pub struct Doubles {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::REALSXP;
 macros::gen_vector_wrapper_impl!(
     vector_type: Doubles,
     scalar_type: Rfloat,
@@ -74,7 +76,7 @@ impl Deref for Doubles {
     /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rfloat;
+            let ptr = dataptr(self.get()) as *const Rfloat;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -84,7 +86,7 @@ impl DerefMut for Doubles {
     /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rfloat;
+            let ptr = dataptr(self.get_mut()) as *mut Rfloat;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
