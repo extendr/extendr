@@ -33,8 +33,6 @@ pub struct RArray<T, const DIM: usize> {
     robj: Robj,
 
     /// Dimensions of the array.
-    _dim: std::marker::PhantomData<[usize; DIM]>,
-
     _data: std::marker::PhantomData<T>,
 }
 
@@ -47,10 +45,10 @@ impl<T, const DIM: usize> RArray<T, DIM> {
     ///
     /// Equivalent to `dim()` in R
     pub fn get_dim(&self) -> Vec<usize> {
-        // HACK: Is there a better way to do this?
+        // TODO: Is there a better way to do this?
         self.robj
-            .get_attrib(wrapper::symbol::dim_symbol())
-            .and_then(|dim| dim.as_integer_vector())
+            .get_attrib(wrapper::symbol::dim_symbol()).unwrap()
+            .as_integer_vector()
             .map(|vec| vec.into_iter().map(|x| x as usize).collect()).unwrap()
     }
 
@@ -91,6 +89,22 @@ pub type RMatrix<T> = RArray<T, 2>;
 pub type RMatrix3D<T> = RArray<T, 3>;
 pub type RMatrix4D<T> = RArray<T, 4>;
 pub type RMatrix5D<T> = RArray<T, 5>;
+
+// TODO: The function name should be cleaner
+
+impl<T, const DIM: usize> RArray<T, DIM> 
+where 
+    T: ToVectorValue,
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    pub fn new_array(dim: [usize; DIM]) -> Self {
+        let sexptype = T::sexptype();
+        let len = dim.iter().product();
+        let mut robj = Robj::alloc_vector(sexptype, len);
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj, dim)
+    }
+}
 
 impl<T> RMatrix<T>
 where
@@ -172,7 +186,6 @@ trait Offset<D> {
     fn offset(&self, idx: D) -> usize;
 }
 
-// TEST: Write test
 
 impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
     /// Get the offset into the array for a given index.
@@ -182,12 +195,11 @@ impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
             panic!("array index: dimension mismatch");
         }
         index.iter()
-            .rev()
             .zip(dims.iter()).rev()
             .enumerate()
             .fold(0, |acc, (i, (&idx, &dim))| {
+                println!("idx: {}, dim: {}", idx, dim);
                 if idx - BASE >= dim {
-                    println!("index: {:?} dim: {:?} i: {}", index, dims, i);
                     panic!("array index: dimension {} overflow (0-based dimension)", i);
                 }
                 acc * dim + (idx - BASE)
@@ -196,47 +208,6 @@ impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
 }
 
 
-// TODO: Delete
-
-//impl<T> Offset<[usize; 1]> for RArray<T, 1> {
-//    /// Get the offset into the array for a given index.
-//    fn offset(&self, index: [usize; 1]) -> usize {
-//        if index[0] - BASE > self.get_dim()[0] {
-//            panic!("array index: row overflow");
-//        }
-//        index[0] - BASE
-//    }
-//}
-//
-//impl<T> Offset<[usize; 2]> for RArray<T, 2> {
-//    /// Get the offset into the array for a given index.
-//    fn offset(&self, index: [usize; 2]) -> usize {
-//        if index[0] - BASE > self.get_dim()[0] {
-//            panic!("matrix index: row overflow");
-//        }
-//        if index[1] - BASE > self.get_dim()[1] {
-//            panic!("matrix index: column overflow");
-//        }
-//        (index[0] - BASE) + self.get_dim()[0] * (index[1] - BASE)
-//    }
-//}
-//
-//impl<T> Offset<[usize; 3]> for RArray<T, 3> {
-//    /// Get the offset into the array for a given index.
-//    fn offset(&self, index: [usize; 3]) -> usize {
-//        if index[0] - BASE > self.get_dim()[0] {
-//            panic!("RMatrix3D index: row overflow");
-//        }
-//        if index[1] - BASE > self.get_dim()[1] {
-//            panic!("RMatrix3D index: column overflow");
-//        }
-//        if index[2] - BASE > self.get_dim()[2] {
-//            panic!("RMatrix3D index: submatrix overflow");
-//        }
-//        (index[0] - BASE) + self.get_dim()[0] * (index[1] - BASE + self.get_dim()[1] * (index[2] - BASE))
-//    }
-//}
-
 impl<T, const DIM: usize> RArray<T, DIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -244,7 +215,6 @@ where
     pub fn from_parts(robj: Robj, _dim: [usize; DIM]) -> Self {
         Self {
             robj,
-            _dim: std::marker::PhantomData,
             _data: std::marker::PhantomData,
         }
     }
@@ -571,8 +541,6 @@ pub trait MatrixConversions: GetSexp {
 
 impl MatrixConversions for Robj {}
 
-// TEST: Add test
-
 impl<T, const DIM: usize> Index<[usize; DIM]> for RArray<T, DIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -582,6 +550,25 @@ where
     /// Zero-based indexing for DIM-dimensional arrays.
     ///
     /// Panics if out of bounds.
+    /// Zero-based indexing in row, column order.
+    ///
+    /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let matrix = RArray::new_matrix(3, 2, |r, c| [
+    ///         [1., 2., 3.],
+    ///         [4., 5., 6.]][c][r]);
+    ///     assert_eq!(matrix[[0, 0]], 1.);
+    ///     assert_eq!(matrix[[1, 0]], 2.);
+    ///     assert_eq!(matrix[[2, 1]], 6.);
+    ///
+    ///     let matrix = RArray::new_matrix3d(3, 2, 2, |r, c, d| (r + c + d) as f64);
+    ///     assert_eq!(matrix[[0, 0, 0]], 0.);
+    ///     assert_eq!(matrix[[1, 0, 1]], 2.);
+    ///     assert_eq!(matrix[[2, 1, 1]], 4.);
+    /// }
+    /// ```
     fn index(&self, index: [usize; DIM]) -> &Self::Output {
         unsafe {
             self.data()
@@ -594,8 +581,6 @@ where
 }
 
 
-// TEST: Add test
-
 impl<T, const DIM: usize> IndexMut<[usize; DIM]> for RArray<T, DIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -603,6 +588,25 @@ where
     /// Zero-based mutable indexing for DIM-dimensional arrays.
     ///
     /// Panics if out of bounds.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let mut matrix = RMatrix::new_matrix(3, 2, |_, _| 0.);
+    ///     matrix[[0, 0]] = 1.;
+    ///     matrix[[1, 0]] = 2.;
+    ///     matrix[[2, 0]] = 3.;
+    ///     matrix[[0, 1]] = 4.;
+    ///     assert_eq!(matrix.as_real_slice().unwrap(), &[1., 2., 3., 4., 0., 0.]);
+    ///
+    ///    let mut matrix = RMatrix3D::new_matrix3d(3, 2, 2, |_, _, _| 0.);
+    ///    matrix[[0, 0, 0]] = 1.;
+    ///    matrix[[1, 0, 0]] = 2.;
+    ///    matrix[[2, 0, 0]] = 3.;
+    ///    matrix[[0, 1, 0]] = 4.;
+    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+    ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
+    /// }
+    /// ```
     fn index_mut(&mut self, index: [usize; DIM]) -> &mut Self::Output {
         unsafe {
             self.data_mut()
@@ -613,6 +617,129 @@ where
         }
     }
 }
+
+
+// TODO: Delete
+
+//impl<T> Index<[usize; 2]> for RArray<T, 2>
+//where
+//    Robj: for<'a> AsTypedSlice<'a, T>,
+//{
+//    type Output = T;
+//
+//    /// Zero-based indexing in row, column order.
+//    ///
+//    /// Panics if out of bounds.
+//    /// ```
+//    /// use extendr_api::prelude::*;
+//    /// test! {
+//    ///    let matrix = RArray::new_matrix(3, 2, |r, c| [
+//    ///        [1., 2., 3.],
+//    ///        [4., 5., 6.]][c][r]);
+//    ///     assert_eq!(matrix[[0, 0]], 1.);
+//    ///     assert_eq!(matrix[[1, 0]], 2.);
+//    ///     assert_eq!(matrix[[2, 1]], 6.);
+//    /// }
+//    /// ```
+//    fn index(&self, index: [usize; 2]) -> &Self::Output {
+//        unsafe {
+//            self.data()
+//                .as_ptr()
+//                .add(self.offset(index))
+//                .as_ref()
+//                .unwrap()
+//        }
+//    }
+//}
+//
+//impl<T> IndexMut<[usize; 2]> for RArray<T, 2>
+//where
+//    Robj: for<'a> AsTypedSlice<'a, T>,
+//{
+//    /// Zero-based mutable indexing in row, column order.
+//    ///
+//    /// Panics if out of bounds.
+//    /// ```
+//    /// use extendr_api::prelude::*;
+//    /// test! {
+//    ///     let mut matrix = RMatrix::new_matrix(3, 2, |_, _| 0.);
+//    ///     matrix[[0, 0]] = 1.;
+//    ///     matrix[[1, 0]] = 2.;
+//    ///     matrix[[2, 0]] = 3.;
+//    ///     matrix[[0, 1]] = 4.;
+//    ///     assert_eq!(matrix.as_real_slice().unwrap(), &[1., 2., 3., 4., 0., 0.]);
+//    /// }
+//    /// ```
+//    fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
+//        unsafe {
+//            self.data_mut()
+//                .as_mut_ptr()
+//                .add(self.offset(index))
+//                .as_mut()
+//                .unwrap()
+//        }
+//    }
+//}
+//
+//impl<T> Index<[usize; 3]> for RArray<T, 3>
+//where
+//    Robj: for<'a> AsTypedSlice<'a, T>,
+//{
+//    type Output = T;
+//
+//    /// Zero-based indexing in row, column order.
+//    ///
+//    /// Panics if out of bounds.
+//    /// ```
+//    /// use extendr_api::prelude::*;
+//    /// test! {
+//    ///    let matrix = RArray::new_matrix3d(3, 2, 2, |r, c, d| (r + c + d) as f64);
+//    ///     assert_eq!(matrix[[0, 0, 0]], 0.);
+//    ///     assert_eq!(matrix[[1, 0, 1]], 2.);
+//    ///     assert_eq!(matrix[[2, 1, 1]], 4.);
+//    /// }
+//    /// ```
+//    fn index(&self, index: [usize; 3]) -> &Self::Output {
+//        unsafe {
+//            self.data()
+//                .as_ptr()
+//                .add(self.offset(index))
+//                .as_ref()
+//                .unwrap()
+//        }
+//    }
+//}
+
+//impl<T> IndexMut<[usize; 3]> for RArray<T, 3>
+//where
+//    Robj: for<'a> AsTypedSlice<'a, T>,
+//{
+//    /// Zero-based mutable indexing in row, column order.
+//    ///
+//    /// Panics if out of bounds.
+//    /// ```
+//    /// use extendr_api::prelude::*;
+//    /// test! {
+//    ///    let mut matrix = RMatrix3D::new_matrix3d(3, 2, 2, |_, _, _| 0.);
+//    ///    matrix[[0, 0, 0]] = 1.;
+//    ///    matrix[[1, 0, 0]] = 2.;
+//    ///    matrix[[2, 0, 0]] = 3.;
+//    ///    matrix[[0, 1, 0]] = 4.;
+//    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+//    ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
+//    /// }
+//    /// ```
+//    fn index_mut(&mut self, index: [usize; 3]) -> &mut Self::Output {
+//        unsafe {
+//            self.data_mut()
+//                .as_mut_ptr()
+//                .add(self.offset(index))
+//                .as_mut()
+//                .unwrap()
+//        }
+//    }
+//}
+
 
 impl<T, const DIM: usize> Deref for RArray<T, DIM> {
     type Target = Robj;
