@@ -583,10 +583,7 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<const LEN: usize>(
-        self,
-        dims: [usize; LEN],
-    ) -> Result<RArray<Self::Item, LEN>>
+    fn collect_rarray<const LEN: usize>(self, dims: [usize; LEN]) -> Result<RArray<Self::Item, LEN>>
     where
         Self: Iterator,
         Self: Sized,
