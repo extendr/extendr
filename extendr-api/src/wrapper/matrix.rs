@@ -43,9 +43,11 @@ impl<T, const DIM: usize> RArray<T, DIM> {
     pub fn get_dim(&self) -> Vec<usize> {
         // TODO: Is there a better way to do this?
         self.robj
-            .get_attrib(wrapper::symbol::dim_symbol()).unwrap()
+            .get_attrib(wrapper::symbol::dim_symbol())
+            .unwrap()
             .as_integer_vector()
-            .map(|vec| vec.into_iter().map(|x| x as usize).collect()).unwrap()
+            .map(|vec| vec.into_iter().map(|x| x as usize).collect())
+            .unwrap()
     }
 
     /// Set the names of the elements of an array.
@@ -78,8 +80,6 @@ impl<T, const DIM: usize> RArray<T, DIM> {
     }
 }
 
-
-
 pub type RColumn<T> = RArray<T, 1>;
 pub type RMatrix<T> = RArray<T, 2>;
 pub type RMatrix3D<T> = RArray<T, 3>;
@@ -88,8 +88,8 @@ pub type RMatrix5D<T> = RArray<T, 5>;
 
 // TODO: The function name should be cleaner
 
-impl<T, const DIM: usize> RArray<T, DIM> 
-where 
+impl<T, const DIM: usize> RArray<T, DIM>
+where
     T: ToVectorValue,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
@@ -178,7 +178,6 @@ trait Offset<D> {
     fn offset(&self, idx: D) -> usize;
 }
 
-
 impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
     /// Get the offset into the array for a given index.
     fn offset(&self, index: [usize; DIM]) -> usize {
@@ -186,8 +185,10 @@ impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
         if index.len() != dims.len() {
             panic!("array index: dimension mismatch");
         }
-        index.iter()
-            .zip(dims.iter()).rev()
+        index
+            .iter()
+            .zip(dims.iter())
+            .rev()
             .enumerate()
             .fold(0, |acc, (i, (&idx, &dim))| {
                 println!("idx: {}, dim: {}", idx, dim);
@@ -198,7 +199,6 @@ impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
             })
     }
 }
-
 
 impl<T, const DIM: usize> RArray<T, DIM>
 where
@@ -572,7 +572,6 @@ where
     }
 }
 
-
 impl<T, const DIM: usize> IndexMut<[usize; DIM]> for RArray<T, DIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
@@ -595,7 +594,7 @@ where
     ///    matrix[[1, 0, 0]] = 2.;
     ///    matrix[[2, 0, 0]] = 3.;
     ///    matrix[[0, 1, 0]] = 4.;
-    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+    ///    assert_eq!(matrix.as_real_slice().unwrap(),
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
@@ -609,7 +608,6 @@ where
         }
     }
 }
-
 
 impl<T, const DIM: usize> Deref for RArray<T, DIM> {
     type Target = Robj;
