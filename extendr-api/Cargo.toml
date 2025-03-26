@@ -37,7 +37,6 @@ result_condition = []
 
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
-# but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
 full-functionality = [
     "graphics",
     "either",

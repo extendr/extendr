@@ -1,8 +1,8 @@
 //! Embeds a a single R process
 //!
 //! Using R's C-API requires the embedding of the R runtime.
-//! Thus, when using bindings in `libR-sys`, it is necessary that
-//! either the a R process is the caller, or that the process instantiates
+//! Thus, when using bindings provided by `extendr-ffi`, it is necessary that
+//! either an R process is the caller, or that the process instantiates
 //! an accompanying R process. Otherwise, a run-time error occurs e.g.
 //! `(signal: 11, SIGSEGV: invalid memory reference)` or
 //!

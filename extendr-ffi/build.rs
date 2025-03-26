@@ -9,7 +9,7 @@ use std::{
 };
 
 // The environmental variables that are usually set by R. These might be needed
-// to set manually if we compile libR-sys outside of an R session.
+// to set manually if we compile extendr-ffi outside of an R session.
 // c.f., https://stat.ethz.ch/R-manual/R-devel/library/base/html/EnvVar.html
 const ENVVAR_R_HOME: &str = "R_HOME";
 const ENVVAR_R_INCLUDE_DIR: &str = "R_INCLUDE_DIR";
