@@ -1,6 +1,6 @@
 use super::*;
 use crate::robj::Attributes;
-use libR_sys::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
+use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
 use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]

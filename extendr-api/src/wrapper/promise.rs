@@ -20,11 +20,11 @@ impl Promise {
     #[cfg(feature = "non-api")]
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
-            let sexp = libR_sys::Rf_allocSExp(SEXPTYPE::PROMSXP);
+            let sexp = extendr_ffi::Rf_allocSExp(SEXPTYPE::PROMSXP);
             let robj = Robj::from_sexp(sexp);
-            libR_sys::SET_PRCODE(sexp, code.get());
-            libR_sys::SET_PRENV(sexp, environment.robj.get());
-            libR_sys::SET_PRVALUE(sexp, libR_sys::R_UnboundValue);
+            extendr_ffi::SET_PRCODE(sexp, code.get());
+            extendr_ffi::SET_PRENV(sexp, environment.robj.get());
+            extendr_ffi::SET_PRVALUE(sexp, extendr_ffi::R_UnboundValue);
             Ok(Promise { robj })
         })
     }
@@ -34,7 +34,7 @@ impl Promise {
     pub fn code(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(libR_sys::PRCODE(sexp))
+            Robj::from_sexp(extendr_ffi::PRCODE(sexp))
         }
     }
 
@@ -43,7 +43,9 @@ impl Promise {
     pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(libR_sys::PRENV(sexp)).try_into().unwrap()
+            Robj::from_sexp(extendr_ffi::PRENV(sexp))
+                .try_into()
+                .unwrap()
         }
     }
 
@@ -52,7 +54,7 @@ impl Promise {
     pub fn value(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(libR_sys::PRVALUE(sexp))
+            Robj::from_sexp(extendr_ffi::PRVALUE(sexp))
         }
     }
 
@@ -61,7 +63,7 @@ impl Promise {
     pub fn seen(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            libR_sys::PRSEEN(sexp)
+            extendr_ffi::PRSEEN(sexp)
         }
     }
 

@@ -1,7 +1,7 @@
 //! A pairlist is a linked list of values with optional symbol tags.
 
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     R_NilValue, Rf_cons, Rf_protect, Rf_unprotect, CAR, CDR, PRINTNAME, SET_TAG, TAG, TYPEOF,
 };
 

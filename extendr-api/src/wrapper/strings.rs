@@ -1,5 +1,5 @@
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
 };
 use std::convert::From;

@@ -1,10 +1,10 @@
 use super::*;
 use crate as extendr_api;
-use libR_sys::{R_xlen_t, SET_VECTOR_ELT};
+use extendr_ffi::{R_xlen_t, SET_VECTOR_ELT};
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
     let name = CString::new(name).unwrap();
-    unsafe { libR_sys::Rf_install(name.as_ptr()) }
+    unsafe { extendr_ffi::Rf_install(name.as_ptr()) }
 }
 
 pub(crate) fn make_vector<T>(sexptype: SEXPTYPE, values: T) -> Robj

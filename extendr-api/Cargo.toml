@@ -11,7 +11,7 @@ repository.workspace = true
 rust-version = "1.65"
 
 [dependencies]
-libR-sys = { workspace = true }
+extendr-ffi = { workspace = true }
 extendr-macros = { workspace = true }
 once_cell = "1"
 paste = "1.0.5"
@@ -51,7 +51,7 @@ full-functionality = [
 # of non-API items in packages. You may enable this feature, to generate
 # bindings to these non-API items, and their usage in extendr
 # BEWARE: this feature does not work, as `bindgen` use in extendr is deprecated
-non-api = ["libR-sys/non-api"]
+non-api = ["extendr-ffi/non-api"]
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]

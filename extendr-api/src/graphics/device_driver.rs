@@ -1,7 +1,7 @@
 use super::{device_descriptor::*, Device, Raster, TextMetric};
 use crate::*;
 use core::slice;
-use libR_sys::{
+use extendr_ffi::{
     pDevDesc, pGEcontext, DevDesc, GEaddDevice2, GEcreateDevDesc, GEinitDisplayList,
     R_CheckDeviceAvailable, R_GE_checkVersionOrDie, R_GE_definitions, R_GE_gcontext, R_GE_version,
     R_NilValue, Rboolean,

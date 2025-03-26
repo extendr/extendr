@@ -1,6 +1,6 @@
 use super::scalar::{Rbool, Scalar};
 use super::*;
-use libR_sys::{R_xlen_t, DATAPTR_RO, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
+use extendr_ffi::{dataptr, R_xlen_t, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's logical vectors.
@@ -66,7 +66,7 @@ impl Deref for Logicals {
     /// Treat Logicals as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rbool;
+            let ptr = dataptr(self.get()) as *const Rbool;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -76,7 +76,7 @@ impl DerefMut for Logicals {
     /// Treat Logicals as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get_mut()) as *mut Rbool;
+            let ptr = dataptr(self.get_mut()) as *mut Rbool;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

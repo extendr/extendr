@@ -1,6 +1,6 @@
 use super::scalar::{Rint, Scalar};
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
 };
 use std::iter::FromIterator;
@@ -23,7 +23,7 @@ pub struct Integers {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::INTSXP;
+use extendr_ffi::SEXPTYPE::INTSXP;
 macros::gen_vector_wrapper_impl!(
     vector_type: Integers, // Implements for
     scalar_type: Rint,     // Element type
@@ -181,7 +181,7 @@ mod tests {
         test! {
             let int_vec = vec![3,4,0,-2];
             let int_vec_robj: Robj = int_vec.clone().try_into().unwrap();
-            // unsafe { libR_sys::Rf_PrintValue(rint_vec_robj.get())}
+            // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

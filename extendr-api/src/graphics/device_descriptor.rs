@@ -74,7 +74,7 @@ pub(crate) enum DevCapLocator {
     Yes = 2,
 }
 
-/// A builder of [libR_sys::DevDesc].
+/// A builder of [extendr_ffi::DevDesc].
 ///
 // # Design notes (which feels a bit too internal to be exposed as an official document)
 //

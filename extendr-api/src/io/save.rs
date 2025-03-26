@@ -2,7 +2,7 @@
 
 use super::PstreamFormat;
 use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp};
-use libR_sys::{
+use extendr_ffi::{
     R_NilValue, R_Serialize, R_outpstream_st, R_outpstream_t, R_pstream_data_t, R_pstream_format_t,
     SEXP,
 };
@@ -49,7 +49,7 @@ impl<W: Write> OutStream<W> {
                 unsafe { (None, R_NilValue) }
             };
 
-            let r_state = libR_sys::R_outpstream_st {
+            let r_state = extendr_ffi::R_outpstream_st {
                 data: std::ptr::null_mut(),
                 type_: format as R_pstream_format_t,
                 version,

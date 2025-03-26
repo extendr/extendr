@@ -1,5 +1,5 @@
 use super::*;
-use libR_sys::{R_BlankString, R_NaString, R_NilValue, Rf_xlength, R_CHAR, SEXPTYPE, TYPEOF};
+use extendr_ffi::{R_BlankString, R_NaString, R_NilValue, Rf_xlength, R_CHAR, SEXPTYPE, TYPEOF};
 /// Wrapper for creating CHARSXP objects.
 /// These are used only as the contents of a character
 /// vector.

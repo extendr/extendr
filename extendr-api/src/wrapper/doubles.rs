@@ -1,6 +1,6 @@
 use super::scalar::{Rfloat, Scalar};
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     dataptr, R_xlen_t, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
 };
 use std::iter::FromIterator;

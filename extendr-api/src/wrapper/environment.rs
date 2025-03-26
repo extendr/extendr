@@ -1,5 +1,5 @@
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GlobalEnv, Rf_defineVar,
 };
 #[derive(PartialEq, Clone)]
@@ -87,7 +87,7 @@ impl Environment {
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            libR_sys::SET_ENCLOS(sexp, parent.robj.get());
+            extendr_ffi::SET_ENCLOS(sexp, parent.robj.get());
         });
         self
     }
@@ -97,7 +97,7 @@ impl Environment {
     pub fn envflags(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            libR_sys::ENVFLAGS(sexp)
+            extendr_ffi::ENVFLAGS(sexp)
         }
     }
 
@@ -106,7 +106,7 @@ impl Environment {
     pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            libR_sys::SET_ENVFLAGS(sexp, flags);
+            extendr_ffi::SET_ENVFLAGS(sexp, flags);
         });
         self
     }
@@ -115,8 +115,8 @@ impl Environment {
     /// Iterate over an environment.
     pub fn iter(&self) -> EnvIter {
         unsafe {
-            let hashtab = Robj::from_sexp(libR_sys::HASHTAB(self.get()));
-            let frame = Robj::from_sexp(libR_sys::FRAME(self.get()));
+            let hashtab = Robj::from_sexp(extendr_ffi::HASHTAB(self.get()));
+            let frame = Robj::from_sexp(extendr_ffi::FRAME(self.get()));
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),

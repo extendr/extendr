@@ -1,5 +1,5 @@
 use super::*;
-use libR_sys::{R_NilValue, Rf_lcons, Rf_protect, Rf_unprotect};
+use extendr_ffi::{R_NilValue, Rf_lcons, Rf_protect, Rf_unprotect};
 /// Wrapper for creating language objects.
 /// ```
 /// use extendr_api::prelude::*;

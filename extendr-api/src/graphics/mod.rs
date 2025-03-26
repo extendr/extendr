@@ -79,7 +79,7 @@
 use crate::*;
 
 // These are used in the callback functions.
-pub use libR_sys::{
+pub use extendr_ffi::{
     cetype_t, pGEDevDesc, pGEcontext, DevDesc, GECap, GECircle, GEExpressionHeight,
     GEExpressionMetric, GEExpressionWidth, GELine, GEMathText, GEMetricInfo, GEMode, GENewPage,
     GEPath, GEPolygon, GEPolyline, GERaster, GERect, GESetClip, GEStrHeight, GEStrMetric,

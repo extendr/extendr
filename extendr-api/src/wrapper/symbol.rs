@@ -1,6 +1,6 @@
 use super::*;
 // NOTE all of these symbol constants should be in their own module
-use libR_sys::{
+use extendr_ffi::{
     R_BaseSymbol, R_BraceSymbol, R_Bracket2Symbol, R_BracketSymbol, R_ClassSymbol, R_DeviceSymbol,
     R_DimNamesSymbol, R_DimSymbol, R_DollarSymbol, R_DotsSymbol, R_DoubleColonSymbol,
     R_LastvalueSymbol, R_LevelsSymbol, R_MissingArg, R_ModeSymbol, R_NaRmSymbol, R_NameSymbol,

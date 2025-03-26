@@ -61,7 +61,7 @@
 //
 //
 
-use libR_sys::{
+use extendr_ffi::{
     setup_Rmainloop, R_CStackLimit, R_CleanTempDir, R_RunExitFinalizers, Rf_initialize_R,
 };
 use std::os::raw;
@@ -82,7 +82,7 @@ pub fn start_r() {
     START_R.call_once(|| {
         unsafe {
             if std::env::var("R_HOME").is_err() {
-                // env! gets the build-time R_HOME stored by libR-sys
+                // env! gets the build-time R_HOME stored by extendr-ffi
                 std::env::set_var("R_HOME", env!("R_HOME"));
             }
 

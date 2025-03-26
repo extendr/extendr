@@ -1,5 +1,5 @@
 use super::*;
-use libR_sys::{
+use extendr_ffi::{
     dataptr, R_MakeExternalPtr, R_NilValue, R_RegisterCFinalizerEx, R_altrep_class_t,
     R_altrep_data1, R_altrep_data2, R_make_altcomplex_class, R_make_altinteger_class,
     R_make_altlist_class, R_make_altlogical_class, R_make_altraw_class, R_make_altreal_class,
@@ -81,7 +81,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         obj_flags: i32,
         levels: i32,
     ) -> Robj {
-        use libR_sys::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
+        use extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
         let res = Self::unserialize(class, state);
         if !res.is_null() {
             single_threaded(|| unsafe {

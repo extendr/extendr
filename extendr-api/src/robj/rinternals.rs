@@ -1,5 +1,5 @@
 use crate::*;
-use libR_sys::{
+use extendr_ffi::{
     get_var, R_CFinalizer_t, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
     R_GetCurrentSrcref, R_GetSrcFilename, R_IsNamespaceEnv, R_IsPackageEnv, R_MakeExternalPtr,
     R_MissingArg, R_NamespaceEnvSpec, R_PackageEnvName, R_RegisterCFinalizerEx, R_UnboundValue,
@@ -368,13 +368,13 @@ pub trait Rinternals: Types + Conversions {
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string(&self) -> bool {
-        unsafe { libR_sys::Rf_isValidString(self.get()).into() }
+        unsafe { extendr_ffi::Rf_isValidString(self.get()).into() }
     }
 
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string_f(&self) -> bool {
-        unsafe { libR_sys::Rf_isValidStringF(self.get()).into() }
+        unsafe { extendr_ffi::Rf_isValidStringF(self.get()).into() }
     }
 
     /// Return true if this is a vector.
