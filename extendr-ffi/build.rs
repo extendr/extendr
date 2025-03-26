@@ -215,6 +215,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");
 
-    build_print::custom_println!(" ✅ Success:", green, "extendr-ffi has been built!");
+    build_print::custom_println!(" Success:", green, "extendr-ffi has been built!");
     Ok(())
 }
