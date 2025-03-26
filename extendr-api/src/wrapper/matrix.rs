@@ -636,7 +636,7 @@ where
     ///    matrix[[1, 0, 0]] = 2.;
     ///    matrix[[2, 0, 0]] = 3.;
     ///    matrix[[0, 1, 0]] = 4.;
-    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+    ///    assert_eq!(matrix.as_real_slice().unwrap(),
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
@@ -650,7 +650,6 @@ where
         }
     }
 }
-
 
 impl<T, D> Deref for RArray<T, D> {
     type Target = Robj;
