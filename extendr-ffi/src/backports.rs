@@ -90,7 +90,7 @@ pub unsafe fn get_var_in_frame(symbol: SEXP, env: SEXP) -> SEXP {
     }
     #[cfg(r_4_5)]
     {
-        R_getVarEx(symbol, env)
+        R_getVarEx(env, symbol)
     }
 }
 
