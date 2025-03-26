@@ -13,8 +13,6 @@ fn main() {
     // The current approach is to add a config flag per feature. When there are
     // too many features, we might need to consider switching to per-version
     // config flags (e.g. `r410`).
-    env::set_var("DEP_R_R_VERSION_MAJOR", "4");
-    env::set_var("DEP_R_R_VERSION_MINOR", "5");
     let major = env::var("DEP_R_R_VERSION_MAJOR").unwrap();
     let minor = env::var("DEP_R_R_VERSION_MINOR").unwrap();
     // let patch = env::var("DEP_R_R_VERSION_PATCH").unwrap();
