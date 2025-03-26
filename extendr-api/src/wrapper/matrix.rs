@@ -129,7 +129,9 @@ impl<T> RMatrix<T> {
                     let colnames = Robj::from_sexp(maybe_colnames);
                     Some(std::mem::transmute(colnames))
                 }
-                _ => unreachable!("This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"),
+                _ => unreachable!(
+                    "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
+                ),
             }
         }
     }
@@ -142,7 +144,9 @@ impl<T> RMatrix<T> {
                     let rownames = Robj::from_sexp(maybe_rownames);
                     Some(std::mem::transmute(rownames))
                 }
-                _ => unreachable!("This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"),
+                _ => unreachable!(
+                    "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
+                ),
             }
         }
     }
