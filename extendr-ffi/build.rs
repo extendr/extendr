@@ -176,7 +176,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Used by extendr-engine becomes DEP_R_R_HOME for clients
     println!("cargo:r_home={}", r_paths.r_home.display());
-    println!("cargo::rustc-env=R_HOME={}", r_paths.r_home.display());
+    println!("cargo:rustc-env=R_HOME={}", r_paths.r_home.display());
     // used by extendr-api
     println!("cargo:r_version_major={}", r_paths.version.major);
     println!("cargo:r_version_minor={}", r_paths.version.minor);
