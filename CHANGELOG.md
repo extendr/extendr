@@ -4,6 +4,7 @@
 
 ### Added
 
+- Replace `dim` vector with constant generic parameter `const DIM: usize` in `RArray`
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added <https://github.com/extendr/extendr/pull/875>
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking <https://github.com/extendr/extendr/pull/853>
