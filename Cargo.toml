@@ -4,9 +4,9 @@ resolver = "2"
 members = [
     "extendr-api",
     "extendr-engine",
+    "extendr-ffi",
     "extendr-macros",
     "xtask",
-    "extendr-ffi",
 ]
 
 [workspace.package]

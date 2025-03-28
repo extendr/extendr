@@ -357,7 +357,7 @@ pub use wrapper::*;
 
 pub use extendr_macros::*;
 
-use extendr_ffi::{SEXPTYPE, SEXPTYPE::*};
+use extendr_ffi::SEXPTYPE;
 use scalar::Rbool;
 
 //////////////////////////////////////////////////
@@ -533,72 +533,70 @@ pub enum Rany<'a> {
 /// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
 pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
-    use extendr_ffi::SEXPTYPE::*;
-    use Rtype::*;
+    use extendr_ffi::SEXPTYPE;
     match rtype {
-        Null => NILSXP,
-        Symbol => SYMSXP,
-        Pairlist => LISTSXP,
-        Function => CLOSXP,
-        Environment => ENVSXP,
-        Promise => PROMSXP,
-        Language => LANGSXP,
-        Special => SPECIALSXP,
-        Builtin => BUILTINSXP,
-        Rstr => CHARSXP,
-        Logicals => LGLSXP,
-        Integers => INTSXP,
-        Doubles => REALSXP,
-        Complexes => CPLXSXP,
-        Strings => STRSXP,
-        Dot => DOTSXP,
-        Any => ANYSXP,
-        List => VECSXP,
-        Expressions => EXPRSXP,
-        Bytecode => BCODESXP,
-        ExternalPtr => EXTPTRSXP,
-        WeakRef => WEAKREFSXP,
-        Raw => RAWSXP,
+        Rtype::Null => SEXPTYPE::NILSXP,
+        Rtype::Symbol => SEXPTYPE::SYMSXP,
+        Rtype::Pairlist => SEXPTYPE::LISTSXP,
+        Rtype::Function => SEXPTYPE::CLOSXP,
+        Rtype::Environment => SEXPTYPE::ENVSXP,
+        Rtype::Promise => SEXPTYPE::PROMSXP,
+        Rtype::Language => SEXPTYPE::LANGSXP,
+        Rtype::Special => SEXPTYPE::SPECIALSXP,
+        Rtype::Builtin => SEXPTYPE::BUILTINSXP,
+        Rtype::Rstr => SEXPTYPE::CHARSXP,
+        Rtype::Logicals => SEXPTYPE::LGLSXP,
+        Rtype::Integers => SEXPTYPE::INTSXP,
+        Rtype::Doubles => SEXPTYPE::REALSXP,
+        Rtype::Complexes => SEXPTYPE::CPLXSXP,
+        Rtype::Strings => SEXPTYPE::STRSXP,
+        Rtype::Dot => SEXPTYPE::DOTSXP,
+        Rtype::Any => SEXPTYPE::ANYSXP,
+        Rtype::List => SEXPTYPE::VECSXP,
+        Rtype::Expressions => SEXPTYPE::EXPRSXP,
+        Rtype::Bytecode => SEXPTYPE::BCODESXP,
+        Rtype::ExternalPtr => SEXPTYPE::EXTPTRSXP,
+        Rtype::WeakRef => SEXPTYPE::WEAKREFSXP,
+        Rtype::Raw => SEXPTYPE::RAWSXP,
         #[cfg(not(use_objsxp))]
-        S4 => S4SXP,
+        Rtype::S4 => SEXPTYPE::S4SXP,
         #[cfg(use_objsxp)]
-        S4 => OBJSXP,
-        Unknown => panic!("attempt to use Unknown Rtype"),
+        Rtype::S4 => SEXPTYPE::OBJSXP,
+        Rtype::Unknown => panic!("attempt to use Unknown Rtype"),
     }
 }
 
 /// Convert R's SEXPTYPE to extendr's Rtype.
 pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
-    use Rtype::*;
     match sxptype {
-        NILSXP => Null,
-        SYMSXP => Symbol,
-        LISTSXP => Pairlist,
-        CLOSXP => Function,
-        ENVSXP => Environment,
-        PROMSXP => Promise,
-        LANGSXP => Language,
-        SPECIALSXP => Special,
-        BUILTINSXP => Builtin,
-        CHARSXP => Rstr,
-        LGLSXP => Logicals,
-        INTSXP => Integers,
-        REALSXP => Doubles,
-        CPLXSXP => Complexes,
-        STRSXP => Strings,
-        DOTSXP => Dot,
-        ANYSXP => Any,
-        VECSXP => List,
-        EXPRSXP => Expressions,
-        BCODESXP => Bytecode,
-        EXTPTRSXP => ExternalPtr,
-        WEAKREFSXP => WeakRef,
-        RAWSXP => Raw,
+        SEXPTYPE::NILSXP => Rtype::Null,
+        SEXPTYPE::SYMSXP => Rtype::Symbol,
+        SEXPTYPE::LISTSXP => Rtype::Pairlist,
+        SEXPTYPE::CLOSXP => Rtype::Function,
+        SEXPTYPE::ENVSXP => Rtype::Environment,
+        SEXPTYPE::PROMSXP => Rtype::Promise,
+        SEXPTYPE::LANGSXP => Rtype::Language,
+        SEXPTYPE::SPECIALSXP => Rtype::Special,
+        SEXPTYPE::BUILTINSXP => Rtype::Builtin,
+        SEXPTYPE::CHARSXP => Rtype::Rstr,
+        SEXPTYPE::LGLSXP => Rtype::Logicals,
+        SEXPTYPE::INTSXP => Rtype::Integers,
+        SEXPTYPE::REALSXP => Rtype::Doubles,
+        SEXPTYPE::CPLXSXP => Rtype::Complexes,
+        SEXPTYPE::STRSXP => Rtype::Strings,
+        SEXPTYPE::DOTSXP => Rtype::Dot,
+        SEXPTYPE::ANYSXP => Rtype::Any,
+        SEXPTYPE::VECSXP => Rtype::List,
+        SEXPTYPE::EXPRSXP => Rtype::Expressions,
+        SEXPTYPE::BCODESXP => Rtype::Bytecode,
+        SEXPTYPE::EXTPTRSXP => Rtype::ExternalPtr,
+        SEXPTYPE::WEAKREFSXP => Rtype::WeakRef,
+        SEXPTYPE::RAWSXP => Rtype::Raw,
         #[cfg(not(use_objsxp))]
-        S4SXP => S4,
+        SEXPTYPE::S4SXP => Rtype::S4,
         #[cfg(use_objsxp)]
-        OBJSXP => S4,
-        _ => Unknown,
+        SEXPTYPE::OBJSXP => Rtype::S4,
+        _ => Rtype::Unknown,
     }
 }
 

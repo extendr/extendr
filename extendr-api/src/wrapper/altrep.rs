@@ -1,28 +1,5 @@
 use super::*;
-use extendr_ffi::{
-    dataptr, R_MakeExternalPtr, R_NilValue, R_RegisterCFinalizerEx, R_altrep_class_t,
-    R_altrep_data1, R_altrep_data2, R_make_altcomplex_class, R_make_altinteger_class,
-    R_make_altlist_class, R_make_altlogical_class, R_make_altraw_class, R_make_altreal_class,
-    R_make_altstring_class, R_new_altrep, R_set_altcomplex_Elt_method,
-    R_set_altcomplex_Get_region_method, R_set_altinteger_Elt_method,
-    R_set_altinteger_Get_region_method, R_set_altinteger_Is_sorted_method,
-    R_set_altinteger_Max_method, R_set_altinteger_Min_method, R_set_altinteger_No_NA_method,
-    R_set_altinteger_Sum_method, R_set_altlist_Elt_method, R_set_altlist_Set_elt_method,
-    R_set_altlogical_Elt_method, R_set_altlogical_Get_region_method,
-    R_set_altlogical_Is_sorted_method, R_set_altlogical_No_NA_method, R_set_altlogical_Sum_method,
-    R_set_altraw_Elt_method, R_set_altraw_Get_region_method, R_set_altreal_Elt_method,
-    R_set_altreal_Get_region_method, R_set_altreal_Is_sorted_method, R_set_altreal_Max_method,
-    R_set_altreal_Min_method, R_set_altreal_No_NA_method, R_set_altreal_Sum_method,
-    R_set_altrep_Coerce_method, R_set_altrep_DuplicateEX_method, R_set_altrep_Duplicate_method,
-    R_set_altrep_Inspect_method, R_set_altrep_Length_method, R_set_altrep_Serialized_state_method,
-    R_set_altrep_Unserialize_method, R_set_altrep_data1, R_set_altrep_data2,
-    R_set_altstring_Elt_method, R_set_altstring_Is_sorted_method, R_set_altstring_No_NA_method,
-    R_set_altstring_Set_elt_method, R_set_altvec_Dataptr_method,
-    R_set_altvec_Dataptr_or_null_method, R_set_altvec_Extract_subset_method, R_xlen_t, Rboolean,
-    Rbyte, Rcomplex, Rf_allocVector, Rf_protect, Rf_unprotect, ALTREP_CLASS, COMPLEX,
-    COMPLEX_GET_REGION, DATAPTR_OR_NULL, INTEGER, INTEGER_GET_REGION, LOGICAL, LOGICAL_GET_REGION,
-    MARK_NOT_MUTABLE, RAW, RAW_GET_REGION, REAL, REAL_GET_REGION, TYPEOF, XLENGTH,
-};
+use extendr_ffi::*;
 use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
 
 macro_rules! make_from_iterator {
@@ -706,8 +683,8 @@ impl Altrep {
                 _ => panic!("expected Altvec compatible type"),
             };
 
-            // #[cfg(feature = "non-api")]
-            // R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX::<StateType>));
+            #[cfg(feature = "non-api")]
+            R_set_altrep_UnserializeEX_method(class_ptr, Some(altrep_UnserializeEX::<StateType>));
             R_set_altrep_Unserialize_method(class_ptr, Some(altrep_Unserialize::<StateType>));
             R_set_altrep_Serialized_state_method(
                 class_ptr,
