@@ -262,8 +262,7 @@ extendr-api
 
 Finally, there are parts of R's API that are deemed non-API, in that R packages
 on CRAN are recommended not to have these available in packages. If you want
-to have access to them, you may use `non-api` to expose them. However, it requires
-setting up `bindgen`, and specifically following setup instructions for [`libR-sys`](https://github.com/extendr/libR-sys/?tab=readme-ov-file#building-bindings-from-source-advanced).
+to have access to them, you may use the `non-api` feature to expose them.
 
 ## License
 

@@ -1,6 +1,8 @@
 //! Provide limited protection for multithreaded access to the R API.
-
 use crate::*;
+use extendr_ffi::{
+    R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_error, Rf_protect, Rf_unprotect,
+};
 use std::cell::Cell;
 use std::sync::Mutex;
 
@@ -57,7 +59,7 @@ where
         Ok(res) => res,
         Err(_) => {
             let err_str = CString::new(err_str).unwrap();
-            unsafe { libR_sys::Rf_error(err_str.as_ptr()) }
+            unsafe { Rf_error(err_str.as_ptr()) }
         }
     }
 }
@@ -68,7 +70,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
         R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
-        libR_sys::Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
+        Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
     };
 }
 

@@ -24,8 +24,6 @@ options(
             `extendr-api` = list(path = "extendr-api" |> normalizePath()),
             `extendr-macros` = list(path = "extendr-macros" |> normalizePath()),
             `extendr-engine` = list(path = "extendr-engine" |> normalizePath())
-            # uncomment this, if you have locally sourced libR-sys crate..
-            # ,`libR-sys` = list(path = "libR-sys" |> normalizePath())
         )
 )
 ```

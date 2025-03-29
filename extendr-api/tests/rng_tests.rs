@@ -19,7 +19,7 @@ fn generate_big_random_vec() -> Vec<f64> {
     let n = 100;
     let param = 10e3;
     (0..n)
-        .map(|_| single_threaded(|| unsafe { libR_sys::R_unif_index(param) }))
+        .map(|_| single_threaded(|| unsafe { extendr_ffi::R_unif_index(param) }))
         .collect()
 }
 

@@ -8,7 +8,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-libR-sys = { workspace = true }
+extendr-ffi = { workspace = true }
 ctor = "0.2.4"
 
 [features]

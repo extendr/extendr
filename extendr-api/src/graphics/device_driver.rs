@@ -1,10 +1,11 @@
-use core::slice;
-
-use crate::*;
-use libR_sys::*;
-
 use super::{device_descriptor::*, Device, Raster, TextMetric};
-
+use crate::*;
+use core::slice;
+use extendr_ffi::{
+    pDevDesc, pGEcontext, DevDesc, GEaddDevice2, GEcreateDevDesc, GEinitDisplayList,
+    R_CheckDeviceAvailable, R_GE_checkVersionOrDie, R_GE_definitions, R_GE_gcontext, R_GE_version,
+    R_NilValue, Rboolean,
+};
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
 /// - `canClip`
@@ -908,9 +909,8 @@ pub trait DeviceDriver: std::marker::Sized {
                 (*p_dev_desc).fillStroke = None;
 
                 (*p_dev_desc).capabilities = None;
-            }
-        } // unsafe ends here
-
+            } // unsafe ends here
+        }
         let device_name = CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {

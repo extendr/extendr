@@ -28,6 +28,7 @@
 //!
 
 use super::*;
+use extendr_ffi::{R_do_slot, R_do_slot_assign, R_has_slot};
 
 #[derive(PartialEq, Clone)]
 pub struct S4 {

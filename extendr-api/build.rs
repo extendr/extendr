@@ -1,9 +1,15 @@
 use std::env;
 
 fn main() {
+    println!("cargo:rustc-check-cfg=cfg(use_objsxp)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_newenv)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_14)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_altlist)");
+
     // The R version information is needed to handle the API differences
-    // between versions. `These DEP_R_R_VERSION_*` are provided by libR-sys
-    // (for more details, please refer to libR-sys's `build.rs`).
+    // between versions. `These DEP_R_R_VERSION_*` are provided by extendr-ffi
+    // (for more details, please refer to extendr-ffi's `build.rs`).
     // The current approach is to add a config flag per feature. When there are
     // too many features, we might need to consider switching to per-version
     // config flags (e.g. `r410`).

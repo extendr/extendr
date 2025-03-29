@@ -1,5 +1,7 @@
 use super::*;
-
+use extendr_ffi::{
+    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GlobalEnv, Rf_defineVar,
+};
 #[derive(PartialEq, Clone)]
 pub struct Environment {
     pub(crate) robj: Robj,
@@ -75,7 +77,7 @@ impl Environment {
     pub fn parent(&self) -> Option<Environment> {
         unsafe {
             let sexp = self.robj.get();
-            let robj = Robj::from_sexp(ENCLOS(sexp));
+            let robj = Robj::from_sexp(get_parent_env(sexp));
             robj.try_into().ok()
         }
     }
@@ -85,7 +87,7 @@ impl Environment {
     pub fn set_parent(&mut self, parent: Environment) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            SET_ENCLOS(sexp, parent.robj.get());
+            extendr_ffi::SET_ENCLOS(sexp, parent.robj.get());
         });
         self
     }
@@ -95,7 +97,7 @@ impl Environment {
     pub fn envflags(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            ENVFLAGS(sexp)
+            extendr_ffi::ENVFLAGS(sexp)
         }
     }
 
@@ -104,7 +106,7 @@ impl Environment {
     pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();
-            SET_ENVFLAGS(sexp, flags);
+            extendr_ffi::SET_ENVFLAGS(sexp, flags);
         });
         self
     }
@@ -113,8 +115,8 @@ impl Environment {
     /// Iterate over an environment.
     pub fn iter(&self) -> EnvIter {
         unsafe {
-            let hashtab = Robj::from_sexp(HASHTAB(self.get()));
-            let frame = Robj::from_sexp(FRAME(self.get()));
+            let hashtab = Robj::from_sexp(extendr_ffi::HASHTAB(self.get()));
+            let frame = Robj::from_sexp(extendr_ffi::FRAME(self.get()));
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),
@@ -175,7 +177,7 @@ impl Environment {
     pub fn local<K: Into<Robj>>(&self, key: K) -> Result<Robj> {
         let key = key.into();
         if key.is_symbol() {
-            unsafe { Ok(Robj::from_sexp(Rf_findVarInFrame(self.get(), key.get()))) }
+            unsafe { Ok(Robj::from_sexp(get_var_in_frame(self.get(), key.get()))) }
         } else {
             Err(Error::NotFound(key))
         }

@@ -1,5 +1,9 @@
 use crate as extendr_api;
 use crate::*;
+use extendr_ffi::{
+    R_BaseEnv, R_BaseNamespace, R_BlankScalarString, R_BlankString, R_EmptyEnv, R_GetCurrentEnv,
+    R_GlobalEnv, R_NaString, R_NamespaceRegistry, R_NilValue, R_Srcref, R_dot_Generic,
+};
 
 #[cfg(feature = "non-api")]
 /// Get a global variable from global_env() and ancestors.
@@ -119,6 +123,7 @@ pub fn empty_env() -> Environment {
 /// ```
 #[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
+    use extendr_ffi::R_NewEnv;
     single_threaded(|| unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
         Robj::from_sexp(env).try_into().unwrap()
@@ -203,7 +208,7 @@ pub fn blank_scalar_string() -> Robj {
 /// ```
 pub fn parse(code: &str) -> Result<Expressions> {
     single_threaded(|| unsafe {
-        use libR_sys::*;
+        use extendr_ffi::{ParseStatus, R_NilValue, R_ParseVector};
         let mut status = ParseStatus::PARSE_NULL;
         let status_ptr = &mut status as *mut _;
         let codeobj: Robj = code.into();

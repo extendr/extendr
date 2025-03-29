@@ -1,6 +1,6 @@
-use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
-
 use super::*;
+use extendr_ffi::*;
+use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
 
 macro_rules! make_from_iterator {
     ($fn_name : ident, $make_class : ident, $impl : ident, $scalar_type : ident, $prim_type : ty) => {
@@ -58,6 +58,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         obj_flags: i32,
         levels: i32,
     ) -> Robj {
+        use extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
         let res = Self::unserialize(class, state);
         if !res.is_null() {
             single_threaded(|| unsafe {
@@ -122,9 +123,9 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
                 R_set_altrep_data2(x, data2);
-                DATAPTR(data2) as *mut u8
+                dataptr(data2) as *mut u8
             } else {
-                DATAPTR(data2) as *mut u8
+                dataptr(data2) as *mut u8
             }
         })
     }
@@ -137,7 +138,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 std::ptr::null()
             } else {
-                DATAPTR(data2) as *const u8
+                dataptr(data2) as *const u8
             }
         }
     }

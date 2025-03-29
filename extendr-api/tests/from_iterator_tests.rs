@@ -47,7 +47,7 @@ fn test_with_gc_torture_small() {
 #[test]
 fn test_with_gc_torture_large() {
     test!(
-        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {libR_sys::Rf_runif(0., 100.)}));
+        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {extendr_ffi::Rf_runif(0., 100.)}));
         R!("gctorture(on = TRUE)")?;
         let list: List = x.into_iter().collect();
         R!("gctorture(on = FALSE)")?;

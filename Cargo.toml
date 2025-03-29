@@ -1,10 +1,16 @@
 [workspace]
 resolver = "2"
 
-members = ["extendr-api", "extendr-engine", "extendr-macros", "xtask"]
+members = [
+    "extendr-api",
+    "extendr-engine",
+    "extendr-ffi",
+    "extendr-macros",
+    "xtask",
+]
 
 [workspace.package]
-version = "0.7.1"
+version = "0.8.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -20,9 +26,5 @@ repository = "https://github.com/extendr/extendr"
 
 [workspace.dependencies]
 # When updating extendr's version, this version also needs to be updated
-extendr-macros = { path = "./extendr-macros", version = "0.7.1" }
-
-# When uncommenting this, do not forget to uncomment the same line in
-# ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
-# {rextendr}" on .github/workflows/test.yml !
-libR-sys = { version = "0.7.1" }
+extendr-macros = { path = "./extendr-macros", version = "0.8.0" }
+extendr-ffi = { path = "./extendr-ffi" }

@@ -14,17 +14,19 @@ use std::iter::IntoIterator;
 use std::ops::{Range, RangeInclusive};
 use std::os::raw;
 
-use libR_sys::*;
-use SEXPTYPE::*;
+use extendr_ffi::{
+    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
+    Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
+    SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+};
 
+use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::*;
 pub use into_robj::*;
 pub use iter::*;
 pub use operators::Operators;
 use prelude::{c64, Rcplx};
 pub use rinternals::Rinternals;
-
-use crate::scalar::{Rbool, Rfloat, Rint};
-use crate::*;
 
 mod debug;
 mod into_robj;
@@ -165,7 +167,7 @@ pub trait Slices: GetSexp {
     /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR_RO(self.get()) as *const T;
+        let data = dataptr(self.get()) as *const T;
         std::slice::from_raw_parts(data, len)
     }
 
@@ -178,7 +180,7 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR(self.get_mut()) as *mut T;
+        let data = dataptr(self.get_mut()) as *mut T;
         std::slice::from_raw_parts_mut(data, len)
     }
 }
@@ -356,14 +358,14 @@ impl Robj {
                 let sexp = self.get();
                 use SEXPTYPE::*;
                 match self.sexptype() {
-                    STRSXP => STRING_ELT(sexp, 0) == libR_sys::R_NaString,
-                    INTSXP => *(INTEGER(sexp)) == libR_sys::R_NaInt,
-                    LGLSXP => *(LOGICAL(sexp)) == libR_sys::R_NaInt,
+                    STRSXP => STRING_ELT(sexp, 0) == extendr_ffi::R_NaString,
+                    INTSXP => *(INTEGER(sexp)) == extendr_ffi::R_NaInt,
+                    LGLSXP => *(LOGICAL(sexp)) == extendr_ffi::R_NaInt,
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
                     CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
                     // a character vector contains `CHARSXP`, and thus you
                     // seldom have `Robj`'s that are `CHARSXP` themselves
-                    CHARSXP => sexp == libR_sys::R_NaString,
+                    CHARSXP => sexp == extendr_ffi::R_NaString,
                     _ => false,
                 }
             }

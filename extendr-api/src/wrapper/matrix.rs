@@ -2,6 +2,10 @@
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
 use crate::scalar::Scalar;
+use extendr_ffi::{
+    Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
+    TYPEOF,
+};
 use std::ops::{Index, IndexMut};
 
 /// Wrapper for creating and using matrices and arrays.
@@ -125,7 +129,9 @@ impl<T> RMatrix<T> {
                     let colnames = Robj::from_sexp(maybe_colnames);
                     Some(std::mem::transmute(colnames))
                 }
-                _ => unreachable!("This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"),
+                _ => unreachable!(
+                    "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
+                ),
             }
         }
     }
@@ -138,7 +144,9 @@ impl<T> RMatrix<T> {
                     let rownames = Robj::from_sexp(maybe_rownames);
                     Some(std::mem::transmute(rownames))
                 }
-                _ => unreachable!("This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"),
+                _ => unreachable!(
+                    "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
+                ),
             }
         }
     }
@@ -628,7 +636,7 @@ where
     ///    matrix[[1, 0, 0]] = 2.;
     ///    matrix[[2, 0, 0]] = 3.;
     ///    matrix[[0, 1, 0]] = 4.;
-    ///    assert_eq!(matrix.as_real_slice().unwrap(), 
+    ///    assert_eq!(matrix.as_real_slice().unwrap(),
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
@@ -642,7 +650,6 @@ where
         }
     }
 }
-
 
 impl<T, D> Deref for RArray<T, D> {
     type Target = Robj;
@@ -672,6 +679,7 @@ mod tests {
     use super::*;
     use crate as extendr_api;
     use extendr_engine::with_r;
+    use extendr_ffi::Rf_PrintValue;
     use prelude::{Rcplx, Rfloat, Rint};
 
     #[test]

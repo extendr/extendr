@@ -1,4 +1,4 @@
-use libR_sys::{R_IsNA, R_NaReal};
+use extendr_ffi::{R_IsNA, R_NaReal};
 use once_cell::sync::Lazy;
 use std::alloc::{self, Layout};
 

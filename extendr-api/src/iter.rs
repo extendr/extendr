@@ -1,7 +1,7 @@
 use crate::*;
 
+use extendr_ffi::{R_NaString, R_NilValue, Rf_isFactor, INTEGER, STRING_ELT, TYPEOF};
 use wrapper::symbol::levels_symbol;
-
 /// Iterator over name-value pairs in lists.
 pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 

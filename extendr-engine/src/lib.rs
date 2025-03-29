@@ -1,8 +1,8 @@
 //! Embeds a a single R process
 //!
 //! Using R's C-API requires the embedding of the R runtime.
-//! Thus, when using bindings in `libR-sys`, it is necessary that
-//! either the a R process is the caller, or that the process instantiates
+//! Thus, when using bindings provided by `extendr-ffi`, it is necessary that
+//! either an R process is the caller, or that the process instantiates
 //! an accompanying R process. Otherwise, a run-time error occurs e.g.
 //! `(signal: 11, SIGSEGV: invalid memory reference)` or
 //!
@@ -20,18 +20,18 @@
 //! #[test]
 //! fn testing_r_code() {
 //!     with_r(|| {
-//!     
+//!
 //!     });
 //! }
 //! ```
 //!
 //! Similarly with `test!` that is available in `extendr_api`, one may
 //!
-//! ```no_run   
+//! ```no_run
 //! #[test]
 //! fn testing_r_code() {
 //!     test! {
-//!     
+//!
 //!     };
 //! }
 //! ```
@@ -61,7 +61,9 @@
 //
 //
 
-use libR_sys::*;
+use extendr_ffi::{
+    setup_Rmainloop, R_CStackLimit, R_CleanTempDir, R_RunExitFinalizers, Rf_initialize_R,
+};
 use std::os::raw;
 use std::sync::Once;
 
@@ -80,7 +82,7 @@ pub fn start_r() {
     START_R.call_once(|| {
         unsafe {
             if std::env::var("R_HOME").is_err() {
-                // env! gets the build-time R_HOME stored by libR-sys
+                // env! gets the build-time R_HOME stored by extendr-ffi
                 std::env::set_var("R_HOME", env!("R_HOME"));
             }
 

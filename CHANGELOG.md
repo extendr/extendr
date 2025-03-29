@@ -17,6 +17,7 @@
 
 ### Changed
 
+- `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provided backports.
 - Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. <https://github.com/extendr/extendr/pull/882>
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
