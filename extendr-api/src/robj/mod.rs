@@ -656,6 +656,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
+        use SEXPTYPE::*;
         unsafe {
             let charsxp = match self.sexptype() {
                 STRSXP => {
@@ -832,6 +833,7 @@ macro_rules! make_typed_slice {
             Self : 'a,
         {
             fn as_typed_slice(&self) -> Option<&'a [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
@@ -849,6 +851,7 @@ macro_rules! make_typed_slice {
             }
 
             fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
