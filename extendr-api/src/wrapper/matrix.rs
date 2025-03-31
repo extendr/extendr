@@ -1,7 +1,6 @@
 //! Wrappers for matrices with deferred arithmetic.
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
-use crate::scalar::Scalar;
 use extendr_ffi::{
     Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
     TYPEOF,
@@ -102,7 +101,7 @@ where
         let len = dim.iter().product();
         let mut robj = Robj::alloc_vector(sexptype, len);
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 }
 
@@ -117,7 +116,7 @@ where
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
-        RArray::from_parts(matrix, [nrow, ncol])
+        RArray::from_parts(matrix)
     }
 }
 
@@ -211,7 +210,7 @@ impl<T, const NDIM: usize> RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
-    pub fn from_parts(robj: Robj, _ndim: [usize; NDIM]) -> Self {
+    pub fn from_parts(robj: Robj) -> Self {
         Self {
             robj,
             _data: std::marker::PhantomData,
@@ -244,7 +243,7 @@ where
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
@@ -282,7 +281,7 @@ where
             .collect_robj();
         let dim = [nrows, ncols];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
@@ -318,7 +317,7 @@ where
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
@@ -345,8 +344,7 @@ where
 
     fn try_from(robj: &Robj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
-            let len = robj.len();
-            Ok(RArray::from_parts(robj.clone(), [len]))
+            Ok(RArray::from_parts(robj.clone()))
         } else {
             Err(Error::ExpectedVector(robj.clone()))
         }
@@ -364,11 +362,11 @@ where
             Err(Error::ExpectedMatrix(robj.clone()))
         } else if let Some(_slice) = robj.as_typed_slice() {
             if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                if dim.len() != 2 {
+                let ndim = dim.len();
+                if ndim != 2 {
                     Err(Error::ExpectedMatrix(robj.clone()))
                 } else {
-                    Ok(RArray::from_parts(robj.clone(), [dim[0], dim[1]]))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix(robj.clone()))
@@ -391,8 +389,7 @@ where
                 if dim.len() != 3 {
                     Err(Error::ExpectedMatrix3D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(robj.clone(), [dim[0], dim[1], dim[2]]))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix3D(robj.clone()))
@@ -415,11 +412,7 @@ where
                 if dim.len() != 4 {
                     Err(Error::ExpectedMatrix4D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(
-                        robj.clone(),
-                        [dim[0], dim[1], dim[2], dim[3]],
-                    ))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix4D(robj.clone()))
@@ -442,11 +435,7 @@ where
                 if dim.len() != 5 {
                     Err(Error::ExpectedMatrix5D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(
-                        robj.clone(),
-                        [dim[0], dim[1], dim[2], dim[3], dim[4]],
-                    ))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix5D(robj.clone()))

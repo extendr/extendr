@@ -603,7 +603,7 @@ pub trait RobjItertools: Iterator {
         let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
-        Ok(RArray::from_parts(vector, dims))
+        Ok(RArray::from_parts(vector))
     }
 }
 
