@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["SymbolicLuRaw"],"fn":["factorize_symbolic_lu"],"mod":["simplicial","supernodal"],"struct":["LuRef","LuSymbolicParams","NumericLu","SymbolicLu"]};

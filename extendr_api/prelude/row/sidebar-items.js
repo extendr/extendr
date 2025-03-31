@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["from_mut","from_mut_generic","from_raw_parts","from_raw_parts_mut","from_ref","from_ref_generic","from_repeated_ref","from_repeated_ref_generic","from_slice","from_slice_generic","from_slice_mut","from_slice_mut_generic"],"struct":["Row","RowMut","RowRef"],"trait":["AsRowMut","AsRowRef","RowBatch","RowBatchMut","RowIndex"]};

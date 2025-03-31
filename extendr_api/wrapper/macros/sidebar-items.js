@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["gen_vector_wrapper_impl"]};
+window.SIDEBAR_ITEMS = {"macro":["gen_from_iterator_impl","gen_vector_wrapper_impl"]};

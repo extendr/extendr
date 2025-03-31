@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["col_pivoting","no_pivoting"]};

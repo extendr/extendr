@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["compute_cholesky_permutation"],"mod":["bunch_kaufman","ldlt_diagonal","llt"]};

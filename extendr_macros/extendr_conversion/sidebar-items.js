@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["do_extendr_type_conversion","extendr_type_conversion","pull_fields"],"struct":["TypeFields"]};

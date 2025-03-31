@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Diag","MatLayoutTransform","VecLayoutTransform"],"struct":["Last","LastEq","Read","ReadWrite","Zip","ZipEq"],"trait":["MatIndex","MatShape","MaybeContiguous","ViewMut"]};

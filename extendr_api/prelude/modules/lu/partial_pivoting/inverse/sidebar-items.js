@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["invert","invert_in_place","invert_in_place_req","invert_req"]};

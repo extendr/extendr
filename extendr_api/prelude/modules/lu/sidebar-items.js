@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["full_pivoting","partial_pivoting"]};

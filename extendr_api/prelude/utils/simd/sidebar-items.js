@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["NoConj","Prefix","PrefixMut","SimdFor","Suffix","SuffixMut","YesConj"],"trait":["ConjTy","Read","Write"]};

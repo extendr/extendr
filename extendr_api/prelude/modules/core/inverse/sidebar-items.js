@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["invert_lower_triangular","invert_unit_lower_triangular","invert_unit_upper_triangular","invert_upper_triangular"]};

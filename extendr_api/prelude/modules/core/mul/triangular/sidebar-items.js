@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["BlockStructure"],"fn":["matmul","matmul_with_conj"]};

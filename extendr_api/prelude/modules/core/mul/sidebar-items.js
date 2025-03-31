@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["matmul","matmul_with_conj"],"mod":["triangular"]};
