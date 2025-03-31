@@ -199,7 +199,6 @@ impl<T, const NDIM: usize> Offset<[usize; NDIM]> for RArray<T, NDIM> {
             .rev()
             .enumerate()
             .fold(0, |acc, (i, (&idx, &dim))| {
-                println!("idx: {}, dim: {}", idx, dim);
                 if idx - BASE >= dim {
                     panic!("array index: dimension {} overflow (0-based dimension)", i);
                 }
