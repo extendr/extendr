@@ -16,8 +16,8 @@ use std::os::raw;
 
 use extendr_ffi::{
     dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
-    Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
-    SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+    Rf_setAttrib, Rf_xlength, COMPLEX, DATAPTR_RO, INTEGER, LOGICAL, PRINTNAME, RAW, REAL,
+    SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
 use crate::scalar::{Rbool, Rfloat, Rint};
@@ -107,8 +107,64 @@ mod tests;
 /// is true.
 ///
 #[repr(transparent)]
+#[derive(Eq)]
 pub struct Robj {
     inner: SEXP,
+}
+
+impl std::hash::Hash for Robj {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        use SEXPTYPE::*;
+        match self.sexptype() {
+            // Both `NULL` and symbols are identifiable by their memory address.
+            NILSXP | SYMSXP => {
+                unsafe { self.get().hash(state); }
+            },
+            LISTSXP => todo!(),
+            CLOSXP => todo!(),
+            ENVSXP => todo!(),
+            PROMSXP => todo!(),
+            LANGSXP => todo!(),
+            SPECIALSXP => todo!(),
+            BUILTINSXP => todo!(),
+            CHARSXP => {
+                self.as_str().hash(state);
+            },
+            STRSXP => {
+                self.as_str_iter().unwrap().for_each(|x| {
+                    x.hash(state);
+                });
+            },
+            LGLSXP => {
+                self.as_logical_slice().unwrap().hash(state);
+            },
+            INTSXP => self.as_integer_slice().unwrap().hash(state),
+            CPLXSXP |
+            REALSXP => unimplemented!("f64 is not hashable, as NaN != NaN."),
+            DOTSXP => todo!(),
+            RAWSXP => todo!(),
+            VECSXP => {
+                let sexp = unsafe { self.get() };
+                let ptr = unsafe { DATAPTR_RO(sexp).cast::<Robj>() };
+                let len = self.len();
+                let list_slice = if len == 0 {
+                    &[]
+                } else {
+                    unsafe { std::slice::from_raw_parts(ptr, len) }
+                };
+                list_slice.hash(state);
+            }
+            EXTPTRSXP => unimplemented!("Hashing externalptr is not supported. Refer to `ExternalPtr<T>` for `T: Hash` instead"),
+            ANYSXP => todo!(),
+            EXPRSXP => todo!(),
+            BCODESXP => todo!(),
+            WEAKREFSXP => todo!(),
+            OBJSXP => todo!(),
+            NEWSXP => todo!(),
+            FREESXP => todo!(),
+            FUNSXP => todo!(),
+        }
+    }
 }
 
 impl Clone for Robj {
@@ -600,6 +656,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
+        use SEXPTYPE::*;
         unsafe {
             let charsxp = match self.sexptype() {
                 STRSXP => {
@@ -776,6 +833,7 @@ macro_rules! make_typed_slice {
             Self : 'a,
         {
             fn as_typed_slice(&self) -> Option<&'a [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
@@ -793,6 +851,7 @@ macro_rules! make_typed_slice {
             }
 
             fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
