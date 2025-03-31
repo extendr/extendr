@@ -49,14 +49,14 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
     )))
 }
 
-/// Implementation of the IntoRobj macro. Refer to the documentation there
+/// Implementation of the `IntoRobj` macro. Refer to the documentation there
 pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
     let ast = syn::parse::<DeriveInput>(item)?;
     let inside = if let Data::Struct(inner) = ast.data {
         inner
     } else {
-        return Err(syn::Error::new_spanned(ast, "Only struct is supported"));
+        return Err(syn::Error::new_spanned(ast, "Only `struct` is supported"));
     };
     let struct_name = ast.ident;
 
@@ -65,6 +65,33 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
     let mut tokens = Vec::<TokenStream2>::with_capacity(inside.fields.len());
 
     for field in inside.fields {
+        let mut ignore = false;
+
+        let field_attributes = &field.attrs;
+        for attrib in field_attributes {
+            if !attrib.path().is_ident("into_robj") {
+                continue;
+            }
+            let ignore_flag: syn::Meta = attrib.parse_args()?;
+            match ignore_flag {
+                syn::Meta::Path(path) => {
+                    if path.is_ident("ignore") {
+                        ignore = true;
+                    }
+                }
+                _ => {
+                    return Err(syn::Error::new_spanned(
+                        ignore_flag,
+                        "unrecognized attribute for `IntoRobj`",
+                    ))
+                }
+            }
+        }
+
+        if ignore {
+            continue;
+        }
+
         let field_name = field.ident.as_ref().unwrap();
         let field_str = field_name.to_string();
         tokens.push(quote!(
@@ -81,7 +108,7 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
         }
         impl std::convert::From<#struct_name> for extendr_api::Robj {
             fn from(value: #struct_name) -> Self {
-                extendr_api::List::from_pairs([#(#tokens),*]).into()
+                (&value).into()
             }
         }
     )))

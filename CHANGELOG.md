@@ -14,6 +14,7 @@
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
 - `FromIterator<T>` and `FromIterator<&T>` for vector wrapper where `T` represents a matching underlying type (`bool`,
   `i32`, `f64`, `c64`) [[#879]](https://github.com/extendr/extendr/pull/879)
+- An ignore field attribute to the macro `derive(IntoRobj)` called `#[into_robj(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 
 ### Changed
 
