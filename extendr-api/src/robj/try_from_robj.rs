@@ -6,9 +6,9 @@
 //!
 //!
 //! [`ownership`]: crate::ownership
-use crate::conversions::try_into_int::FloatToInt;
-
 use super::*;
+use crate as extendr_api;
+use crate::conversions::try_into_int::FloatToInt;
 
 macro_rules! impl_try_from_scalar_integer {
     ($t:ty) => {
