@@ -3368,6 +3368,382 @@
               }
           }
       }
+      mod hashmap {
+          use extendr_api::prelude::*;
+          use std::collections::HashMap;
+          fn test_hm_string(mut x: HashMap<String, Robj>) -> List {
+              x.insert("inserted_value".to_string(), List::new(0).into());
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_string(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(test_hm_string(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "test_hm_string"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_string(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "HashMap",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_string",
+                      r_name: "test_hm_string",
+                      mod_name: "test_hm_string",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_string as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn test_hm_i32(mut x: HashMap<String, i32>) -> List {
+              x.insert("inserted_value".to_string(), 314);
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_i32(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(test_hm_i32(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "test_hm_i32"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_i32(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "HashMap",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_i32",
+                      r_name: "test_hm_i32",
+                      mod_name: "test_hm_i32",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_i32 as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct Point {
+              x: f64,
+              y: f64,
+          }
+          impl TryFrom<Robj> for Point {
+              type Error = Error;
+              fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+                  let inner_vec = Doubles::try_from(value)?;
+                  let x = inner_vec[0].inner();
+                  let y = inner_vec[1].inner();
+                  Ok(Point { x, y })
+              }
+          }
+          impl From<Point> for Doubles {
+              fn from(value: Point) -> Self {
+                  Doubles::from_values([value.x, value.y])
+              }
+          }
+          impl From<Point> for Robj {
+              fn from(value: Point) -> Self {
+                  Robj::from(Doubles::from(value))
+              }
+          }
+          fn test_hm_custom_try_from(mut x: HashMap<&str, Point>) -> List {
+              x.insert("inserted_value", Point { x: 3.0, y: 0.1415 });
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_custom_try_from(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  test_hm_custom_try_from(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "test_hm_custom_try_from",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_custom_try_from(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let args = <[_]>::into_vec(
+                  #[rustc_box]
+                  ::alloc::boxed::Box::new([
+                      extendr_api::metadata::Arg {
+                          name: "x",
+                          arg_type: "HashMap",
+                          default: None,
+                      },
+                  ]),
+              );
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_custom_try_from",
+                      r_name: "test_hm_custom_try_from",
+                      mod_name: "test_hm_custom_try_from",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_custom_try_from as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_hashmap_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__test_hm_string(&mut functions);
+              meta__test_hm_i32(&mut functions);
+              meta__test_hm_custom_try_from(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_hashmap_metadata",
+                      mod_name: "get_hashmap_metadata",
+                      r_name: "get_hashmap_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_hashmap_metadata as *const u8,
+                      hidden: true,
+                  });
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_hashmap_wrappers",
+                      mod_name: "make_hashmap_wrappers",
+                      r_name: "make_hashmap_wrappers",
+                      args: <[_]>::into_vec(
+                          #[rustc_box]
+                          ::alloc::boxed::Box::new([
+                              extendr_api::metadata::Arg {
+                                  name: "use_symbols",
+                                  arg_type: "bool",
+                                  default: None,
+                              },
+                              extendr_api::metadata::Arg {
+                                  name: "package_name",
+                                  arg_type: "&str",
+                                  default: None,
+                              },
+                          ]),
+                      ),
+                      return_type: "String",
+                      func_ptr: wrap__make_hashmap_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "hashmap",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_hashmap_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_hashmap_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_hashmap_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_hashmap_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_hashmap_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_hashmap_metadata()) };
+          }
+      }
       mod matrix {
           use extendr_api::prelude::*;
           fn fetch_dimnames(x: RMatrix<f64>) -> List {
@@ -11751,6 +12127,7 @@
           functions.extend(altrep::get_altrep_metadata().functions);
           functions.extend(attributes::get_attributes_metadata().functions);
           functions.extend(dataframe::get_dataframe_metadata().functions);
+          functions.extend(hashmap::get_hashmap_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
@@ -11765,6 +12142,7 @@
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
           impls.extend(dataframe::get_dataframe_metadata().impls);
+          impls.extend(hashmap::get_hashmap_metadata().impls);
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);

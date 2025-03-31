@@ -14,6 +14,7 @@
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
 - `FromIterator<T>` and `FromIterator<&T>` for vector wrapper where `T` represents a matching underlying type (`bool`,
   `i32`, `f64`, `c64`) [[#879]](https://github.com/extendr/extendr/pull/879)
+- Conversion from `Robj`/`List` to `HashMap<_, T>` for `T: TryFrom<Robj>` [[#854]](https://github.com/extendr/extendr/pull/854)
 
 ### Changed
 
