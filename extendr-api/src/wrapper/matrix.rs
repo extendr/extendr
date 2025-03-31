@@ -28,15 +28,15 @@ use std::ops::{Index, IndexMut};
 /// }
 /// ```
 #[derive(Debug, PartialEq)]
-pub struct RArray<T, const DIM: usize> {
+pub struct RArray<T, const NDIM: usize> {
     /// Owning Robj (probably should be a Pin).
     robj: Robj,
 
-    /// Dimensions of the array.
+    /// Data type of the n-array
     _data: std::marker::PhantomData<T>,
 }
 
-impl<T, const DIM: usize> RArray<T, DIM> {
+impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dimnames(&self) -> List {
         List::try_from(Robj::from_sexp(unsafe { Rf_GetArrayDimnames(self.get()) })).unwrap()
     }
@@ -92,12 +92,12 @@ pub type RMatrix5D<T> = RArray<T, 5>;
 
 // TODO: The function name should be cleaner
 
-impl<T, const DIM: usize> RArray<T, DIM>
+impl<T, const NDIM: usize> RArray<T, NDIM>
 where
     T: ToVectorValue,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
-    pub fn new_array(dim: [usize; DIM]) -> Self {
+    pub fn new_array(dim: [usize; NDIM]) -> Self {
         let sexptype = T::sexptype();
         let len = dim.iter().product();
         let mut robj = Robj::alloc_vector(sexptype, len);
@@ -186,9 +186,9 @@ trait Offset<D> {
     fn offset(&self, idx: D) -> usize;
 }
 
-impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
+impl<T, const NDIM: usize> Offset<[usize; NDIM]> for RArray<T, NDIM> {
     /// Get the offset into the array for a given index.
-    fn offset(&self, index: [usize; DIM]) -> usize {
+    fn offset(&self, index: [usize; NDIM]) -> usize {
         let dims = self.get_dim();
         if index.len() != dims.len() {
             panic!("array index: dimension mismatch");
@@ -208,11 +208,11 @@ impl<T, const DIM: usize> Offset<[usize; DIM]> for RArray<T, DIM> {
     }
 }
 
-impl<T, const DIM: usize> RArray<T, DIM>
+impl<T, const NDIM: usize> RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
-    pub fn from_parts(robj: Robj, _dim: [usize; DIM]) -> Self {
+    pub fn from_parts(robj: Robj, _ndim: [usize; NDIM]) -> Self {
         Self {
             robj,
             _data: std::marker::PhantomData,
@@ -229,9 +229,9 @@ where
         self.as_typed_slice_mut().unwrap()
     }
 
-    /// Get the dimension number for this array.
-    pub fn dim(&self) -> usize {
-        DIM
+    /// Returns the number of dimensions.
+    pub fn ndim(&self) -> usize {
+        NDIM
     }
 }
 
@@ -541,7 +541,7 @@ pub trait MatrixConversions: GetSexp {
 
 impl MatrixConversions for Robj {}
 
-impl<T, const DIM: usize> Index<[usize; DIM]> for RArray<T, DIM>
+impl<T, const NDIM: usize> Index<[usize; NDIM]> for RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
@@ -569,7 +569,7 @@ where
     ///     assert_eq!(matrix[[2, 1, 1]], 4.);
     /// }
     /// ```
-    fn index(&self, index: [usize; DIM]) -> &Self::Output {
+    fn index(&self, index: [usize; NDIM]) -> &Self::Output {
         unsafe {
             self.data()
                 .as_ptr()
@@ -580,7 +580,7 @@ where
     }
 }
 
-impl<T, const DIM: usize> IndexMut<[usize; DIM]> for RArray<T, DIM>
+impl<T, const NDIM: usize> IndexMut<[usize; NDIM]> for RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
@@ -606,7 +606,7 @@ where
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
-    fn index_mut(&mut self, index: [usize; DIM]) -> &mut Self::Output {
+    fn index_mut(&mut self, index: [usize; NDIM]) -> &mut Self::Output {
         unsafe {
             self.data_mut()
                 .as_mut_ptr()
@@ -617,7 +617,7 @@ where
     }
 }
 
-impl<T, const DIM: usize> Deref for RArray<T, DIM> {
+impl<T, const NDIM: usize> Deref for RArray<T, NDIM> {
     type Target = Robj;
 
     fn deref(&self) -> &Self::Target {
@@ -625,14 +625,14 @@ impl<T, const DIM: usize> Deref for RArray<T, DIM> {
     }
 }
 
-impl<T, const DIM: usize> DerefMut for RArray<T, DIM> {
+impl<T, const NDIM: usize> DerefMut for RArray<T, NDIM> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.robj
     }
 }
 
-impl<T, const DIM: usize> From<Option<RArray<T, DIM>>> for Robj {
-    fn from(value: Option<RArray<T, DIM>>) -> Self {
+impl<T, const NDIM: usize> From<Option<RArray<T, NDIM>>> for Robj {
+    fn from(value: Option<RArray<T, NDIM>>) -> Self {
         match value {
             None => nil_value(),
             Some(value) => value.into(),
