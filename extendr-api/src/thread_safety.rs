@@ -63,18 +63,14 @@ where
         }
     }
 }
-thread_local! {
-    static R_ERROR_BUF: std::cell::RefCell<std::ffi::CString> = std::cell::RefCell::default();
-}
+
+static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
-        let error_buf_ptr = R_ERROR_BUF.with(|previous_error| {
-            previous_error.replace(std::ffi::CString::new(s).unwrap());
-            previous_error.borrow().as_ref().as_ptr()
-        });
-        Rf_error(error_buf_ptr);
+        R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
+        Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
     };
 }
 

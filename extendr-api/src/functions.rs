@@ -73,7 +73,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// [`Robj::double_colon`]: Operators::double_colon
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
     let key = key.into();
-    let res = single_threaded(|| call!(".getNamespace", &key));
+    let res = single_threaded(|| call!(".getNamespace", key.clone()));
     if let Ok(res) = res {
         Ok(res.try_into()?)
     } else {
@@ -90,7 +90,7 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// }
 /// ```
 pub fn current_env() -> Environment {
-    unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap()}
+    unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
 }
 
 /// The "global" environment
