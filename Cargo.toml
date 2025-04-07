@@ -10,7 +10,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.8.0"
+version = "0.9.0"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Thomas Down",
@@ -26,5 +26,5 @@ repository = "https://github.com/extendr/extendr"
 
 [workspace.dependencies]
 # When updating extendr's version, this version also needs to be updated
-extendr-macros = { path = "./extendr-macros", version = "0.8.0" }
+extendr-macros = { path = "./extendr-macros" }
 extendr-ffi = { path = "./extendr-ffi" }
