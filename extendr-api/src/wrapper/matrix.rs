@@ -234,8 +234,14 @@ where
     }
 
     /// Returns the number of dimensions.
-    pub fn dim(&self) -> usize {
+    pub fn ndim(&self) -> usize {
         NDIM
+    }
+
+    /// Returns the dimensions of the array.
+    // TODO:: Need to deprecate this and use `get_dim` instead.
+    pub fn dim(&self) -> Vec<usize> {
+        self.get_dim()
     }
 }
 
