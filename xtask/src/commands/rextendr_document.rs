@@ -3,7 +3,7 @@
 //! It uses the vendored `rextendr` in the repository as the source package.
 //!
 //! 1. Ensure that `git submodule update --init` was invoked once, as to setup
-//! the vendored `rextendr` package.
+//!    the vendored `rextendr` package.
 //! 2. `devtools` must be installed on system.
 //!
 //!

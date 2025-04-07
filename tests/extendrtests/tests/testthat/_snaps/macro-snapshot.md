@@ -88,8 +88,10 @@
           #[cfg(use_r_altlist)]
           impl AltListImpl for VecUsize {
               fn elt(&self, index: usize) -> Robj {
-                  Self(<[_]>::into_vec(#[rustc_box] ::alloc::boxed::Box::new([self.0[index]])))
-                      .into()
+                  let mut v = Vec::with_capacity(1usize);
+                  v.push(self.0[index]);
+                  let v = v;
+                  Self(v).into_robj()
               }
           }
           #[cfg(use_r_altlist)]
@@ -166,16 +168,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__new_usize(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "robj",
-                          arg_type: "Integers",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "robj",
+                  arg_type: "Integers",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -288,7 +287,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altstring(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -418,7 +418,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__tst_altinteger(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -450,27 +451,25 @@
                       func_ptr: wrap__get_altrep_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_altrep_wrappers",
                       mod_name: "make_altrep_wrappers",
                       r_name: "make_altrep_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_altrep_wrappers as *const u8,
                       hidden: true,
@@ -584,16 +583,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__dbls_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Doubles",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -674,16 +670,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__strings_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Strings",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -768,21 +761,18 @@
           }
           #[allow(non_snake_case)]
           fn meta__list_named(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "List",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "nms",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "List",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "nms",
+                  arg_type: "Strings",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -814,27 +804,25 @@
                       func_ptr: wrap__get_attributes_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_attributes_wrappers",
                       mod_name: "make_attributes_wrappers",
                       r_name: "make_attributes_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_attributes_wrappers as *const u8,
                       hidden: true,
@@ -899,7 +887,9 @@
               }
           }
           impl extendr_api::wrapper::IntoDataFrameRow<MyStruct> for Vec<MyStruct> {
-              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
+              fn into_dataframe(
+                  self,
+              ) -> extendr_api::Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.len());
                   let mut y = Vec::with_capacity(self.len());
                   for val in self {
@@ -924,7 +914,9 @@
               I: ExactSizeIterator<Item = MyStruct>,
           {
               /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-              fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<MyStruct>> {
+              fn into_dataframe(
+                  self,
+              ) -> extendr_api::Result<extendr_api::wrapper::Dataframe<MyStruct>> {
                   let mut x = Vec::with_capacity(self.0.len());
                   let mut y = Vec::with_capacity(self.0.len());
                   for val in self.0 {
@@ -945,19 +937,16 @@
               }
           }
           fn test_derive_into_dataframe() -> Dataframe<MyStruct> {
-              let v = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      MyStruct {
-                          x: 0.into(),
-                          y: "abc".into(),
-                      },
-                      MyStruct {
-                          x: 1.into(),
-                          y: "xyz".into(),
-                      },
-                  ]),
-              );
+              let mut v = Vec::with_capacity(2);
+              v.push(MyStruct {
+                  x: 0.into(),
+                  y: "abc".into(),
+              });
+              v.push(MyStruct {
+                  x: 1.into(),
+                  y: "xyz".into(),
+              });
+              let v = v;
               v.into_dataframe().unwrap()
           }
           #[no_mangle]
@@ -1022,7 +1011,8 @@
           fn meta__test_derive_into_dataframe(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1036,19 +1026,16 @@
                   })
           }
           fn test_into_robj_dataframe() -> Robj {
-              let v = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      MyStruct {
-                          x: 0.into(),
-                          y: "abc".into(),
-                      },
-                      MyStruct {
-                          x: 1.into(),
-                          y: "xyz".into(),
-                      },
-                  ]),
-              );
+              let mut v = Vec::with_capacity(2);
+              v.push(MyStruct {
+                  x: 0.into(),
+                  y: "abc".into(),
+              });
+              v.push(MyStruct {
+                  x: 1.into(),
+                  y: "xyz".into(),
+              });
+              let v = v;
               v.into_dataframe().unwrap().into_robj()
           }
           #[no_mangle]
@@ -1111,7 +1098,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__test_into_robj_dataframe(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -1142,27 +1130,25 @@
                       func_ptr: wrap__get_dataframe_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_dataframe_wrappers",
                       mod_name: "make_dataframe_wrappers",
                       r_name: "make_dataframe_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_dataframe_wrappers as *const u8,
                       hidden: true,
@@ -1393,7 +1379,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -1477,21 +1464,18 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "i32",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "i32",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for setting stuff.\n @param x a number",
@@ -1571,16 +1555,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting stuff.",
@@ -1662,16 +1643,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_owned(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting one's (by way of a copy) self.",
@@ -1762,16 +1740,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting one's (ref) self.",
@@ -1862,16 +1837,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting one's (ref mut) self.",
@@ -1962,16 +1934,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting one's ref (explicit) self.",
@@ -2062,16 +2031,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__me_explicit_mut(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting one's ref mut (explicit) self.",
@@ -2176,21 +2142,18 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "other",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "other",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -2312,26 +2275,23 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref_offset(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "other",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "_offset",
-                          arg_type: "i32",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(3usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "other",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "_offset",
+                  arg_type: "i32",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " `offset` does nothing.",
@@ -2436,21 +2396,18 @@
           }
           #[allow(non_snake_case)]
           fn meta__Wrapper__max_ref2(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Wrapper",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "other",
-                          arg_type: "Self",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Wrapper",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "other",
+                  arg_type: "Self",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -2552,7 +2509,8 @@
           fn meta__externalptr_use_ref_manually(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -2639,16 +2597,13 @@
           fn meta__create_numeric_externalptr(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Doubles",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -2733,16 +2688,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__sum_integer_externalptr(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "ExternalPtr",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "ExternalPtr",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -2831,16 +2783,13 @@
               }
               #[allow(non_snake_case)]
               fn meta__Wrapper__a_10(metadata: &mut Vec<extendr_api::metadata::Func>) {
-                  let args = <[_]>::into_vec(
-                      #[rustc_box]
-                      ::alloc::boxed::Box::new([
-                          extendr_api::metadata::Arg {
-                              name: "self",
-                              arg_type: "Wrapper",
-                              default: None,
-                          },
-                      ]),
-                  );
+                  let mut args = Vec::with_capacity(1usize);
+                  args.push(extendr_api::metadata::Arg {
+                      name: "self",
+                      arg_type: "Wrapper",
+                      default: None,
+                  });
+                  let args = args;
                   metadata
                       .push(extendr_api::metadata::Func {
                           doc: "",
@@ -2881,27 +2830,25 @@
                           func_ptr: wrap__get_submod_metadata as *const u8,
                           hidden: true,
                       });
+                  let mut args = Vec::with_capacity(2usize);
+                  args.push(extendr_api::metadata::Arg {
+                      name: "use_symbols",
+                      arg_type: "bool",
+                      default: None,
+                  });
+                  args.push(extendr_api::metadata::Arg {
+                      name: "package_name",
+                      arg_type: "&str",
+                      default: None,
+                  });
+                  let args = args;
                   functions
                       .push(extendr_api::metadata::Func {
                           doc: "Wrapper generator.",
                           rust_name: "make_submod_wrappers",
                           mod_name: "make_submod_wrappers",
                           r_name: "make_submod_wrappers",
-                          args: <[_]>::into_vec(
-                              #[rustc_box]
-                              ::alloc::boxed::Box::new([
-                                  extendr_api::metadata::Arg {
-                                      name: "use_symbols",
-                                      arg_type: "bool",
-                                      default: None,
-                                  },
-                                  extendr_api::metadata::Arg {
-                                      name: "package_name",
-                                      arg_type: "&str",
-                                      default: None,
-                                  },
-                              ]),
-                          ),
+                          args,
                           return_type: "String",
                           func_ptr: wrap__make_submod_wrappers as *const u8,
                           hidden: true,
@@ -3062,7 +3009,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__Animal__new_dog(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3132,7 +3080,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__Animal__new_cat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3214,16 +3163,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__Animal__speak(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "Animal",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "Animal",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3271,27 +3217,25 @@
                       func_ptr: wrap__get_externalptr_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_externalptr_wrappers",
                       mod_name: "make_externalptr_wrappers",
                       r_name: "make_externalptr_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_externalptr_wrappers as *const u8,
                       hidden: true,
@@ -3364,6 +3308,371 @@
               }
           }
       }
+      mod hashmap {
+          use extendr_api::prelude::*;
+          use std::collections::HashMap;
+          fn test_hm_string(mut x: HashMap<String, Robj>) -> List {
+              x.insert("inserted_value".to_string(), List::new(0).into());
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_string(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(test_hm_string(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "test_hm_string"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_string(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "HashMap",
+                  default: None,
+              });
+              let args = args;
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_string",
+                      r_name: "test_hm_string",
+                      mod_name: "test_hm_string",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_string as *const u8,
+                      hidden: false,
+                  })
+          }
+          fn test_hm_i32(mut x: HashMap<String, i32>) -> List {
+              x.insert("inserted_value".to_string(), 314);
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_i32(x: extendr_api::SEXP) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(extendr_api::Robj::from(test_hm_i32(_x_robj.try_into()?)))
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!("User function panicked: {0}", "test_hm_i32"),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_i32(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "HashMap",
+                  default: None,
+              });
+              let args = args;
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_i32",
+                      r_name: "test_hm_i32",
+                      mod_name: "test_hm_i32",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_i32 as *const u8,
+                      hidden: false,
+                  })
+          }
+          struct Point {
+              x: f64,
+              y: f64,
+          }
+          impl TryFrom<Robj> for Point {
+              type Error = Error;
+              fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+                  let inner_vec = Doubles::try_from(value)?;
+                  let x = inner_vec[0].inner();
+                  let y = inner_vec[1].inner();
+                  Ok(Point { x, y })
+              }
+          }
+          impl From<Point> for Doubles {
+              fn from(value: Point) -> Self {
+                  Doubles::from_values([value.x, value.y])
+              }
+          }
+          impl From<Point> for Robj {
+              fn from(value: Point) -> Self {
+                  Robj::from(Doubles::from(value))
+              }
+          }
+          fn test_hm_custom_try_from(mut x: HashMap<&str, Point>) -> List {
+              x.insert("inserted_value", Point { x: 3.0, y: 0.1415 });
+              List::from_hashmap(x).unwrap()
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__test_hm_custom_try_from(
+              x: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              use extendr_api::robj::*;
+              let wrap_result_state: std::result::Result<
+                  std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                  Box<dyn std::any::Any + Send>,
+              > = unsafe {
+                  std::panic::catch_unwind(
+                      std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                          extendr_api::Robj,
+                          extendr_api::Error,
+                      > {
+                          let _x_robj = extendr_api::robj::Robj::from_sexp(x);
+                          Ok(
+                              extendr_api::Robj::from(
+                                  test_hm_custom_try_from(_x_robj.try_into()?),
+                              ),
+                          )
+                      }),
+                  )
+              };
+              match wrap_result_state {
+                  Ok(Ok(zz)) => {
+                      return unsafe { zz.get() };
+                  }
+                  Ok(Err(conversion_err)) => {
+                      let err_string = conversion_err.to_string();
+                      drop(conversion_err);
+                      extendr_api::throw_r_error(&err_string);
+                  }
+                  Err(unwind_err) => {
+                      drop(unwind_err);
+                      let err_string = ::alloc::__export::must_use({
+                          let res = ::alloc::fmt::format(
+                              format_args!(
+                                  "User function panicked: {0}",
+                                  "test_hm_custom_try_from",
+                              ),
+                          );
+                          res
+                      });
+                      extendr_api::handle_panic(
+                          err_string.as_str(),
+                          || {
+                              #[cold]
+                              #[track_caller]
+                              #[inline(never)]
+                              const fn panic_cold_explicit() -> ! {
+                                  ::core::panicking::panic_explicit()
+                              }
+                              panic_cold_explicit();
+                          },
+                      );
+                  }
+              }
+              {
+                  ::core::panicking::panic_fmt(
+                      format_args!(
+                          "internal error: entered unreachable code: {0}",
+                          format_args!("internal extendr error, this should never happen."),
+                      ),
+                  );
+              }
+          }
+          #[allow(non_snake_case)]
+          fn meta__test_hm_custom_try_from(metadata: &mut Vec<extendr_api::metadata::Func>) {
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "HashMap",
+                  default: None,
+              });
+              let args = args;
+              metadata
+                  .push(extendr_api::metadata::Func {
+                      doc: "",
+                      rust_name: "test_hm_custom_try_from",
+                      r_name: "test_hm_custom_try_from",
+                      mod_name: "test_hm_custom_try_from",
+                      args: args,
+                      return_type: "List",
+                      func_ptr: wrap__test_hm_custom_try_from as *const u8,
+                      hidden: false,
+                  })
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub fn get_hashmap_metadata() -> extendr_api::metadata::Metadata {
+              let mut functions = Vec::new();
+              let mut impls = Vec::new();
+              meta__test_hm_string(&mut functions);
+              meta__test_hm_i32(&mut functions);
+              meta__test_hm_custom_try_from(&mut functions);
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Metadata access function.",
+                      rust_name: "get_hashmap_metadata",
+                      mod_name: "get_hashmap_metadata",
+                      r_name: "get_hashmap_metadata",
+                      args: Vec::new(),
+                      return_type: "Metadata",
+                      func_ptr: wrap__get_hashmap_metadata as *const u8,
+                      hidden: true,
+                  });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
+              functions
+                  .push(extendr_api::metadata::Func {
+                      doc: "Wrapper generator.",
+                      rust_name: "make_hashmap_wrappers",
+                      mod_name: "make_hashmap_wrappers",
+                      r_name: "make_hashmap_wrappers",
+                      args,
+                      return_type: "String",
+                      func_ptr: wrap__make_hashmap_wrappers as *const u8,
+                      hidden: true,
+                  });
+              extendr_api::metadata::Metadata {
+                  name: "hashmap",
+                  functions,
+                  impls,
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case)]
+          pub extern "C" fn wrap__get_hashmap_metadata() -> extendr_api::SEXP {
+              use extendr_api::GetSexp;
+              unsafe { extendr_api::Robj::from(get_hashmap_metadata()).get() }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn wrap__make_hashmap_wrappers(
+              use_symbols_sexp: extendr_api::SEXP,
+              package_name_sexp: extendr_api::SEXP,
+          ) -> extendr_api::SEXP {
+              unsafe {
+                  use extendr_api::robj::*;
+                  use extendr_api::GetSexp;
+                  let robj = Robj::from_sexp(use_symbols_sexp);
+                  let use_symbols: bool = <bool>::try_from(&robj).unwrap();
+                  let robj = Robj::from_sexp(package_name_sexp);
+                  let package_name: &str = <&str>::try_from(&robj).unwrap();
+                  extendr_api::Robj::from(
+                          get_hashmap_metadata()
+                              .make_r_wrappers(use_symbols, package_name)
+                              .unwrap(),
+                      )
+                      .get()
+              }
+          }
+          #[no_mangle]
+          #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+          pub extern "C" fn R_init_hashmap_extendr(info: *mut extendr_api::DllInfo) {
+              unsafe { extendr_api::register_call_methods(info, get_hashmap_metadata()) };
+          }
+      }
       mod matrix {
           use extendr_api::prelude::*;
           fn fetch_dimnames(x: RMatrix<f64>) -> List {
@@ -3429,16 +3738,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3514,16 +3820,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_rownames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3599,16 +3902,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__fetch_colnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3690,16 +3990,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__change_dimnames(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3775,16 +4072,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__matrix_3d_return(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix3D",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix3D",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3860,16 +4154,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__matrix_4d_return(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix4D",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix4D",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3945,16 +4236,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__matrix_5d_return(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix5D",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix5D",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -3990,27 +4278,25 @@
                       func_ptr: wrap__get_matrix_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_matrix_wrappers",
                       mod_name: "make_matrix_wrappers",
                       r_name: "make_matrix_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_matrix_wrappers as *const u8,
                       hidden: true,
@@ -4135,21 +4421,18 @@
           fn meta__leak_arg2_try_implicit_strings(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "_y",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "_y",
+                  arg_type: "Doubles",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Strings",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4241,21 +4524,18 @@
           fn meta__leak_arg2_try_implicit_doubles(
               metadata: &mut Vec<extendr_api::metadata::Func>,
           ) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "_y",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Doubles",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "_y",
+                  arg_type: "Doubles",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Doubles",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4337,16 +4617,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_strings(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Robj",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4427,16 +4704,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_unwrap_doubles(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Robj",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4521,16 +4795,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_positive_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Robj",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4615,16 +4886,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__leak_negative_control(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Robj",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4659,27 +4927,25 @@
                       func_ptr: wrap__get_memory_leaks_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_memory_leaks_wrappers",
                       mod_name: "make_memory_leaks_wrappers",
                       r_name: "make_memory_leaks_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_memory_leaks_wrappers as *const u8,
                       hidden: true,
@@ -4793,16 +5059,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__type_aware_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "input",
-                          arg_type: "Either",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "input",
+                  arg_type: "Either",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -4832,27 +5095,25 @@
                       func_ptr: wrap__get_optional_either_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_optional_either_wrappers",
                       mod_name: "make_optional_either_wrappers",
                       r_name: "make_optional_either_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_optional_either_wrappers as *const u8,
                       hidden: true,
@@ -4964,16 +5225,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Mat",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Mat",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5049,16 +5307,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Mat",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Mat",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5134,16 +5389,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Mat",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Mat",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5219,16 +5471,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__mat_to_rmatfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Mat",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Mat",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5304,16 +5553,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__rmat_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "RMatrix",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "RMatrix",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5389,16 +5635,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__robj_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "Robj",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "Robj",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5474,16 +5717,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__matref_to_mat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "MatRef",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "MatRef",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -5519,27 +5759,25 @@
                       func_ptr: wrap__get_optional_faer_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_optional_faer_wrappers",
                       mod_name: "make_optional_faer_wrappers",
                       r_name: "make_optional_faer_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_optional_faer_wrappers as *const u8,
                       hidden: true,
@@ -5587,6 +5825,7 @@
       }
       mod optional_ndarray {
           use extendr_api::prelude::*;
+          use ndarray::{s, ArrayView2};
           /// Calculate Euclidean distance matrix
           /// Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
           /// @param a : Matrix of real values or `NULL`
@@ -5599,8 +5838,8 @@
                           ((x + 1)..nrow)
                               .map(move |y| {
                                   let z = &a
-                                      .slice(
-                                          match x {
+                                      .slice({
+                                          let (indices, in_dim, out_dim) = match x {
                                               r => {
                                                   match .. {
                                                       r => {
@@ -5618,29 +5857,34 @@
                                                                   ::core::marker::PhantomData::<::ndarray::Ix0>,
                                                               ),
                                                           );
-                                                          #[allow(unsafe_code)]
-                                                          unsafe {
-                                                              ::ndarray::SliceInfo::new_unchecked(
-                                                                  [
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                  ],
-                                                                  in_dim,
-                                                                  out_dim,
-                                                              )
-                                                          }
+                                                          (
+                                                              [
+                                                                  <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                      _,
+                                                                  >>::from(r),
+                                                                  <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                      _,
+                                                                  >>::from(r),
+                                                              ],
+                                                              in_dim,
+                                                              out_dim,
+                                                          )
                                                       }
                                                   }
                                               }
-                                          },
-                                      )
+                                          };
+                                          #[allow(unsafe_code)]
+                                          unsafe {
+                                              ::ndarray::SliceInfo::new_unchecked(
+                                                  indices,
+                                                  in_dim,
+                                                  out_dim,
+                                              )
+                                          }
+                                      })
                                       - &a
-                                          .slice(
-                                              match y {
+                                          .slice({
+                                              let (indices, in_dim, out_dim) = match y {
                                                   r => {
                                                       match .. {
                                                           r => {
@@ -5658,26 +5902,31 @@
                                                                       ::core::marker::PhantomData::<::ndarray::Ix0>,
                                                                   ),
                                                               );
-                                                              #[allow(unsafe_code)]
-                                                              unsafe {
-                                                                  ::ndarray::SliceInfo::new_unchecked(
-                                                                      [
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                      ],
-                                                                      in_dim,
-                                                                      out_dim,
-                                                                  )
-                                                              }
+                                                              (
+                                                                  [
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                  ],
+                                                                  in_dim,
+                                                                  out_dim,
+                                                              )
                                                           }
                                                       }
                                                   }
-                                              },
-                                          );
+                                              };
+                                              #[allow(unsafe_code)]
+                                              unsafe {
+                                                  ::ndarray::SliceInfo::new_unchecked(
+                                                      indices,
+                                                      in_dim,
+                                                      out_dim,
+                                                  )
+                                              }
+                                          });
                                   (&z * &z).iter().sum::<Rfloat>().sqrt()
                               })
                       })
@@ -5748,16 +5997,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__euclidean_dist(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "a",
-                          arg_type: "Nullable",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "a",
+                  arg_type: "Nullable",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Calculate Euclidean distance matrix\n Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5\n @param a : Matrix of real values or `NULL`\n @export",
@@ -5787,27 +6033,25 @@
                       func_ptr: wrap__get_optional_ndarray_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_optional_ndarray_wrappers",
                       mod_name: "make_optional_ndarray_wrappers",
                       r_name: "make_optional_ndarray_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_optional_ndarray_wrappers as *const u8,
                       hidden: true,
@@ -5931,16 +6175,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__raw_identifier_in_fn_args(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r#type",
-                          arg_type: "Nullable",
-                          default: Some("NULL"),
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "r#type",
+                  arg_type: "Nullable",
+                  default: Some("NULL"),
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Test raw identifiers (`r#`) in function arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
@@ -6016,7 +6257,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__true(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Test raw identifiers (`r#`) as function names are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @export",
@@ -6096,16 +6338,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__false(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r#type",
-                          arg_type: "bool",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "r#type",
+                  arg_type: "bool",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.\n See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.\n @param type : i32 or `NULL`\n @export",
@@ -6137,27 +6376,25 @@
                       func_ptr: wrap__get_raw_identifiers_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_raw_identifiers_wrappers",
                       mod_name: "make_raw_identifiers_wrappers",
                       r_name: "make_raw_identifiers_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_raw_identifiers_wrappers as *const u8,
                       hidden: true,
@@ -6267,7 +6504,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__hello_submodule(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Return string `\"Hello world!\"` to R.\n @export",
@@ -6435,7 +6673,8 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = ::alloc::vec::Vec::new();
+              let mut args = Vec::with_capacity(0usize);
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for making a new object.",
@@ -6519,21 +6758,18 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "i32",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "MySubmoduleClass",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "i32",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for setting stuff.\n @param x a number",
@@ -6615,16 +6851,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__MySubmoduleClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "self",
-                          arg_type: "MySubmoduleClass",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "self",
+                  arg_type: "MySubmoduleClass",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: " Method for getting stuff.",
@@ -6668,27 +6901,25 @@
                       func_ptr: wrap__get_submodule_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_submodule_wrappers",
                       mod_name: "make_submodule_wrappers",
                       r_name: "make_submodule_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_submodule_wrappers as *const u8,
                       hidden: true,
@@ -6814,16 +7045,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__to_unique_rstr(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r_char_vec",
-                          arg_type: "Strings",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "r_char_vec",
+                  arg_type: "Strings",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -6916,16 +7144,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__to_unique_str(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "r_char_vec",
-                          arg_type: "StrIter",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "r_char_vec",
+                  arg_type: "StrIter",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -6956,27 +7181,25 @@
                       func_ptr: wrap__get_to_unique_character_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_to_unique_character_wrappers",
                       mod_name: "make_to_unique_character_wrappers",
                       r_name: "make_to_unique_character_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_to_unique_character_wrappers as *const u8,
                       hidden: true,
@@ -7091,16 +7314,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__sum_triplet_ints(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_28i32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_29",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_28i32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_2ci32_29",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7221,16 +7441,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__sum_points(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_28Point_2cPoint_29",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_28Point_2cPoint_29",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7311,16 +7528,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_u8(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bu8_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bu8_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7405,16 +7619,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_f64(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bf64_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bf64_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7499,16 +7710,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_i32(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bi32_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bi32_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7593,16 +7801,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_rint(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bRint_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bRint_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7687,16 +7892,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_rfloat(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bRfloat_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bRfloat_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7781,16 +7983,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_rbool(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bRbool_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bRbool_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7875,16 +8074,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__round_trip_array_rcplx(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bRcplx_3b4_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bRcplx_3b4_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -7922,27 +8118,25 @@
                       func_ptr: wrap__get_tuple_conversions_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_tuple_conversions_wrappers",
                       mod_name: "make_tuple_conversions_wrappers",
                       r_name: "make_tuple_conversions_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_tuple_conversions_wrappers as *const u8,
                       hidden: true,
@@ -8056,16 +8250,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__middle_zero(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "integers",
-                          arg_type: "_5bRint_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "integers",
+                  arg_type: "_5bRint_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -8151,16 +8342,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__logicals_sum(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "logicals",
-                          arg_type: "_5bRbool_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "logicals",
+                  arg_type: "_5bRbool_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -8250,16 +8438,13 @@
           }
           #[allow(non_snake_case)]
           fn meta__floats_mean(metadata: &mut Vec<extendr_api::metadata::Func>) {
-              let args = <[_]>::into_vec(
-                  #[rustc_box]
-                  ::alloc::boxed::Box::new([
-                      extendr_api::metadata::Arg {
-                          name: "x",
-                          arg_type: "_5bRfloat_5d",
-                          default: None,
-                      },
-                  ]),
-              );
+              let mut args = Vec::with_capacity(1usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "x",
+                  arg_type: "_5bRfloat_5d",
+                  default: None,
+              });
+              let args = args;
               metadata
                   .push(extendr_api::metadata::Func {
                       doc: "",
@@ -8291,27 +8476,25 @@
                       func_ptr: wrap__get_typedsliceargs_metadata as *const u8,
                       hidden: true,
                   });
+              let mut args = Vec::with_capacity(2usize);
+              args.push(extendr_api::metadata::Arg {
+                  name: "use_symbols",
+                  arg_type: "bool",
+                  default: None,
+              });
+              args.push(extendr_api::metadata::Arg {
+                  name: "package_name",
+                  arg_type: "&str",
+                  default: None,
+              });
+              let args = args;
               functions
                   .push(extendr_api::metadata::Func {
                       doc: "Wrapper generator.",
                       rust_name: "make_typedsliceargs_wrappers",
                       mod_name: "make_typedsliceargs_wrappers",
                       r_name: "make_typedsliceargs_wrappers",
-                      args: <[_]>::into_vec(
-                          #[rustc_box]
-                          ::alloc::boxed::Box::new([
-                              extendr_api::metadata::Arg {
-                                  name: "use_symbols",
-                                  arg_type: "bool",
-                                  default: None,
-                              },
-                              extendr_api::metadata::Arg {
-                                  name: "package_name",
-                                  arg_type: "&str",
-                                  default: None,
-                              },
-                          ]),
-                      ),
+                      args,
                       return_type: "String",
                       func_ptr: wrap__make_typedsliceargs_wrappers as *const u8,
                       hidden: true,
@@ -8417,7 +8600,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__hello_world(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8488,7 +8672,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__do_nothing(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8564,16 +8749,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "f64",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "f64",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8649,16 +8831,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__int_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8734,16 +8913,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__bool_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "bool",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "bool",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8819,16 +8995,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_scalar(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "String",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "String",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8904,16 +9077,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__char_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Vec",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Vec",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -8989,16 +9159,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__double_vec(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Vec",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Vec",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9071,7 +9238,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9144,7 +9312,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__try_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9220,16 +9389,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rfloat_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Rfloat",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Rfloat",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9305,16 +9471,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_rint_na(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Rint",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Rint",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9398,21 +9561,18 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_doubles_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Doubles",
-                      default: None,
-                  },
-                  extendr_api::metadata::Arg {
-                      name: "i",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Doubles",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "i",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9496,21 +9656,18 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_integers_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Integers",
-                      default: None,
-                  },
-                  extendr_api::metadata::Arg {
-                      name: "i",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Integers",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "i",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9594,21 +9751,18 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_logicals_element(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Logicals",
-                      default: None,
-                  },
-                  extendr_api::metadata::Arg {
-                      name: "i",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Logicals",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "i",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9688,16 +9842,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__doubles_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "input",
-                      arg_type: "Doubles",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "input",
+              arg_type: "Doubles",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9777,16 +9928,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__complexes_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "input",
-                      arg_type: "Complexes",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "input",
+              arg_type: "Complexes",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9866,16 +10014,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__integers_square(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "input",
-                      arg_type: "Integers",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "input",
+              arg_type: "Integers",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -9955,16 +10100,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__logicals_not(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "input",
-                      arg_type: "Logicals",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "input",
+              arg_type: "Logicals",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -10040,16 +10182,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__check_default(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Robj",
-                      default: Some("NULL"),
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Robj",
+              default: Some("NULL"),
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -10138,21 +10277,18 @@
       }
       #[allow(non_snake_case)]
       fn meta__special_param_names(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "_x",
-                      arg_type: "i32",
-                      default: None,
-                  },
-                  extendr_api::metadata::Arg {
-                      name: "_y",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "_x",
+              arg_type: "i32",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "_y",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Test whether `_arg` parameters are treated correctly in R\n Executes \\code{`_x` - `_y`}\n @param _x an integer scalar, ignored\n @param `_y` an integer scalar, ignored\n @export",
@@ -10230,7 +10366,8 @@
       }
       #[allow(non_snake_case)]
       fn meta____00__special_function_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Test wrapping of special function name\n @name f__00__special_function_name\n @export",
@@ -10303,7 +10440,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__test_rename_mymod(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -10379,16 +10517,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "i32",
-                      default: Some("42"),
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "i32",
+              default: Some("42"),
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -10464,16 +10599,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__add_5_if_not_null(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "Nullable",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "Nullable",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -10637,7 +10769,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -10721,21 +10854,18 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__set_a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "self",
-                      arg_type: "MyClass",
-                      default: None,
-                  },
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "i32",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "self",
+              arg_type: "MyClass",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "i32",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for setting stuff.\n @param x a number",
@@ -10815,16 +10945,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "self",
-                      arg_type: "MyClass",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "self",
+              arg_type: "MyClass",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for getting stuff.",
@@ -10910,16 +11037,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__me(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "self",
-                      arg_type: "MyClass",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "self",
+              arg_type: "MyClass",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for getting one's self.",
@@ -10998,16 +11122,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__restore_from_robj(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "robj",
-                      arg_type: "Robj",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "robj",
+              arg_type: "Robj",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -11086,16 +11207,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClass__get_default_value(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "x",
-                      arg_type: "i32",
-                      default: Some("42"),
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "x",
+              arg_type: "i32",
+              default: Some("42"),
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: "",
@@ -11246,7 +11364,8 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -11328,16 +11447,13 @@
       }
       #[allow(non_snake_case)]
       fn meta____MyClass____name_test(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "self",
-                      arg_type: "__MyClass",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "self",
+              arg_type: "__MyClass",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method with special name unsupported by R",
@@ -11496,7 +11612,8 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__new(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = ::alloc::vec::Vec::new();
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for making a new object.",
@@ -11578,16 +11695,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__MyClassUnexported__a(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "self",
-                      arg_type: "MyClassUnexported",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "self",
+              arg_type: "MyClassUnexported",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Method for getting stuff.",
@@ -11688,16 +11802,13 @@
       }
       #[allow(non_snake_case)]
       fn meta__my_device(metadata: &mut Vec<extendr_api::metadata::Func>) {
-          let args = <[_]>::into_vec(
-              #[rustc_box]
-              ::alloc::boxed::Box::new([
-                  extendr_api::metadata::Arg {
-                      name: "welcome_message",
-                      arg_type: "String",
-                      default: None,
-                  },
-              ]),
-          );
+          let mut args = Vec::with_capacity(1usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "welcome_message",
+              arg_type: "String",
+              default: None,
+          });
+          let args = args;
           metadata
               .push(extendr_api::metadata::Func {
                   doc: " Create a new device.\n\n @param welcome_message A warm message to welcome you.\n @export",
@@ -11747,6 +11858,7 @@
           functions.extend(altrep::get_altrep_metadata().functions);
           functions.extend(attributes::get_attributes_metadata().functions);
           functions.extend(dataframe::get_dataframe_metadata().functions);
+          functions.extend(hashmap::get_hashmap_metadata().functions);
           functions.extend(memory_leaks::get_memory_leaks_metadata().functions);
           functions.extend(optional_either::get_optional_either_metadata().functions);
           functions.extend(optional_ndarray::get_optional_ndarray_metadata().functions);
@@ -11761,6 +11873,7 @@
           impls.extend(altrep::get_altrep_metadata().impls);
           impls.extend(attributes::get_attributes_metadata().impls);
           impls.extend(dataframe::get_dataframe_metadata().impls);
+          impls.extend(hashmap::get_hashmap_metadata().impls);
           impls.extend(memory_leaks::get_memory_leaks_metadata().impls);
           impls.extend(optional_either::get_optional_either_metadata().impls);
           impls.extend(optional_ndarray::get_optional_ndarray_metadata().impls);
@@ -11783,27 +11896,25 @@
                   func_ptr: wrap__get_extendrtests_metadata as *const u8,
                   hidden: true,
               });
+          let mut args = Vec::with_capacity(2usize);
+          args.push(extendr_api::metadata::Arg {
+              name: "use_symbols",
+              arg_type: "bool",
+              default: None,
+          });
+          args.push(extendr_api::metadata::Arg {
+              name: "package_name",
+              arg_type: "&str",
+              default: None,
+          });
+          let args = args;
           functions
               .push(extendr_api::metadata::Func {
                   doc: "Wrapper generator.",
                   rust_name: "make_extendrtests_wrappers",
                   mod_name: "make_extendrtests_wrappers",
                   r_name: "make_extendrtests_wrappers",
-                  args: <[_]>::into_vec(
-                      #[rustc_box]
-                      ::alloc::boxed::Box::new([
-                          extendr_api::metadata::Arg {
-                              name: "use_symbols",
-                              arg_type: "bool",
-                              default: None,
-                          },
-                          extendr_api::metadata::Arg {
-                              name: "package_name",
-                              arg_type: "&str",
-                              default: None,
-                          },
-                      ]),
-                  ),
+                  args,
                   return_type: "String",
                   func_ptr: wrap__make_extendrtests_wrappers as *const u8,
                   hidden: true,
