@@ -99,7 +99,7 @@ macro_rules! make_array_view_2 {
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
                         // use fortran order.
-                        let shape = (nrows, ncols).into_shape().f();
+                        let shape = (nrows, ncols).into_shape_with_order().f();
                         return ArrayView2::from_shape(shape, v)
                             .map_err(|err| Error::NDArrayShapeError(err));
                     } else {

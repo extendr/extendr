@@ -1,6 +1,6 @@
 use xshell::{cmd, Error, Shell};
 
-/// Generates documentation like on the site extendr.github.io
+/// Generates documentation like on the site <extendr.github.io>
 pub(crate) fn run(shell: &Shell) -> Result<(), Error> {
     cmd!(
         shell,
