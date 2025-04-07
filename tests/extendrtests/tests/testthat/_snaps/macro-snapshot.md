@@ -5838,8 +5838,8 @@
                           ((x + 1)..nrow)
                               .map(move |y| {
                                   let z = &a
-                                      .slice(
-                                          match x {
+                                      .slice({
+                                          let (indices, in_dim, out_dim) = match x {
                                               r => {
                                                   match .. {
                                                       r => {
@@ -5857,29 +5857,34 @@
                                                                   ::core::marker::PhantomData::<::ndarray::Ix0>,
                                                               ),
                                                           );
-                                                          #[allow(unsafe_code)]
-                                                          unsafe {
-                                                              ::ndarray::SliceInfo::new_unchecked(
-                                                                  [
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                          _,
-                                                                      >>::from(r),
-                                                                  ],
-                                                                  in_dim,
-                                                                  out_dim,
-                                                              )
-                                                          }
+                                                          (
+                                                              [
+                                                                  <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                      _,
+                                                                  >>::from(r),
+                                                                  <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                      _,
+                                                                  >>::from(r),
+                                                              ],
+                                                              in_dim,
+                                                              out_dim,
+                                                          )
                                                       }
                                                   }
                                               }
-                                          },
-                                      )
+                                          };
+                                          #[allow(unsafe_code)]
+                                          unsafe {
+                                              ::ndarray::SliceInfo::new_unchecked(
+                                                  indices,
+                                                  in_dim,
+                                                  out_dim,
+                                              )
+                                          }
+                                      })
                                       - &a
-                                          .slice(
-                                              match y {
+                                          .slice({
+                                              let (indices, in_dim, out_dim) = match y {
                                                   r => {
                                                       match .. {
                                                           r => {
@@ -5897,26 +5902,31 @@
                                                                       ::core::marker::PhantomData::<::ndarray::Ix0>,
                                                                   ),
                                                               );
-                                                              #[allow(unsafe_code)]
-                                                              unsafe {
-                                                                  ::ndarray::SliceInfo::new_unchecked(
-                                                                      [
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                          <::ndarray::SliceInfoElem as ::core::convert::From<
-                                                                              _,
-                                                                          >>::from(r),
-                                                                      ],
-                                                                      in_dim,
-                                                                      out_dim,
-                                                                  )
-                                                              }
+                                                              (
+                                                                  [
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                      <::ndarray::SliceInfoElem as ::core::convert::From<
+                                                                          _,
+                                                                      >>::from(r),
+                                                                  ],
+                                                                  in_dim,
+                                                                  out_dim,
+                                                              )
                                                           }
                                                       }
                                                   }
-                                              },
-                                          );
+                                              };
+                                              #[allow(unsafe_code)]
+                                              unsafe {
+                                                  ::ndarray::SliceInfo::new_unchecked(
+                                                      indices,
+                                                      in_dim,
+                                                      out_dim,
+                                                  )
+                                              }
+                                          });
                                   (&z * &z).iter().sum::<Rfloat>().sqrt()
                               })
                       })
