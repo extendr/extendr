@@ -99,7 +99,7 @@
 <a href=#99 id=99 data-nosnippet>99</a>                    <span class="kw">let </span>ncols = robj.ncols();
 <a href=#100 id=100 data-nosnippet>100</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = robj.as_typed_slice() {
 <a href=#101 id=101 data-nosnippet>101</a>                        <span class="comment">// use fortran order.
-<a href=#102 id=102 data-nosnippet>102</a>                        </span><span class="kw">let </span>shape = (nrows, ncols).into_shape().f();
+<a href=#102 id=102 data-nosnippet>102</a>                        </span><span class="kw">let </span>shape = (nrows, ncols).into_shape_with_order().f();
 <a href=#103 id=103 data-nosnippet>103</a>                        <span class="kw">return </span>ArrayView2::from_shape(shape, v)
 <a href=#104 id=104 data-nosnippet>104</a>                            .map_err(|err| Error::NDArrayShapeError(err));
 <a href=#105 id=105 data-nosnippet>105</a>                    } <span class="kw">else </span>{
