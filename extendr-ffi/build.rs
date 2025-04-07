@@ -172,7 +172,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
 
     // Fetch R_HOME and R version
-    let r_paths = InstallationPaths::try_new()?;
+    let r_paths = match InstallationPaths::try_new() {
+        Ok(v) => v,
+        Err(_) => {
+            warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
+            println!("cargo:rustc-cfg=r_4_5");
+            return Ok(());
+        }
+    };
 
     // Used by extendr-engine becomes DEP_R_R_HOME for clients
     println!("cargo:r_home={}", r_paths.r_home.display());
