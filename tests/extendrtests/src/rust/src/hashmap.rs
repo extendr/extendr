@@ -42,7 +42,7 @@ impl From<Point> for Robj {
 }
 #[extendr]
 fn test_hm_custom_try_from(mut x: HashMap<&str, Point>) -> List {
-    x.insert("inserted_value", Point {x : 3.0, y: 0.1415});
+    x.insert("inserted_value", Point { x: 3.0, y: 0.1415 });
     List::from_hashmap(x).unwrap()
 }
 

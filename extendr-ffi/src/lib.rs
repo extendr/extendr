@@ -231,15 +231,15 @@ pub struct R_inpstream_st {
 
 extern "C" {
     #[doc = "IEEE NaN"]
-    pub static mut R_NaN: f64;
+    pub static R_NaN: f64;
     #[doc = "IEEE Inf"]
-    pub static mut R_PosInf: f64;
+    pub static R_PosInf: f64;
     #[doc = "IEEE -Inf"]
-    pub static mut R_NegInf: f64;
+    pub static R_NegInf: f64;
     #[doc = "NA_REAL: IEEE"]
-    pub static mut R_NaReal: f64;
+    pub static R_NaReal: f64;
     #[doc = "NA_INTEGER:= INT_MIN currently"]
-    pub static mut R_NaInt: ::std::os::raw::c_int;
+    pub static R_NaInt: ::std::os::raw::c_int;
     #[doc = "NA_STRING is a SEXP, so defined in Rinternals.h"]
     pub fn R_IsNA(arg1: f64) -> ::std::os::raw::c_int;
     pub fn R_IsNaN(arg1: f64) -> ::std::os::raw::c_int;
@@ -282,13 +282,13 @@ extern "C" {
     pub fn MARK_NOT_MUTABLE(x: SEXP);
     pub fn PRINTNAME(x: SEXP) -> SEXP;
     #[doc = "The nil object"]
-    pub static mut R_NilValue: SEXP;
+    pub static R_NilValue: SEXP;
     #[doc = "The base environment; formerly R_NilValue"]
-    pub static mut R_BaseEnv: SEXP;
+    pub static R_BaseEnv: SEXP;
     #[doc = "The (fake) namespace for base"]
-    pub static mut R_BaseNamespace: SEXP;
+    pub static R_BaseNamespace: SEXP;
     #[doc = "NA_STRING as a CHARSXP"]
-    pub static mut R_NaString: SEXP;
+    pub static R_NaString: SEXP;
     #[doc = "srcref related functions"]
     pub fn R_CHAR(x: SEXP) -> *const ::std::os::raw::c_char;
     pub fn R_CleanTempDir();
@@ -307,23 +307,23 @@ extern "C" {
     pub fn R_do_slot(obj: SEXP, name: SEXP) -> SEXP;
     pub fn R_do_slot_assign(obj: SEXP, name: SEXP, value: SEXP) -> SEXP;
     #[doc = "An empty environment at the root of the\nenvironment tree"]
-    pub static mut R_EmptyEnv: SEXP;
+    pub static R_EmptyEnv: SEXP;
     pub fn R_forceSymbols(info: *mut DllInfo, value: Rboolean) -> Rboolean;
     pub fn R_GetCurrentEnv() -> SEXP;
     #[doc = "srcref related functions"]
     pub fn R_GetCurrentSrcref(arg1: ::std::os::raw::c_int) -> SEXP;
     pub fn R_GetSrcFilename(arg1: SEXP) -> SEXP;
     #[doc = "The \"global\" environment"]
-    pub static mut R_GlobalEnv: SEXP;
+    pub static R_GlobalEnv: SEXP;
     pub fn R_has_slot(obj: SEXP, name: SEXP) -> ::std::os::raw::c_int;
     pub fn R_IsNamespaceEnv(rho: SEXP) -> Rboolean;
     pub fn R_IsPackageEnv(rho: SEXP) -> Rboolean;
     pub fn R_MakeUnwindCont() -> SEXP;
     #[doc = "Missing argument marker"]
-    pub static mut R_MissingArg: SEXP;
+    pub static R_MissingArg: SEXP;
     pub fn R_NamespaceEnvSpec(rho: SEXP) -> SEXP;
     #[doc = "Registry for registered namespaces"]
-    pub static mut R_NamespaceRegistry: SEXP;
+    pub static R_NamespaceRegistry: SEXP;
     #[doc = "Environment and Binding Features"]
     pub fn R_NewEnv(arg1: SEXP, arg2: ::std::os::raw::c_int, arg3: ::std::os::raw::c_int) -> SEXP;
     pub fn R_PackageEnvName(rho: SEXP) -> SEXP;
@@ -347,11 +347,11 @@ extern "C" {
     pub fn R_RunExitFinalizers();
     pub fn R_Serialize(s: SEXP, ops: R_outpstream_t);
     #[doc = "Current srcref, for debuggers"]
-    pub static mut R_Srcref: SEXP;
+    pub static R_Srcref: SEXP;
     pub fn R_tryEval(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
     pub fn R_tryEvalSilent(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
     #[doc = "Unbound marker"]
-    pub static mut R_UnboundValue: SEXP;
+    pub static R_UnboundValue: SEXP;
     pub fn R_unif_index(arg1: f64) -> f64;
     pub fn R_Unserialize(ips: R_inpstream_t) -> SEXP;
     pub fn R_UnwindProtect(
@@ -557,7 +557,7 @@ mod tests {
             // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
 
             if cfg!(not(target_os = "windows")) {
-                R_CStackLimit = usize::max_value();
+                R_CStackLimit = usize::MAX;
             }
 
             setup_Rmainloop();
