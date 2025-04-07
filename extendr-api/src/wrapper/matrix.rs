@@ -1,12 +1,12 @@
 //! Wrappers for matrices with deferred arithmetic.
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
+use crate::throw_r_error;
 use extendr_ffi::{
     Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
     TYPEOF,
 };
 use std::ops::{Index, IndexMut};
-use crate::throw_r_error;
 
 /// Wrapper for creating and using matrices and arrays.
 ///
@@ -200,12 +200,8 @@ impl<T, const NDIM: usize> Offset<[usize; NDIM]> for RArray<T, NDIM> {
             .enumerate()
             .fold(0, |acc, (i, (&idx, &dim))| {
                 if idx - BASE >= dim {
-                    let msg = format!(
-                        "array index: dimension {} overflow (0-based dimension)",
-                        i
-                    );
+                    let msg = format!("array index: dimension {} overflow (0-based dimension)", i);
                     throw_r_error(msg);
-
                 }
                 acc * dim + (idx - BASE)
             })
