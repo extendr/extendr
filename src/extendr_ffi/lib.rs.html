@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-ffi/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_ffi" data-themes="" data-resource-suffix="" data-rustdoc-version="1.88.0-nightly (fedf10752 2025-03-30)" data-channel="nightly" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../static.files/storage-82c7156e.js"></script><script defer src="../../static.files/src-script-63605ae7.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_ffi/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Low level bindings to R's C API
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-ffi/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-de575e9a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_ffi" data-themes="" data-resource-suffix="" data-rustdoc-version="1.88.0-nightly (2fa8b11f0 2025-04-06)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../static.files/storage-4e99c027.js"></script><script defer src="../../static.files/src-script-63605ae7.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-7ef8a74a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_ffi/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Low level bindings to R's C API
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! `extendr-ffi` powers the `extendr-api` library.
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="attr">#![allow(non_upper_case_globals)]
@@ -231,15 +231,15 @@
 <a href=#231 id=231 data-nosnippet>231</a>
 <a href=#232 id=232 data-nosnippet>232</a><span class="kw">extern </span><span class="string">"C" </span>{
 <a href=#233 id=233 data-nosnippet>233</a>    <span class="attr">#[doc = <span class="string">"IEEE NaN"</span>]
-<a href=#234 id=234 data-nosnippet>234</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NaN: f64;
+<a href=#234 id=234 data-nosnippet>234</a>    </span><span class="kw">pub static </span>R_NaN: f64;
 <a href=#235 id=235 data-nosnippet>235</a>    <span class="attr">#[doc = <span class="string">"IEEE Inf"</span>]
-<a href=#236 id=236 data-nosnippet>236</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_PosInf: f64;
+<a href=#236 id=236 data-nosnippet>236</a>    </span><span class="kw">pub static </span>R_PosInf: f64;
 <a href=#237 id=237 data-nosnippet>237</a>    <span class="attr">#[doc = <span class="string">"IEEE -Inf"</span>]
-<a href=#238 id=238 data-nosnippet>238</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NegInf: f64;
+<a href=#238 id=238 data-nosnippet>238</a>    </span><span class="kw">pub static </span>R_NegInf: f64;
 <a href=#239 id=239 data-nosnippet>239</a>    <span class="attr">#[doc = <span class="string">"NA_REAL: IEEE"</span>]
-<a href=#240 id=240 data-nosnippet>240</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NaReal: f64;
+<a href=#240 id=240 data-nosnippet>240</a>    </span><span class="kw">pub static </span>R_NaReal: f64;
 <a href=#241 id=241 data-nosnippet>241</a>    <span class="attr">#[doc = <span class="string">"NA_INTEGER:= INT_MIN currently"</span>]
-<a href=#242 id=242 data-nosnippet>242</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NaInt: ::std::os::raw::c_int;
+<a href=#242 id=242 data-nosnippet>242</a>    </span><span class="kw">pub static </span>R_NaInt: ::std::os::raw::c_int;
 <a href=#243 id=243 data-nosnippet>243</a>    <span class="attr">#[doc = <span class="string">"NA_STRING is a SEXP, so defined in Rinternals.h"</span>]
 <a href=#244 id=244 data-nosnippet>244</a>    </span><span class="kw">pub fn </span>R_IsNA(arg1: f64) -&gt; ::std::os::raw::c_int;
 <a href=#245 id=245 data-nosnippet>245</a>    <span class="kw">pub fn </span>R_IsNaN(arg1: f64) -&gt; ::std::os::raw::c_int;
@@ -282,13 +282,13 @@
 <a href=#282 id=282 data-nosnippet>282</a>    <span class="kw">pub fn </span>MARK_NOT_MUTABLE(x: SEXP);
 <a href=#283 id=283 data-nosnippet>283</a>    <span class="kw">pub fn </span>PRINTNAME(x: SEXP) -&gt; SEXP;
 <a href=#284 id=284 data-nosnippet>284</a>    <span class="attr">#[doc = <span class="string">"The nil object"</span>]
-<a href=#285 id=285 data-nosnippet>285</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NilValue: SEXP;
+<a href=#285 id=285 data-nosnippet>285</a>    </span><span class="kw">pub static </span>R_NilValue: SEXP;
 <a href=#286 id=286 data-nosnippet>286</a>    <span class="attr">#[doc = <span class="string">"The base environment; formerly R_NilValue"</span>]
-<a href=#287 id=287 data-nosnippet>287</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_BaseEnv: SEXP;
+<a href=#287 id=287 data-nosnippet>287</a>    </span><span class="kw">pub static </span>R_BaseEnv: SEXP;
 <a href=#288 id=288 data-nosnippet>288</a>    <span class="attr">#[doc = <span class="string">"The (fake) namespace for base"</span>]
-<a href=#289 id=289 data-nosnippet>289</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_BaseNamespace: SEXP;
+<a href=#289 id=289 data-nosnippet>289</a>    </span><span class="kw">pub static </span>R_BaseNamespace: SEXP;
 <a href=#290 id=290 data-nosnippet>290</a>    <span class="attr">#[doc = <span class="string">"NA_STRING as a CHARSXP"</span>]
-<a href=#291 id=291 data-nosnippet>291</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NaString: SEXP;
+<a href=#291 id=291 data-nosnippet>291</a>    </span><span class="kw">pub static </span>R_NaString: SEXP;
 <a href=#292 id=292 data-nosnippet>292</a>    <span class="attr">#[doc = <span class="string">"srcref related functions"</span>]
 <a href=#293 id=293 data-nosnippet>293</a>    </span><span class="kw">pub fn </span>R_CHAR(x: SEXP) -&gt; <span class="kw-2">*const </span>::std::os::raw::c_char;
 <a href=#294 id=294 data-nosnippet>294</a>    <span class="kw">pub fn </span>R_CleanTempDir();
@@ -307,23 +307,23 @@
 <a href=#307 id=307 data-nosnippet>307</a>    <span class="kw">pub fn </span>R_do_slot(obj: SEXP, name: SEXP) -&gt; SEXP;
 <a href=#308 id=308 data-nosnippet>308</a>    <span class="kw">pub fn </span>R_do_slot_assign(obj: SEXP, name: SEXP, value: SEXP) -&gt; SEXP;
 <a href=#309 id=309 data-nosnippet>309</a>    <span class="attr">#[doc = <span class="string">"An empty environment at the root of the\nenvironment tree"</span>]
-<a href=#310 id=310 data-nosnippet>310</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_EmptyEnv: SEXP;
+<a href=#310 id=310 data-nosnippet>310</a>    </span><span class="kw">pub static </span>R_EmptyEnv: SEXP;
 <a href=#311 id=311 data-nosnippet>311</a>    <span class="kw">pub fn </span>R_forceSymbols(info: <span class="kw-2">*mut </span>DllInfo, value: Rboolean) -&gt; Rboolean;
 <a href=#312 id=312 data-nosnippet>312</a>    <span class="kw">pub fn </span>R_GetCurrentEnv() -&gt; SEXP;
 <a href=#313 id=313 data-nosnippet>313</a>    <span class="attr">#[doc = <span class="string">"srcref related functions"</span>]
 <a href=#314 id=314 data-nosnippet>314</a>    </span><span class="kw">pub fn </span>R_GetCurrentSrcref(arg1: ::std::os::raw::c_int) -&gt; SEXP;
 <a href=#315 id=315 data-nosnippet>315</a>    <span class="kw">pub fn </span>R_GetSrcFilename(arg1: SEXP) -&gt; SEXP;
 <a href=#316 id=316 data-nosnippet>316</a>    <span class="attr">#[doc = <span class="string">"The \"global\" environment"</span>]
-<a href=#317 id=317 data-nosnippet>317</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_GlobalEnv: SEXP;
+<a href=#317 id=317 data-nosnippet>317</a>    </span><span class="kw">pub static </span>R_GlobalEnv: SEXP;
 <a href=#318 id=318 data-nosnippet>318</a>    <span class="kw">pub fn </span>R_has_slot(obj: SEXP, name: SEXP) -&gt; ::std::os::raw::c_int;
 <a href=#319 id=319 data-nosnippet>319</a>    <span class="kw">pub fn </span>R_IsNamespaceEnv(rho: SEXP) -&gt; Rboolean;
 <a href=#320 id=320 data-nosnippet>320</a>    <span class="kw">pub fn </span>R_IsPackageEnv(rho: SEXP) -&gt; Rboolean;
 <a href=#321 id=321 data-nosnippet>321</a>    <span class="kw">pub fn </span>R_MakeUnwindCont() -&gt; SEXP;
 <a href=#322 id=322 data-nosnippet>322</a>    <span class="attr">#[doc = <span class="string">"Missing argument marker"</span>]
-<a href=#323 id=323 data-nosnippet>323</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_MissingArg: SEXP;
+<a href=#323 id=323 data-nosnippet>323</a>    </span><span class="kw">pub static </span>R_MissingArg: SEXP;
 <a href=#324 id=324 data-nosnippet>324</a>    <span class="kw">pub fn </span>R_NamespaceEnvSpec(rho: SEXP) -&gt; SEXP;
 <a href=#325 id=325 data-nosnippet>325</a>    <span class="attr">#[doc = <span class="string">"Registry for registered namespaces"</span>]
-<a href=#326 id=326 data-nosnippet>326</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_NamespaceRegistry: SEXP;
+<a href=#326 id=326 data-nosnippet>326</a>    </span><span class="kw">pub static </span>R_NamespaceRegistry: SEXP;
 <a href=#327 id=327 data-nosnippet>327</a>    <span class="attr">#[doc = <span class="string">"Environment and Binding Features"</span>]
 <a href=#328 id=328 data-nosnippet>328</a>    </span><span class="kw">pub fn </span>R_NewEnv(arg1: SEXP, arg2: ::std::os::raw::c_int, arg3: ::std::os::raw::c_int) -&gt; SEXP;
 <a href=#329 id=329 data-nosnippet>329</a>    <span class="kw">pub fn </span>R_PackageEnvName(rho: SEXP) -&gt; SEXP;
@@ -347,11 +347,11 @@
 <a href=#347 id=347 data-nosnippet>347</a>    <span class="kw">pub fn </span>R_RunExitFinalizers();
 <a href=#348 id=348 data-nosnippet>348</a>    <span class="kw">pub fn </span>R_Serialize(s: SEXP, ops: R_outpstream_t);
 <a href=#349 id=349 data-nosnippet>349</a>    <span class="attr">#[doc = <span class="string">"Current srcref, for debuggers"</span>]
-<a href=#350 id=350 data-nosnippet>350</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_Srcref: SEXP;
+<a href=#350 id=350 data-nosnippet>350</a>    </span><span class="kw">pub static </span>R_Srcref: SEXP;
 <a href=#351 id=351 data-nosnippet>351</a>    <span class="kw">pub fn </span>R_tryEval(arg1: SEXP, arg2: SEXP, arg3: <span class="kw-2">*mut </span>::std::os::raw::c_int) -&gt; SEXP;
 <a href=#352 id=352 data-nosnippet>352</a>    <span class="kw">pub fn </span>R_tryEvalSilent(arg1: SEXP, arg2: SEXP, arg3: <span class="kw-2">*mut </span>::std::os::raw::c_int) -&gt; SEXP;
 <a href=#353 id=353 data-nosnippet>353</a>    <span class="attr">#[doc = <span class="string">"Unbound marker"</span>]
-<a href=#354 id=354 data-nosnippet>354</a>    </span><span class="kw">pub static </span><span class="kw-2">mut </span>R_UnboundValue: SEXP;
+<a href=#354 id=354 data-nosnippet>354</a>    </span><span class="kw">pub static </span>R_UnboundValue: SEXP;
 <a href=#355 id=355 data-nosnippet>355</a>    <span class="kw">pub fn </span>R_unif_index(arg1: f64) -&gt; f64;
 <a href=#356 id=356 data-nosnippet>356</a>    <span class="kw">pub fn </span>R_Unserialize(ips: R_inpstream_t) -&gt; SEXP;
 <a href=#357 id=357 data-nosnippet>357</a>    <span class="kw">pub fn </span>R_UnwindProtect(
@@ -557,7 +557,7 @@
 <a href=#557 id=557 data-nosnippet>557</a>            // eprintln!("R_CStackLimit={:016x}", R_CStackLimit);
 <a href=#558 id=558 data-nosnippet>558</a>
 <a href=#559 id=559 data-nosnippet>559</a>            </span><span class="kw">if </span><span class="macro">cfg!</span>(not(target_os = <span class="string">"windows"</span>)) {
-<a href=#560 id=560 data-nosnippet>560</a>                R_CStackLimit = usize::max_value();
+<a href=#560 id=560 data-nosnippet>560</a>                R_CStackLimit = usize::MAX;
 <a href=#561 id=561 data-nosnippet>561</a>            }
 <a href=#562 id=562 data-nosnippet>562</a>
 <a href=#563 id=563 data-nosnippet>563</a>            setup_Rmainloop();
