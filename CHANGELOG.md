@@ -4,7 +4,7 @@
 
 ### Added
 
-- Replace `dim` vector with constant generic parameter `const DIM: usize` in `RArray`
+- Remove `dim` vector from `RArray` and replace with constant generic parameter `const NDIM: usize` in `RArray` [[#898]](https://github.com/extendr/extendr/pull/898)
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added <https://github.com/extendr/extendr/pull/875>
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking <https://github.com/extendr/extendr/pull/853>
@@ -18,6 +18,7 @@
 
 ### Changed
 
+- `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provided backports.
 - Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. <https://github.com/extendr/extendr/pull/882>
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both

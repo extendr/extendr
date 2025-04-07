@@ -1,5 +1,16 @@
 use crate::*;
-
+use extendr_ffi::{
+    get_var, R_CFinalizer_t, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
+    R_GetCurrentSrcref, R_GetSrcFilename, R_IsNamespaceEnv, R_IsPackageEnv, R_MakeExternalPtr,
+    R_MissingArg, R_NamespaceEnvSpec, R_PackageEnvName, R_RegisterCFinalizerEx, R_UnboundValue,
+    R_xlen_t, Rboolean, Rf_PairToVectorList, Rf_VectorToPairList, Rf_allocMatrix, Rf_allocVector,
+    Rf_asChar, Rf_asCharacterFactor, Rf_coerceVector, Rf_conformable, Rf_duplicate, Rf_findFun,
+    Rf_isArray, Rf_isComplex, Rf_isEnvironment, Rf_isExpression, Rf_isFactor, Rf_isFrame,
+    Rf_isFunction, Rf_isInteger, Rf_isLanguage, Rf_isList, Rf_isLogical, Rf_isMatrix, Rf_isNewList,
+    Rf_isNull, Rf_isNumber, Rf_isObject, Rf_isPrimitive, Rf_isReal, Rf_isS4, Rf_isString,
+    Rf_isSymbol, Rf_isTs, Rf_isUserBinop, Rf_isVector, Rf_isVectorAtomic, Rf_isVectorList,
+    Rf_isVectorizable, Rf_ncols, Rf_nrows, Rf_xlengthgets, ALTREP, TYPEOF,
+};
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
@@ -187,7 +198,7 @@ pub trait Rinternals: Types + Conversions {
         // }
         unsafe {
             let sexp = self.get();
-            if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), sexp)) {
+            if let Ok(var) = catch_r_error(|| get_var(key.get(), sexp)) {
                 if var != R_UnboundValue {
                     Ok(Robj::from_sexp(var))
                 } else {
@@ -357,13 +368,13 @@ pub trait Rinternals: Types + Conversions {
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string(&self) -> bool {
-        unsafe { Rf_isValidString(self.get()).into() }
+        unsafe { extendr_ffi::Rf_isValidString(self.get()).into() }
     }
 
     #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string_f(&self) -> bool {
-        unsafe { Rf_isValidStringF(self.get()).into() }
+        unsafe { extendr_ffi::Rf_isValidStringF(self.get()).into() }
     }
 
     /// Return true if this is a vector.

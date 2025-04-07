@@ -1,7 +1,7 @@
-use crate::robj::Attributes;
-use std::iter::FromIterator;
-
 use super::*;
+use crate::robj::Attributes;
+use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
+use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]
 pub struct List {
@@ -145,7 +145,7 @@ impl List {
     /// Get the list a slice of `Robj`s.
     pub fn as_slice(&self) -> &[Robj] {
         unsafe {
-            let data = DATAPTR(self.robj.get()) as *const Robj;
+            let data = dataptr(self.robj.get()) as *const Robj;
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }
@@ -224,7 +224,7 @@ impl IntoIterator for List {
 ///       }
 ///     }
 ///     assert_eq!(total, 3);
-///    
+///
 ///     for name in my_list.names().unwrap() {
 ///        assert!(name == "a" || name == "b")
 ///     }

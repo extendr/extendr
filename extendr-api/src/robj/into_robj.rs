@@ -1,7 +1,10 @@
 use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
-
+use extendr_ffi::{
+    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
+    COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
+};
 mod repeat_into_robj;
 
 /// Returns an `CHARSXP` based on the provided `&str`.
@@ -600,7 +603,7 @@ pub trait RobjItertools: Iterator {
         let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
-        Ok(RArray::from_parts(vector, dims))
+        Ok(RArray::from_parts(vector))
     }
 }
 
@@ -725,12 +728,12 @@ mod test {
         test! {
             let int_vec = vec![3,4,0,-2];
             let int_vec_robj: Robj = int_vec.clone().into();
-            // unsafe { libR_sys::Rf_PrintValue(int_vec_robj.get())}
+            // unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
 
             let rint_vec = vec![Rint::new(3), Rint::new(4), Rint::new(0), Rint::new(-2)];
             let rint_vec_robj: Robj = rint_vec.into();
-            // unsafe { libR_sys::Rf_PrintValue(rint_vec_robj.get())}
+            // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
             assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

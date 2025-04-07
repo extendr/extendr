@@ -1,5 +1,6 @@
 use super::scalar::{c64, Rcplx};
 use super::*;
+use extendr_ffi::{dataptr, R_xlen_t, Rcomplex, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's complex vectors.
@@ -11,13 +12,12 @@ use std::iter::FromIterator;
 ///     let mut vec = (0..5).map(|i| c64::from(i as f64)).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Complexes {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::CPLXSXP;
 macros::gen_vector_wrapper_impl!(
     vector_type: Complexes,
     scalar_type: Rcplx,
@@ -62,7 +62,7 @@ impl Deref for Complexes {
     /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rcplx;
+            let ptr = dataptr(self.get()) as *const Rcplx;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -72,7 +72,7 @@ impl DerefMut for Complexes {
     /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rcplx;
+            let ptr = dataptr(self.get_mut()) as *mut Rcplx;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

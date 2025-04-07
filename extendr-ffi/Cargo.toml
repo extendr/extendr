@@ -1,0 +1,12 @@
+[package]
+name = "extendr-ffi"
+version = "0.8.0"
+edition = "2021"
+links = "R"
+
+[features]
+default = []
+non-api = []
+
+[build-dependencies]
+build-print = "0.1.1"

@@ -16,7 +16,6 @@ on:
 # A special named parameter called `ActionName` can be used to set the name of current ci-cargo action,
 # used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
 jobs:
-  # All tests under this job are run with pre-computed libR-sys bindings.
   tests_no_bindgen:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
@@ -254,46 +253,3 @@ jobs:
         with:
           name: ${{ format('{0}-{1}-r{2}-rust-version{3}-{4}-results', runner.os, runner.arch, matrix.config.r, matrix.config.rust-version, matrix.config.id || strategy.job-index) }}
           path: extendrtests_check
-      # With https://github.com/extendr/rextendr/pull/31
-      # rextendr can be configured using environment variables.
-      # 'patch.crates_io' is used to point libraries to local copies of
-      # extendr-api and extendr-macros, so rextendr tests current version of extendr-*
-      - name: Prepare for R integration tests using {rextendr}
-        id: rextendr_check
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: |
-          cat("::group::Preparing 'rextendr'\n")
-
-          patch.crates_io <-
-            paste(
-              paste0(
-                "extendr-api = { path = \"",
-                normalizePath(file.path(getwd(), "extendr-api"), winslash = "/"),
-                "\" }"),
-
-              paste0(
-                "extendr-macros = { path = \"",
-                normalizePath(file.path(getwd(), "extendr-macros"), winslash = "/"),
-                "\" }"),
-
-              # uncomment this line when we need to depend on the dev version of libR-sys
-              # 'libR-sys = { git = "https://github.com/extendr/libR-sys" }',
-
-              sep = ";")
-
-          patch.crates_io <- paste0("REXTENDR_PATCH_CRATES_IO=", patch.crates_io)
-
-          github_env_file <- Sys.getenv("GITHUB_ENV")
-          cat(patch.crates_io, file = github_env_file, append = TRUE)
-
-          cat("::endgroup::\n")
-        shell: Rscript {0}
-
-      - name: Run R integration tests using {rextendr}
-        uses: r-lib/actions/check-r-package@v2
-        with:
-          args: 'c("--no-manual", "--as-cran", "--force-multiarch")'
-          working-directory: "tests/rextendr"
-          check-dir: '"rextendr_check"'
-          error-on: '"${{ steps.error-on.outputs.level }}"'
