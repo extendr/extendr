@@ -9,7 +9,7 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.7"
+extendr-api = "0.8.0"
 ```
 
 ## About
