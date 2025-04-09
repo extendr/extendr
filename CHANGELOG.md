@@ -82,7 +82,7 @@ now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is mar
 - You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
 - It is no longer possible to generate bindings as part of the compilation of
-extendr. Feature `non-api` is broken and will not compile. Related [[#2251]](https://github.com/extendr/libR-sys/issues/251)
+extendr. Feature `non-api` is broken and will not compile. Related [[#251]](https://github.com/extendr/libR-sys/issues/251)
 
 ### Fixed
 
