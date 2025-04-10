@@ -11,6 +11,7 @@ use std::convert::TryFrom;
 ///
 /// `Rbool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
+#[derive(Hash)]
 pub struct Rbool(i32);
 
 impl Scalar<i32> for Rbool {
