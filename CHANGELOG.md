@@ -13,7 +13,7 @@
 ### Added
 
 - Added `ndim()` method for `RArray` to get the number of dimension [[#898]](https://github.com/extendr/extendr/pull/898). 
-- Adeed `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Added `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898). 
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added [[#875]](https://github.com/extendr/extendr/pull/875)
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking [[#853]](https://github.com/extendr/extendr/pull/853)
