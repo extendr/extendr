@@ -583,10 +583,7 @@ pub trait RobjItertools: Iterator {
     /// # Arguments
     ///
     /// * `dims` - an array containing the length of each dimension
-    fn collect_rarray<const LEN: usize>(
-        self,
-        dims: [usize; LEN],
-    ) -> Result<RArray<Self::Item, [usize; LEN]>>
+    fn collect_rarray<const LEN: usize>(self, dims: [usize; LEN]) -> Result<RArray<Self::Item, LEN>>
     where
         Self: Iterator,
         Self: Sized,
@@ -606,7 +603,7 @@ pub trait RobjItertools: Iterator {
         let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
-        Ok(RArray::from_parts(vector, dims))
+        Ok(RArray::from_parts(vector))
     }
 }
 

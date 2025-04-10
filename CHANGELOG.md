@@ -12,6 +12,8 @@
 
 ### Added
 
+- Added `ndim()` method for `RArray` to get the number of dimension [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Added `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898). 
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added [[#875]](https://github.com/extendr/extendr/pull/875)
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking [[#853]](https://github.com/extendr/extendr/pull/853)
@@ -26,6 +28,9 @@
 
 ### Changed
 
+- Breaking change: Replace parameter `dim` with type `[usize; n]` with constant generic parameter `const NDIM: usize` in `RArray`. Now, use `RArray<T, n>` instead of `RArray<T, [usize; n]>`to define a new n dim `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Breaking change: Remove parameter `dim` from `RArray::from_parts()` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Enhancement: Replace `panic!()` with `throw_r_error()` in the `offset()` method of `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
 - `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provides backports. [[#888]](https://github.com/extendr/extendr/pull/888)
 - Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. [[#882]](https://github.com/extendr/extendr/pull/882)
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)

@@ -1,7 +1,7 @@
 //! Wrappers for matrices with deferred arithmetic.
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
-use crate::scalar::Scalar;
+use crate::throw_r_error;
 use extendr_ffi::{
     Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
     TYPEOF,
@@ -28,19 +28,30 @@ use std::ops::{Index, IndexMut};
 /// }
 /// ```
 #[derive(Debug, PartialEq)]
-pub struct RArray<T, D> {
+pub struct RArray<T, const NDIM: usize> {
     /// Owning Robj (probably should be a Pin).
     robj: Robj,
 
-    /// Dimensions of the array.
-    dim: D,
-
+    /// Data type of the n-array
     _data: std::marker::PhantomData<T>,
 }
 
-impl<T, D> RArray<T, D> {
+impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dimnames(&self) -> List {
         List::try_from(Robj::from_sexp(unsafe { Rf_GetArrayDimnames(self.get()) })).unwrap()
+    }
+
+    /// Get the dimension vector of the array.
+    ///
+    /// Equivalent to `dim()` in R
+    pub fn get_dim(&self) -> Vec<usize> {
+        // TODO: Is there a better way to do this?
+        self.robj
+            .get_attrib(wrapper::symbol::dim_symbol())
+            .unwrap()
+            .as_integer_vector()
+            .map(|vec| vec.into_iter().map(|x| x as usize).collect())
+            .unwrap()
     }
 
     /// Set the names of the elements of an array.
@@ -73,11 +84,27 @@ impl<T, D> RArray<T, D> {
     }
 }
 
-pub type RColumn<T> = RArray<T, [usize; 1]>;
-pub type RMatrix<T> = RArray<T, [usize; 2]>;
-pub type RMatrix3D<T> = RArray<T, [usize; 3]>;
-pub type RMatrix4D<T> = RArray<T, [usize; 4]>;
-pub type RMatrix5D<T> = RArray<T, [usize; 5]>;
+pub type RColumn<T> = RArray<T, 1>;
+pub type RMatrix<T> = RArray<T, 2>;
+pub type RMatrix3D<T> = RArray<T, 3>;
+pub type RMatrix4D<T> = RArray<T, 4>;
+pub type RMatrix5D<T> = RArray<T, 5>;
+
+// TODO: The function name should be cleaner
+
+impl<T, const NDIM: usize> RArray<T, NDIM>
+where
+    T: ToVectorValue,
+    Robj: for<'a> AsTypedSlice<'a, T>,
+{
+    pub fn new_array(dim: [usize; NDIM]) -> Self {
+        let sexptype = T::sexptype();
+        let len = dim.iter().product();
+        let mut robj = Robj::alloc_vector(sexptype, len);
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        RArray::from_parts(robj)
+    }
+}
 
 impl<T> RMatrix<T>
 where
@@ -90,7 +117,7 @@ where
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
         let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
-        RArray::from_parts(matrix, [nrow, ncol])
+        RArray::from_parts(matrix)
     }
 }
 
@@ -159,53 +186,35 @@ trait Offset<D> {
     fn offset(&self, idx: D) -> usize;
 }
 
-impl<T> Offset<[usize; 1]> for RArray<T, [usize; 1]> {
+impl<T, const NDIM: usize> Offset<[usize; NDIM]> for RArray<T, NDIM> {
     /// Get the offset into the array for a given index.
-    fn offset(&self, index: [usize; 1]) -> usize {
-        if index[0] - BASE > self.dim[0] {
-            panic!("array index: row overflow");
+    fn offset(&self, index: [usize; NDIM]) -> usize {
+        let dims = self.get_dim();
+        if index.len() != dims.len() {
+            throw_r_error("array index: dimension mismatch");
         }
-        index[0] - BASE
+        index
+            .iter()
+            .zip(dims.iter())
+            .rev()
+            .enumerate()
+            .fold(0, |acc, (i, (&idx, &dim))| {
+                if idx - BASE >= dim {
+                    let msg = format!("array index: dimension {} overflow (0-based dimension)", i);
+                    throw_r_error(msg);
+                }
+                acc * dim + (idx - BASE)
+            })
     }
 }
 
-impl<T> Offset<[usize; 2]> for RArray<T, [usize; 2]> {
-    /// Get the offset into the array for a given index.
-    fn offset(&self, index: [usize; 2]) -> usize {
-        if index[0] - BASE > self.dim[0] {
-            panic!("matrix index: row overflow");
-        }
-        if index[1] - BASE > self.dim[1] {
-            panic!("matrix index: column overflow");
-        }
-        (index[0] - BASE) + self.dim[0] * (index[1] - BASE)
-    }
-}
-
-impl<T> Offset<[usize; 3]> for RArray<T, [usize; 3]> {
-    /// Get the offset into the array for a given index.
-    fn offset(&self, index: [usize; 3]) -> usize {
-        if index[0] - BASE > self.dim[0] {
-            panic!("RMatrix3D index: row overflow");
-        }
-        if index[1] - BASE > self.dim[1] {
-            panic!("RMatrix3D index: column overflow");
-        }
-        if index[2] - BASE > self.dim[2] {
-            panic!("RMatrix3D index: submatrix overflow");
-        }
-        (index[0] - BASE) + self.dim[0] * (index[1] - BASE + self.dim[1] * (index[2] - BASE))
-    }
-}
-
-impl<T, D> RArray<T, D>
+impl<T, const NDIM: usize> RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
-    pub fn from_parts(robj: Robj, dim: D) -> Self {
+    pub fn from_parts(robj: Robj) -> Self {
         Self {
             robj,
-            dim,
             _data: std::marker::PhantomData,
         }
     }
@@ -220,9 +229,14 @@ where
         self.as_typed_slice_mut().unwrap()
     }
 
-    /// Get the dimensions for this array.
-    pub fn dim(&self) -> &D {
-        &self.dim
+    /// Returns the number of dimensions.
+    pub fn ndim(&self) -> usize {
+        NDIM
+    }
+
+    /// Returns the dimensions of the array.
+    pub fn dim(&self) -> Vec<usize> {
+        self.get_dim()
     }
 }
 
@@ -236,12 +250,12 @@ where
         let mut robj = (0..nrows).map(f).collect_robj();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
     pub fn nrows(&self) -> usize {
-        self.dim[0]
+        self.get_dim()[0]
     }
 }
 
@@ -274,17 +288,17 @@ where
             .collect_robj();
         let dim = [nrows, ncols];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
     pub fn nrows(&self) -> usize {
-        self.dim[0]
+        self.get_dim()[0]
     }
 
     /// Get the number of columns.
     pub fn ncols(&self) -> usize {
-        self.dim[1]
+        self.get_dim()[1]
     }
 }
 
@@ -310,22 +324,22 @@ where
             .collect_robj();
         let dim = [nrows, ncols, nmatrix];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
-        RArray::from_parts(robj, dim)
+        RArray::from_parts(robj)
     }
 
     /// Get the number of rows.
     pub fn nrows(&self) -> usize {
-        self.dim[0]
+        self.get_dim()[0]
     }
 
     /// Get the number of columns.
     pub fn ncols(&self) -> usize {
-        self.dim[1]
+        self.get_dim()[1]
     }
 
     /// Get the number of submatrices.
     pub fn nsub(&self) -> usize {
-        self.dim[2]
+        self.get_dim()[2]
     }
 }
 
@@ -337,8 +351,7 @@ where
 
     fn try_from(robj: &Robj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
-            let len = robj.len();
-            Ok(RArray::from_parts(robj.clone(), [len]))
+            Ok(RArray::from_parts(robj.clone()))
         } else {
             Err(Error::ExpectedVector(robj.clone()))
         }
@@ -356,11 +369,11 @@ where
             Err(Error::ExpectedMatrix(robj.clone()))
         } else if let Some(_slice) = robj.as_typed_slice() {
             if let Some(dim) = robj.dim() {
-                let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                if dim.len() != 2 {
+                let ndim = dim.len();
+                if ndim != 2 {
                     Err(Error::ExpectedMatrix(robj.clone()))
                 } else {
-                    Ok(RArray::from_parts(robj.clone(), [dim[0], dim[1]]))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix(robj.clone()))
@@ -383,8 +396,7 @@ where
                 if dim.len() != 3 {
                     Err(Error::ExpectedMatrix3D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(robj.clone(), [dim[0], dim[1], dim[2]]))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix3D(robj.clone()))
@@ -407,11 +419,7 @@ where
                 if dim.len() != 4 {
                     Err(Error::ExpectedMatrix4D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(
-                        robj.clone(),
-                        [dim[0], dim[1], dim[2], dim[3]],
-                    ))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix4D(robj.clone()))
@@ -434,11 +442,7 @@ where
                 if dim.len() != 5 {
                     Err(Error::ExpectedMatrix5D(robj.clone()))
                 } else {
-                    let dim: Vec<_> = dim.iter().map(|d| d.inner() as usize).collect();
-                    Ok(RArray::from_parts(
-                        robj.clone(),
-                        [dim[0], dim[1], dim[2], dim[3], dim[4]],
-                    ))
+                    Ok(RArray::from_parts(robj.clone()))
                 }
             } else {
                 Err(Error::ExpectedMatrix5D(robj.clone()))
@@ -500,9 +504,9 @@ impl_try_from_robj_ref!(
     RMatrix5D
 );
 
-impl<T, D> From<RArray<T, D>> for Robj {
+impl<T, const DIM: usize> From<RArray<T, DIM>> for Robj {
     /// Convert a column, matrix or matrix3d to an Robj.
-    fn from(array: RArray<T, D>) -> Self {
+    fn from(array: RArray<T, DIM>) -> Self {
         array.robj
     }
 }
@@ -532,27 +536,35 @@ pub trait MatrixConversions: GetSexp {
 
 impl MatrixConversions for Robj {}
 
-impl<T> Index<[usize; 2]> for RArray<T, [usize; 2]>
+impl<T, const NDIM: usize> Index<[usize; NDIM]> for RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     type Output = T;
 
+    /// Zero-based indexing for DIM-dimensional arrays.
+    ///
+    /// Panics if out of bounds.
     /// Zero-based indexing in row, column order.
     ///
     /// Panics if out of bounds.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let matrix = RArray::new_matrix(3, 2, |r, c| [
-    ///        [1., 2., 3.],
-    ///        [4., 5., 6.]][c][r]);
+    ///     let matrix = RArray::new_matrix(3, 2, |r, c| [
+    ///         [1., 2., 3.],
+    ///         [4., 5., 6.]][c][r]);
     ///     assert_eq!(matrix[[0, 0]], 1.);
     ///     assert_eq!(matrix[[1, 0]], 2.);
     ///     assert_eq!(matrix[[2, 1]], 6.);
+    ///
+    ///     let matrix = RArray::new_matrix3d(3, 2, 2, |r, c, d| (r + c + d) as f64);
+    ///     assert_eq!(matrix[[0, 0, 0]], 0.);
+    ///     assert_eq!(matrix[[1, 0, 1]], 2.);
+    ///     assert_eq!(matrix[[2, 1, 1]], 4.);
     /// }
     /// ```
-    fn index(&self, index: [usize; 2]) -> &Self::Output {
+    fn index(&self, index: [usize; NDIM]) -> &Self::Output {
         unsafe {
             self.data()
                 .as_ptr()
@@ -563,11 +575,11 @@ where
     }
 }
 
-impl<T> IndexMut<[usize; 2]> for RArray<T, [usize; 2]>
+impl<T, const NDIM: usize> IndexMut<[usize; NDIM]> for RArray<T, NDIM>
 where
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
-    /// Zero-based mutable indexing in row, column order.
+    /// Zero-based mutable indexing for DIM-dimensional arrays.
     ///
     /// Panics if out of bounds.
     /// ```
@@ -579,58 +591,7 @@ where
     ///     matrix[[2, 0]] = 3.;
     ///     matrix[[0, 1]] = 4.;
     ///     assert_eq!(matrix.as_real_slice().unwrap(), &[1., 2., 3., 4., 0., 0.]);
-    /// }
-    /// ```
-    fn index_mut(&mut self, index: [usize; 2]) -> &mut Self::Output {
-        unsafe {
-            self.data_mut()
-                .as_mut_ptr()
-                .add(self.offset(index))
-                .as_mut()
-                .unwrap()
-        }
-    }
-}
-
-impl<T> Index<[usize; 3]> for RArray<T, [usize; 3]>
-where
-    Robj: for<'a> AsTypedSlice<'a, T>,
-{
-    type Output = T;
-
-    /// Zero-based indexing in row, column order.
     ///
-    /// Panics if out of bounds.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let matrix = RArray::new_matrix3d(3, 2, 2, |r, c, d| (r + c + d) as f64);
-    ///     assert_eq!(matrix[[0, 0, 0]], 0.);
-    ///     assert_eq!(matrix[[1, 0, 1]], 2.);
-    ///     assert_eq!(matrix[[2, 1, 1]], 4.);
-    /// }
-    /// ```
-    fn index(&self, index: [usize; 3]) -> &Self::Output {
-        unsafe {
-            self.data()
-                .as_ptr()
-                .add(self.offset(index))
-                .as_ref()
-                .unwrap()
-        }
-    }
-}
-
-impl<T> IndexMut<[usize; 3]> for RArray<T, [usize; 3]>
-where
-    Robj: for<'a> AsTypedSlice<'a, T>,
-{
-    /// Zero-based mutable indexing in row, column order.
-    ///
-    /// Panics if out of bounds.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
     ///    let mut matrix = RMatrix3D::new_matrix3d(3, 2, 2, |_, _, _| 0.);
     ///    matrix[[0, 0, 0]] = 1.;
     ///    matrix[[1, 0, 0]] = 2.;
@@ -640,7 +601,7 @@ where
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
-    fn index_mut(&mut self, index: [usize; 3]) -> &mut Self::Output {
+    fn index_mut(&mut self, index: [usize; NDIM]) -> &mut Self::Output {
         unsafe {
             self.data_mut()
                 .as_mut_ptr()
@@ -651,7 +612,7 @@ where
     }
 }
 
-impl<T, D> Deref for RArray<T, D> {
+impl<T, const NDIM: usize> Deref for RArray<T, NDIM> {
     type Target = Robj;
 
     fn deref(&self) -> &Self::Target {
@@ -659,14 +620,14 @@ impl<T, D> Deref for RArray<T, D> {
     }
 }
 
-impl<T, D> DerefMut for RArray<T, D> {
+impl<T, const NDIM: usize> DerefMut for RArray<T, NDIM> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.robj
     }
 }
 
-impl<T, D> From<Option<RArray<T, D>>> for Robj {
-    fn from(value: Option<RArray<T, D>>) -> Self {
+impl<T, const NDIM: usize> From<Option<RArray<T, NDIM>>> for Robj {
+    fn from(value: Option<RArray<T, NDIM>>) -> Self {
         match value {
             None => nil_value(),
             Some(value) => value.into(),
