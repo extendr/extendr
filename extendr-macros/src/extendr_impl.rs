@@ -137,8 +137,38 @@ pub(crate) fn extendr_impl(
     let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
-    let mut method_meta_names = Vec::new();
+
+    // Get the outer (impl-level) documentation.
+    // That's not ideal. We should be able to get the struct level docstring.
+    // But for now, we just use the impl docstring.
+    // So, for usage, document struct in one of the impl blocks.
     let doc_string = wrappers::get_doc_string(&item_impl.attrs);
+    
+    // Now get the method-level (fns) docstrings.
+    let mut method_docs = Vec::new();
+    for impl_item in &item_impl.items {
+        if let syn::ImplItem::Fn(method) = impl_item {
+            let mdoc = wrappers::get_doc_string(&method.attrs);
+            if !mdoc.is_empty() {
+                method_docs.push((method.sig.ident.to_string(), mdoc));
+            }
+        }
+    }
+    // Build a Methods section
+    // It actually creates a method section for each impl block, but Roxygen
+    // won't complain about that.
+    let methods_section = if !method_docs.is_empty() {
+        let mut section = String::new();
+        section.push_str("\n @section Methods:");
+        for (name, doc) in method_docs {
+            section.push_str(&format!("\n - `{}`: {}", name, doc));
+        }
+        section
+    } else {
+        String::new()
+    };
+
+    let full_doc = format!("{}{}", doc_string, methods_section);
 
     // Generate wrappers for methods.
     // eg.
@@ -155,12 +185,6 @@ pub(crate) fn extendr_impl(
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
-            method_meta_names.push(format_ident!(
-                "{}{}__{}",
-                wrappers::META_PREFIX,
-                self_ty_name,
-                method.sig.ident
-            ));
             wrappers::make_function_wrappers(
                 opts,
                 &mut wrappers,
@@ -183,10 +207,9 @@ pub(crate) fn extendr_impl(
 
         #[allow(non_snake_case)]
         fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
-            let mut methods = Vec::new();
-            #( #method_meta_names(&mut methods); )*
+            let methods = Vec::new();
             impls.push(extendr_api::metadata::Impl {
-                doc: #doc_string,
+                doc: #full_doc,
                 name: #self_ty_name,
                 methods,
             });
