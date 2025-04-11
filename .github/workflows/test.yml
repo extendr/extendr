@@ -187,7 +187,7 @@ jobs:
       # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
       - name: Check code formatting
         if: matrix.config.check_fmt
-        run: cargo fmt -- --check
+        run: cargo extendr check-fmt
 
       # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
       # Required by Windows builds, does not affect other platforms
