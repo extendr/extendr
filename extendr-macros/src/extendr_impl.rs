@@ -137,6 +137,7 @@ pub(crate) fn extendr_impl(
     let self_ty = item_impl.self_ty.as_ref();
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
+    let mut method_meta_names = Vec::new();
 
     // Get the outer (impl-level) documentation.
     // That's not ideal. We should be able to get the struct level docstring.
@@ -185,6 +186,12 @@ pub(crate) fn extendr_impl(
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
+          method_meta_names.push(format_ident!(
+            "{}{}__{}",
+            wrappers::META_PREFIX,
+            self_ty_name,
+            method.sig.ident
+        ));
             wrappers::make_function_wrappers(
                 opts,
                 &mut wrappers,
@@ -207,7 +214,8 @@ pub(crate) fn extendr_impl(
 
         #[allow(non_snake_case)]
         fn #meta_name(impls: &mut Vec<extendr_api::metadata::Impl>) {
-            let methods = Vec::new();
+            let mut methods = Vec::new();
+            #( #method_meta_names(&mut methods); )*
             impls.push(extendr_api::metadata::Impl {
                 doc: #full_doc,
                 name: #self_ty_name,
