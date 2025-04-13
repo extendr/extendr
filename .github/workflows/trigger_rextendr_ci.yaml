@@ -4,7 +4,7 @@ on:
 		types:
 			- closed
 		branches:
-			- main
+			- master
 
 jobs:
 	dispatch-to-rextendr:
@@ -14,6 +14,6 @@ jobs:
 			- name: Trigger rextendr test workflow
 				uses: peter-evans/repository-dispatch@v3
 				with:
-					token: ${{ secrets.PAT }}
+					token: ${{ secrets.GITHUB_TOKEN }}
 					repository: extendr/rextendr
 					event-type: extendr-pr-merged
