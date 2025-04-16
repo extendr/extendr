@@ -5,6 +5,135 @@ use syn::{ItemFn, ItemImpl};
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
+/// Transform the method documentation to Roxygen format.
+fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> String {
+    let mut description = Vec::new();
+    let mut other_groups: Vec<(String, Vec<String>)> = Vec::new();
+    let mut current_other: Option<(String, Vec<String>)> = None;
+    let mut params: Vec<(String, Vec<String>)> = Vec::new();
+    let mut current_param: Option<(String, Vec<String>)> = None;
+    let mut state = "description";
+
+    // for each line of the docstring
+    for line in doc.lines() {
+        let trimmed = line.trim();
+        // params
+        if trimmed.starts_with("@param") {
+            if let Some((name, lines)) = current_param.take() {
+                params.push((name, lines));
+            }
+            if let Some((tag, content)) = current_other.take() {
+                other_groups.push((tag, content));
+            }
+            // split tag name from the rest
+            let mut parts = trimmed.splitn(3, ' ');
+            parts.next();
+            // Extract the parameter name and description (unwrap_or handles empty cases like multiline tags)
+            // it appends multiline param docstrings later
+            let param_name = parts.next().unwrap_or("").to_string();
+            let param_desc = parts.next().unwrap_or("").to_string();
+            current_param = Some((param_name, vec![param_desc]));
+            state = "param";
+            continue;
+        // same for every other taga
+        } else if trimmed.starts_with('@') {
+            if let Some((name, lines)) = current_param.take() {
+                params.push((name, lines));
+            }
+            let mut parts = trimmed.splitn(2, ' ');
+            let tag_with_at = parts.next().unwrap_or("");
+            let tag = tag_with_at.trim_start_matches('@').to_string();
+            // flush current group if changing tag
+            if let Some((curr_tag, _)) = &current_other {
+                if *curr_tag != tag {
+                    let (t, c) = current_other.take().unwrap();
+                    other_groups.push((t, c));
+                    current_other = Some((tag.clone(), Vec::new()));
+                }
+            } else {
+                current_other = Some((tag.clone(), Vec::new()));
+            }
+            // add inline content if present
+            if let Some(inline) = parts.next() {
+                let inline = inline.trim();
+                if !inline.is_empty() {
+                    if let Some((_, ref mut vec)) = current_other {
+                        vec.push(inline.to_string());
+                    }
+                }
+            }
+            state = "other";
+            continue;
+        }
+
+        match state {
+            "description" => description.push(trimmed.to_string()),
+            // handle multiline `@...` docstrings
+            "other" => {
+                if let Some((_, ref mut vec)) = current_other {
+                    vec.push(trimmed.to_string());
+                }
+            },
+            // handle multiline `@param` docstrings
+            "param" => {
+                if let Some((_, ref mut lines)) = current_param {
+                    lines.push(trimmed.to_string());
+                }
+            },
+            _ => description.push(trimmed.to_string()),
+        }
+    }
+    if let Some((name, lines)) = current_param.take() {
+        params.push((name, lines));
+    }
+    if let Some((tag, content)) = current_other.take() {
+        other_groups.push((tag, content));
+    }
+    
+    // creates `method` subsection (obs.: for each impl block)
+    let mut output = String::new();
+    output.push_str(&format!("\\subsection{{Method `{}`}}{{\n", method_name));
+    if !description.is_empty() {
+        output.push_str(&description.join("\n"));
+        output.push_str("\n");
+    }
+    if !params.is_empty() {
+      // params docstrings goes here
+      output.push_str(" \\subsection{Arguments}{\n\\describe{\n");
+      for (pname, plines) in params {
+          let param_text = plines.join(" ");
+          output.push_str(&format!("\\item{{`{}`}}{{{}}}\n", pname, param_text));
+      }
+      output.push_str("}}\n");
+  }
+    // for other docsstring, it creates a subsection for each tag
+    // usage and examples are special because if we don't enclose it in
+    // a preformatted block, it will be be sent as one single line, e.g.:
+    // @examples
+    // #' foo(
+    // #'   bar,
+    // #'   baz
+    // #' )
+    // becomes
+    // @examples
+    // #' foo(bar, baz)
+    // if there's another special treatment needed, it should be added here
+    for (tag, contents) in other_groups {
+        if tag == "usage" || tag == "examples" {
+            output.push_str(&format!(
+              " \\subsection{{{}}}\n \\preformatted{{\n{}\n}}\n",
+              tag, contents.join("\n")
+            ));
+        } else {
+          output.push_str(&format!(" \\subsection{{{}}}\n ", tag));
+          output.push_str(&contents.join("\n"));
+          output.push_str("\n");
+        }
+    }
+    output.push_str("}\n");
+    output
+}
+
 /// Make inherent implementations available to R
 ///
 /// The `extendr_impl` function is used to make inherent implementations
@@ -145,13 +274,13 @@ pub(crate) fn extendr_impl(
     // So, for usage, document struct in one of the impl blocks.
     let doc_string = wrappers::get_doc_string(&item_impl.attrs);
     
-    // Now get the method-level (fns) docstrings.
     let mut method_docs = Vec::new();
     for impl_item in &item_impl.items {
         if let syn::ImplItem::Fn(method) = impl_item {
             let mdoc = wrappers::get_doc_string(&method.attrs);
             if !mdoc.is_empty() {
-                method_docs.push((method.sig.ident.to_string(), mdoc));
+                let transformed = transform_method_doc_roxygen(&method.sig.ident.to_string(), &mdoc);
+                method_docs.push((method.sig.ident.to_string(), transformed));
             }
         }
     }
@@ -161,8 +290,9 @@ pub(crate) fn extendr_impl(
     let methods_section = if !method_docs.is_empty() {
         let mut section = String::new();
         section.push_str("\n @section Methods:");
-        for (name, doc) in method_docs {
-            section.push_str(&format!("\n - `{}`: {}", name, doc));
+        for (_name, doc) in method_docs {
+            section.push_str("\n");
+            section.push_str(doc.as_str());
         }
         section
     } else {
@@ -186,12 +316,12 @@ pub(crate) fn extendr_impl(
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
-          method_meta_names.push(format_ident!(
-            "{}{}__{}",
-            wrappers::META_PREFIX,
-            self_ty_name,
-            method.sig.ident
-        ));
+            method_meta_names.push(format_ident!(
+                "{}{}__{}",
+                wrappers::META_PREFIX,
+                self_ty_name,
+                method.sig.ident
+            ));
             wrappers::make_function_wrappers(
                 opts,
                 &mut wrappers,
