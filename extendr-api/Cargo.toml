@@ -24,7 +24,7 @@ faer = { version = "0.20", optional = true }
 
 [dev-dependencies]
 extendr-engine = { path = "../extendr-engine" }
-rstest = "0.22.0"
+rstest = "0.25.0"
 
 
 [features]
