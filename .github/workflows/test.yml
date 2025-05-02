@@ -107,14 +107,6 @@ jobs:
           components: rustfmt, clippy
 
       - name: Install cargo-expand
-        uses: dtolnay/install@master
-        if: startsWith(runner.os, 'Windows') != true
-        with:
-          crate: cargo-expand
-
-        # https://github.com/dtolnay/install/issues/12
-      - name: Install cargo-expand (dtolnay/install#12 workaround)
-        if: startsWith(runner.os, 'Windows')
         run: cargo install cargo-expand
 
       - name: Set up R
@@ -124,9 +116,6 @@ jobs:
           rtools-version: ${{ matrix.config.rtools-version }}
           # TODO: enable RSPM when all the packages are available
           use-public-rspm: true
-
-      - name: Set up Pandoc
-        uses: r-lib/actions/setup-pandoc@v2
 
       - name: Configure Windows
         if: startsWith(runner.os, 'Windows')
@@ -187,7 +176,9 @@ jobs:
       # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
       - name: Check code formatting
         if: matrix.config.check_fmt
-        run: cargo fmt -- --check
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr check-fmt
 
       # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
       # Required by Windows builds, does not affect other platforms
@@ -246,7 +237,8 @@ jobs:
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
         run: |
-          cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
+          . ./ci-cargo.ps1
+          ci-cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
