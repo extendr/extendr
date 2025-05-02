@@ -96,6 +96,17 @@ impl TryFrom<Vec<c64>> for Complexes {
     }
 }
 
+#[cfg(feature = "serde")]
+impl serde::Serialize for Complexes {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let self_as_slice: &[Rcomplex] = self.robj.as_typed_slice().unwrap();
+        self_as_slice.serialize(serializer)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
