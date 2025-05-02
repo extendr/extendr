@@ -29,9 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: baptiste0928/cargo-install@v3
-        with:
-          crate: cargo-msrv
+      - name: Installing `cargo-msrv`
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo install cargo-msrv
 
       # Default R installation has been removed from OS image starting with 24.04
       # https://github.com/actions/runner-images/issues/10636
@@ -40,7 +41,11 @@ jobs:
         with:
           r-version: 'release'
 
-      - name: Verify minimum rust version
+      - name: Verify minimum rust version of extendr-api
         run: |
           . ./ci-cargo.ps1
-          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
+          ci-cargo extendr msrv verify -ActionName "Verify Rust MSRV for extendr-api"
+      - name: Verify minimum rust version of extendr-api with full functionality
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr msrv --features=full-functionality --path extendr-api/ verify -ActionName "Verify Rust MSRV for extendr-api"
