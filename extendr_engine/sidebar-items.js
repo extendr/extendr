@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["end_r","shutdown_r","start_r","with_r"],"macro":["cstr_mut"],"mod":["shutdown_r___rust_dtor___mod"],"static":["START_R"]};
+window.SIDEBAR_ITEMS = {"fn":["end_r","shutdown_r","start_r","with_r"],"macro":["cstr_mut"],"static":["START_R"]};
