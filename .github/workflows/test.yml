@@ -214,6 +214,8 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 4
+          install-pandoc: false
+          install-quarto: false
           working-directory: tests/extendrtests
           extra-packages: any::rcmdcheck
 
@@ -221,6 +223,8 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 4
+          install-pandoc: false
+          install-quarto: false
           working-directory: tests/rextendr
 
       # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
