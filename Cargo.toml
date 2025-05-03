@@ -29,3 +29,4 @@ repository = "https://github.com/extendr/extendr"
 # When updating extendr's version, this version also needs to be updated
 extendr-macros = { path = "./extendr-macros", version = "0.8.0" }
 extendr-ffi = { path = "./extendr-ffi", version = "0.8.0" }
+serde = { version = "1.0.219", features = ["derive"] }
