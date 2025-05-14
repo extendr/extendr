@@ -39,9 +39,9 @@ impl CanBeNA for c64 {
     }
 }
 
-/// Rcplx is a wrapper for f64 in the context of an R's complex vector.
+/// Rcplx is a wrapper for `f64` in the context of R's complex vector.
 ///
-/// Rcplx has a special NA value, obtained from R headers via R_NaReal.
+/// Rcplx has a special `NA` value, obtained from R headers via `R_NaReal`.
 ///
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
 #[derive(Clone, Copy, Default, PartialEq)]

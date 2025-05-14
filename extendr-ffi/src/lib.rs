@@ -32,6 +32,7 @@ extern "C" {
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 /// A C type with enumeration constants FALSE and TRUE defined.
 pub enum Rboolean {
     #[doc = ", MAYBE"]
@@ -137,6 +138,7 @@ pub type Int32 = ::std::os::raw::c_uint;
 #[doc = "R 4.3 redefined `Rcomplex` to a union for compatibility with Fortran.\n But the old definition is compatible both the union version\n and the struct version.\n See: <https://github.com/extendr/extendr/issues/524>\n <div rustbindgen replaces=\"Rcomplex\"></div>"]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Rcomplex {
     pub r: f64,
     pub i: f64,
