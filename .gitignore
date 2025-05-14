@@ -42,3 +42,4 @@ extendr.Rproj
 **/.cargo/*
 .vscode/settings.json
 .zed/settings.json
+vendor
