@@ -2,7 +2,6 @@
 mod test {
     use extendr_api::prelude::*;
     use extendr_api::serializer::to_robj;
-    use num_complex::c64;
     use serde::Serialize;
 
     #[test]
@@ -157,13 +156,13 @@ mod test {
             #[derive(Serialize)]
             struct Str1(Strings);
             let s = Str1(Strings::from_values(&["x", "y", "z"]));
-            let expected = r!(Strings::from_values(&["x", "y", "z"]));
+            let expected = r!(list!("x", "y", "z"));
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
 
             #[derive(Serialize)]
             struct Cmplx1(Complexes);
-            let s = Cmplx1(Complexes::from_values([c64(1, 2), c64(1, 2)]));
-            let expected = r!(Complexes::from_values([c64(1, 2), c64(1, 2)]));
+            let s = Cmplx1(Complexes::from_values([c64::new(1., 2.), c64::new(1., 2.)]));
+            let expected = r!(list!(c64::new(1., 2.), c64::new(1., 2.)));
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
         }
     }
