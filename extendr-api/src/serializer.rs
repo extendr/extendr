@@ -674,13 +674,16 @@ impl ser::Serialize for Doubles {
     }
 }
 
-impl serde::Serialize for Strings {
+impl ser::Serialize for Strings {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: ser::Serializer,
     {
         use crate::AsTypedSlice;
-        let strings_slice: &[Rstr] = self.robj.as_typed_slice().unwrap();
+        let strings_slice: &[Rstr] = self
+            .robj
+            .as_typed_slice()
+            .ok_or_else(|| <S::Error as ser::Error>::custom("Failed to get slice of Rstr."))?;
         strings_slice.serialize(serializer)
     }
 }
@@ -733,13 +736,16 @@ impl ser::Serialize for Rfloat {
     }
 }
 
-impl serde::Serialize for Complexes {
+impl ser::Serialize for Complexes {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: ser::Serializer,
     {
         use crate::AsTypedSlice;
-        let self_as_slice: &[Rcomplex] = self.robj.as_typed_slice().unwrap();
+        let self_as_slice: &[Rcomplex] = self
+            .robj
+            .as_typed_slice()
+            .ok_or_else(|| <S::Error as ser::Error>::custom("Failed to get slice of Rcomplex."))?;
         self_as_slice.serialize(serializer)
     }
 }

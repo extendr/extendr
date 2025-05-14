@@ -4,6 +4,8 @@
 
 ### Added
 
+- Serializers now include support for `Strings` and `Complexes` [[#922]](https://github.com/extendr/extendr/pull/922). 
+
 ### Changed
 
 ### Fixed
