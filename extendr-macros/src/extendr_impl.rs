@@ -35,7 +35,7 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> String {
             current_param = Some((param_name, vec![param_desc]));
             state = "param";
             continue;
-        // same for every other taga
+        // same for every other tags
         } else if trimmed.starts_with('@') {
             if let Some((name, lines)) = current_param.take() {
                 params.push((name, lines));
@@ -121,13 +121,14 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> String {
     for (tag, contents) in other_groups {
         if tag == "usage" || tag == "examples" {
             output.push_str(&format!(
-              " \\subsection{{{}}}\n \\preformatted{{\n{}\n}}\n",
-              tag, contents.join("\n")
+                " \\subsection{{{}}}{{\n \\preformatted{{\n{}\n}}\n}}\n",
+                tag,
+                contents.join("\n")
             ));
         } else {
-          output.push_str(&format!(" \\subsection{{{}}}\n ", tag));
-          output.push_str(&contents.join("\n"));
-          output.push_str("\n");
+            output.push_str(&format!(" \\subsection{{{}}}{{\n", tag));
+            output.push_str(&contents.join("\n"));
+            output.push_str("\n}\n");
         }
     }
     output.push_str("}\n");
@@ -294,8 +295,7 @@ pub(crate) fn extendr_impl(
         }
     }
     // Build a Methods section
-    // It actually creates a method section for each impl block, but Roxygen
-    // won't complain about that.
+    // It actually creates a method section for each impl block, but Roxygen won't complain about that.
     let methods_section = if !method_docs.is_empty() {
         let mut section = String::new();
         section.push_str("\n @section Methods:");
