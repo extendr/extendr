@@ -1,4 +1,3 @@
-use build_print::{error, info, warn};
 use std::{
     error::Error,
     fs::read_to_string,
@@ -222,6 +221,61 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");
 
-    build_print::custom_println!(" Success:", green, "extendr-ffi has been built!");
+    custom_println!(" Success:", green, "extendr-ffi has been built!");
     Ok(())
+}
+
+// Taken from build-print
+#[macro_export]
+macro_rules! println {
+    () => {
+        ::std::println!("cargo:warning=\x1b[2K\r");
+    };
+    ($($arg:tt)*) => {
+        ::std::println!("cargo:warning=\x1b[2K\r{}", ::std::format!($($arg)*))
+    }
+}
+
+#[macro_export]
+macro_rules! custom_println {
+    ($prefix:literal, cyan, $($arg:tt)*) => {
+        $crate::println!("   \x1b[1m\x1b[36m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, green, $($arg:tt)*) => {
+        $crate::println!("   \x1b[1m\x1b[32m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, yellow, $($arg:tt)*) => {
+        $crate::println!("   \x1b[1m\x1b[33m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, red, $($arg:tt)*) => {
+        $crate::println!("   \x1b[1m\x1b[31m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+}
+
+#[macro_export]
+macro_rules! info {
+    ($($arg:tt)+) => {
+        $crate::custom_println!("info:", green, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! warn {
+    ($($arg:tt)+) => {
+        $crate::custom_println!("warning:", yellow, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! error {
+    ($($arg:tt)+) => {
+        $crate::custom_println!("error:", red, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! note {
+    ($($arg:tt)+) => {
+        $crate::custom_println!("note:", cyan, $($arg)+);
+    }
 }
