@@ -3,7 +3,7 @@ use faer::{mat, Mat, MatRef};
 use crate::scalar::Rfloat;
 use crate::*;
 
-/// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not NA aware.
+/// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not `NA` aware.
 impl From<Mat<f64>> for RMatrix<f64> {
     fn from(value: Mat<f64>) -> Self {
         RMatrix::new_matrix(value.nrows(), value.ncols(), |i, j| value.read(i, j))
@@ -16,7 +16,7 @@ impl From<Mat<f64>> for Robj {
     }
 }
 
-/// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not NA aware.
+/// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not `NA` aware.
 impl From<MatRef<'_, f64>> for RMatrix<f64> {
     /// Convert a faer MatRef<f64> into Robj.
     fn from(value: MatRef<'_, f64>) -> Self {
@@ -53,7 +53,7 @@ impl From<RMatrix<f64>> for Mat<f64> {
     }
 }
 
-impl<'a> From<&'_ RMatrix<f64>> for MatRef<'a, f64> {
+impl From<&'_ RMatrix<f64>> for MatRef<'_, f64> {
     fn from(value: &RMatrix<f64>) -> Self {
         let nrow = value.nrows();
         let ncol = value.ncols();
@@ -80,7 +80,7 @@ impl TryFrom<&Robj> for Mat<f64> {
     }
 }
 
-impl<'a> TryFrom<&'_ Robj> for MatRef<'a, f64> {
+impl TryFrom<&'_ Robj> for MatRef<'_, f64> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
@@ -105,7 +105,7 @@ impl TryFrom<Robj> for Mat<f64> {
     }
 }
 
-impl<'a> TryFrom<Robj> for MatRef<'a, f64> {
+impl TryFrom<Robj> for MatRef<'_, f64> {
     type Error = crate::Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
@@ -139,11 +139,11 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64]
             ];
-            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j]);
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let b = Mat::<f64>::try_from(rmatrix);
-            assert_eq!(a, b.expect("matrix to be converted"));
+            let b = Mat::<f64>::from(rmatrix);
+            assert_eq!(a, b);
         }
     }
 
@@ -158,8 +158,8 @@ mod test {
             ];
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let b = Mat::<f64>::try_from(rmatrix);
-            assert!(b.expect("matrix to be converted").read(3, 0).is_nan());
+            let b = Mat::<f64>::from(rmatrix);
+            assert!(b.read(3, 0).is_nan());
         }
     }
 
@@ -172,12 +172,12 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64]
             ];
-            let mat = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+            let mat = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j]);
             let a = mat.as_ref();
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let b = MatRef::<f64>::try_from(&rmatrix);
-            assert_eq!(a, b.expect("matrix to be converted"));
+            let b = MatRef::<f64>::from(&rmatrix);
+            assert_eq!(a, b);
         }
     }
 
@@ -220,7 +220,7 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64]
             ];
-            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+            let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j]);
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
             let b = Mat::<f64>::try_from(&Robj::from(rmatrix));
@@ -237,7 +237,7 @@ mod test {
                 [3.0, 7.0, 11.0],
                 [4.0, 8.0, 12.0f64]
             ];
-            let mat = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
+            let mat = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j]);
             let a = mat.as_ref();
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
@@ -259,8 +259,8 @@ mod test {
             let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j] as f64);
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let b = Mat::<f64>::try_from(rmatrix);
-            assert_eq!(a, b.expect("matrix to be converted"));
+            let b = Mat::<f64>::from(rmatrix);
+            assert_eq!(a, b);
         }
     }
 }

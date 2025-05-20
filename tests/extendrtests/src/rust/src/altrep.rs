@@ -20,7 +20,11 @@ impl VecUsize {}
 #[cfg(use_r_altlist)]
 impl AltListImpl for VecUsize {
     fn elt(&self, index: usize) -> Robj {
-        Self(vec![self.0[index]]).into()
+        let mut v = Vec::with_capacity(1usize);
+        v.push(self.0[index]);
+        let v = v;
+
+        Self(v).into_robj()
     }
 }
 

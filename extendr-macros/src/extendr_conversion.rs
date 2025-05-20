@@ -58,10 +58,8 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
         self_ty_name.push('_');
         self_ty_name.push_str(gen.ident.to_string().as_str());
     }
-    // residual code syntax from extendr_impl.rs
-    // let mut _prefix = format!("{}__", self_ty_name);
 
-    // To do: Should documenting the struct be moved to R?
+    // TODO: Should documenting the struct be moved to R?
     // At the moment, only documentattion above the impl
     // block makes it to R.
     let _doc_string = wrappers::get_doc_string(&attrs);
