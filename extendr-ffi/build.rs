@@ -183,6 +183,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Used by extendr-engine becomes DEP_R_R_HOME for clients
     println!("cargo:r_home={}", r_paths.r_home.display());
     println!("cargo:rustc-env=R_HOME={}", r_paths.r_home.display());
+
     // used by extendr-api
     println!("cargo:r_version_major={}", r_paths.version.major);
     println!("cargo:r_version_minor={}", r_paths.version.minor);
@@ -194,12 +195,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         // For Windows
         (true, "x86_64") => Path::new(&r_paths.r_home).join("bin").join("x64"),
         (true, "x86") => Path::new(&r_paths.r_home).join("bin").join("i386"),
-        (true, _) => panic!("Unknown architecture"),
+        (true, _) => {
+            return Err("Cannot build extendr-ffi for unknown architecture".into());
+        }
         // For Unix-alike
         (false, _) => Path::new(&r_paths.r_home).join("lib"),
     };
 
-    info!("R library paths determined to be at: {libdir:?}");
+    note!("R library paths determined to be at: {libdir:?}");
 
     if let Ok(r_library) = libdir.canonicalize() {
         println!("cargo:rustc-link-search={}", r_library.display());
@@ -227,7 +230,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 // Taken from build-print
 #[macro_export]
-macro_rules! println {
+macro_rules! buildprintln {
     () => {
         ::std::println!("cargo:warning=\x1b[2K\r");
     };
@@ -239,43 +242,43 @@ macro_rules! println {
 #[macro_export]
 macro_rules! custom_println {
     ($prefix:literal, cyan, $($arg:tt)*) => {
-        $crate::println!("   \x1b[1m\x1b[36m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+        buildprintln!("   \x1b[1m\x1b[36m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
     };
     ($prefix:literal, green, $($arg:tt)*) => {
-        $crate::println!("   \x1b[1m\x1b[32m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+       buildprintln!("   \x1b[1m\x1b[32m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
     };
     ($prefix:literal, yellow, $($arg:tt)*) => {
-        $crate::println!("   \x1b[1m\x1b[33m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+        buildprintln!("   \x1b[1m\x1b[33m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
     };
     ($prefix:literal, red, $($arg:tt)*) => {
-        $crate::println!("   \x1b[1m\x1b[31m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+        buildprintln!("   \x1b[1m\x1b[31m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
     };
 }
 
 #[macro_export]
 macro_rules! info {
     ($($arg:tt)+) => {
-        $crate::custom_println!("info:", green, $($arg)+);
+        custom_println!("info:", green, $($arg)+);
     }
 }
 
 #[macro_export]
 macro_rules! warn {
     ($($arg:tt)+) => {
-        $crate::custom_println!("warning:", yellow, $($arg)+);
+        custom_println!("warning:", yellow, $($arg)+);
     }
 }
 
 #[macro_export]
 macro_rules! error {
     ($($arg:tt)+) => {
-        $crate::custom_println!("error:", red, $($arg)+);
+        custom_println!("error:", red, $($arg)+);
     }
 }
 
 #[macro_export]
 macro_rules! note {
     ($($arg:tt)+) => {
-        $crate::custom_println!("note:", cyan, $($arg)+);
+        custom_println!("note:", cyan, $($arg)+);
     }
 }
