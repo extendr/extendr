@@ -13,4 +13,4 @@ default = []
 non-api = []
 
 [build-dependencies]
-build-print = "0.1.1"
+build-print = "1.0.0"
