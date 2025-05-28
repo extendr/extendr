@@ -6,7 +6,10 @@ use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
 /// Transform the method documentation to Roxygen format.
-fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> String {
+fn transform_method_doc_roxygen(
+    method_name: &str,
+    doc: &str,
+) -> (String, Vec<String>) {
     let mut description = Vec::new();
     let mut other_groups: Vec<(String, Vec<String>)> = Vec::new();
     let mut current_other: Option<(String, Vec<String>)> = None;
@@ -107,32 +110,47 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> String {
       output.push_str("}}\n");
   }
     // for other docsstring, it creates a subsection for each tag
-    // usage and examples are special because if we don't enclose it in
+    // usage is special because if we don't enclose it in
     // a preformatted block, it will be be sent as one single line, e.g.:
-    // @examples
+    // @usage
     // #' foo(
     // #'   bar,
     // #'   baz
     // #' )
     // becomes
-    // @examples
+    // @usage
     // #' foo(bar, baz)
+    //
+    // examples are also special: they should be appended and put under @examples (not in a custom subsection)
     // if there's another special treatment needed, it should be added here
+    let mut examples: Vec<String> = Vec::new();
     for (tag, contents) in other_groups {
-        if tag == "usage" || tag == "examples" {
-            output.push_str(&format!(
-                " \\subsection{{{}}}{{\n \\preformatted{{\n{}\n}}\n}}\n",
-                tag,
-                contents.join("\n")
-            ));
-        } else {
-            output.push_str(&format!(" \\subsection{{{}}}{{\n", tag));
-            output.push_str(&contents.join("\n"));
-            output.push_str("\n}\n");
+        match tag.as_str() {
+            "examples" => {
+                examples.push(format!(
+                    "## ---- Method `{}` ---- ##\n{}",
+                    method_name,
+                    contents.join("\n")
+                ));
+            }
+            "usage" => {
+                output.push_str(&format!(
+                    " \\subsection{{{}}}{{\n \\preformatted{{\n{}\n}}\n}}\n",
+                    tag,
+                    contents.join("\n")
+                ));
+            }
+            other => {
+                output.push_str(&format!(
+                    " \\subsection{{{}}}{{\n{}\n}}\n",
+                    other,
+                    contents.join("\n")
+                ));
+            }
         }
     }
     output.push_str("}\n");
-    output
+    (output, examples)
 }
 
 /// Make inherent implementations available to R
@@ -284,31 +302,50 @@ pub(crate) fn extendr_impl(
         format!("{}\n{}", struct_doc.trim_end(), impl_doc)
     };
     
-    let mut method_docs = Vec::new();
+    let mut method_docs: Vec<(String, String)> = Vec::new();
+    let mut all_examples: Vec<String> = Vec::new();
+
     for impl_item in &item_impl.items {
         if let syn::ImplItem::Fn(method) = impl_item {
             let mdoc = wrappers::get_doc_string(&method.attrs);
             if !mdoc.is_empty() {
-                let transformed = transform_method_doc_roxygen(&method.sig.ident.to_string(), &mdoc);
-                method_docs.push((method.sig.ident.to_string(), transformed));
+                let (sect, examples) =
+                    transform_method_doc_roxygen(&method.sig.ident.to_string(), &mdoc);
+                method_docs.push((method.sig.ident.to_string(), sect));
+                for ex in examples {
+                    all_examples.push(ex);
+                    all_examples.push(String::new());
+                }
             }
         }
-    }
+      }
+
     // Build a Methods section
     // It actually creates a method section for each impl block, but Roxygen won't complain about that.
     let methods_section = if !method_docs.is_empty() {
-        let mut section = String::new();
-        section.push_str("\n @section Methods:");
-        for (_name, doc) in method_docs {
-            section.push_str("\n");
-            section.push_str(doc.as_str());
+        let mut sec = String::from("\n @section Methods:");
+        for (_name, doc) in &method_docs {
+            sec.push('\n');
+            sec.push_str(doc);
         }
-        section
+        sec
     } else {
         String::new()
     };
 
-    let full_doc = format!("{}{}", doc_string, methods_section);
+    // Append single examples block if any
+    let examples_section = if !all_examples.is_empty() {
+        let mut ex = String::from("\n @examples\n");
+        for line in &all_examples {
+            ex.push_str(line);
+            ex.push('\n');
+        }
+        ex
+    } else {
+        String::new()
+    };
+
+    let full_doc = format!("{}{}{}", doc_string, methods_section, examples_section);
 
     // Generate wrappers for methods.
     // eg.
