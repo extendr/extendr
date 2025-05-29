@@ -92,14 +92,19 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
-        Item::Struct(str) => extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts),
-        Item::Enum(enm) => extendr_conversion::extendr_type_conversion(Item::Enum(enm), &opts),
-        Item::Fn(func) => extendr_function::extendr_function(func, &opts),
-        Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
-            Ok(result) => result,
-            Err(e) => e.into_compile_error().into(),
-        },
-        other_item => TokenStream::from(quote! {#other_item}),
+      Item::Struct(str) => {
+        let struct_name = str.ident.to_string();
+        let struct_doc  = crate::wrappers::get_doc_string(&str.attrs);
+        crate::wrappers::register_struct_doc(&struct_name, &struct_doc);
+        extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts)
+      },
+      Item::Enum(enm) => extendr_conversion::extendr_type_conversion(Item::Enum(enm), &opts),
+      Item::Fn(func) => extendr_function::extendr_function(func, &opts),
+      Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+      },
+      other_item => TokenStream::from(quote! {#other_item}),
     }
 }
 
