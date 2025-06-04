@@ -8,7 +8,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-extendr-ffi = { workspace = true }
+extendr-ffi = { workspace = true, features = ["dylibR"] }
 ctor = "0.4.2"
 
 [features]
