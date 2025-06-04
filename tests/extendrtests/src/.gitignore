@@ -2,4 +2,4 @@
 *.so
 *.dll
 target
-Cargo.lock
+.cargo
