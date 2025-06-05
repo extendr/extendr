@@ -221,12 +221,6 @@ jobs:
             any::rcmdcheck
             github::extendr/rextendr
 
-      - name: Install dependencies for rextendr
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: 4
-          working-directory: tests/rextendr
-
       # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
       - name: Check R version
         id: error-on
