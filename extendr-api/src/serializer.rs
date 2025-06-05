@@ -8,7 +8,8 @@ use crate::wrapper::{
     Doubles, Environment, Expressions, Function, Integers, Language, Logicals, Pairlist, Primitive,
     Promise, Raw, Rstr, Symbol, S4,
 };
-use crate::{List, Rany, Robj};
+use crate::{Complexes, List, Rany, Robj, Strings};
+use extendr_ffi::Rcomplex;
 use serde::{ser, Serialize};
 
 impl ser::Error for Error {
@@ -673,6 +674,20 @@ impl ser::Serialize for Doubles {
     }
 }
 
+impl ser::Serialize for Strings {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        use crate::AsTypedSlice;
+        let strings_slice: &[Rstr] = self
+            .robj
+            .as_typed_slice()
+            .ok_or_else(|| <S::Error as ser::Error>::custom("Failed to get slice of Rstr."))?;
+        strings_slice.serialize(serializer)
+    }
+}
+
 impl ser::Serialize for Rstr {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -718,6 +733,20 @@ impl ser::Serialize for Rfloat {
         } else {
             serializer.serialize_unit()
         }
+    }
+}
+
+impl ser::Serialize for Complexes {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: ser::Serializer,
+    {
+        use crate::AsTypedSlice;
+        let self_as_slice: &[Rcomplex] = self
+            .robj
+            .as_typed_slice()
+            .ok_or_else(|| <S::Error as ser::Error>::custom("Failed to get slice of Rcomplex."))?;
+        self_as_slice.serialize(serializer)
     }
 }
 

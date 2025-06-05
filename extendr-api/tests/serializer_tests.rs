@@ -152,6 +152,18 @@ mod test {
             let s = Rbool2(Rbool::na());
             let expected = r!(());
             assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
+
+            #[derive(Serialize)]
+            struct Str1(Strings);
+            let s = Str1(Strings::from_values(&["x", "y", "z"]));
+            let expected = r!(list!("x", "y", "z"));
+            assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
+
+            #[derive(Serialize)]
+            struct Cmplx1(Complexes);
+            let s = Cmplx1(Complexes::from_values([c64::new(1., 2.), c64::new(1., 2.)]));
+            let expected = r!(list!(c64::new(1., 2.), c64::new(1., 2.)));
+            assert_eq!(to_robj(&s).unwrap(), Robj::from(expected));
         }
     }
 }

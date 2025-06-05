@@ -19,7 +19,7 @@ either = { version = "1.8.1", optional = true }
 libc = { version = "0.2", optional = true }
 ndarray = { version = "0.16.1", optional = true }
 num-complex = { version = "0.4.6", optional = true }
-serde = { version = "1.0.219", features = ["derive"], optional = true }
+serde = { workspace = true, optional = true }
 faer = { version = "0.20", optional = true }
 
 [dev-dependencies]
@@ -45,6 +45,7 @@ full-functionality = [
     "num-complex",
     "serde",
 ]
+serde = ["dep:serde", "extendr-ffi/serde"]
 
 # Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
 # of non-API items in packages. You may enable this feature, to generate

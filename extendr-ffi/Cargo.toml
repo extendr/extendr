@@ -13,5 +13,8 @@ default = []
 non-api = []
 dylibR = []
 
+[dependencies]
+serde = { workspace = true, optional = true }
+
 [build-dependencies]
 build-print = "0.1.1"
