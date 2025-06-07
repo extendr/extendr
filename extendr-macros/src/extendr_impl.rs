@@ -6,10 +6,7 @@ use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
 /// Transform the method documentation to Roxygen format.
-fn transform_method_doc_roxygen(
-    method_name: &str,
-    doc: &str,
-) -> (String, Vec<String>) {
+fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> (String, Vec<String>) {
     let mut description = Vec::new();
     let mut other_groups: Vec<(String, Vec<String>)> = Vec::new();
     let mut current_other: Option<(String, Vec<String>)> = None;
@@ -76,13 +73,13 @@ fn transform_method_doc_roxygen(
                 if let Some((_, ref mut vec)) = current_other {
                     vec.push(trimmed.to_string());
                 }
-            },
+            }
             // handle multiline `@param` docstrings
             "param" => {
                 if let Some((_, ref mut lines)) = current_param {
                     lines.push(trimmed.to_string());
                 }
-            },
+            }
             _ => description.push(trimmed.to_string()),
         }
     }
@@ -92,7 +89,7 @@ fn transform_method_doc_roxygen(
     if let Some((tag, content)) = current_other.take() {
         other_groups.push((tag, content));
     }
-    
+
     // creates `method` subsection (obs.: for each impl block)
     let mut output = String::new();
     output.push_str(&format!("\\subsection{{Method `{}`}}{{\n", method_name));
@@ -101,14 +98,14 @@ fn transform_method_doc_roxygen(
         output.push_str("\n");
     }
     if !params.is_empty() {
-      // params docstrings goes here
-      output.push_str(" \\subsection{Arguments}{\n\\describe{\n");
-      for (pname, plines) in params {
-          let param_text = plines.join(" ");
-          output.push_str(&format!("\\item{{`{}`}}{{{}}}\n", pname, param_text));
-      }
-      output.push_str("}}\n");
-  }
+        // params docstrings goes here
+        output.push_str(" \\subsection{Arguments}{\n\\describe{\n");
+        for (pname, plines) in params {
+            let param_text = plines.join(" ");
+            output.push_str(&format!("\\item{{`{}`}}{{{}}}\n", pname, param_text));
+        }
+        output.push_str("}}\n");
+    }
     // for other docsstring, it creates a subsection for each tag
     // usage is special because if we don't enclose it in
     // a preformatted block, it will be be sent as one single line, e.g.:
@@ -301,7 +298,7 @@ pub(crate) fn extendr_impl(
     } else {
         format!("{}\n{}", struct_doc.trim_end(), impl_doc)
     };
-    
+
     let mut method_docs: Vec<(String, String)> = Vec::new();
     let mut all_examples: Vec<String> = Vec::new();
 
@@ -318,7 +315,7 @@ pub(crate) fn extendr_impl(
                 }
             }
         }
-      }
+    }
 
     // Build a Methods section
     // It actually creates a method section for each impl block, but Roxygen won't complain about that.

@@ -25,9 +25,8 @@
 
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
+use std::{collections::HashMap, sync::Mutex};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
-use std::{sync::Mutex, collections::HashMap};
-
 
 use crate::extendr_options::ExtendrOptions;
 
@@ -40,17 +39,20 @@ lazy_static::lazy_static! {
 
 /// Called by the struct‐level #[extendr] macro to register docstrings.
 pub fn register_struct_doc(name: &str, doc: &str) {
-  STRUCT_DOCS.lock().unwrap().insert(name.to_string(), doc.to_string());
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .insert(name.to_string(), doc.to_string());
 }
 
 /// Retrieve the struct‐level docs (or empty if none).
 pub fn get_struct_doc(name: &str) -> String {
-  STRUCT_DOCS
-      .lock()
-      .unwrap()
-      .get(name)
-      .cloned()
-      .unwrap_or_default()
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .get(name)
+        .cloned()
+        .unwrap_or_default()
 }
 
 // Generate wrappers for a specific function.
