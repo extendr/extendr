@@ -73,7 +73,6 @@
                   self.0.len()
               }
           }
-          #[cfg(use_r_altlist)]
           impl VecUsize {}
           #[allow(non_snake_case)]
           fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
@@ -85,7 +84,6 @@
                       methods,
                   });
           }
-          #[cfg(use_r_altlist)]
           impl AltListImpl for VecUsize {
               fn elt(&self, index: usize) -> Robj {
                   let mut v = Vec::with_capacity(1usize);
@@ -94,7 +92,6 @@
                   Self(v).into_robj()
               }
           }
-          #[cfg(use_r_altlist)]
           fn new_usize(robj: Integers) -> Altrep {
               let x = robj
                   .iter()
