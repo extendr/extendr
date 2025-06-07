@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use super::*;
 use crate::scalar::Scalar;
 use crate::single_threaded;
@@ -715,6 +717,46 @@ impl From<Vec<Rstr>> for Robj {
     /// Convert a vector of Rstr into strings.
     fn from(val: Vec<Rstr>) -> Self {
         Strings::from_values(val).into()
+    }
+}
+
+impl<K: AsRef<str>, V: Into<Robj>> From<HashMap<K, V>> for Robj {
+    fn from(value: HashMap<K, V>) -> Self {
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        result.into()
+    }
+}
+
+impl<K: AsRef<str>, V: Into<Robj>> From<BTreeMap<K, V>> for Robj {
+    fn from(value: BTreeMap<K, V>) -> Self {
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        result.into()
     }
 }
 

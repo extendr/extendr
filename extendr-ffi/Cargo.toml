@@ -11,6 +11,7 @@ links = "R"
 [features]
 default = []
 non-api = []
+dylibR = []
 
 [build-dependencies]
 build-print = "0.1.1"

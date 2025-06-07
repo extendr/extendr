@@ -206,7 +206,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("cargo:rustc-link-search={}", r_library.display());
     }
 
-    println!("cargo:rustc-link-lib=dylib=R");
+    if cfg!(feature = "dylibR") {
+        println!("cargo:rustc-link-lib=dylib=R");
+    }
 
     // Set R version specfic config flags
     // use r_4_4 config
