@@ -70,7 +70,7 @@ mod pairs;
 mod wrappers;
 
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 use syn::{parse_macro_input, Item};
 
 /// The `#[extendr]`-macro may be placed on three items
@@ -392,4 +392,104 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             }
         })
     }))
+}
+
+#[proc_macro]
+pub fn impl_into_robj_tuples(input: TokenStream) -> TokenStream {
+    // Parse the input as a two‐element tuple of integer literals (start, end), e.g. `(0, 5)`
+    let range = parse_macro_input!(input as syn::ExprTuple);
+
+    let start = match &range.elems[0] {
+        syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Int(lit_int),
+            ..
+        }) => lit_int.base10_parse::<usize>().unwrap(),
+        _ => {
+            return TokenStream::from(quote! {
+                compile_error!("Expected integer literal for `start`");
+            });
+        }
+    };
+
+    let end = match &range.elems[1] {
+        syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Int(lit_int),
+            ..
+        }) => lit_int.base10_parse::<usize>().unwrap(),
+        _ => {
+            return TokenStream::from(quote! {
+                compile_error!("Expected integer literal for `end`");
+            });
+        }
+    };
+
+    // For each n in start..=end, generate one `impl From<(T0,…,Tn)> for Robj { … }` block.
+    let generated_impls = (start..=end).map(|n| {
+        // Generate type parameters: T0, T1, …, T_{n-1}
+        let type_idents: Vec<_> = (0..n).map(|i| format_ident!("T{}", i)).collect();
+
+        // Generate value identifiers: v0, v1, …, v_{n-1}
+        let value_idents: Vec<_> = (0..n).map(|i| format_ident!("v{}", i)).collect();
+
+        // Generate `list.set_elt(i, vi.into());`
+        let set_calls = (0..n).map(|i| {
+            let vi = &value_idents[i];
+            quote! {
+                list.set_elt(#i, #vi.into()).unwrap();
+            }
+        });
+
+        if n == 0 {
+            // 0‐tuple → empty list
+            quote! {
+                impl From<()> for Robj {
+                    fn from(_: ()) -> Robj {
+                        let list: List = List::new(0);
+                        list.into()
+                    }
+                }
+            }
+        } else if n == 1 {
+            //TODO: there must be a way to make n==1 fit into the n>0 case
+            // 1‐tuple: explicitly use T0 rather than repeating a length‐1 vector
+            let t0 = &type_idents[0];
+            let v0 = &value_idents[0];
+            quote! {
+                impl<#t0> From<(#t0,)> for Robj
+                where
+                    #t0: Into<Robj>,
+                {
+                    fn from(tuple: (#t0,)) -> Robj {
+                        let (#v0,) = tuple;
+                        let mut list = List::new(1);
+                        list.set_elt(0, #v0.into()).unwrap();
+                        list.into()
+                    }
+                }
+            }
+        } else {
+            // n >= 2: normal tuple `(T0, T1, …, T_{n-1})`
+            let tuple_ty = quote! { (#(#type_idents),*) };
+            let destructure = quote! { let (#(#value_idents),*) = tuple; };
+            quote! {
+                impl<#(#type_idents),*> From<#tuple_ty> for Robj
+                where
+                    #(#type_idents: Into<Robj>),*
+                {
+                    fn from(tuple: #tuple_ty) -> Robj {
+                        #destructure
+                        let mut list = List::new(#n);
+                        #(#set_calls)*
+                        list.into()
+                    }
+                }
+            }
+        }
+    });
+
+    // Combine all generated impl blocks into a single TokenStream
+    let combined: proc_macro2::TokenStream = quote! {
+        #(#generated_impls)*
+    };
+    combined.into()
 }

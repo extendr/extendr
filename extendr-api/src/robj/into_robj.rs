@@ -612,16 +612,6 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
-// Scalars which are ToVectorValue
-impl<T> From<T> for Robj
-where
-    T: ToVectorValue,
-{
-    fn from(scalar: T) -> Self {
-        Some(scalar).into_iter().collect_robj()
-    }
-}
-
 macro_rules! impl_from_as_iterator {
     ($t: ty) => {
         impl<T> From<$t> for Robj
@@ -759,6 +749,8 @@ impl<K: AsRef<str>, V: Into<Robj>> From<BTreeMap<K, V>> for Robj {
         result.into()
     }
 }
+
+impl_into_robj_tuples!((1, 12));
 
 #[cfg(test)]
 mod test {
