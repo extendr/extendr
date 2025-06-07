@@ -73,7 +73,6 @@
                   self.0.len()
               }
           }
-          #[cfg(use_r_altlist)]
           impl VecUsize {}
           #[allow(non_snake_case)]
           fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
@@ -85,7 +84,6 @@
                       methods,
                   });
           }
-          #[cfg(use_r_altlist)]
           impl AltListImpl for VecUsize {
               fn elt(&self, index: usize) -> Robj {
                   let mut v = Vec::with_capacity(1usize);
@@ -94,7 +92,6 @@
                   Self(v).into_robj()
               }
           }
-          #[cfg(use_r_altlist)]
           fn new_usize(robj: Integers) -> Altrep {
               let x = robj
                   .iter()
@@ -2436,7 +2433,7 @@
               meta__Wrapper__max_ref2(&mut methods);
               impls
                   .push(extendr_api::metadata::Impl {
-                      doc: " Class for testing (exported)\n @examples\n x <- Wrapper$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                      doc: " Class for testing (exported)\n @examples\n x <- Wrapper$new()\n x$a()\n x$set_a(10)\n x$a()\n @export\n @section Methods:\n\\subsection{Method `new`}{\nMethod for making a new object.\n}\n\n\\subsection{Method `set_a`}{\nMethod for setting stuff.\n \\subsection{Arguments}{\n\\describe{\n\\item{`x`}{a number}\n}}\n}\n\n\\subsection{Method `a`}{\nMethod for getting stuff.\n}\n\n\\subsection{Method `me_owned`}{\nMethod for getting one's (by way of a copy) self.\n}\n\n\\subsection{Method `me_ref`}{\nMethod for getting one's (ref) self.\n}\n\n\\subsection{Method `me_mut`}{\nMethod for getting one's (ref mut) self.\n}\n\n\\subsection{Method `me_explicit_ref`}{\nMethod for getting one's ref (explicit) self.\n}\n\n\\subsection{Method `me_explicit_mut`}{\nMethod for getting one's ref mut (explicit) self.\n}\n\n\\subsection{Method `max_ref_offset`}{\n`offset` does nothing.\n}\n",
                       name: "Wrapper",
                       methods,
                   });
@@ -6878,7 +6875,7 @@
               meta__MySubmoduleClass__a(&mut methods);
               impls
                   .push(extendr_api::metadata::Impl {
-                      doc: " Class for testing (exported)\n @examples\n x <- MySubmoduleClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                      doc: " Class for testing (exported)\n @examples\n x <- MySubmoduleClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export\n @section Methods:\n\\subsection{Method `new`}{\nMethod for making a new object.\n}\n\n\\subsection{Method `set_a`}{\nMethod for setting stuff.\n \\subsection{Arguments}{\n\\describe{\n\\item{`x`}{a number}\n}}\n}\n\n\\subsection{Method `a`}{\nMethod for getting stuff.\n}\n",
                       name: "MySubmoduleClass",
                       methods,
                   });
@@ -11237,7 +11234,7 @@
           meta__MyClass__get_default_value(&mut methods);
           impls
               .push(extendr_api::metadata::Impl {
-                  doc: " Class for testing (exported)\n @examples\n x <- MyClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export",
+                  doc: " Class for testing (exported)\n @examples\n x <- MyClass$new()\n x$a()\n x$set_a(10)\n x$a()\n @export\n @section Methods:\n\\subsection{Method `new`}{\nMethod for making a new object.\n}\n\n\\subsection{Method `set_a`}{\nMethod for setting stuff.\n \\subsection{Arguments}{\n\\describe{\n\\item{`x`}{a number}\n}}\n}\n\n\\subsection{Method `a`}{\nMethod for getting stuff.\n}\n\n\\subsection{Method `me`}{\nMethod for getting one's self.\n}\n",
                   name: "MyClass",
                   methods,
               });
@@ -11473,7 +11470,7 @@
           meta____MyClass____name_test(&mut methods);
           impls
               .push(extendr_api::metadata::Impl {
-                  doc: "",
+                  doc: "\n @section Methods:\n\\subsection{Method `new`}{\nMethod for making a new object.\n}\n\n\\subsection{Method `__name_test`}{\nMethod with special name unsupported by R\n}\n",
                   name: "__MyClass",
                   methods,
               });
@@ -11721,7 +11718,7 @@
           meta__MyClassUnexported__a(&mut methods);
           impls
               .push(extendr_api::metadata::Impl {
-                  doc: " Class for testing (unexported)",
+                  doc: " Class for testing (unexported)\n @section Methods:\n\\subsection{Method `new`}{\nMethod for making a new object.\n}\n\n\\subsection{Method `a`}{\nMethod for getting stuff.\n}\n",
                   name: "MyClassUnexported",
                   methods,
               });
