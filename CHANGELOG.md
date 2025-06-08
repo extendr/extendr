@@ -4,21 +4,35 @@
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## 0.8.0
+
+### Added
+
+- Added `ndim()` method for `RArray` to get the number of dimension [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Added `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898). 
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
-- Type aliases `RMatrix4D` and `RMatrix5D` have been added <https://github.com/extendr/extendr/pull/875>
-- `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking <https://github.com/extendr/extendr/pull/853>
-- `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` <https://github.com/extendr/extendr/pull/833>
+- Type aliases `RMatrix4D` and `RMatrix5D` have been added [[#875]](https://github.com/extendr/extendr/pull/875)
+- `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking [[#853]](https://github.com/extendr/extendr/pull/853)
+- `TryFrom<Robj>` is now implemented for `&ExternalPtr<T>` and `&mut ExternalPtr<T>` [[#833]](https://github.com/extendr/extendr/pull/833)
 - `Option<T>` can now be returned from `#[extendr]` annotated functions for extendr_api types. `None` is translated into `NULL` value in R [[#802]](https://github.com/extendr/extendr/pull/802)
 - Conversion of a `Robj` that contains a `list()`/`List` to a compatible tuple `(T0, ..., Tn)`, where `n` is atmost 12 [[#857]](https://github.com/extendr/extendr/pull/857)
 - Added conversions of `[T;N]` where `T` is `Rint`, `Rfloat`, `Rbool`, `Rcplx`, `u8`,
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
 - `FromIterator<T>` and `FromIterator<&T>` for vector wrapper where `T` represents a matching underlying type (`bool`,
   `i32`, `f64`, `c64`) [[#879]](https://github.com/extendr/extendr/pull/879)
+- Conversion from `Robj`/`List` to `HashMap<_, T>` for `T: TryFrom<Robj>` [[#854]](https://github.com/extendr/extendr/pull/854)
 
 ### Changed
 
-- `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provided backports.
-- Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. <https://github.com/extendr/extendr/pull/882>
+- Breaking change: Replace parameter `dim` with type `[usize; n]` with constant generic parameter `const NDIM: usize` in `RArray`. Now, use `RArray<T, n>` instead of `RArray<T, [usize; n]>`to define a new n dim `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Breaking change: Remove parameter `dim` from `RArray::from_parts()` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Enhancement: Replace `panic!()` with `throw_r_error()` in the `offset()` method of `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provides backports. [[#888]](https://github.com/extendr/extendr/pull/888)
+- Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. [[#882]](https://github.com/extendr/extendr/pull/882)
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
 return `Option<Strings>` instead of opaque `Robj`.
@@ -26,11 +40,11 @@ return `Option<Strings>` instead of opaque `Robj`.
 
 ### Fixed
 
-- Addresses change in R-Devel which turn [accessing 0 length vectors intto a segfault](https://github.com/wch/r-source/commit/d4dff56ff9d11ef96d67afccf8d9e8790d250664) <https://github.com/extendr/extendr/pull/883>
+- Addresses change in R-Devel which turn [accessing 0 length vectors intto a segfault](https://github.com/wch/r-source/commit/d4dff56ff9d11ef96d67afccf8d9e8790d250664) [[#883]](https://github.com/extendr/extendr/pull/883)
 
 ### Deprecated
 
-- Removed `from_sexp_ref()` from the public API. `from_sexp_ref()` is an unsafe method and is for internal use only. [#855]](https://github.com/extendr/extendr/pull/855)
+- Removed `from_sexp_ref()` from the public API. `from_sexp_ref()` is an unsafe method and is for internal use only. [[#855]](https://github.com/extendr/extendr/pull/855)
 
 ## 0.7.0
 
@@ -40,7 +54,7 @@ return `Option<Strings>` instead of opaque `Robj`.
 - New optional `faer` feature which enables conversion between `faer` matrix and `RMatrix<f64>` [[#706]](https://github.com/extendr/extendr/pull/706)
 - Adds `TryFrom<Robj>` and `<TryFrom<&Robj>` for `impl` blocks marked with `#[extendr]` macro allowing falliable conversion to `&Self` `&mut Self` [[#730]](https://github.com/extendr/extendr/pull/730)
 - Adds `From<T> for Robj` for impl blocks marked with `#[extendr]` macro
-- The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed
+- The new `ExpectedExternalNonNullPtr` error variant provides a more informative error when a null pointer is accessed [[#730]](https://github.com/extendr/extendr/pull/730)
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
 - Implements the `Attributes` trait for all R vector wrapper structs (e.g. `Integers` , `Doubles`, `Strings`, etc.), allowing for easy access and setting of the attributes of an R object [[#745]](https://github.com/extendr/extendr/pull/745). This comes with breaking changes. See below.
 - feature `non-api` that gives access to non-API items; Requires compile-time generation of bindings
@@ -56,7 +70,7 @@ return `Option<Strings>` instead of opaque `Robj`.
 #### Breaking changes
 
 - R-devel Non-API changes:
-  - R's C API is being formalized. While the changes are formalized, non-API functions are hidden behind a feature flag to prevent removal from CRAN.
+  - R's C API is being formalized. While the changes are formalized, non-API functions are hidden behind a feature flag to prevent removal from CRAN. [[#809]](https://github.com/extendr/extendr/pull/809)
   - Non-API [changes are in flux in R-devel](https://github.com/r-devel/r-svn/blob/71afe1e304b11f7febaa536e96817c63a7c1c7ab/src/library/tools/R/sotools.R#L564), however, CRAN has set a July 9th date to remove any package that uses non-API functions. This includes almost every extendr based package on CRAN.
   - See [[Rd] clarifying and adjusting the C API for R](https://stat.ethz.ch/pipermail/r-devel/2024-June/083449.html)
   - [nonAPI.txt](https://github.com/r-devel/r-svn/blob/f36c203d3a53a74d56a81d4f97a68d24993e0652/src/library/tools/R/sotools.R#L564) functions are hidden behind the `non-api` feature flag.
@@ -73,7 +87,7 @@ now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is mar
 - You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
 - It is no longer possible to generate bindings as part of the compilation of
-extendr. Feature `non-api` is broken and will not compile. Related <https://github.com/extendr/libR-sys/issues/251>
+extendr. Feature `non-api` is broken and will not compile. Related [[#251]](https://github.com/extendr/libR-sys/issues/251)
 
 ### Fixed
 

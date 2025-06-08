@@ -1,6 +1,7 @@
 #[cfg(feature = "ndarray")]
 mod ndarray_try_from_tests {
     use extendr_api::prelude::*;
+    use ndarray::{ArrayView1, ArrayView2};
 
     #[test]
     fn test_1d_view_from_robj() {

@@ -11,7 +11,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
     quote! {
         impl extendr_api::wrapper::IntoDataFrameRow<#structname> for Vec<#structname>
         {
-            fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<#structname>> {
+            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::Dataframe<#structname>> {
                 #(let mut #a = Vec::with_capacity(self.len());)*
                 for val in self {
                     #(#a.push(val.#a);)*
@@ -29,7 +29,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
             I : ExactSizeIterator<Item=#structname>,
         {
             /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-            fn into_dataframe(self) -> Result<extendr_api::wrapper::Dataframe<#structname>> {
+            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::Dataframe<#structname>> {
                 #(let mut #a = Vec::with_capacity(self.0.len());)*
                 for val in self.0 {
                     #(#a.push(val.#a);)*

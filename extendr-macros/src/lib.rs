@@ -339,11 +339,11 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         TokenStream::from(quote! {
             impl<#(#types),*> TryFrom<&Robj> for (#(#types,)*)
             where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*
             {
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     let list: List = robj.try_into()?;
                     if list.len() != #n {
                         return Err(Error::ExpectedLength(#n));
@@ -359,20 +359,20 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
 
             impl<#(#types),*> TryFrom<Robj> for (#(#types,)*)
             where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),* {
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),* {
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }
 
             impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
             where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
@@ -383,10 +383,10 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
 
             impl<#(#types),*> TryFrom<Robj> for Option<(#(#types,)*)>
             where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }
