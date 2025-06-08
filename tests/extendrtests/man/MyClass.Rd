@@ -14,6 +14,29 @@ MyClass
 \description{
 Class for testing (exported)
 }
+\section{Methods}{
+
+\subsection{Method \code{new}}{
+Method for making a new object.
+}
+
+\subsection{Method \code{set_a}}{
+Method for setting stuff.
+\subsection{Arguments}{
+\describe{
+\item{\code{x}}{a number}
+}}
+}
+
+\subsection{Method \code{a}}{
+Method for getting stuff.
+}
+
+\subsection{Method \code{me}}{
+Method for getting one's self.
+}
+}
+
 \examples{
 x <- MyClass$new()
 x$a()

@@ -13,4 +13,15 @@ MyClassUnexported
 \description{
 Class for testing (unexported)
 }
+\section{Methods}{
+
+\subsection{Method \code{new}}{
+Method for making a new object.
+}
+
+\subsection{Method \code{a}}{
+Method for getting stuff.
+}
+}
+
 \keyword{datasets}
