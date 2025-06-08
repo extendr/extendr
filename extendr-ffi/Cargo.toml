@@ -11,6 +11,3 @@ links = "R"
 [features]
 default = []
 non-api = []
-
-[build-dependencies]
-build-print = "0.1.1"
