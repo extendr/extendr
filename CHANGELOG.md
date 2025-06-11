@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add `Hashmap` and `BTreeMap` support for `Into<Robj>` [[#932](https://github.com/extendr/extendr/pull/932)]
+
 ### Changed
 
 ### Fixed
