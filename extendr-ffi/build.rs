@@ -179,6 +179,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         Err(_) => {
             warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
             println!("cargo:rustc-cfg=r_4_5");
+            println!("cargo:r_version_major=4");
+            println!("cargo:r_version_minor=5");
+            println!("cargo:r_version_patch=1");
             return Ok(());
         }
     };
