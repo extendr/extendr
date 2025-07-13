@@ -1,0 +1,40 @@
+name: Rust crate build (no R allowed)
+
+on:
+  push:
+    paths:
+      - "tests/extendrtests/src/rust/**"
+  pull_request:
+    paths:
+      - "tests/extendrtests/src/rust/**"
+
+permissions:
+  contents: read
+jobs:
+  build-no-r:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure R is NOT on PATH
+        run: |
+          if command -v R >/dev/null 2>&1; then
+            echo "❌ R is on PATH"
+            exit 1
+          fi
+          echo "✅ R not found on PATH"
+
+      - name: Ensure R_HOME is NOT set
+        run: |
+          if [ -n "${R_HOME:-}" ]; then
+            echo "❌ R_HOME is set: $R_HOME"
+            exit 1
+          fi
+          echo "✅ R_HOME not set"
+
+      - name: Build Rust crate
+        run: |
+          cd tests/extendrtests/src/rust
+          cargo build --verbose
