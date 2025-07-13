@@ -14,40 +14,49 @@ fn main() {
     } else {
         std::process::Command::new("R")
     };
-    let r_version = path_to_r
-        .arg("CMD")
-        .args(["config", "--version"])
-        .output()
-        .expect("failed to run `R CMD config --version`");
-    assert!(r_version.status.success());
-    use std::io::BufRead as _;
-    let r_version_line = r_version
-        .stdout
-        .lines()
-        .next()
-        .expect("there were no outputs from `R CMD config`")
-        .expect("failed to read the line with R version");
-    let raw_r_version = r_version_line
-        .split(':')
-        .nth(1)
-        .unwrap()
-        .trim()
-        // ignore commit
-        // only capture the first the major.minor.patch part of the version
-        .split_ascii_whitespace()
-        .next()
-        .unwrap();
-    let raw_r_version: Vec<u32> = raw_r_version
-        .split('.')
-        .map(|x| x.parse().unwrap())
-        .collect();
-    assert!(
-        raw_r_version.len() >= 3,
-        "R version was not detected properly"
-    );
-    let major = raw_r_version[0];
-    let minor = raw_r_version[1];
-    let patch = raw_r_version[2];
+    // default to  assumed R version
+    let mut major = 4;
+    let mut minor = 5;
+    let mut patch = 1;
+    if std::path::PathBuf::from(path_to_r.get_program().to_os_string()).exists() {
+        let r_version = path_to_r
+            .arg("CMD")
+            .args(["config", "--version"])
+            .output()
+            .expect("failed to run `R CMD config --version`");
+        assert!(r_version.status.success());
+        use std::io::BufRead as _;
+        let r_version_line = r_version
+            .stdout
+            .lines()
+            .next()
+            .expect("there were no outputs from `R CMD config`")
+            .expect("failed to read the line with R version");
+        let raw_r_version = r_version_line
+            .split(':')
+            .nth(1)
+            .unwrap()
+            .trim()
+            // ignore commit
+            // only capture the first the major.minor.patch part of the version
+            .split_ascii_whitespace()
+            .next()
+            .unwrap();
+        let raw_r_version: Vec<u32> = raw_r_version
+            .split('.')
+            .map(|x| x.parse().unwrap())
+            .collect();
+        assert!(
+            raw_r_version.len() >= 3,
+            "R version was not detected properly"
+        );
+        major = raw_r_version[0];
+        minor = raw_r_version[1];
+        patch = raw_r_version[2];
+    }
+    let major = major;
+    let minor = minor;
+    let patch = patch;
 
     println!("cargo:r_version_major={}", major); // Becomes DEP_R_R_VERSION_MAJOR
     println!("cargo:r_version_minor={}", minor); // Becomes DEP_R_R_VERSION_MINOR
