@@ -314,6 +314,7 @@ pub mod io;
 pub mod iter;
 pub mod lang_macros;
 pub mod metadata;
+pub mod ralloc;
 pub mod na;
 pub mod optional;
 pub mod ownership;
@@ -409,6 +410,8 @@ pub use extendr_ffi::SEXP;
 use std::ffi::CString;
 
 pub use metadata::Metadata;
+
+pub use ralloc::RAllocator;
 
 #[doc(hidden)]
 pub struct CallMethod {

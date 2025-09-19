@@ -16,6 +16,7 @@ mod submodule;
 mod to_unique_character;
 mod tuple_conversions;
 mod typedsliceargs;
+mod allocator;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -365,4 +366,5 @@ extendr_module! {
     use externalptr;
     use matrix;
     use to_unique_character;
+    use allocator;
 }

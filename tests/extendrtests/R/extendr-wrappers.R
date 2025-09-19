@@ -197,6 +197,10 @@ to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 
+allocate_r <- function(capacity) invisible(.Call(wrap__allocate_r, capacity))
+
+allocate_rust <- function(capacity) invisible(.Call(wrap__allocate_rust, capacity))
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
