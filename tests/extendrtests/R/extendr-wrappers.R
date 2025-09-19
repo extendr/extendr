@@ -17,6 +17,9 @@ do_nothing <- function() invisible(.Call(wrap__do_nothing))
 #' Do nothing but return a Result type.
 result_unit <- function() invisible(.Call(wrap__result_unit))
 
+#' Test function that is explicitly NOT invisible.
+not_invisible_unit <- function() .Call(wrap__not_invisible_unit)
+
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 int_scalar <- function(x) .Call(wrap__int_scalar, x)

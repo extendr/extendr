@@ -28,10 +28,14 @@ fn hello_world() -> &'static str {
 fn do_nothing() {}
 
 /// Do nothing but return a Result type.
-#[extendr]
+#[extendr(invisibly = true)]
 fn result_unit() -> Result<()> {
     Ok(())
 }
+
+/// Do nothing but very visible.
+#[extendr(invisibly = false)]
+fn not_invisible_unit() {}
 
 // TryFrom: conversions
 
@@ -315,6 +319,7 @@ extendr_module! {
     fn hello_world;
     fn do_nothing;
     fn result_unit;
+    fn not_invisible_unit;
 
     fn double_scalar;
     fn int_scalar;

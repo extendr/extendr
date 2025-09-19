@@ -80,6 +80,11 @@ test_that("Function returning Result<()> is invisible", {
   expect_invisible(result_unit())
 })
 
+test_that("Function with explicit invisibly = false is visible", {
+  expect_equal(not_invisible_unit(), NULL)
+  expect_visible(not_invisible_unit())
+})
+
 test_that("Default parameter values are emitted to wrappers", {
   expect_equal(get_default_value(), 42L)
   expect_equal(MyClass$get_default_value(), 42L)
