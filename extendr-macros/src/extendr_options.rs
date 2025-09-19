@@ -5,6 +5,7 @@ pub(crate) struct ExtendrOptions {
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
     pub use_rng: bool,
+    pub invisibly: Option<bool>,
 }
 
 impl ExtendrOptions {
@@ -45,6 +46,14 @@ impl ExtendrOptions {
                     Ok(())
                 } else {
                     Err(value.error("`use_rng` must be `true` or `false`"))
+                }
+            }
+            "invisibly" => {
+                if let Ok(LitBool { value, .. }) = value.parse() {
+                    self.invisibly = Some(value);
+                    Ok(())
+                } else {
+                    Err(value.error("`invisibly` must be `true` or `false`"))
                 }
             }
             _ => Err(syn::Error::new_spanned(meta.path, "Unexpected key")),

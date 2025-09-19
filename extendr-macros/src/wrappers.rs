@@ -63,6 +63,11 @@ pub(crate) fn make_function_wrappers(
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
+    let opts_invisibly = match opts.invisibly {
+        Some(true) => quote!(Some(true)),
+        Some(false) => quote!(Some(false)),
+        None => quote!(None),
+    };
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -278,6 +283,7 @@ pub(crate) fn make_function_wrappers(
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
+                invisibly: #opts_invisibly,
             })
         }
     ));
