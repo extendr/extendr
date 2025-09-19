@@ -5,11 +5,6 @@ use std::alloc;
 
 // TODO: add this to extendr-ffi, or even feature gate this.
 unsafe extern "C" {
-    // pub fn vmaxget() -> *mut ::std::os::raw::c_void;
-    // pub fn vmaxset(arg1: *const ::std::os::raw::c_void);
-    // pub fn R_gc();
-    // pub fn R_gc_running() -> ::std::os::raw::c_int;
-
     /// This function is not thread-safe, see [R-exts: Transient storage allocation](https://cran.r-project.org/doc/manuals/R-exts.html#Transient-storage-allocation-1).
     /// 
     fn R_alloc(nelem: usize, eltsize: usize) -> *mut u8;
