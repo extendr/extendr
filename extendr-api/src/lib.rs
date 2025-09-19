@@ -308,13 +308,13 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]
 
+pub mod alloc;
 pub mod error;
 pub mod functions;
 pub mod io;
 pub mod iter;
 pub mod lang_macros;
 pub mod metadata;
-pub mod ralloc;
 pub mod na;
 pub mod optional;
 pub mod ownership;
@@ -411,7 +411,7 @@ use std::ffi::CString;
 
 pub use metadata::Metadata;
 
-pub use ralloc::RAllocator;
+pub use alloc::RAllocator;
 
 #[doc(hidden)]
 pub struct CallMethod {

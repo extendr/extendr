@@ -1,6 +1,6 @@
 use extendr_api::prelude::*;
 
-use extendr_api::ralloc::RAllocator;
+use extendr_api::alloc::RAllocator;
 
 // This code enables the `RAllocator` in the R-package.
 #[global_allocator]
@@ -18,7 +18,7 @@ fn allocate_r(capacity: usize) {
 }
 
 extendr_module! {
-    mod allocator;
+    mod alloc;
     fn allocate_r;
     fn allocate_rust;
     // fn allocate_r_and_rust;

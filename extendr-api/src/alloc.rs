@@ -6,16 +6,14 @@ use std::alloc;
 // TODO: add this to extendr-ffi, or even feature gate this.
 unsafe extern "C" {
     /// This function is not thread-safe, see [R-exts: Transient storage allocation](https://cran.r-project.org/doc/manuals/R-exts.html#Transient-storage-allocation-1).
-    /// 
+    ///
     fn R_alloc(nelem: usize, eltsize: usize) -> *mut u8;
     // TODO: use this for 128-bit layouts..
     fn R_allocLD(nelem: usize) -> *mut u128;
 }
 
-
 // FIXME: `Allocator` does not work if the returned objects are Rust types!
 // This means that `#[extendr]`-impl blocks will not work with this allocator!
-
 
 #[derive(Debug)]
 pub struct RAllocator;
