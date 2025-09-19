@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 use extendr_api::ralloc::RAllocator;
 
+// This code enables the `RAllocator` in the R-package.
 #[global_allocator]
 static GLOBAL: RAllocator = RAllocator;
 

@@ -9,24 +9,12 @@ unsafe extern "C" {
     // pub fn vmaxset(arg1: *const ::std::os::raw::c_void);
     // pub fn R_gc();
     // pub fn R_gc_running() -> ::std::os::raw::c_int;
+
+    /// This function is not thread-safe, see [R-exts: Transient storage allocation](https://cran.r-project.org/doc/manuals/R-exts.html#Transient-storage-allocation-1).
+    /// 
     fn R_alloc(nelem: usize, eltsize: usize) -> *mut u8;
+    // TODO: use this for 128-bit layouts..
     fn R_allocLD(nelem: usize) -> *mut u128;
-    // pub fn S_alloc(
-    //     arg1: ::std::os::raw::c_long,
-    //     arg2: ::std::os::raw::c_int,
-    // ) -> *mut ::std::os::raw::c_char;
-    // pub fn S_realloc(
-    //     arg1: *mut ::std::os::raw::c_char,
-    //     arg2: ::std::os::raw::c_long,
-    //     arg3: ::std::os::raw::c_long,
-    //     arg4: ::std::os::raw::c_int,
-    // ) -> *mut ::std::os::raw::c_char;
-    // pub fn R_malloc_gc(arg1: usize) -> *mut ::std::os::raw::c_void;
-    // pub fn R_calloc_gc(arg1: usize, arg2: usize) -> *mut ::std::os::raw::c_void;
-    // pub fn R_realloc_gc(
-    //     arg1: *mut ::std::os::raw::c_void,
-    //     arg2: usize,
-    // ) -> *mut ::std::os::raw::c_void;
 }
 
 
@@ -41,7 +29,7 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
     unsafe fn alloc(&self, layout: alloc::Layout) -> *mut u8 {
         let a = layout.align();
         let n = layout.size();
-        
+
         if n == 0 {
             return a as *mut u8;
         }
