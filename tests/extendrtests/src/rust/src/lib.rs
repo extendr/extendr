@@ -27,6 +27,12 @@ fn hello_world() -> &'static str {
 #[extendr]
 fn do_nothing() {}
 
+/// Do nothing but return a Result type.
+#[extendr]
+fn result_unit() -> Result<()> {
+    Ok(())
+}
+
 // TryFrom: conversions
 
 // Atomic types
@@ -308,6 +314,7 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
+    fn result_unit;
 
     fn double_scalar;
     fn int_scalar;

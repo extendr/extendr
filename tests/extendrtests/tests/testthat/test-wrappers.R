@@ -75,6 +75,11 @@ test_that("Call to Rust via wrapper functions works", {
   expect_equal(check_default("xyz"), FALSE)
 })
 
+test_that("Function returning Result<()> is invisible", {
+  expect_equal(result_unit(), NULL)
+  expect_invisible(result_unit())
+})
+
 test_that("Default parameter values are emitted to wrappers", {
   expect_equal(get_default_value(), 42L)
   expect_equal(MyClass$get_default_value(), 42L)

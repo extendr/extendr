@@ -14,6 +14,9 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
+#' Do nothing but return a Result type.
+result_unit <- function() invisible(.Call(wrap__result_unit))
+
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
