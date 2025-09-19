@@ -8,8 +8,6 @@ unsafe extern "C" {
     /// This function is not thread-safe, see [R-exts: Transient storage allocation](https://cran.r-project.org/doc/manuals/R-exts.html#Transient-storage-allocation-1).
     ///
     fn R_alloc(nelem: usize, eltsize: usize) -> *mut u8;
-    // TODO: use this for 128-bit layouts..
-    fn R_allocLD(nelem: usize) -> *mut u128;
 }
 
 // FIXME: `Allocator` does not work if the returned objects are Rust types!
@@ -24,6 +22,7 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
         let n = layout.size();
 
         if n == 0 {
+            // for zero-sized data structures, return _aligned_, dangling ptr.
             return a as *mut u8;
         }
 
@@ -40,12 +39,17 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
             return std::ptr::null_mut();
         }
 
+        // this trick is taken from R_alllocLD
         let addr = base as usize;
         let aligned = (addr + (a - 1)) & !(a - 1);
         aligned as *mut u8
     }
 
+    #[inline(always)]
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: alloc::Layout) {
         // no-op: R frees after returning to R
     }
+
+    // note on `alloc_zeroed`: It is fine, as it uses the `self.alloc` in the
+    // default implementation.
 }
