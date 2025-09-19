@@ -189,7 +189,7 @@ fn write_function_wrapper(
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
     let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
-    if func.return_type == "()" || func.return_type == "Result<()>" { 
+    if func.return_type == "()" || func.return_type == "Result" { 
         write!(
             w,
             "{} <- function({}) invisible(.Call(",
@@ -219,7 +219,7 @@ fn write_function_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" || func.return_type == "Result<()>" {
+    if func.return_type == "()" || func.return_type == "Result" {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;
@@ -252,7 +252,7 @@ fn write_method_wrapper(
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
-    if func.return_type == "()" || func.return_type == "Result<()>" {
+    if func.return_type == "()" || func.return_type == "Result" {
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
@@ -285,7 +285,7 @@ fn write_method_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" || func.return_type == "Result<()>" {
+    if func.return_type == "()" || func.return_type == "Result" {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;
