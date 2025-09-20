@@ -182,6 +182,7 @@
                       return_type: "Altrep",
                       func_ptr: wrap__new_usize as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           struct StringInts {
@@ -296,6 +297,7 @@
                       return_type: "Altrep",
                       func_ptr: wrap__tst_altstring as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           struct MyCompactIntRange {
@@ -427,6 +429,7 @@
                       return_type: "Altrep",
                       func_ptr: wrap__tst_altinteger as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -447,6 +450,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_altrep_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -470,6 +474,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_altrep_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "altrep",
@@ -597,6 +602,7 @@
                       return_type: "Doubles",
                       func_ptr: wrap__dbls_named as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn strings_named(mut x: Strings) -> Strings {
@@ -684,6 +690,7 @@
                       return_type: "Strings",
                       func_ptr: wrap__strings_named as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn list_named(mut x: List, nms: Strings) -> List {
@@ -780,6 +787,7 @@
                       return_type: "List",
                       func_ptr: wrap__list_named as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -800,6 +808,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_attributes_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -823,6 +832,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_attributes_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "attributes",
@@ -1020,6 +1030,7 @@
                       return_type: "Dataframe",
                       func_ptr: wrap__test_derive_into_dataframe as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn test_into_robj_dataframe() -> Robj {
@@ -1107,6 +1118,7 @@
                       return_type: "Robj",
                       func_ptr: wrap__test_into_robj_dataframe as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1126,6 +1138,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_dataframe_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -1149,6 +1162,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_dataframe_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "dataframe",
@@ -1388,6 +1402,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__new as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1483,6 +1498,7 @@
                       return_type: "()",
                       func_ptr: wrap__Wrapper__set_a as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1569,6 +1585,7 @@
                       return_type: "i32",
                       func_ptr: wrap__Wrapper__a as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1657,6 +1674,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__me_owned as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1754,6 +1772,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__me_ref as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1851,6 +1870,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__me_mut as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -1948,6 +1968,7 @@
                       return_type: "Wrapper",
                       func_ptr: wrap__Wrapper__me_explicit_ref as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -2045,6 +2066,7 @@
                       return_type: "Wrapper",
                       func_ptr: wrap__Wrapper__me_explicit_mut as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -2161,6 +2183,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__max_ref as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -2299,6 +2322,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__max_ref_offset as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -2415,6 +2439,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Wrapper__max_ref2 as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[allow(non_snake_case)]
@@ -2518,6 +2543,7 @@
                       return_type: "ExternalPtr",
                       func_ptr: wrap__externalptr_use_ref_manually as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
@@ -2611,6 +2637,7 @@
                       return_type: "ExternalPtr",
                       func_ptr: wrap__create_numeric_externalptr as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
@@ -2702,6 +2729,7 @@
                       return_type: "Rint",
                       func_ptr: wrap__sum_integer_externalptr as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           mod submod {
@@ -2797,6 +2825,7 @@
                           return_type: "i32",
                           func_ptr: wrap__Wrapper__a_10 as *const u8,
                           hidden: false,
+                          invisible: None,
                       })
               }
               #[allow(non_snake_case)]
@@ -2826,6 +2855,7 @@
                           return_type: "Metadata",
                           func_ptr: wrap__get_submod_metadata as *const u8,
                           hidden: true,
+                          invisible: None,
                       });
                   let mut args = Vec::with_capacity(2usize);
                   args.push(extendr_api::metadata::Arg {
@@ -2849,6 +2879,7 @@
                           return_type: "String",
                           func_ptr: wrap__make_submod_wrappers as *const u8,
                           hidden: true,
+                          invisible: None,
                       });
                   extendr_api::metadata::Metadata {
                       name: "submod",
@@ -3018,6 +3049,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Animal__new_dog as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -3089,6 +3121,7 @@
                       return_type: "Self",
                       func_ptr: wrap__Animal__new_cat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -3177,6 +3210,7 @@
                       return_type: "Strings",
                       func_ptr: wrap__Animal__speak as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[allow(non_snake_case)]
@@ -3213,6 +3247,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_externalptr_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -3236,6 +3271,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_externalptr_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "externalptr",
@@ -3389,6 +3425,7 @@
                       return_type: "List",
                       func_ptr: wrap__test_hm_string as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn test_hm_i32(mut x: HashMap<String, i32>) -> List {
@@ -3472,6 +3509,7 @@
                       return_type: "List",
                       func_ptr: wrap__test_hm_i32 as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           struct Point {
@@ -3587,6 +3625,7 @@
                       return_type: "List",
                       func_ptr: wrap__test_hm_custom_try_from as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -3607,6 +3646,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_hashmap_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -3630,6 +3670,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_hashmap_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "hashmap",
@@ -3752,6 +3793,7 @@
                       return_type: "List",
                       func_ptr: wrap__fetch_dimnames as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn fetch_rownames(x: RMatrix<f64>) -> Option<Strings> {
@@ -3834,6 +3876,7 @@
                       return_type: "Option",
                       func_ptr: wrap__fetch_rownames as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn fetch_colnames(x: RMatrix<f64>) -> Option<Strings> {
@@ -3916,6 +3959,7 @@
                       return_type: "Option",
                       func_ptr: wrap__fetch_colnames as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn change_dimnames(mut x: RMatrix<f64>) -> Robj {
@@ -4004,6 +4048,7 @@
                       return_type: "Robj",
                       func_ptr: wrap__change_dimnames as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn matrix_3d_return(x: RMatrix3D<f64>) -> RMatrix3D<f64> {
@@ -4086,6 +4131,7 @@
                       return_type: "RMatrix3D",
                       func_ptr: wrap__matrix_3d_return as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn matrix_4d_return(x: RMatrix4D<f64>) -> RMatrix4D<f64> {
@@ -4168,6 +4214,7 @@
                       return_type: "RMatrix4D",
                       func_ptr: wrap__matrix_4d_return as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn matrix_5d_return(x: RMatrix5D<f64>) -> RMatrix5D<f64> {
@@ -4250,6 +4297,7 @@
                       return_type: "RMatrix5D",
                       func_ptr: wrap__matrix_5d_return as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -4274,6 +4322,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_matrix_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -4297,6 +4346,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_matrix_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "matrix",
@@ -4440,6 +4490,7 @@
                       return_type: "String",
                       func_ptr: wrap__leak_arg2_try_implicit_strings as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn leak_arg2_try_implicit_doubles(_y: Doubles, x: Doubles) -> String {
@@ -4543,6 +4594,7 @@
                       return_type: "String",
                       func_ptr: wrap__leak_arg2_try_implicit_doubles as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn leak_unwrap_strings(x: Robj) -> String {
@@ -4631,6 +4683,7 @@
                       return_type: "String",
                       func_ptr: wrap__leak_unwrap_strings as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn leak_unwrap_doubles(x: Robj) -> String {
@@ -4718,6 +4771,7 @@
                       return_type: "String",
                       func_ptr: wrap__leak_unwrap_doubles as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn leak_positive_control(x: Robj) {
@@ -4809,6 +4863,7 @@
                       return_type: "()",
                       func_ptr: wrap__leak_positive_control as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn leak_negative_control(x: Robj) {
@@ -4900,6 +4955,7 @@
                       return_type: "()",
                       func_ptr: wrap__leak_negative_control as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -4923,6 +4979,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_memory_leaks_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -4946,6 +5003,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_memory_leaks_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "memory_leaks",
@@ -5073,6 +5131,7 @@
                       return_type: "Either",
                       func_ptr: wrap__type_aware_sum as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -5091,6 +5150,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_optional_either_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -5114,6 +5174,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_optional_either_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "optional_either",
@@ -5239,6 +5300,7 @@
                       return_type: "Mat",
                       func_ptr: wrap__mat_to_mat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn mat_to_rmat(x: Mat<f64>) -> RMatrix<f64> {
@@ -5321,6 +5383,7 @@
                       return_type: "RMatrix",
                       func_ptr: wrap__mat_to_rmat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn mat_to_robj(x: Mat<f64>) -> Robj {
@@ -5403,6 +5466,7 @@
                       return_type: "Robj",
                       func_ptr: wrap__mat_to_robj as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn mat_to_rmatfloat(x: Mat<f64>) -> RMatrix<Rfloat> {
@@ -5485,6 +5549,7 @@
                       return_type: "RMatrix",
                       func_ptr: wrap__mat_to_rmatfloat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn rmat_to_mat(x: RMatrix<f64>) -> Mat<f64> {
@@ -5567,6 +5632,7 @@
                       return_type: "Mat",
                       func_ptr: wrap__rmat_to_mat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn robj_to_mat(x: Robj) -> Mat<f64> {
@@ -5649,6 +5715,7 @@
                       return_type: "Mat",
                       func_ptr: wrap__robj_to_mat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
@@ -5731,6 +5798,7 @@
                       return_type: "Robj",
                       func_ptr: wrap__matref_to_mat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -5755,6 +5823,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_optional_faer_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -5778,6 +5847,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_optional_faer_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "optional_faer",
@@ -6011,6 +6081,7 @@
                       return_type: "Nullable",
                       func_ptr: wrap__euclidean_dist as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -6029,6 +6100,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_optional_ndarray_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -6052,6 +6124,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_optional_ndarray_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "optional_ndarray",
@@ -6189,6 +6262,7 @@
                       return_type: "Nullable",
                       func_ptr: wrap__raw_identifier_in_fn_args as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           /// Test raw identifiers (`r#`) as function names are parsed correctly.
@@ -6266,6 +6340,7 @@
                       return_type: "bool",
                       func_ptr: wrap__true as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           /// Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
@@ -6352,6 +6427,7 @@
                       return_type: "bool",
                       func_ptr: wrap__false as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -6372,6 +6448,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_raw_identifiers_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -6395,6 +6472,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_raw_identifiers_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "raw_identifiers",
@@ -6513,6 +6591,7 @@
                       return_type: "str",
                       func_ptr: wrap__hello_submodule as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           struct MySubmoduleClass {
@@ -6682,6 +6761,7 @@
                       return_type: "Self",
                       func_ptr: wrap__MySubmoduleClass__new as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -6777,6 +6857,7 @@
                       return_type: "()",
                       func_ptr: wrap__MySubmoduleClass__set_a as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -6865,6 +6946,7 @@
                       return_type: "i32",
                       func_ptr: wrap__MySubmoduleClass__a as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[allow(non_snake_case)]
@@ -6897,6 +6979,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_submodule_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -6920,6 +7003,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_submodule_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "submodule",
@@ -7059,6 +7143,7 @@
                       return_type: "usize",
                       func_ptr: wrap__to_unique_rstr as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn to_unique_str(r_char_vec: StrIter) -> usize {
@@ -7158,6 +7243,7 @@
                       return_type: "usize",
                       func_ptr: wrap__to_unique_str as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -7177,6 +7263,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_to_unique_character_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -7200,6 +7287,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_to_unique_character_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "to_unique_character",
@@ -7328,6 +7416,7 @@
                       return_type: "Rint",
                       func_ptr: wrap__sum_triplet_ints as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           pub struct Point {
@@ -7455,6 +7544,7 @@
                       return_type: "Doubles",
                       func_ptr: wrap__sum_points as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_u8(x: [u8; 4]) -> [u8; 4] {
@@ -7542,6 +7632,7 @@
                       return_type: "_5bu8_3b4_5d",
                       func_ptr: wrap__round_trip_array_u8 as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_f64(x: [f64; 4]) -> [f64; 4] {
@@ -7633,6 +7724,7 @@
                       return_type: "_5bf64_3b4_5d",
                       func_ptr: wrap__round_trip_array_f64 as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_i32(x: [i32; 4]) -> [i32; 4] {
@@ -7724,6 +7816,7 @@
                       return_type: "_5bi32_3b4_5d",
                       func_ptr: wrap__round_trip_array_i32 as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_rint(x: [Rint; 4]) -> [Rint; 4] {
@@ -7815,6 +7908,7 @@
                       return_type: "_5bRint_3b4_5d",
                       func_ptr: wrap__round_trip_array_rint as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_rfloat(x: [Rfloat; 4]) -> [Rfloat; 4] {
@@ -7906,6 +8000,7 @@
                       return_type: "_5bRfloat_3b4_5d",
                       func_ptr: wrap__round_trip_array_rfloat as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_rbool(x: [Rbool; 4]) -> [Rbool; 4] {
@@ -7997,6 +8092,7 @@
                       return_type: "_5bRbool_3b4_5d",
                       func_ptr: wrap__round_trip_array_rbool as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn round_trip_array_rcplx(x: [Rcplx; 4]) -> [Rcplx; 4] {
@@ -8088,6 +8184,7 @@
                       return_type: "_5bRcplx_3b4_5d",
                       func_ptr: wrap__round_trip_array_rcplx as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -8114,6 +8211,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_tuple_conversions_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -8137,6 +8235,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_tuple_conversions_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "tuple_conversions",
@@ -8264,6 +8363,7 @@
                       return_type: "()",
                       func_ptr: wrap__middle_zero as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn logicals_sum(logicals: &[Rbool]) -> i32 {
@@ -8356,6 +8456,7 @@
                       return_type: "i32",
                       func_ptr: wrap__logicals_sum as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           fn floats_mean(x: &[Rfloat]) -> f64 {
@@ -8452,6 +8553,7 @@
                       return_type: "f64",
                       func_ptr: wrap__floats_mean as *const u8,
                       hidden: false,
+                      invisible: None,
                   })
           }
           #[no_mangle]
@@ -8472,6 +8574,7 @@
                       return_type: "Metadata",
                       func_ptr: wrap__get_typedsliceargs_metadata as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               let mut args = Vec::with_capacity(2usize);
               args.push(extendr_api::metadata::Arg {
@@ -8495,6 +8598,7 @@
                       return_type: "String",
                       func_ptr: wrap__make_typedsliceargs_wrappers as *const u8,
                       hidden: true,
+                      invisible: None,
                   });
               extendr_api::metadata::Metadata {
                   name: "typedsliceargs",
@@ -8609,6 +8713,7 @@
                   return_type: "str",
                   func_ptr: wrap__hello_world as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn do_nothing() {}
@@ -8681,6 +8786,159 @@
                   return_type: "()",
                   func_ptr: wrap__do_nothing as *const u8,
                   hidden: false,
+                  invisible: None,
+              })
+      }
+      /// This is invisible by default
+      fn result_unit() -> Result<()> {
+          Ok(())
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__result_unit() -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                      extendr_api::Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(result_unit())) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = ::alloc::__export::must_use({
+                      let res = ::alloc::fmt::format(
+                          format_args!("User function panicked: {0}", "result_unit"),
+                      );
+                      res
+                  });
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__result_unit(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " This is invisible by default",
+                  rust_name: "result_unit",
+                  r_name: "result_unit",
+                  mod_name: "result_unit",
+                  args: args,
+                  return_type: "Result",
+                  func_ptr: wrap__result_unit as *const u8,
+                  hidden: false,
+                  invisible: None,
+              })
+      }
+      /// Return a string but invisibly
+      fn invisible_string() -> &'static str {
+          "This should be invisible"
+      }
+      #[no_mangle]
+      #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+      pub extern "C" fn wrap__invisible_string() -> extendr_api::SEXP {
+          use extendr_api::robj::*;
+          let wrap_result_state: std::result::Result<
+              std::result::Result<extendr_api::Robj, extendr_api::Error>,
+              Box<dyn std::any::Any + Send>,
+          > = unsafe {
+              std::panic::catch_unwind(
+                  std::panic::AssertUnwindSafe(move || -> std::result::Result<
+                      extendr_api::Robj,
+                      extendr_api::Error,
+                  > { Ok(extendr_api::Robj::from(invisible_string())) }),
+              )
+          };
+          match wrap_result_state {
+              Ok(Ok(zz)) => {
+                  return unsafe { zz.get() };
+              }
+              Ok(Err(conversion_err)) => {
+                  let err_string = conversion_err.to_string();
+                  drop(conversion_err);
+                  extendr_api::throw_r_error(&err_string);
+              }
+              Err(unwind_err) => {
+                  drop(unwind_err);
+                  let err_string = ::alloc::__export::must_use({
+                      let res = ::alloc::fmt::format(
+                          format_args!("User function panicked: {0}", "invisible_string"),
+                      );
+                      res
+                  });
+                  extendr_api::handle_panic(
+                      err_string.as_str(),
+                      || {
+                          #[cold]
+                          #[track_caller]
+                          #[inline(never)]
+                          const fn panic_cold_explicit() -> ! {
+                              ::core::panicking::panic_explicit()
+                          }
+                          panic_cold_explicit();
+                      },
+                  );
+              }
+          }
+          {
+              ::core::panicking::panic_fmt(
+                  format_args!(
+                      "internal error: entered unreachable code: {0}",
+                      format_args!("internal extendr error, this should never happen."),
+                  ),
+              );
+          }
+      }
+      #[allow(non_snake_case)]
+      fn meta__invisible_string(metadata: &mut Vec<extendr_api::metadata::Func>) {
+          let mut args = Vec::with_capacity(0usize);
+          let args = args;
+          metadata
+              .push(extendr_api::metadata::Func {
+                  doc: " Return a string but invisibly",
+                  rust_name: "invisible_string",
+                  r_name: "invisible_string",
+                  mod_name: "invisible_string",
+                  args: args,
+                  return_type: "str",
+                  func_ptr: wrap__invisible_string as *const u8,
+                  hidden: false,
+                  invisible: Some(true),
               })
       }
       fn double_scalar(x: f64) -> f64 {
@@ -8763,6 +9021,7 @@
                   return_type: "f64",
                   func_ptr: wrap__double_scalar as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn int_scalar(x: i32) -> i32 {
@@ -8845,6 +9104,7 @@
                   return_type: "i32",
                   func_ptr: wrap__int_scalar as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn bool_scalar(x: bool) -> bool {
@@ -8927,6 +9187,7 @@
                   return_type: "bool",
                   func_ptr: wrap__bool_scalar as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn char_scalar(x: String) -> String {
@@ -9009,6 +9270,7 @@
                   return_type: "String",
                   func_ptr: wrap__char_scalar as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn char_vec(x: Vec<String>) -> Vec<String> {
@@ -9091,6 +9353,7 @@
                   return_type: "Vec",
                   func_ptr: wrap__char_vec as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn double_vec(x: Vec<f64>) -> Vec<f64> {
@@ -9173,6 +9436,7 @@
                   return_type: "Vec",
                   func_ptr: wrap__double_vec as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn try_rfloat_na() -> Rfloat {
@@ -9247,6 +9511,7 @@
                   return_type: "Rfloat",
                   func_ptr: wrap__try_rfloat_na as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn try_rint_na() -> Rint {
@@ -9321,6 +9586,7 @@
                   return_type: "Rint",
                   func_ptr: wrap__try_rint_na as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn check_rfloat_na(x: Rfloat) -> bool {
@@ -9403,6 +9669,7 @@
                   return_type: "bool",
                   func_ptr: wrap__check_rfloat_na as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn check_rint_na(x: Rint) -> bool {
@@ -9485,6 +9752,7 @@
                   return_type: "bool",
                   func_ptr: wrap__check_rint_na as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn get_doubles_element(x: Doubles, i: i32) -> Rfloat {
@@ -9580,6 +9848,7 @@
                   return_type: "Rfloat",
                   func_ptr: wrap__get_doubles_element as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn get_integers_element(x: Integers, i: i32) -> Rint {
@@ -9675,6 +9944,7 @@
                   return_type: "Rint",
                   func_ptr: wrap__get_integers_element as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn get_logicals_element(x: Logicals, i: i32) -> Rbool {
@@ -9770,6 +10040,7 @@
                   return_type: "Rbool",
                   func_ptr: wrap__get_logicals_element as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn doubles_square(input: Doubles) -> Doubles {
@@ -9856,6 +10127,7 @@
                   return_type: "Doubles",
                   func_ptr: wrap__doubles_square as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn complexes_square(input: Complexes) -> Complexes {
@@ -9942,6 +10214,7 @@
                   return_type: "Complexes",
                   func_ptr: wrap__complexes_square as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn integers_square(input: Integers) -> Integers {
@@ -10028,6 +10301,7 @@
                   return_type: "Integers",
                   func_ptr: wrap__integers_square as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn logicals_not(input: Logicals) -> Logicals {
@@ -10114,6 +10388,7 @@
                   return_type: "Logicals",
                   func_ptr: wrap__logicals_not as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn check_default(x: Robj) -> bool {
@@ -10196,6 +10471,7 @@
                   return_type: "bool",
                   func_ptr: wrap__check_default as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       /// Test whether `_arg` parameters are treated correctly in R
@@ -10296,6 +10572,7 @@
                   return_type: "i32",
                   func_ptr: wrap__special_param_names as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       /// Test wrapping of special function name
@@ -10375,6 +10652,7 @@
                   return_type: "()",
                   func_ptr: wrap____00__special_function_name as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn test_rename() -> i32 {
@@ -10449,6 +10727,7 @@
                   return_type: "i32",
                   func_ptr: wrap__test_rename_mymod as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn get_default_value(x: i32) -> i32 {
@@ -10531,6 +10810,7 @@
                   return_type: "i32",
                   func_ptr: wrap__get_default_value as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
@@ -10613,6 +10893,7 @@
                   return_type: "Nullable",
                   func_ptr: wrap__add_5_if_not_null as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       struct MyClass {
@@ -10778,6 +11059,7 @@
                   return_type: "Self",
                   func_ptr: wrap__MyClass__new as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -10873,6 +11155,7 @@
                   return_type: "()",
                   func_ptr: wrap__MyClass__set_a as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -10959,6 +11242,7 @@
                   return_type: "i32",
                   func_ptr: wrap__MyClass__a as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11051,6 +11335,7 @@
                   return_type: "Self",
                   func_ptr: wrap__MyClass__me as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11136,6 +11421,7 @@
                   return_type: "Self",
                   func_ptr: wrap__MyClass__restore_from_robj as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11221,6 +11507,7 @@
                   return_type: "i32",
                   func_ptr: wrap__MyClass__get_default_value as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[allow(non_snake_case)]
@@ -11373,6 +11660,7 @@
                   return_type: "Self",
                   func_ptr: wrap____MyClass__new as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11461,6 +11749,7 @@
                   return_type: "()",
                   func_ptr: wrap____MyClass____name_test as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[allow(non_snake_case)]
@@ -11621,6 +11910,7 @@
                   return_type: "Self",
                   func_ptr: wrap__MyClassUnexported__new as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11709,6 +11999,7 @@
                   return_type: "i32",
                   func_ptr: wrap__MyClassUnexported__a as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[allow(non_snake_case)]
@@ -11816,6 +12107,7 @@
                   return_type: "()",
                   func_ptr: wrap__my_device as *const u8,
                   hidden: false,
+                  invisible: None,
               })
       }
       #[no_mangle]
@@ -11825,6 +12117,8 @@
           let mut impls = Vec::new();
           meta__hello_world(&mut functions);
           meta__do_nothing(&mut functions);
+          meta__result_unit(&mut functions);
+          meta__invisible_string(&mut functions);
           meta__double_scalar(&mut functions);
           meta__int_scalar(&mut functions);
           meta__bool_scalar(&mut functions);
@@ -11892,6 +12186,7 @@
                   return_type: "Metadata",
                   func_ptr: wrap__get_extendrtests_metadata as *const u8,
                   hidden: true,
+                  invisible: None,
               });
           let mut args = Vec::with_capacity(2usize);
           args.push(extendr_api::metadata::Arg {
@@ -11915,6 +12210,7 @@
                   return_type: "String",
                   func_ptr: wrap__make_extendrtests_wrappers as *const u8,
                   hidden: true,
+                  invisible: None,
               });
           extendr_api::metadata::Metadata {
               name: "extendrtests",
