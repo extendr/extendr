@@ -448,6 +448,7 @@ extern "C" {
     pub fn SET_TAG(x: SEXP, y: SEXP);
     pub fn SET_VECTOR_ELT(x: SEXP, i: R_xlen_t, v: SEXP) -> SEXP;
     pub fn SETCDR(x: SEXP, y: SEXP) -> SEXP;
+    pub fn SETCAR(x: SEXP, y: SEXP) -> SEXP;
     pub fn setup_Rmainloop();
     pub fn REAL_ELT(x: SEXP, i: R_xlen_t) -> f64;
     pub fn COMPLEX_ELT(x: SEXP, i: R_xlen_t) -> Rcomplex;
