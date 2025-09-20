@@ -17,46 +17,46 @@ impl ExtendrOptions {
     /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
     ///
     pub fn parse(&mut self, meta: ParseNestedMeta) -> syn::parse::Result<()> {
-        let value = meta.value()?;
         let path = meta
             .path
             .get_ident()
             .ok_or(meta.error("Unexpected syntax"))?;
 
         match path.to_string().as_str() {
-            "r_name" => {
-                if let Ok(Lit::Str(litstr)) = value.parse() {
-                    self.r_name = Some(litstr.value());
-                    Ok(())
-                } else {
-                    Err(value.error("`r_name` must be a string literal"))
-                }
-            }
-            "mod_name" => {
-                if let Ok(Lit::Str(litstr)) = value.parse() {
-                    self.mod_name = Some(litstr.value());
-                    Ok(())
-                } else {
-                    Err(value.error("`mod_name` must be a string literal"))
-                }
-            }
-            "use_rng" => {
-                if let Ok(LitBool { value, .. }) = value.parse() {
-                    self.use_rng = value;
-                    Ok(())
-                } else {
-                    Err(value.error("`use_rng` must be `true` or `false`"))
-                }
-            }
             "invisibly" => {
-                if let Ok(LitBool { value, .. }) = value.parse() {
-                    self.invisibly = Some(value);
-                    Ok(())
-                } else {
-                    Err(value.error("`invisibly` must be `true` or `false`"))
+                self.invisibly = Some(true);
+                Ok(())
+            }
+            _ => {
+                let value = meta.value()?;
+                match path.to_string().as_str() {
+                    "r_name" => {
+                        if let Ok(Lit::Str(litstr)) = value.parse() {
+                            self.r_name = Some(litstr.value());
+                            Ok(())
+                        } else {
+                            Err(value.error("`r_name` must be a string literal"))
+                        }
+                    }
+                    "mod_name" => {
+                        if let Ok(Lit::Str(litstr)) = value.parse() {
+                            self.mod_name = Some(litstr.value());
+                            Ok(())
+                        } else {
+                            Err(value.error("`mod_name` must be a string literal"))
+                        }
+                    }
+                    "use_rng" => {
+                        if let Ok(LitBool { value, .. }) = value.parse() {
+                            self.use_rng = value;
+                            Ok(())
+                        } else {
+                            Err(value.error("`use_rng` must be `true` or `false`"))
+                        }
+                    }
+                    _ => Err(syn::Error::new_spanned(meta.path, "Unexpected key")),
                 }
             }
-            _ => Err(syn::Error::new_spanned(meta.path, "Unexpected key")),
         }
     }
 }
