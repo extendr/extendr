@@ -5,7 +5,7 @@ pub(crate) struct ExtendrOptions {
     pub r_name: Option<String>,
     pub mod_name: Option<String>,
     pub use_rng: bool,
-    pub invisibly: Option<bool>,
+    pub invisible: Option<bool>,
 }
 
 impl ExtendrOptions {
@@ -23,8 +23,8 @@ impl ExtendrOptions {
             .ok_or(meta.error("Unexpected syntax"))?;
 
         match path.to_string().as_str() {
-            "invisibly" => {
-                self.invisibly = Some(true);
+            "invisible" => {
+                self.invisible = Some(true);
                 Ok(())
             }
             _ => {

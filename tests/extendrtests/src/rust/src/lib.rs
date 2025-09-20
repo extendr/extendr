@@ -34,7 +34,7 @@ fn result_unit() -> Result<()> {
 }
 
 /// Return a string but invisibly
-#[extendr(invisibly)]
+#[extendr(invisible)]
 fn invisible_string() -> &'static str {
     "This should be invisible"
 }

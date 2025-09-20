@@ -85,7 +85,7 @@ test_that("Default parameter values are emitted to wrappers", {
   expect_equal(MyClass$get_default_value(), 42L)
 })
 
-test_that("Function with invisibly flag returns invisibly", {
+test_that("Function with invisible flag returns invisibly", {
   expect_equal(invisible_string(), "This should be invisible")
   expect_invisible(invisible_string())
 })

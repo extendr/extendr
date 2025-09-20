@@ -24,7 +24,7 @@ pub struct Func {
     pub return_type: &'static str,
     pub func_ptr: *const u8,
     pub hidden: bool,
-    pub invisibly: Option<bool>,
+    pub invisible: Option<bool>,
 }
 
 /// Metadata Impl.
@@ -96,7 +96,7 @@ impl From<Func> for Robj {
             r!(List::from_values(val.args)),
             r!(val.return_type),
             r!(val.hidden),
-            r!(val.invisibly.unwrap_or(false)),
+            r!(val.invisible.unwrap_or(false)),
         ]);
         result
             .set_names(&[
@@ -107,7 +107,7 @@ impl From<Func> for Robj {
                 "args",
                 "return.type",
                 "hidden",
-                "invisibly",
+                "invisible",
             ])
             .expect("From<Func> failed");
         result.into()
@@ -192,7 +192,7 @@ fn write_function_wrapper(
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
     let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
-    let should_be_invisible = match func.invisibly {
+    let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
         None => {
@@ -264,7 +264,7 @@ fn write_method_wrapper(
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
-    let should_be_invisible = match func.invisibly {
+    let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
         None => {
