@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_module.rs`."><title>extendr_module.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-84e720fa.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.89.0-nightly (cdd545be1 2025-06-07)" data-channel="nightly" data-search-js="search-f7877310.js" data-settings-js="settings-5514c975.js" ><script src="../../static.files/storage-4e99c027.js"></script><script defer src="../../static.files/src-script-63605ae7.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-fd3af306.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_macros/</div>extendr_module.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::wrappers;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/extendr_module.rs`."><title>extendr_module.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0-nightly (0be8e1608 2025-09-19)" data-channel="nightly" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-061df703.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_macros/</div>extendr_module.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::wrappers;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>proc_macro::TokenStream;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>quote::{format_ident, quote};
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
@@ -61,111 +61,113 @@
 <a href=#61 id=61 data-nosnippet>61</a>                return_type: <span class="string">"Metadata"</span>,
 <a href=#62 id=62 data-nosnippet>62</a>                func_ptr: #wrap_module_metadata_name <span class="kw">as </span>* <span class="kw">const </span>u8,
 <a href=#63 id=63 data-nosnippet>63</a>                hidden: <span class="bool-val">true</span>,
-<a href=#64 id=64 data-nosnippet>64</a>            });
-<a href=#65 id=65 data-nosnippet>65</a>            <span class="kw">let </span><span class="kw-2">mut </span>args = Vec::with_capacity(<span class="number">2usize</span>);
-<a href=#66 id=66 data-nosnippet>66</a>            args.push(extendr_api::metadata::Arg { name: <span class="string">"use_symbols"</span>, arg_type: <span class="string">"bool"</span>, default: <span class="prelude-val">None </span>});
-<a href=#67 id=67 data-nosnippet>67</a>            args.push(extendr_api::metadata::Arg { name: <span class="string">"package_name"</span>, arg_type: <span class="string">"&amp;str"</span>, default: <span class="prelude-val">None </span>});
-<a href=#68 id=68 data-nosnippet>68</a>            <span class="kw">let </span>args = args;
-<a href=#69 id=69 data-nosnippet>69</a>
-<a href=#70 id=70 data-nosnippet>70</a>            <span class="comment">// Add this function to the list, but set hidden: true.
-<a href=#71 id=71 data-nosnippet>71</a>            </span>functions.push(extendr_api::metadata::Func {
-<a href=#72 id=72 data-nosnippet>72</a>                doc: <span class="string">"Wrapper generator."</span>,
-<a href=#73 id=73 data-nosnippet>73</a>                rust_name: #make_module_wrappers_name_string,
-<a href=#74 id=74 data-nosnippet>74</a>                mod_name: #make_module_wrappers_name_string,
-<a href=#75 id=75 data-nosnippet>75</a>                r_name: #make_module_wrappers_name_string,
-<a href=#76 id=76 data-nosnippet>76</a>                args,
-<a href=#77 id=77 data-nosnippet>77</a>                return_type: <span class="string">"String"</span>,
-<a href=#78 id=78 data-nosnippet>78</a>                func_ptr: #wrap_make_module_wrappers <span class="kw">as </span>* <span class="kw">const </span>u8,
-<a href=#79 id=79 data-nosnippet>79</a>                hidden: <span class="bool-val">true</span>,
-<a href=#80 id=80 data-nosnippet>80</a>            });
-<a href=#81 id=81 data-nosnippet>81</a>
-<a href=#82 id=82 data-nosnippet>82</a>            extendr_api::metadata::Metadata {
-<a href=#83 id=83 data-nosnippet>83</a>                name: #modname_string,
-<a href=#84 id=84 data-nosnippet>84</a>                functions,
-<a href=#85 id=85 data-nosnippet>85</a>                impls,
-<a href=#86 id=86 data-nosnippet>86</a>            }
-<a href=#87 id=87 data-nosnippet>87</a>        }
-<a href=#88 id=88 data-nosnippet>88</a>
-<a href=#89 id=89 data-nosnippet>89</a>        <span class="attr">#[no_mangle]
-<a href=#90 id=90 data-nosnippet>90</a>        #[allow(non_snake_case)]
-<a href=#91 id=91 data-nosnippet>91</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#wrap_module_metadata_name() -&gt; extendr_api::SEXP {
-<a href=#92 id=92 data-nosnippet>92</a>            <span class="kw">use </span>extendr_api::GetSexp;
-<a href=#93 id=93 data-nosnippet>93</a>            <span class="kw">unsafe </span>{ extendr_api::Robj::from(#module_metadata_name()).get() }
-<a href=#94 id=94 data-nosnippet>94</a>        }
-<a href=#95 id=95 data-nosnippet>95</a>
-<a href=#96 id=96 data-nosnippet>96</a>        <span class="attr">#[no_mangle]
-<a href=#97 id=97 data-nosnippet>97</a>        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-<a href=#98 id=98 data-nosnippet>98</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#wrap_make_module_wrappers(
-<a href=#99 id=99 data-nosnippet>99</a>            use_symbols_sexp: extendr_api::SEXP,
-<a href=#100 id=100 data-nosnippet>100</a>            package_name_sexp: extendr_api::SEXP,
-<a href=#101 id=101 data-nosnippet>101</a>        ) -&gt; extendr_api::SEXP {
-<a href=#102 id=102 data-nosnippet>102</a>            <span class="kw">unsafe </span>{
-<a href=#103 id=103 data-nosnippet>103</a>                <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
-<a href=#104 id=104 data-nosnippet>104</a>                <span class="kw">use </span>extendr_api::GetSexp;
-<a href=#105 id=105 data-nosnippet>105</a>                <span class="kw">let </span>robj = Robj::from_sexp(use_symbols_sexp);
-<a href=#106 id=106 data-nosnippet>106</a>                <span class="kw">let </span>use_symbols: bool = &lt;bool&gt;::try_from(<span class="kw-2">&amp;</span>robj).unwrap();
-<a href=#107 id=107 data-nosnippet>107</a>
-<a href=#108 id=108 data-nosnippet>108</a>                <span class="kw">let </span>robj = Robj::from_sexp(package_name_sexp);
-<a href=#109 id=109 data-nosnippet>109</a>                <span class="kw">let </span>package_name: <span class="kw-2">&amp;</span>str = &lt;<span class="kw-2">&amp;</span>str&gt;::try_from(<span class="kw-2">&amp;</span>robj).unwrap();
-<a href=#110 id=110 data-nosnippet>110</a>
-<a href=#111 id=111 data-nosnippet>111</a>                extendr_api::Robj::from(
-<a href=#112 id=112 data-nosnippet>112</a>                    #module_metadata_name()
-<a href=#113 id=113 data-nosnippet>113</a>                        .make_r_wrappers(
-<a href=#114 id=114 data-nosnippet>114</a>                            use_symbols,
-<a href=#115 id=115 data-nosnippet>115</a>                            package_name,
-<a href=#116 id=116 data-nosnippet>116</a>                        ).unwrap()
-<a href=#117 id=117 data-nosnippet>117</a>                ).get()
-<a href=#118 id=118 data-nosnippet>118</a>            }
-<a href=#119 id=119 data-nosnippet>119</a>        }
-<a href=#120 id=120 data-nosnippet>120</a>
-<a href=#121 id=121 data-nosnippet>121</a>        <span class="attr">#[no_mangle]
-<a href=#122 id=122 data-nosnippet>122</a>        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
-<a href=#123 id=123 data-nosnippet>123</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#module_init_name(info: * <span class="kw-2">mut </span>extendr_api::DllInfo) {
-<a href=#124 id=124 data-nosnippet>124</a>            <span class="kw">unsafe </span>{ extendr_api::register_call_methods(info, #module_metadata_name()) };
-<a href=#125 id=125 data-nosnippet>125</a>        }
-<a href=#126 id=126 data-nosnippet>126</a>    })
-<a href=#127 id=127 data-nosnippet>127</a>}
-<a href=#128 id=128 data-nosnippet>128</a>
-<a href=#129 id=129 data-nosnippet>129</a><span class="attr">#[derive(Debug)]
-<a href=#130 id=130 data-nosnippet>130</a></span><span class="kw">struct </span>Module {
-<a href=#131 id=131 data-nosnippet>131</a>    modname: <span class="prelude-ty">Option</span>&lt;Ident&gt;,
-<a href=#132 id=132 data-nosnippet>132</a>    fnnames: Vec&lt;Ident&gt;,
-<a href=#133 id=133 data-nosnippet>133</a>    implnames: Vec&lt;Type&gt;,
-<a href=#134 id=134 data-nosnippet>134</a>    usenames: Vec&lt;Ident&gt;,
-<a href=#135 id=135 data-nosnippet>135</a>}
-<a href=#136 id=136 data-nosnippet>136</a>
-<a href=#137 id=137 data-nosnippet>137</a><span class="comment">// Custom parser for the module.
-<a href=#138 id=138 data-nosnippet>138</a></span><span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>Module {
-<a href=#139 id=139 data-nosnippet>139</a>    <span class="kw">fn </span>parse(input: ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
-<a href=#140 id=140 data-nosnippet>140</a>        <span class="kw">use </span>syn::spanned::Spanned;
-<a href=#141 id=141 data-nosnippet>141</a>        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self </span>{
-<a href=#142 id=142 data-nosnippet>142</a>            modname: <span class="prelude-val">None</span>,
-<a href=#143 id=143 data-nosnippet>143</a>            fnnames: Vec::new(),
-<a href=#144 id=144 data-nosnippet>144</a>            implnames: Vec::new(),
-<a href=#145 id=145 data-nosnippet>145</a>            usenames: Vec::new(),
-<a href=#146 id=146 data-nosnippet>146</a>        };
-<a href=#147 id=147 data-nosnippet>147</a>        <span class="kw">while </span>!input.is_empty() {
-<a href=#148 id=148 data-nosnippet>148</a>            <span class="kw">if let </span><span class="prelude-val">Ok</span>(kmod) = input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">mod</span>]&gt;() {
-<a href=#149 id=149 data-nosnippet>149</a>                <span class="kw">let </span>name: Ident = input.parse()<span class="question-mark">?</span>;
-<a href=#150 id=150 data-nosnippet>150</a>                <span class="kw">if </span>res.modname.is_some() {
-<a href=#151 id=151 data-nosnippet>151</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(kmod.span(), <span class="string">"only one mod allowed"</span>));
-<a href=#152 id=152 data-nosnippet>152</a>                }
-<a href=#153 id=153 data-nosnippet>153</a>                res.modname = <span class="prelude-val">Some</span>(name);
-<a href=#154 id=154 data-nosnippet>154</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">fn</span>]&gt;().is_ok() {
-<a href=#155 id=155 data-nosnippet>155</a>                res.fnnames.push(input.parse()<span class="question-mark">?</span>);
-<a href=#156 id=156 data-nosnippet>156</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">impl</span>]&gt;().is_ok() {
-<a href=#157 id=157 data-nosnippet>157</a>                res.implnames.push(input.parse()<span class="question-mark">?</span>);
-<a href=#158 id=158 data-nosnippet>158</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">use</span>]&gt;().is_ok() {
-<a href=#159 id=159 data-nosnippet>159</a>                res.usenames.push(input.parse()<span class="question-mark">?</span>);
-<a href=#160 id=160 data-nosnippet>160</a>            } <span class="kw">else </span>{
-<a href=#161 id=161 data-nosnippet>161</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">"expected mod, fn or impl"</span>));
-<a href=#162 id=162 data-nosnippet>162</a>            }
-<a href=#163 id=163 data-nosnippet>163</a>
-<a href=#164 id=164 data-nosnippet>164</a>            input.parse::&lt;<span class="macro">Token!</span>[;]&gt;()<span class="question-mark">?</span>;
-<a href=#165 id=165 data-nosnippet>165</a>        }
-<a href=#166 id=166 data-nosnippet>166</a>        <span class="kw">if </span>res.modname.is_none() {
-<a href=#167 id=167 data-nosnippet>167</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">"expected one 'mod name'"</span>));
-<a href=#168 id=168 data-nosnippet>168</a>        }
-<a href=#169 id=169 data-nosnippet>169</a>        <span class="prelude-val">Ok</span>(res)
-<a href=#170 id=170 data-nosnippet>170</a>    }
-<a href=#171 id=171 data-nosnippet>171</a>}</code></pre></div></section></main></body></html>
+<a href=#64 id=64 data-nosnippet>64</a>                invisible: <span class="prelude-val">None</span>,
+<a href=#65 id=65 data-nosnippet>65</a>            });
+<a href=#66 id=66 data-nosnippet>66</a>            <span class="kw">let </span><span class="kw-2">mut </span>args = Vec::with_capacity(<span class="number">2usize</span>);
+<a href=#67 id=67 data-nosnippet>67</a>            args.push(extendr_api::metadata::Arg { name: <span class="string">"use_symbols"</span>, arg_type: <span class="string">"bool"</span>, default: <span class="prelude-val">None </span>});
+<a href=#68 id=68 data-nosnippet>68</a>            args.push(extendr_api::metadata::Arg { name: <span class="string">"package_name"</span>, arg_type: <span class="string">"&amp;str"</span>, default: <span class="prelude-val">None </span>});
+<a href=#69 id=69 data-nosnippet>69</a>            <span class="kw">let </span>args = args;
+<a href=#70 id=70 data-nosnippet>70</a>
+<a href=#71 id=71 data-nosnippet>71</a>            <span class="comment">// Add this function to the list, but set hidden: true.
+<a href=#72 id=72 data-nosnippet>72</a>            </span>functions.push(extendr_api::metadata::Func {
+<a href=#73 id=73 data-nosnippet>73</a>                doc: <span class="string">"Wrapper generator."</span>,
+<a href=#74 id=74 data-nosnippet>74</a>                rust_name: #make_module_wrappers_name_string,
+<a href=#75 id=75 data-nosnippet>75</a>                mod_name: #make_module_wrappers_name_string,
+<a href=#76 id=76 data-nosnippet>76</a>                r_name: #make_module_wrappers_name_string,
+<a href=#77 id=77 data-nosnippet>77</a>                args,
+<a href=#78 id=78 data-nosnippet>78</a>                return_type: <span class="string">"String"</span>,
+<a href=#79 id=79 data-nosnippet>79</a>                func_ptr: #wrap_make_module_wrappers <span class="kw">as </span>* <span class="kw">const </span>u8,
+<a href=#80 id=80 data-nosnippet>80</a>                hidden: <span class="bool-val">true</span>,
+<a href=#81 id=81 data-nosnippet>81</a>                invisible: <span class="prelude-val">None</span>,
+<a href=#82 id=82 data-nosnippet>82</a>            });
+<a href=#83 id=83 data-nosnippet>83</a>
+<a href=#84 id=84 data-nosnippet>84</a>            extendr_api::metadata::Metadata {
+<a href=#85 id=85 data-nosnippet>85</a>                name: #modname_string,
+<a href=#86 id=86 data-nosnippet>86</a>                functions,
+<a href=#87 id=87 data-nosnippet>87</a>                impls,
+<a href=#88 id=88 data-nosnippet>88</a>            }
+<a href=#89 id=89 data-nosnippet>89</a>        }
+<a href=#90 id=90 data-nosnippet>90</a>
+<a href=#91 id=91 data-nosnippet>91</a>        <span class="attr">#[no_mangle]
+<a href=#92 id=92 data-nosnippet>92</a>        #[allow(non_snake_case)]
+<a href=#93 id=93 data-nosnippet>93</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#wrap_module_metadata_name() -&gt; extendr_api::SEXP {
+<a href=#94 id=94 data-nosnippet>94</a>            <span class="kw">use </span>extendr_api::GetSexp;
+<a href=#95 id=95 data-nosnippet>95</a>            <span class="kw">unsafe </span>{ extendr_api::Robj::from(#module_metadata_name()).get() }
+<a href=#96 id=96 data-nosnippet>96</a>        }
+<a href=#97 id=97 data-nosnippet>97</a>
+<a href=#98 id=98 data-nosnippet>98</a>        <span class="attr">#[no_mangle]
+<a href=#99 id=99 data-nosnippet>99</a>        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+<a href=#100 id=100 data-nosnippet>100</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#wrap_make_module_wrappers(
+<a href=#101 id=101 data-nosnippet>101</a>            use_symbols_sexp: extendr_api::SEXP,
+<a href=#102 id=102 data-nosnippet>102</a>            package_name_sexp: extendr_api::SEXP,
+<a href=#103 id=103 data-nosnippet>103</a>        ) -&gt; extendr_api::SEXP {
+<a href=#104 id=104 data-nosnippet>104</a>            <span class="kw">unsafe </span>{
+<a href=#105 id=105 data-nosnippet>105</a>                <span class="kw">use </span>extendr_api::robj::<span class="kw-2">*</span>;
+<a href=#106 id=106 data-nosnippet>106</a>                <span class="kw">use </span>extendr_api::GetSexp;
+<a href=#107 id=107 data-nosnippet>107</a>                <span class="kw">let </span>robj = Robj::from_sexp(use_symbols_sexp);
+<a href=#108 id=108 data-nosnippet>108</a>                <span class="kw">let </span>use_symbols: bool = &lt;bool&gt;::try_from(<span class="kw-2">&amp;</span>robj).unwrap();
+<a href=#109 id=109 data-nosnippet>109</a>
+<a href=#110 id=110 data-nosnippet>110</a>                <span class="kw">let </span>robj = Robj::from_sexp(package_name_sexp);
+<a href=#111 id=111 data-nosnippet>111</a>                <span class="kw">let </span>package_name: <span class="kw-2">&amp;</span>str = &lt;<span class="kw-2">&amp;</span>str&gt;::try_from(<span class="kw-2">&amp;</span>robj).unwrap();
+<a href=#112 id=112 data-nosnippet>112</a>
+<a href=#113 id=113 data-nosnippet>113</a>                extendr_api::Robj::from(
+<a href=#114 id=114 data-nosnippet>114</a>                    #module_metadata_name()
+<a href=#115 id=115 data-nosnippet>115</a>                        .make_r_wrappers(
+<a href=#116 id=116 data-nosnippet>116</a>                            use_symbols,
+<a href=#117 id=117 data-nosnippet>117</a>                            package_name,
+<a href=#118 id=118 data-nosnippet>118</a>                        ).unwrap()
+<a href=#119 id=119 data-nosnippet>119</a>                ).get()
+<a href=#120 id=120 data-nosnippet>120</a>            }
+<a href=#121 id=121 data-nosnippet>121</a>        }
+<a href=#122 id=122 data-nosnippet>122</a>
+<a href=#123 id=123 data-nosnippet>123</a>        <span class="attr">#[no_mangle]
+<a href=#124 id=124 data-nosnippet>124</a>        #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
+<a href=#125 id=125 data-nosnippet>125</a>        </span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>#module_init_name(info: * <span class="kw-2">mut </span>extendr_api::DllInfo) {
+<a href=#126 id=126 data-nosnippet>126</a>            <span class="kw">unsafe </span>{ extendr_api::register_call_methods(info, #module_metadata_name()) };
+<a href=#127 id=127 data-nosnippet>127</a>        }
+<a href=#128 id=128 data-nosnippet>128</a>    })
+<a href=#129 id=129 data-nosnippet>129</a>}
+<a href=#130 id=130 data-nosnippet>130</a>
+<a href=#131 id=131 data-nosnippet>131</a><span class="attr">#[derive(Debug)]
+<a href=#132 id=132 data-nosnippet>132</a></span><span class="kw">struct </span>Module {
+<a href=#133 id=133 data-nosnippet>133</a>    modname: <span class="prelude-ty">Option</span>&lt;Ident&gt;,
+<a href=#134 id=134 data-nosnippet>134</a>    fnnames: Vec&lt;Ident&gt;,
+<a href=#135 id=135 data-nosnippet>135</a>    implnames: Vec&lt;Type&gt;,
+<a href=#136 id=136 data-nosnippet>136</a>    usenames: Vec&lt;Ident&gt;,
+<a href=#137 id=137 data-nosnippet>137</a>}
+<a href=#138 id=138 data-nosnippet>138</a>
+<a href=#139 id=139 data-nosnippet>139</a><span class="comment">// Custom parser for the module.
+<a href=#140 id=140 data-nosnippet>140</a></span><span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>Module {
+<a href=#141 id=141 data-nosnippet>141</a>    <span class="kw">fn </span>parse(input: ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
+<a href=#142 id=142 data-nosnippet>142</a>        <span class="kw">use </span>syn::spanned::Spanned;
+<a href=#143 id=143 data-nosnippet>143</a>        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self </span>{
+<a href=#144 id=144 data-nosnippet>144</a>            modname: <span class="prelude-val">None</span>,
+<a href=#145 id=145 data-nosnippet>145</a>            fnnames: Vec::new(),
+<a href=#146 id=146 data-nosnippet>146</a>            implnames: Vec::new(),
+<a href=#147 id=147 data-nosnippet>147</a>            usenames: Vec::new(),
+<a href=#148 id=148 data-nosnippet>148</a>        };
+<a href=#149 id=149 data-nosnippet>149</a>        <span class="kw">while </span>!input.is_empty() {
+<a href=#150 id=150 data-nosnippet>150</a>            <span class="kw">if let </span><span class="prelude-val">Ok</span>(kmod) = input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">mod</span>]&gt;() {
+<a href=#151 id=151 data-nosnippet>151</a>                <span class="kw">let </span>name: Ident = input.parse()<span class="question-mark">?</span>;
+<a href=#152 id=152 data-nosnippet>152</a>                <span class="kw">if </span>res.modname.is_some() {
+<a href=#153 id=153 data-nosnippet>153</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(kmod.span(), <span class="string">"only one mod allowed"</span>));
+<a href=#154 id=154 data-nosnippet>154</a>                }
+<a href=#155 id=155 data-nosnippet>155</a>                res.modname = <span class="prelude-val">Some</span>(name);
+<a href=#156 id=156 data-nosnippet>156</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">fn</span>]&gt;().is_ok() {
+<a href=#157 id=157 data-nosnippet>157</a>                res.fnnames.push(input.parse()<span class="question-mark">?</span>);
+<a href=#158 id=158 data-nosnippet>158</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">impl</span>]&gt;().is_ok() {
+<a href=#159 id=159 data-nosnippet>159</a>                res.implnames.push(input.parse()<span class="question-mark">?</span>);
+<a href=#160 id=160 data-nosnippet>160</a>            } <span class="kw">else if </span>input.parse::&lt;<span class="macro">Token!</span>[<span class="kw">use</span>]&gt;().is_ok() {
+<a href=#161 id=161 data-nosnippet>161</a>                res.usenames.push(input.parse()<span class="question-mark">?</span>);
+<a href=#162 id=162 data-nosnippet>162</a>            } <span class="kw">else </span>{
+<a href=#163 id=163 data-nosnippet>163</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">"expected mod, fn or impl"</span>));
+<a href=#164 id=164 data-nosnippet>164</a>            }
+<a href=#165 id=165 data-nosnippet>165</a>
+<a href=#166 id=166 data-nosnippet>166</a>            input.parse::&lt;<span class="macro">Token!</span>[;]&gt;()<span class="question-mark">?</span>;
+<a href=#167 id=167 data-nosnippet>167</a>        }
+<a href=#168 id=168 data-nosnippet>168</a>        <span class="kw">if </span>res.modname.is_none() {
+<a href=#169 id=169 data-nosnippet>169</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(input.span(), <span class="string">"expected one 'mod name'"</span>));
+<a href=#170 id=170 data-nosnippet>170</a>        }
+<a href=#171 id=171 data-nosnippet>171</a>        <span class="prelude-val">Ok</span>(res)
+<a href=#172 id=172 data-nosnippet>172</a>    }
+<a href=#173 id=173 data-nosnippet>173</a>}</code></pre></div></section></main></body></html>
