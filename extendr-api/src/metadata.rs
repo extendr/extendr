@@ -24,6 +24,7 @@ pub struct Func {
     pub return_type: &'static str,
     pub func_ptr: *const u8,
     pub hidden: bool,
+    pub invisible: Option<bool>,
 }
 
 /// Metadata Impl.
@@ -95,6 +96,7 @@ impl From<Func> for Robj {
             r!(List::from_values(val.args)),
             r!(val.return_type),
             r!(val.hidden),
+            r!(val.invisible.unwrap_or(false)),
         ]);
         result
             .set_names(&[
@@ -105,6 +107,7 @@ impl From<Func> for Robj {
                 "args",
                 "return.type",
                 "hidden",
+                "invisible",
             ])
             .expect("From<Func> failed");
         result.into()
@@ -189,7 +192,16 @@ fn write_function_wrapper(
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
     let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
-    if func.return_type == "()" {
+    let should_be_invisible = match func.invisible {
+        Some(true) => true,
+        Some(false) => false,
+        None => {
+            // previous logic that guarantees invisible for () and Result types
+            func.return_type == "()" || func.return_type == "Result"
+        }
+    };
+    
+    if should_be_invisible {
         write!(
             w,
             "{} <- function({}) invisible(.Call(",
@@ -219,7 +231,7 @@ fn write_function_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" {
+    if should_be_invisible {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;
@@ -252,7 +264,15 @@ fn write_method_wrapper(
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
-    if func.return_type == "()" {
+    let should_be_invisible = match func.invisible {
+        Some(true) => true,
+        Some(false) => false,
+        None => {
+            func.return_type == "()" || func.return_type == "Result"
+        }
+    };
+    
+    if should_be_invisible {
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
@@ -285,7 +305,7 @@ fn write_method_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" {
+    if should_be_invisible {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;

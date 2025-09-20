@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
+
 ### Changed
 
 ### Fixed
