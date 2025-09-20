@@ -14,11 +14,11 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
-#' Do nothing but return a Result type.
+#' This is invisible by default
 result_unit <- function() invisible(.Call(wrap__result_unit))
 
-#' Test function that is explicitly NOT invisible.
-not_invisible_unit <- function() .Call(wrap__not_invisible_unit)
+#' Return a string but invisibly
+invisible_string <- function() invisible(.Call(wrap__invisible_string))
 
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 

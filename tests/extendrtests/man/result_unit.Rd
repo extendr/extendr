@@ -2,10 +2,10 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{result_unit}
 \alias{result_unit}
-\title{Do nothing but return a Result type.}
+\title{This is invisible by default}
 \usage{
 result_unit()
 }
 \description{
-Do nothing but return a Result type.
+This is invisible by default
 }

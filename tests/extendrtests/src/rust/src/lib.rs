@@ -27,15 +27,17 @@ fn hello_world() -> &'static str {
 #[extendr]
 fn do_nothing() {}
 
-/// Do nothing but return a Result type.
-#[extendr(invisibly = true)]
+/// This is invisible by default
+#[extendr]
 fn result_unit() -> Result<()> {
     Ok(())
 }
 
-/// Do nothing but very visible.
-#[extendr(invisibly = false)]
-fn not_invisible_unit() {}
+/// Return a string but invisibly
+#[extendr(invisibly)]
+fn invisible_string() -> &'static str {
+    "This should be invisible"
+}
 
 // TryFrom: conversions
 
@@ -319,7 +321,7 @@ extendr_module! {
     fn hello_world;
     fn do_nothing;
     fn result_unit;
-    fn not_invisible_unit;
+    fn invisible_string;
 
     fn double_scalar;
     fn int_scalar;
