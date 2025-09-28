@@ -5,12 +5,14 @@ use std::alloc;
 use std::sync::OnceLock;
 
 use extendr_ffi::{
-    CAR, CDR, R_NilValue, R_PreserveObject, R_xlen_t, RAW, Rf_allocVector, Rf_cons, Rf_protect, Rf_unprotect, Rf_xlength, SET_TAG, SETCAR, SETCDR, SEXP, SEXPTYPE
+    R_NilValue, R_PreserveObject, R_xlen_t, Rf_allocVector, Rf_cons, Rf_protect, Rf_unprotect,
+    Rf_xlength, CAR, CDR, RAW, SETCAR, SETCDR, SET_TAG, SEXP, SEXPTYPE,
 };
 
 thread_local! {
     static PRESERVE_LIST: OnceLock<SEXP> = OnceLock::new();
 }
+
 #[inline]
 unsafe fn init() -> SEXP {
     let out = Rf_cons(R_NilValue, Rf_cons(R_NilValue, R_NilValue));
@@ -105,9 +107,9 @@ unsafe fn release(cell: SEXP) {
 
 #[repr(C)]
 struct Header {
-    cell: SEXP,       // token from insert(sexp)
-    offset: u16,      // aligned_ptr - base_data (bytes)
-    _pad: u16,        // keep Header size a multiple of 4
+    cell: SEXP,  // token from insert(sexp)
+    offset: u16, // aligned_ptr - base_data (bytes)
+    _pad: u16,   // keep Header size a multiple of 4
 }
 
 const HEADER_SIZE: usize = std::mem::size_of::<Header>();
@@ -119,16 +121,25 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
     unsafe fn alloc(&self, layout: alloc::Layout) -> *mut u8 {
         let a = layout.align();
         let n = layout.size();
-        if n == 0 { return a as *mut u8; }
+        // if n == 0 { return a as *mut u8; }
+        // FIXME: should it always be a null pointer instead?
+        if n == 0 {
+            return std::ptr::null_mut();
+        }
 
         // ensure space for header + worst-case alignment padding
-        let total = match n.checked_add(a - 1).and_then(|t| t.checked_add(HEADER_SIZE)) {
+        let total = match n
+            .checked_add(a - 1)
+            .and_then(|t| t.checked_add(HEADER_SIZE))
+        {
             Some(t) => t,
             None => return std::ptr::null_mut(),
         };
 
         let sexp = Rf_allocVector(SEXPTYPE::RAWSXP, total as isize);
-        if sexp.is_null() { return std::ptr::null_mut(); }
+        if sexp.is_null() {
+            return std::ptr::null_mut();
+        }
 
         // keep the RAWSXP alive
         let cell = insert(sexp);
@@ -155,7 +166,9 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
     }
 
     unsafe fn dealloc(&self, ptr_user: *mut u8, _layout: alloc::Layout) {
-        if ptr_user.is_null() { return; }
+        if ptr_user.is_null() {
+            return;
+        }
 
         // recover header
         let hdr_ptr = (ptr_user as usize - HEADER_SIZE) as *mut Header;
@@ -168,4 +181,3 @@ unsafe impl alloc::GlobalAlloc for RAllocator {
         // ptr::write_bytes(hdr_ptr as *mut u8, 0xDD, HEADER_SIZE);
     }
 }
-
