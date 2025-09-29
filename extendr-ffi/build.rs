@@ -195,6 +195,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // For Windows
         (true, "x86_64") => Path::new(&r_paths.r_home).join("bin").join("x64"),
         (true, "x86") => Path::new(&r_paths.r_home).join("bin").join("i386"),
+        (true, "aarch64") => Path::new(&r_paths.r_home).join("bin"),
         (true, _) => {
             return Err("Cannot build extendr-ffi for unknown architecture".into());
         }
