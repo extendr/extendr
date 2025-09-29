@@ -200,7 +200,7 @@ fn write_function_wrapper(
             func.return_type == "()" || func.return_type == "Result"
         }
     };
-    
+
     if should_be_invisible {
         write!(
             w,
@@ -267,11 +267,9 @@ fn write_method_wrapper(
     let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
-        None => {
-            func.return_type == "()" || func.return_type == "Result"
-        }
+        None => func.return_type == "()" || func.return_type == "Result",
     };
-    
+
     if should_be_invisible {
         write!(
             w,
