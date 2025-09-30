@@ -1,5 +1,4 @@
 name: Trigger rextendr CI
-
 on:
   pull_request:
     types:
