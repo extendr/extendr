@@ -175,10 +175,15 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Parsing
 
+// Deprecated default syntax
 #[extendr]
-fn check_default(#[default = "NULL"] x: Robj) -> bool {
+fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
     x.is_null()
 }
+
+// New default syntax
+#[extendr]
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool { x.is_null() }
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
