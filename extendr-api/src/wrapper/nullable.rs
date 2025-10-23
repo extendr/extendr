@@ -38,10 +38,18 @@ impl TryFrom<Robj> for Nullable<()> {
     type Error = Error;
 
     fn try_from(value: Robj) -> Result<Self> {
+        Self::try_from(&value)
+    }
+}
+
+impl TryFrom<&Robj> for Nullable<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
         if value.is_null() {
             Ok(Self::Null)
         } else {
-            Err(Error::ExpectedNull(value))
+            Err(Error::ExpectedNull(value.clone()))
         }
     }
 }

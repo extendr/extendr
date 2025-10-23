@@ -580,6 +580,25 @@ impl_try_from_robj!(@generics<T> HashMap::<String,T> where T: TryFrom<Robj, Erro
 impl_try_from_robj!(HashMap::<&str, Robj>);
 impl_try_from_robj!(HashMap::<String, Robj>);
 
+impl TryFrom<&Robj> for Option<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if value.is_null() {
+            Ok(Some(()))
+        } else {
+            Err(Error::ExpectedNull(value.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Option<()> {
+    type Error = Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
 // NOTE: this is included for compatibility with previously defined `FromRobj`
 // One should prefer `List::from_hashmap` instead,
 // and this `impl` should be deprecated next.
