@@ -425,7 +425,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
                 quote!(Some(#default))
             } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
-              quote!(Some(#default))
+                quote!(Some(#default))
             } else {
                 quote!(None)
             };
