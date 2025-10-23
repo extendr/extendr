@@ -21,7 +21,7 @@ struct Point {
 impl TryFrom<Robj> for Point {
     type Error = Error;
 
-    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Robj) -> Result<Self> {
         let inner_vec = Doubles::try_from(value)?;
         let x = inner_vec[0].inner();
         let y = inner_vec[1].inner();

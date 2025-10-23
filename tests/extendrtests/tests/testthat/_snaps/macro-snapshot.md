@@ -73,6 +73,7 @@
                   self.0.len()
               }
           }
+          #[cfg(use_r_altlist)]
           impl VecUsize {}
           #[allow(non_snake_case)]
           fn meta__VecUsize(impls: &mut Vec<extendr_api::metadata::Impl>) {
@@ -84,6 +85,7 @@
                       methods,
                   });
           }
+          #[cfg(use_r_altlist)]
           impl AltListImpl for VecUsize {
               fn elt(&self, index: usize) -> Robj {
                   let mut v = Vec::with_capacity(1usize);
@@ -92,6 +94,7 @@
                   Self(v).into_robj()
               }
           }
+          #[cfg(use_r_altlist)]
           fn new_usize(robj: Integers) -> Altrep {
               let x = robj
                   .iter()
@@ -3518,7 +3521,7 @@
           }
           impl TryFrom<Robj> for Point {
               type Error = Error;
-              fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+              fn try_from(value: Robj) -> Result<Self> {
                   let inner_vec = Doubles::try_from(value)?;
                   let x = inner_vec[0].inner();
                   let y = inner_vec[1].inner();
@@ -7449,7 +7452,7 @@
           }
           impl TryFrom<Robj> for Point {
               type Error = extendr_api::Error;
-              fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+              fn try_from(value: Robj) -> Result<Self> {
                   let dbl_vec = Doubles::try_from(value)?;
                   let x = dbl_vec[0].inner();
                   let y = dbl_vec[1].inner();
@@ -7458,7 +7461,7 @@
           }
           impl TryFrom<&Robj> for Point {
               type Error = extendr_api::Error;
-              fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+              fn try_from(value: &Robj) -> Result<Self> {
                   value.clone().try_into()
               }
           }

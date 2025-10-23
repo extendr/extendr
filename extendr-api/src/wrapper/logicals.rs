@@ -95,7 +95,7 @@ impl std::fmt::Debug for Logicals {
 impl TryFrom<Vec<bool>> for Logicals {
     type Error = Error;
 
-    fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<bool>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
