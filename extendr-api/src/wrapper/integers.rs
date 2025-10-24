@@ -106,7 +106,7 @@ impl std::fmt::Debug for Integers {
 impl TryFrom<Vec<i32>> for Integers {
     type Error = Error;
 
-    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<i32>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }

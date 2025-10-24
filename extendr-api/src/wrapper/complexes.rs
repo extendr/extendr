@@ -91,7 +91,7 @@ impl std::fmt::Debug for Complexes {
 impl TryFrom<Vec<c64>> for Complexes {
     type Error = Error;
 
-    fn try_from(value: Vec<c64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<c64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
