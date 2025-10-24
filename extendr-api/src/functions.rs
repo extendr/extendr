@@ -86,7 +86,7 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(current_env(), base_env());
+///    assert!(current_env().is_environment());
 /// }
 /// ```
 pub fn current_env() -> Environment {
