@@ -176,10 +176,10 @@ fn logicals_not(input: Logicals) -> Logicals {
 // Parsing
 
 // Deprecated default syntax
-#[extendr]
-fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
-    x.is_null()
-}
+//#[extendr]
+//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//    x.is_null()
+//}
 
 // New default syntax
 #[extendr]
