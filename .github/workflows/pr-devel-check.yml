@@ -1,0 +1,47 @@
+name: PR Devel Tests
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr_devel_tests:
+    if: contains(github.event.pull_request.labels.*.name, 'r-devel')
+    uses: ./.github/workflows/test-template.yml
+    with:
+      test-matrix: |
+        [
+          {
+            "os": "windows-latest",
+            "r": "devel",
+            "rust-version": "stable-msvc",
+            "rtools-version": "44",
+            "features": "default"
+          },
+          {
+            "os": "macOS-latest",
+            "r": "devel",
+            "rust-version": "stable",
+            "features": "default"
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "devel",
+            "rust-version": "stable",
+            "features": "default"
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "release",
+            "rust-version": "nightly",
+            "features": "full-functionality",
+            "extra-args": ["-Zdoctest-xcompile"]
+          }
+        ]
