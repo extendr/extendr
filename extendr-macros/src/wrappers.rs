@@ -563,7 +563,7 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                     ..
                 }) = nv.value
                 {
-                    eprintln!("WARNING: #[default = \"arg\"] is deprecated. Use #[extendr(default = \"arg\")] instead.");
+                    eprintln!("#[default = \"arg\"] is deprecated. Use #[extendr(default = \"arg\")] instead.");
                     res = Some(litstr.value());
                     continue;
                 }
