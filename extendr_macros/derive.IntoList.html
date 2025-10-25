@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Derives an implementation of `From&#60;Struct&#62; for Robj` and `From&#60;&#38;Struct&#62; for Robj` on this struct."><title>IntoList in extendr_macros - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0-nightly (2aaa62b89 2025-10-24)" data-channel="nightly" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../static.files/storage-e2aeef58.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc derive"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">IntoList</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../extendr_macros/index.html">extendr_<wbr>macros</a><span class="version">0.8.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Into<wbr>List</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#examples" title="Examples">Examples</a></li><li><a href="#details" title="Details">Details</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate extendr_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">extendr_macros</a></div><h1>Derive Macro <span class="derive">Into<wbr>List</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/extendr_macros/lib.rs.html#278-283">Source</a> </span></div><pre class="rust item-decl"><code>#[derive(IntoList)]
+{
+    <span class="comment">// Attributes available to this derive:</span>
+    #[into_list]
+}
+</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Derives an implementation of <code>From&lt;Struct&gt; for Robj</code> and <code>From&lt;&amp;Struct&gt; for Robj</code> on this struct.</p>
+<p>This allows the struct to be converted to a named list in R,
+where the list names correspond to the field names of the Rust struct.</p>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<p>In the below example, <code>converted</code> contains an R list object with the same fields as the
+<code>Foo</code> struct.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>extendr_macros::IntoList;
+
+<span class="attr">#[derive(IntoList)]
+</span><span class="kw">struct </span>Foo {
+    a: u32,
+    b: String
+}
+<span class="kw">let </span>converted: Robj = Foo {
+    a: <span class="number">5</span>,
+    b: String::from(<span class="string">"bar"</span>)
+}.into();
+<span class="macro">assert_eq!</span>(converted, <span class="macro">R!</span>(<span class="string">r"list(a=5, b='bar')"</span>)<span class="question-mark">?</span>);</code></pre></div>
+<p>See <a href="derive.TryFromRobj.html" title="derive extendr_macros::TryFromRobj"><code>TryFromRobj</code></a> for a <code>derive</code>-macro in the other direction, i.e.
+instantiation of a rust type, by an R list with fields corresponding to
+said type.</p>
+<p>Supported field attributes</p>
+<ul>
+<li><code>#[into_list(ignore)]</code> omits the field from being added to the R <code>list()</code></li>
+</ul>
+<h2 id="details"><a class="doc-anchor" href="#details">§</a>Details</h2>
+<p>Note, the <code>From&lt;Struct&gt; for Robj</code> behaviour is different from what is obtained by applying the standard <code>#[extendr]</code> macro
+to an <code>impl</code> block. The <code>#[extendr]</code> behaviour returns to R a <strong>pointer</strong> to Rust memory, and generates wrapper functions for calling
+Rust functions on that pointer. The implementation from <code>#[derive(IntoList)]</code> actually converts the Rust structure
+into a native R list, which allows manipulation and access to internal fields, but it’s a one-way conversion,
+and converting it back to Rust will produce a copy of the original struct.</p>
+</div></details></section></div></main></body></html>

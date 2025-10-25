@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["derive_into_robj","derive_try_from_robj"]};
+window.SIDEBAR_ITEMS = {"fn":["derive_into_list","derive_try_from_robj"]};
