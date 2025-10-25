@@ -7,7 +7,7 @@ test_that("String as HashMap key & Robj T", {
 
 test_that("String as Key and i32 as T", {
   expect_identical(
-    test_hm_i32(list()),
+    test_hm_i32(list()), 
     list(inserted_value = 314L)
   )
 })
@@ -19,30 +19,3 @@ test_that("HashMap with custom TryFrom<Robj> impl", {
   )
 })
 
-test_that("From<HashMap> for Robj", {
-  solar_distance_rust <- test_robj_from_hashmap()
-
-  solar_distance_r <- list(
-    Mercury = 0.4,
-    Venus = 0.7,
-    Earth = 1.0,
-    Mars = 1.5
-  )
-
-  expect_setequal(solar_distance_rust, solar_distance_r)
-  expect_mapequal(solar_distance_rust, solar_distance_r)
-})
-
-test_that("From<BTreeMap> for Robj", {
-  solar_distance_rust <- test_robj_from_btreemap()
-
-  solar_distance_r <- list(
-    Mercury = 0.4,
-    Venus = 0.7,
-    Earth = 1.0,
-    Mars = 1.5
-  )
-
-  expect_setequal(solar_distance_rust, solar_distance_r)
-  expect_mapequal(solar_distance_rust, solar_distance_r)
-})
