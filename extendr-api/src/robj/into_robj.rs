@@ -707,6 +707,12 @@ impl_from_as_iterator! {RangeInclusive<T>}
 impl From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.
     fn from(val: Vec<Robj>) -> Self {
+        Self::from(&val)
+    }
+}
+
+impl From<&Vec<Robj>> for Robj {
+    fn from(val: &Vec<Robj>) -> Self {
         List::from_values(val.iter()).into()
     }
 }
