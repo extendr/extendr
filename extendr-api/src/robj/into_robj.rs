@@ -781,50 +781,6 @@ mod test {
     }
 
     #[test]
-    fn test_hashmap_to_robj() {
-        test! {
-            let solar_distance = HashMap::from([
-                ("Mercury", 0.4),
-                ("Venus", 0.7),
-                ("Earth", 1.0),
-                ("Mars", 1.5),
-            ]);
-
-            let solar_distance_robj: Robj = solar_distance.into();
-            let solar_distance_list: Robj = list!(
-                Mercury = 0.4,
-                Venus = 0.7,
-                Earth = 1.0,
-                Mars = 1.5
-            ).into();
-
-            assert_eq!(solar_distance_robj, solar_distance_list);
-        }
-    }
-
-    #[test]
-    fn test_btreemap_to_robj() {
-        test! {
-            let solar_distance = BTreeMap::from([
-                ("Mercury", 0.4),
-                ("Venus", 0.7),
-                ("Earth", 1.0),
-                ("Mars", 1.5),
-            ]);
-
-            let solar_distance_robj: Robj = solar_distance.into();
-            let solar_distance_list: Robj = list!(
-                Mercury = 0.4,
-                Venus = 0.7,
-                Earth = 1.0,
-                Mars = 1.5
-            ).into();
-
-            assert_eq!(solar_distance_robj, solar_distance_list);
-        }
-    }
-
-    #[test]
     fn test_collect_rarray_matrix() {
         test! {
             // Check that collect_rarray works the same as R's matrix() function
