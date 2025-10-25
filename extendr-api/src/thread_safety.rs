@@ -11,7 +11,7 @@ use std::sync::Mutex;
 static R_API_LOCK: Mutex<()> = Mutex::new(());
 
 thread_local! {
-    static THREAD_HAS_LOCK: Cell<bool> = Cell::new(false);
+    static THREAD_HAS_LOCK: Cell<bool> = const { Cell::new(false) };
 }
 
 /// Run `f` while ensuring that `f` runs in a single-threaded manner.

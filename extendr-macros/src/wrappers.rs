@@ -143,22 +143,18 @@ pub(crate) fn make_function_wrappers(
     //     }
     // }
     // ```
-    let rng_start = opts
-        .use_rng
-        .then(|| {
+    let rng_start = if opts
+        .use_rng { {
             quote!(single_threaded(|| unsafe {
                 extendr_api::GetRNGstate();
             });)
-        })
-        .unwrap_or_default();
-    let rng_end = opts
-        .use_rng
-        .then(|| {
+        } } else { Default::default() };
+    let rng_end = if opts
+        .use_rng { {
             quote!(single_threaded(|| unsafe {
                 extendr_api::PutRNGstate();
             });)
-        })
-        .unwrap_or_default();
+        } } else { Default::default() };
 
     // figure out if
     // -> &Self
