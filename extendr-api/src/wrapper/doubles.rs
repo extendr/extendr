@@ -105,7 +105,7 @@ impl std::fmt::Debug for Doubles {
 impl TryFrom<Vec<f64>> for Doubles {
     type Error = Error;
 
-    fn try_from(value: Vec<f64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<f64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }

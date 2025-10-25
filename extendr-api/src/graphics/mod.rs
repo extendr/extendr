@@ -262,8 +262,6 @@ impl Context {
                 lineheight: 1.0,
                 fontface: 1,
                 fontfamily: [0; 201],
-
-                #[cfg(use_r_ge_version_14)]
                 patternFill: R_NilValue,
             };
 
