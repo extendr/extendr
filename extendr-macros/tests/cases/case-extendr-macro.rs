@@ -1,5 +1,5 @@
 use extendr_macros::extendr;
-use extendr_macros::{IntoRobj, TryFromRobj};
+use extendr_macros::{IntoList, TryFromRobj};
 
 #[extendr(foo = true)]
 fn foo() {}
@@ -55,7 +55,7 @@ enum FooEnum1 {
     C,
 }
 
-#[derive(IntoRobj)]
+#[derive(IntoList)]
 enum FooEnum2 {
     A,
     B,

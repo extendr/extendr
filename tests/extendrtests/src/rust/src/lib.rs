@@ -184,7 +184,9 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // New default syntax
 #[extendr]
-fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool { x.is_null() }
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
+    x.is_null()
+}
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
