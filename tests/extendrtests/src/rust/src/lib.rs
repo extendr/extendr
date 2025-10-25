@@ -6,6 +6,7 @@ mod dataframe;
 mod externalptr;
 mod graphic_device;
 mod hashmap;
+mod into_list_derive;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -183,7 +184,9 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // New default syntax
 #[extendr]
-fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool { x.is_null() }
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
+    x.is_null()
+}
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
@@ -373,6 +376,7 @@ extendr_module! {
     use attributes;
     use dataframe;
     use hashmap;
+    use into_list_derive;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;

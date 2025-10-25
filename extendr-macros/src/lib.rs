@@ -241,11 +241,11 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// `Foo` struct.
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::IntoRobj;
+/// use extendr_macros::IntoList;
 ///
 /// # use extendr_api::test;
 /// # test!{
-/// #[derive(IntoRobj)]
+/// #[derive(IntoList)]
 /// struct Foo {
 ///     a: u32,
 ///     b: String
@@ -263,16 +263,36 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// instantiation of a rust type, by an R list with fields corresponding to
 /// said type.
 ///
+/// Supported field attributes
+///
+/// - `#[into_list(ignore)]` omits the field from being added to the R `list()`
+///
 /// # Details
 ///
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
-/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
+/// Rust functions on that pointer. The implementation from `#[derive(IntoList)]` actually converts the Rust structure
 /// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
+#[proc_macro_derive(IntoList, attributes(into_list))]
+pub fn derive_into_list(item: TokenStream) -> TokenStream {
+    match list_struct::derive_into_list(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
+}
+
+/// Deprecated: Use [`IntoList`] instead.
+///
+/// This is an alias for `IntoList` maintained for backward compatibility.
+/// `IntoRobj` is too generic - this macro specifically creates a named list from a struct.
+#[deprecated(
+    since = "0.8.1",
+    note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
+)]
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
-    match list_struct::derive_into_robj(item) {
+    match list_struct::derive_into_list(item) {
         Ok(result) => result,
         Err(e) => e.into_compile_error().into(),
     }

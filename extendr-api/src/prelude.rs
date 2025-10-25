@@ -61,7 +61,9 @@ pub use super::wrapper::{
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
-pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
+pub use extendr_macros::{
+    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromRobj, R,
+};
 
 pub use super::iter::StrIter;
 
