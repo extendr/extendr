@@ -38,7 +38,7 @@ pub struct RArray<T, const NDIM: usize> {
 
 impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dimnames(&self) -> List {
-        List::try_from(Robj::from_sexp(unsafe { Rf_GetArrayDimnames(self.get()) })).unwrap()
+        unsafe { List::try_from(Robj::from_sexp(Rf_GetArrayDimnames(self.get()))).unwrap() }
     }
 
     /// Get the dimension vector of the array.

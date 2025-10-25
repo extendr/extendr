@@ -218,7 +218,11 @@ pub trait Length: GetSexp {
 impl Length for Robj {}
 
 impl Robj {
-    pub fn from_sexp(sexp: SEXP) -> Self {
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `sexp` is a valid SEXP pointer.
+    pub unsafe fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
             Robj { inner: sexp }

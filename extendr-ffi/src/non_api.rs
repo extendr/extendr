@@ -1,8 +1,6 @@
 // Functions used by the non-api feature of extendr
 use crate::{Rboolean, SEXP, SEXPTYPE};
 extern "C" {
-    #[doc = "Unbound marker"]
-    pub static R_UnboundValue: SEXP;
     pub fn Rf_isValidString(arg1: SEXP) -> Rboolean;
     pub fn Rf_isValidStringF(arg1: SEXP) -> Rboolean;
     pub fn SYMVALUE(x: SEXP) -> SEXP;

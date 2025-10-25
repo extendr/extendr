@@ -196,14 +196,14 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_logical(&self) -> i32
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_raw(&self) -> u8

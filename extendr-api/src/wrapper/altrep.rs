@@ -96,7 +96,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
     fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        Robj::from_sexp(manifest(x))
+        unsafe { Robj::from_sexp(manifest(x)) }
     }
 
     /// Coerce this object into some other type, if possible.
@@ -121,7 +121,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
-    fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
+    ///
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `x` is a valid SEXP pointer.
+    unsafe fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
         single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
@@ -136,7 +141,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 
     /// Get the data pointer for this vector, returning NULL
     /// if the object is unmaterialized.
-    fn dataptr_or_null(x: SEXP) -> *const u8 {
+    ///
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `x` is a valid SEXP pointer.
+    unsafe fn dataptr_or_null(x: SEXP) -> *const u8 {
         unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {

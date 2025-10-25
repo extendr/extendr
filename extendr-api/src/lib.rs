@@ -959,7 +959,7 @@ mod tests {
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
             // R interface
-            let robj = Robj::from_sexp(wrap__get_my_module_metadata());
+            let robj = unsafe { Robj::from_sexp(wrap__get_my_module_metadata()) };
             let functions = robj.dollar("functions").unwrap();
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);

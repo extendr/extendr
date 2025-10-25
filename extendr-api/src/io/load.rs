@@ -67,9 +67,11 @@ pub trait Load {
             nat2utf8_obj: std::ptr::null_mut(),
         };
 
-        Ok(Robj::from_sexp(catch_r_error(move || unsafe {
-            R_Unserialize(&mut state as R_inpstream_t)
-        })?))
+        Ok(unsafe {
+            Robj::from_sexp(catch_r_error(move || {
+                R_Unserialize(&mut state as R_inpstream_t)
+            })?)
+        })
     }
 }
 
