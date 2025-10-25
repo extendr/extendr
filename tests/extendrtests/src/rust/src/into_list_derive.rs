@@ -1,7 +1,7 @@
 use extendr_api::prelude::*;
 
 // Test struct with basic types
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct BasicStruct {
     pub int_field: i32,
     pub double_field: f64,
@@ -21,7 +21,7 @@ fn make_basic_struct() -> Robj {
 }
 
 // Test struct with R wrapper types
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct RWrapperStruct {
     pub doubles: Doubles,
     pub logicals: Logicals,
@@ -41,7 +41,7 @@ fn make_rwrapper_struct() -> Robj {
 }
 
 // Test struct with List field
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithList {
     pub name: String,
     pub data: List,
@@ -57,7 +57,7 @@ fn make_with_list() -> Robj {
 }
 
 // Test struct with Robj field
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithRobj {
     pub label: String,
     pub value: Robj,
@@ -73,7 +73,7 @@ fn make_with_robj() -> Robj {
 }
 
 // Test struct with Function field
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithFunction {
     pub func_name: String,
     pub func: Function,
@@ -91,7 +91,7 @@ fn make_with_function() -> Robj {
 }
 
 // Test struct with Pairlist field
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithPairlist {
     pub description: String,
     pub pairs: Pairlist,
@@ -107,7 +107,7 @@ fn make_with_pairlist() -> Robj {
 }
 
 // Test struct with Environment field
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithEnvironment {
     pub env_name: String,
     pub env: Environment,
@@ -117,8 +117,8 @@ pub struct WithEnvironment {
 fn make_with_environment() -> Robj {
     single_threaded(|| {
         let env = Environment::new_with_parent(global_env());
-        env.set_local(sym!(x), 100).unwrap();
-        env.set_local(sym!(y), "test").unwrap();
+        env.set_local(sym!(x), 100);
+        env.set_local(sym!(y), "test");
 
         WithEnvironment {
             env_name: String::from("my_environment"),
@@ -129,13 +129,13 @@ fn make_with_environment() -> Robj {
 }
 
 // Test struct with ignored fields
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithIgnoredFields {
     pub visible_name: String,
     pub visible_count: i32,
-    #[into_robj(ignore)]
+    #[into_list(ignore)]
     pub internal_ptr: *const u8,
-    #[into_robj(ignore)]
+    #[into_list(ignore)]
     pub private_buffer: Vec<u8>,
 }
 
@@ -151,7 +151,7 @@ fn make_with_ignored() -> Robj {
 }
 
 // Test struct with vector fields
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct WithVectors {
     pub int_vec: Vec<i32>,
     pub double_vec: Vec<f64>,
@@ -175,13 +175,13 @@ fn make_with_vectors() -> Robj {
 }
 
 // Test complex nested structure
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct NestedInner {
     pub x: f64,
     pub y: f64,
 }
 
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct NestedOuter {
     pub name: String,
     pub count: i32,
@@ -202,14 +202,14 @@ fn make_nested_struct() -> Robj {
 }
 
 // Test struct similar to the PR example
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct FunctionMetadata {
     pub doc: &'static str,
     pub rust_name: &'static str,
     pub r_name: &'static str,
     pub return_type: &'static str,
     pub num_args: i32,
-    #[into_robj(ignore)]
+    #[into_list(ignore)]
     pub func_ptr: *const u8,
     pub is_hidden: bool,
 }
@@ -229,7 +229,7 @@ fn make_function_metadata() -> Robj {
 }
 
 // Test with all R types in one struct
-#[derive(Debug, IntoRobj)]
+#[derive(Debug, IntoList)]
 pub struct AllRTypes {
     pub doubles_field: Doubles,
     pub logicals_field: Logicals,
@@ -246,7 +246,7 @@ pub struct AllRTypes {
 fn make_all_r_types() -> Robj {
     single_threaded(|| {
         let env = Environment::new_with_parent(global_env());
-        env.set_local(sym!(test), "value").unwrap();
+        env.set_local(sym!(test), "value");
 
         AllRTypes {
             doubles_field: Doubles::from_values([1.0, 2.0]),
@@ -264,7 +264,7 @@ fn make_all_r_types() -> Robj {
 }
 
 extendr_module! {
-    mod into_robj_derive;
+    mod into_list_derive;
     fn make_basic_struct;
     fn make_rwrapper_struct;
     fn make_with_list;

@@ -1,4 +1,4 @@
-test_that("IntoRobj derive works with basic types", {
+test_that("IntoList derive works with basic types", {
   result <- make_basic_struct()
 
   expect_true(is.list(result))
@@ -11,7 +11,7 @@ test_that("IntoRobj derive works with basic types", {
   expect_equal(result$string_field, "hello from rust")
 })
 
-test_that("IntoRobj derive works with R wrapper types (Doubles, Logicals, Strings, Raw)", {
+test_that("IntoList derive works with R wrapper types (Doubles, Logicals, Strings, Raw)", {
   result <- make_rwrapper_struct()
 
   expect_true(is.list(result))
@@ -24,7 +24,7 @@ test_that("IntoRobj derive works with R wrapper types (Doubles, Logicals, String
   expect_equal(result$raw, as.raw(c(0xDE, 0xAD, 0xBE, 0xEF)))
 })
 
-test_that("IntoRobj derive works with List field", {
+test_that("IntoList derive works with List field", {
   result <- make_with_list()
 
   expect_true(is.list(result))
@@ -36,7 +36,7 @@ test_that("IntoRobj derive works with List field", {
   expect_equal(result$data, list(x = 1, y = 2, z = 3))
 })
 
-test_that("IntoRobj derive works with Robj field", {
+test_that("IntoList derive works with Robj field", {
   result <- make_with_robj()
 
   expect_true(is.list(result))
@@ -47,7 +47,7 @@ test_that("IntoRobj derive works with Robj field", {
   expect_equal(result$value, 42)
 })
 
-test_that("IntoRobj derive works with Function field", {
+test_that("IntoList derive works with Function field", {
   result <- make_with_function()
 
   expect_true(is.list(result))
@@ -59,7 +59,7 @@ test_that("IntoRobj derive works with Function field", {
   expect_identical(result$func, sum)
 })
 
-test_that("IntoRobj derive works with Pairlist field", {
+test_that("IntoList derive works with Pairlist field", {
   result <- make_with_pairlist()
 
   expect_true(is.list(result))
@@ -71,7 +71,7 @@ test_that("IntoRobj derive works with Pairlist field", {
   expect_equal(length(result$pairs), 3)
 })
 
-test_that("IntoRobj derive works with Environment field", {
+test_that("IntoList derive works with Environment field", {
   result <- make_with_environment()
 
   expect_true(is.list(result))
@@ -84,7 +84,7 @@ test_that("IntoRobj derive works with Environment field", {
   expect_equal(result$env$y, "test")
 })
 
-test_that("IntoRobj derive respects #[into_robj(ignore)] attribute", {
+test_that("IntoList derive respects #[into_list(ignore)] attribute", {
   result <- make_with_ignored()
 
   expect_true(is.list(result))
@@ -100,7 +100,7 @@ test_that("IntoRobj derive respects #[into_robj(ignore)] attribute", {
   expect_null(result$private_buffer)
 })
 
-test_that("IntoRobj derive works with vector fields", {
+test_that("IntoList derive works with vector fields", {
   result <- make_with_vectors()
 
   expect_true(is.list(result))
@@ -113,7 +113,7 @@ test_that("IntoRobj derive works with vector fields", {
   expect_equal(result$bool_vec, c(TRUE, FALSE, TRUE, TRUE, FALSE))
 })
 
-test_that("IntoRobj derive works with nested structs", {
+test_that("IntoList derive works with nested structs", {
   result <- make_nested_struct()
 
   expect_true(is.list(result))
@@ -131,7 +131,7 @@ test_that("IntoRobj derive works with nested structs", {
   expect_equal(result$nested_data$y, 20.5)
 })
 
-test_that("IntoRobj derive works with function metadata example", {
+test_that("IntoList derive works with function metadata example", {
   result <- make_function_metadata()
 
   expect_true(is.list(result))
@@ -150,7 +150,7 @@ test_that("IntoRobj derive works with function metadata example", {
   expect_null(result$func_ptr)
 })
 
-test_that("IntoRobj derive works with all R types in one struct", {
+test_that("IntoList derive works with all R types in one struct", {
   result <- make_all_r_types()
 
   expect_true(is.list(result))

@@ -49,8 +49,8 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
     )))
 }
 
-/// Implementation of the `IntoRobj` macro. Refer to the documentation there
-pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
+/// Implementation of the `IntoList` macro. Refer to the documentation there
+pub fn derive_into_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
     let ast = syn::parse::<DeriveInput>(item)?;
     let inside = if let Data::Struct(inner) = ast.data {
@@ -69,7 +69,7 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
 
         let field_attributes = &field.attrs;
         for attrib in field_attributes {
-            if !attrib.path().is_ident("into_robj") {
+            if !attrib.path().is_ident("into_list") {
                 continue;
             }
             let ignore_flag: syn::Meta = attrib.parse_args()?;
@@ -82,7 +82,7 @@ pub fn derive_into_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
                 _ => {
                     return Err(syn::Error::new_spanned(
                         ignore_flag,
-                        "unrecognized attribute for `IntoRobj`",
+                        "unrecognized attribute for `IntoList`",
                     ))
                 }
             }

@@ -6,7 +6,7 @@ mod dataframe;
 mod externalptr;
 mod graphic_device;
 mod hashmap;
-mod into_robj_derive;
+mod into_list_derive;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -374,7 +374,7 @@ extendr_module! {
     use attributes;
     use dataframe;
     use hashmap;
-    use into_robj_derive;
+    use into_list_derive;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;
