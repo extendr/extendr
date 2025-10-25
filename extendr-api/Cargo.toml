@@ -4,11 +4,9 @@ description = "Safe and user friendly bindings to the R programming language."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-
-# Note: it seems cargo-msrv doesn't support rust-version.workspace = true.
-rust-version = "1.65"
 
 [dependencies]
 extendr-ffi = { workspace = true }
