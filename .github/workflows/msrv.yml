@@ -1,5 +1,7 @@
 name: Check MSRV
 on:
+  workflow_call:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -12,11 +14,6 @@ on:
     paths:
       - "**.rs"
       - "**/Cargo.toml"
-  workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -29,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: baptiste0928/cargo-install@v3
         with:
           crate: cargo-msrv
@@ -38,7 +36,19 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: 'release'
+          r-version: "release"
+
+      # Use caches for faster compilation
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup sccache
+        uses: mozilla-actions/sccache-action@v0.0.9
+
+      - name: Configure sccache
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "RUSTC_WRAPPER=sccache" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Verify minimum rust version
         run: |

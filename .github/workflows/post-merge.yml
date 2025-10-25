@@ -1,0 +1,51 @@
+name: Post-Merge Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+# Cancel previous runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# This workflow tests bleeding-edge versions (R-devel and Rust nightly) after PRs are merged.
+# These configs are NOT tested during PR checks to avoid blocking PRs on upstream changes.
+# Only tests R-devel + stable Rust and R-release + nightly Rust combinations.
+# R-release is tested in the PR checks.
+jobs:
+  post_merge_tests:
+    uses: ./.github/workflows/test-template.yml
+    with:
+      test-matrix: |
+        [
+          {
+            "os": "windows-latest",
+            "r": "devel",
+            "rust-version": "stable-msvc",
+            "rtools-version": "44",
+            "features": "default"
+          },
+          {
+            "os": "macOS-latest",
+            "r": "devel",
+            "rust-version": "stable",
+            "features": "default"
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "devel",
+            "rust-version": "stable",
+            "features": "default"
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "release",
+            "rust-version": "nightly",
+            "features": "full-functionality",
+            "extra-args": ["-Zdoctest-xcompile"]
+          }
+        ]
