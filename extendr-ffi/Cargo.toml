@@ -1,12 +1,13 @@
 [package]
 name = "extendr-ffi"
-version = "0.8.0"
-edition = "2021"
+description = "Barebone bindings to `libR` for use in extendr."
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
 links = "R"
 
 [features]
 default = []
 non-api = []
-
-[build-dependencies]
-build-print = "0.1.1"

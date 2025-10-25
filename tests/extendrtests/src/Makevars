@@ -15,4 +15,4 @@ rust_clean:
 	rm -Rf $(CARGOTMP) $(TARGET_DIR)
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)

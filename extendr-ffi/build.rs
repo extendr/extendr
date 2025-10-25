@@ -1,4 +1,3 @@
-use build_print::{error, info, warn};
 use std::{
     error::Error,
     fs::read_to_string,
@@ -170,13 +169,24 @@ impl InstallationPaths {
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_16)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_17)");
 
     // Fetch R_HOME and R version
-    let r_paths = InstallationPaths::try_new()?;
+    let r_paths = match InstallationPaths::try_new() {
+        Ok(v) => v,
+        Err(_) => {
+            warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
+            println!("cargo:rustc-cfg=r_4_5");
+            return Ok(());
+        }
+    };
 
     // Used by extendr-engine becomes DEP_R_R_HOME for clients
     println!("cargo:r_home={}", r_paths.r_home.display());
     println!("cargo:rustc-env=R_HOME={}", r_paths.r_home.display());
+
     // used by extendr-api
     println!("cargo:r_version_major={}", r_paths.version.major);
     println!("cargo:r_version_minor={}", r_paths.version.minor);
@@ -188,12 +198,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         // For Windows
         (true, "x86_64") => Path::new(&r_paths.r_home).join("bin").join("x64"),
         (true, "x86") => Path::new(&r_paths.r_home).join("bin").join("i386"),
-        (true, _) => panic!("Unknown architecture"),
+        (true, "aarch64") => Path::new(&r_paths.r_home).join("bin"),
+        (true, _) => {
+            return Err("Cannot build extendr-ffi for unknown architecture".into());
+        }
         // For Unix-alike
         (false, _) => Path::new(&r_paths.r_home).join("lib"),
     };
 
-    info!("R library paths determined to be at: {libdir:?}");
+    note!("R library paths determined to be at: {libdir:?}");
 
     if let Ok(r_library) = libdir.canonicalize() {
         println!("cargo:rustc-link-search={}", r_library.display());
@@ -212,9 +225,79 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("cargo:rustc-cfg=r_4_5")
     }
 
+    // Graphics engine version 15 was introduced in R 4.2
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 2) {
+        println!("cargo:rustc-cfg=use_r_ge_version_15")
+    }
+
+    // Graphics engine version 16 was introduced in R 4.3
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 3) {
+        println!("cargo:rustc-cfg=use_r_ge_version_16")
+    }
+
+    // Graphics engine version 17 was introduced in R 4.6
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 6) {
+        println!("cargo:rustc-cfg=use_r_ge_version_17")
+    }
+
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");
 
-    build_print::custom_println!(" Success:", green, "extendr-ffi has been built!");
+    custom_println!(" Success:", green, "extendr-ffi has been built!");
     Ok(())
+}
+
+// Taken from build-print
+#[macro_export]
+macro_rules! buildprintln {
+    () => {
+        ::std::println!("cargo:warning=\x1b[2K\r");
+    };
+    ($($arg:tt)*) => {
+        ::std::println!("cargo:warning=\x1b[2K\r{}", ::std::format!($($arg)*))
+    }
+}
+
+#[macro_export]
+macro_rules! custom_println {
+    ($prefix:literal, cyan, $($arg:tt)*) => {
+        buildprintln!("   \x1b[1m\x1b[36m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, green, $($arg:tt)*) => {
+       buildprintln!("   \x1b[1m\x1b[32m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, yellow, $($arg:tt)*) => {
+        buildprintln!("   \x1b[1m\x1b[33m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+    ($prefix:literal, red, $($arg:tt)*) => {
+        buildprintln!("   \x1b[1m\x1b[31m{}\x1b[0m {}", $prefix, ::std::format!($($arg)+));
+    };
+}
+
+#[macro_export]
+macro_rules! info {
+    ($($arg:tt)+) => {
+        custom_println!("info:", green, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! warn {
+    ($($arg:tt)+) => {
+        custom_println!("warning:", yellow, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! error {
+    ($($arg:tt)+) => {
+        custom_println!("error:", red, $($arg)+);
+    }
+}
+
+#[macro_export]
+macro_rules! note {
+    ($($arg:tt)+) => {
+        custom_println!("note:", cyan, $($arg)+);
+    }
 }

@@ -5,6 +5,7 @@ mod attributes;
 mod dataframe;
 mod externalptr;
 mod graphic_device;
+mod hashmap;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -25,6 +26,18 @@ fn hello_world() -> &'static str {
 // Do nothing.
 #[extendr]
 fn do_nothing() {}
+
+/// This is invisible by default
+#[extendr]
+fn result_unit() -> Result<()> {
+    Ok(())
+}
+
+/// Return a string but invisibly
+#[extendr(invisible)]
+fn invisible_string() -> &'static str {
+    "This should be invisible"
+}
 
 // TryFrom: conversions
 
@@ -162,10 +175,15 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Parsing
 
+// Deprecated default syntax
+//#[extendr]
+//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//    x.is_null()
+//}
+
+// New default syntax
 #[extendr]
-fn check_default(#[default = "NULL"] x: Robj) -> bool {
-    x.is_null()
-}
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool { x.is_null() }
 
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
@@ -307,6 +325,8 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
+    fn result_unit;
+    fn invisible_string;
 
     fn double_scalar;
     fn int_scalar;
@@ -352,6 +372,7 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use hashmap;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;

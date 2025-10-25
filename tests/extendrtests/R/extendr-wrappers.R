@@ -14,6 +14,12 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
+#' This is invisible by default
+result_unit <- function() invisible(.Call(wrap__result_unit))
+
+#' Return a string but invisibly
+invisible_string <- function() invisible(.Call(wrap__invisible_string))
+
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
@@ -89,6 +95,12 @@ list_named <- function(x, nms) .Call(wrap__list_named, x, nms)
 test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
+
+test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
+
+test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
+
+test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
 
 leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
 

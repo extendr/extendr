@@ -218,6 +218,7 @@ fn test_metadata() {
             return_type: "i32",
             func_ptr: wrap__test_metadata_1 as *const u8,
             hidden: false,
+            invisible: None,
         }
     );
 }
