@@ -1,7 +1,14 @@
 //! Graphics Engine support
 use super::*;
 
+#[cfg(use_r_ge_version_17)]
+pub const R_GE_version: u32 = 17;
+
+#[cfg(all(use_r_ge_version_16, not(use_r_ge_version_17)))]
 pub const R_GE_version: u32 = 16;
+
+#[cfg(all(not(use_r_ge_version_16), not(use_r_ge_version_17)))]
+pub const R_GE_version: u32 = 15;
 // Types
 pub type DevDesc = _DevDesc;
 pub type pDevDesc = *mut DevDesc;
