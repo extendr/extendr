@@ -2,6 +2,34 @@ use super::*;
 use extendr_ffi::*;
 use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
 
+macro_rules! make_from_iterator_impl {
+    ($impl : ident, $scalar_type : ident) => {
+        impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
+        where
+            Iter::Item: Into<$scalar_type>,
+        {
+            fn elt(&self, index: usize) -> $scalar_type {
+                $scalar_type::from(self.clone().nth(index).unwrap().into())
+            }
+
+            fn get_region(&self, index: usize, data: &mut [$scalar_type]) -> usize {
+                let len = self.len();
+                if index > len {
+                    0
+                } else {
+                    let mut iter = self.clone().skip(index);
+                    let num_elems = data.len().min(len - index);
+                    let dest = &mut data[0..num_elems];
+                    for d in dest.iter_mut() {
+                        *d = $scalar_type::from(iter.next().unwrap().into());
+                    }
+                    num_elems
+                }
+            }
+        }
+    };
+}
+
 macro_rules! make_from_iterator {
     ($fn_name : ident, $make_class : ident, $impl : ident, $scalar_type : ident, $prim_type : ty) => {
         pub fn $fn_name<Iter>(iter: Iter) -> Altrep
@@ -9,30 +37,6 @@ macro_rules! make_from_iterator {
             Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
             Iter::Item: Into<$scalar_type>,
         {
-            impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
-            where
-                Iter::Item: Into<$scalar_type>,
-            {
-                fn elt(&self, index: usize) -> $scalar_type {
-                    $scalar_type::from(self.clone().nth(index).unwrap().into())
-                }
-
-                fn get_region(&self, index: usize, data: &mut [$scalar_type]) -> usize {
-                    let len = self.len();
-                    if index > len {
-                        0
-                    } else {
-                        let mut iter = self.clone().skip(index);
-                        let num_elems = data.len().min(len - index);
-                        let dest = &mut data[0..num_elems];
-                        for d in dest.iter_mut() {
-                            *d = $scalar_type::from(iter.next().unwrap().into());
-                        }
-                        num_elems
-                    }
-                }
-            }
-
             let class = Altrep::$make_class::<Iter>(std::any::type_name::<Iter>(), "extendr");
             let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
             Altrep { robj }
@@ -441,6 +445,12 @@ pub trait AltComplexImpl: AltrepImpl {
         }
     }
 }
+
+// Implement the trait methods for iterators
+make_from_iterator_impl!(AltIntegerImpl, Rint);
+make_from_iterator_impl!(AltLogicalImpl, Rbool);
+make_from_iterator_impl!(AltRealImpl, Rfloat);
+make_from_iterator_impl!(AltComplexImpl, Rcplx);
 
 pub trait AltStringImpl {
     /// Get a single element from this vector.

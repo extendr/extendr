@@ -224,17 +224,6 @@ impl Robj {
             Robj { inner: sexp }
         })
     }
-
-    /// A reference of an [`Robj`] can be constructed from a reference to a [`SEXP`]
-    /// as they have the same layout.
-    ///
-    /// # SAFETY
-    ///
-    /// Unlike [`from_sexp`], this does not protect the converted [`SEXP`]. Therefore, one
-    /// must invoke [`ownership::protect`] manually, if necessary.
-    pub(crate) unsafe fn from_sexp_ref(sexp: &SEXP) -> &Self {
-        unsafe { std::mem::transmute(sexp) }
-    }
 }
 
 pub trait Types: GetSexp {
@@ -298,7 +287,7 @@ pub trait Types: GetSexp {
         }
     }
 
-    fn as_any(&self) -> Rany {
+    fn as_any(&self) -> Rany<'_> {
         use SEXPTYPE::*;
         unsafe {
             match self.sexptype() {
