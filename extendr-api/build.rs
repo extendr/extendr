@@ -3,7 +3,6 @@ use std::env;
 fn main() {
     println!("cargo:rustc-check-cfg=cfg(use_objsxp)");
     println!("cargo:rustc-check-cfg=cfg(use_r_newenv)");
-    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_14)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_16)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_17)");
@@ -24,19 +23,14 @@ fn main() {
         println!("cargo:rustc-cfg=use_r_newenv");
     }
 
-    // pattern fill was introduced in R 4.1
-    if &*major >= "4" && &*minor >= "1" {
-        println!("cargo:rustc-cfg=use_r_ge_version_14");
-    }
-
     // a few new features will be introduced in R 4.2
     // c.f. https://developer.r-project.org/Blog/public/2021/12/14/updating-graphics-devices-for-r-4.2.0/index.html
     if &*major >= "4" && &*minor >= "2" {
         println!("cargo:rustc-cfg=use_r_ge_version_15");
     }
 
-    // Graphics engine version 16 was introduced in R 4.5
-    if &*major >= "4" && &*minor >= "5" {
+    // Graphics engine version 16 was introduced in R 4.3
+    if &*major >= "4" && &*minor >= "3" {
         println!("cargo:rustc-cfg=use_r_ge_version_16");
     }
 
