@@ -5,6 +5,9 @@
 ### Added
 
 - Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
+- An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
+- Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present
+- Added `impl From<&Vec<Robj>> for Robj`
 
 ### Changed
 
@@ -28,7 +31,6 @@
   `i32`, and `f64`. [[#856]](https://github.com/extendr/extendr/pull/856)
 - `FromIterator<T>` and `FromIterator<&T>` for vector wrapper where `T` represents a matching underlying type (`bool`,
   `i32`, `f64`, `c64`) [[#879]](https://github.com/extendr/extendr/pull/879)
-- An ignore field attribute to the macro `derive(IntoRobj)` called `#[into_robj(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 - Conversion from `Robj`/`List` to `HashMap<_, T>` for `T: TryFrom<Robj>` [[#854]](https://github.com/extendr/extendr/pull/854)
 
 ### Changed
