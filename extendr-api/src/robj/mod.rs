@@ -1,3 +1,5 @@
+#![allow(clippy::missing_transmute_annotations)]
+
 //! R object handling.
 //!
 //! See. [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html)
@@ -131,6 +133,9 @@ pub trait GetSexp {
     /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get(&self) -> SEXP;
 
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get_mut(&mut self) -> SEXP;
 
     /// Get a reference to a Robj for this type.

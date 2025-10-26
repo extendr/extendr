@@ -55,6 +55,11 @@ pub struct Altrep {
 pub trait AltrepImpl: Clone + std::fmt::Debug {
     #[cfg(feature = "non-api")]
     /// Constructor that is called when loading an Altrep object from a file.
+    ///
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
+    /// Note that we use a thread lock to ensure this doesn't occur.
     unsafe fn unserialize_ex(
         class: Robj,
         state: Robj,
@@ -591,8 +596,8 @@ impl Altrep {
                 Robj::from_sexp(class),
                 Robj::from_sexp(state),
                 Robj::from_sexp(attr),
-                objf as i32,
-                levs as i32,
+                objf,
+                levs,
             )
             .get()
         }

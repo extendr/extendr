@@ -1,3 +1,5 @@
+#![allow(clippy::missing_transmute_annotations)]
+
 //! An ergonomic, opinionated, safe and user-friendly wrapper to the R-API
 //!
 //! This library aims to provide an interface that will be familiar to
@@ -626,6 +628,7 @@ mod tests {
     use extendr_macros::extendr_module;
     use extendr_macros::pairlist;
 
+    #[allow(clippy::too_many_arguments)]
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);

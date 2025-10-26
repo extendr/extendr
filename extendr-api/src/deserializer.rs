@@ -420,7 +420,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
         let s = <&str>::try_from(self.clone())?;
         let mut c = s.chars();
         if let Some(ch) = c.next() {
-            if c.next() == None {
+            if c.next().is_none() {
                 return visitor.visit_char(ch);
             }
         }
@@ -522,15 +522,15 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Integers(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Doubles(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Logicals(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Strings(_val) => {

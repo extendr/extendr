@@ -1,3 +1,5 @@
+#![allow(clippy::missing_transmute_annotations)]
+
 //! Provide limited protection for multithreaded access to the R API.
 use crate::*;
 use extendr_ffi::{

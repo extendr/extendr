@@ -646,9 +646,8 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-impl<'a, T, const N: usize> From<[T; N]> for Robj
+impl<T, const N: usize> From<[T; N]> for Robj
 where
-    Self: 'a,
     T: ToVectorValue,
 {
     fn from(val: [T; N]) -> Self {

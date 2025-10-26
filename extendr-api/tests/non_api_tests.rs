@@ -1,11 +1,12 @@
+#[cfg(test)]
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 
 #[cfg(test)]
 fn non_api_promise() {
     with_r(|| {
-        let special = r!(Primitive::from_string("if"));
-        let builtin = r!(Primitive::from_string("+"));
+        let _special = r!(Primitive::from_string("if"));
+        let _builtin = r!(Primitive::from_string("+"));
     });
 }
 
@@ -46,7 +47,7 @@ fn non_api_rinternals_promise() {
             .unwrap()
             .eval_promise()
             .unwrap();
-        assert_eq!(iris_dataframe.is_frame(), true);
+        assert!(iris_dataframe.is_frame());
         assert_eq!(iris_dataframe.len(), 5);
 
         // Note: this may crash on some versions of windows which don't support unwinding.
@@ -66,7 +67,7 @@ fn non_api_getsexp_rtype() {
 fn non_api_rmacros() {
     with_r(|| {
         // The "iris" dataset is a dataframe.
-        assert_eq!(global!(iris)?.is_frame(), true);
+        assert!(global!(iris).unwrap().is_frame());
     });
 }
 
@@ -74,17 +75,17 @@ fn non_api_rmacros() {
 ///
 /// > You can call R functions and primitives using the [call!] macro.
 #[cfg(test)]
-fn non_api_lib_README() {
+fn non_api_lib_readme() {
     with_r(|| {
         // As one R! macro call
-        let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))")?;
+        let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))").unwrap();
 
         // As many parameterized calls.
         let mut formula = lang!("~", sym!(weight), lang!("-", sym!(group), 1.0));
-        formula.set_class(["formula"])?;
-        let plant_growth = global!(PlantGrowth)?;
-        let model = call!("lm", formula, plant_growth)?;
-        let confint2 = call!("confint", model)?;
+        formula.set_class(["formula"]).unwrap();
+        let plant_growth = global!(PlantGrowth).unwrap();
+        let model = call!("lm", formula, plant_growth).unwrap();
+        let confint2 = call!("confint", model).unwrap();
 
         assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
     });

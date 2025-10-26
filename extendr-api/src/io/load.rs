@@ -1,3 +1,5 @@
+#![allow(clippy::missing_transmute_annotations)]
+
 use super::PstreamFormat;
 use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
 use extendr_ffi::{R_NilValue, R_Unserialize, R_inpstream_st, R_inpstream_t, SEXP};

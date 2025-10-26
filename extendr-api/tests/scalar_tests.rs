@@ -256,11 +256,11 @@ fn test_rcplx() {
         assert_eq!(a / b, Rcplx::from(2.));
         assert_eq!(-a, Rcplx::from(-20.));
 
-        assert_eq!(&a + b, Rcplx::from(30.));
-        assert_eq!(&a - b, Rcplx::from(10.));
-        assert_eq!(&a * b, Rcplx::from(200.));
-        assert_eq!(&a / b, Rcplx::from(2.));
-        assert_eq!(-&a, Rcplx::from(-20.));
+        assert_eq!(a + b, Rcplx::from(30.));
+        assert_eq!(a - b, Rcplx::from(10.));
+        assert_eq!(a * b, Rcplx::from(200.));
+        assert_eq!(a / b, Rcplx::from(2.));
+        assert_eq!(-a, Rcplx::from(-20.));
 
         assert!(Rcplx::na().is_na());
 

@@ -1,3 +1,4 @@
+#![allow(clippy::missing_transmute_annotations)]
 // ## Resources for Developers
 //
 // Graphic device is documented in the R-internals. The header file also
@@ -405,7 +406,7 @@ impl Context {
     }
 
     pub(crate) fn context(&self) -> pGEcontext {
-        unsafe { std::mem::transmute(&self.context) }
+        &self.context as *const extendr_ffi::R_GE_gcontext as *mut extendr_ffi::R_GE_gcontext
     }
 
     // Affine transform.
