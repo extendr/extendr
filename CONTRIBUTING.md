@@ -15,7 +15,7 @@ We welcome contributions to the extendr project. Contributions come in many form
 
 ## Code of Conduct
 
-We take our open source community seriously and hold ourselves and other contributors to high standards of communication. By participating and contributing to this project, you agree to uphold our [Code of Conduct.](https://github.com/extendr/extendr/blob/master/CODE-OF-CONDUCT.md)
+We take our open source community seriously and hold ourselves and other contributors to high standards of communication. By participating and contributing to this project, you agree to uphold our [Code of Conduct.](https://github.com/extendr/extendr/blob/main/CODE-OF-CONDUCT.md)
 
 ## Getting Started
 
