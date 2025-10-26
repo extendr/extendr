@@ -736,7 +736,7 @@
 <a href=#736 id=736 data-nosnippet>736</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
 <a href=#737 id=737 data-nosnippet>737</a>            </span><span class="macro">assert_eq!</span>(int_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
 <a href=#738 id=738 data-nosnippet>738</a>
-<a href=#739 id=739 data-nosnippet>739</a>            <span class="kw">let </span>rint_vec = <span class="macro">vec!</span>[Rint::new(<span class="number">3</span>), Rint::new(<span class="number">4</span>), Rint::new(<span class="number">0</span>), Rint::new(-<span class="number">2</span>)];
+<a href=#739 id=739 data-nosnippet>739</a>            <span class="kw">let </span>rint_vec = <span class="macro">vec!</span>[Rint::from(<span class="number">3</span>), Rint::from(<span class="number">4</span>), Rint::from(<span class="number">0</span>), Rint::from(-<span class="number">2</span>)];
 <a href=#740 id=740 data-nosnippet>740</a>            <span class="kw">let </span>rint_vec_robj: Robj = rint_vec.into();
 <a href=#741 id=741 data-nosnippet>741</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
 <a href=#742 id=742 data-nosnippet>742</a>            </span><span class="macro">assert_eq!</span>(rint_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
