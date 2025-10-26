@@ -146,7 +146,7 @@ fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::new(y.re() * y.re(), 0.0.into());
+        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0.into());
     }
 
     result
