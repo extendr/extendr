@@ -187,7 +187,7 @@ jobs:
 
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ format('{0}-{1}-r{2}-rust-version{3}-{4}-results', runner.os, runner.arch, matrix.config.r, matrix.config.rust-version, matrix.config.id || strategy.job-index) }}
           path: extendrtests_check
