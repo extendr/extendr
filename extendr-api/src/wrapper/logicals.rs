@@ -106,7 +106,7 @@ impl TryFrom<Robj> for Vec<bool> {
     fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
         let bools = Logicals::try_from(&value)?;
         let mut res_vec = Vec::with_capacity(bools.len());
-        for logi in bools.into_iter() {
+        for logi in bools.iter() {
             if logi.is_na() {
                 return Err(Error::MustNotBeNA(value.clone()));
             }

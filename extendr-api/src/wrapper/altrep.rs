@@ -2,6 +2,34 @@ use super::*;
 use extendr_ffi::*;
 use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
 
+macro_rules! make_from_iterator_impl {
+    ($impl : ident, $scalar_type : ident) => {
+        impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
+        where
+            Iter::Item: Into<$scalar_type>,
+        {
+            fn elt(&self, index: usize) -> $scalar_type {
+                $scalar_type::from(self.clone().nth(index).unwrap().into())
+            }
+
+            fn get_region(&self, index: usize, data: &mut [$scalar_type]) -> usize {
+                let len = self.len();
+                if index > len {
+                    0
+                } else {
+                    let mut iter = self.clone().skip(index);
+                    let num_elems = data.len().min(len - index);
+                    let dest = &mut data[0..num_elems];
+                    for d in dest.iter_mut() {
+                        *d = $scalar_type::from(iter.next().unwrap().into());
+                    }
+                    num_elems
+                }
+            }
+        }
+    };
+}
+
 macro_rules! make_from_iterator {
     ($fn_name : ident, $make_class : ident, $impl : ident, $scalar_type : ident, $prim_type : ty) => {
         pub fn $fn_name<Iter>(iter: Iter) -> Altrep
@@ -9,30 +37,6 @@ macro_rules! make_from_iterator {
             Iter: ExactSizeIterator + std::fmt::Debug + Clone + 'static + std::any::Any,
             Iter::Item: Into<$scalar_type>,
         {
-            impl<Iter: ExactSizeIterator + std::fmt::Debug + Clone> $impl for Iter
-            where
-                Iter::Item: Into<$scalar_type>,
-            {
-                fn elt(&self, index: usize) -> $scalar_type {
-                    $scalar_type::from(self.clone().nth(index).unwrap().into())
-                }
-
-                fn get_region(&self, index: usize, data: &mut [$scalar_type]) -> usize {
-                    let len = self.len();
-                    if index > len {
-                        0
-                    } else {
-                        let mut iter = self.clone().skip(index);
-                        let num_elems = data.len().min(len - index);
-                        let dest = &mut data[0..num_elems];
-                        for d in dest.iter_mut() {
-                            *d = $scalar_type::from(iter.next().unwrap().into());
-                        }
-                        num_elems
-                    }
-                }
-            }
-
             let class = Altrep::$make_class::<Iter>(std::any::type_name::<Iter>(), "extendr");
             let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
             Altrep { robj }
@@ -51,6 +55,11 @@ pub struct Altrep {
 pub trait AltrepImpl: Clone + std::fmt::Debug {
     #[cfg(feature = "non-api")]
     /// Constructor that is called when loading an Altrep object from a file.
+    ///
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
+    /// Note that we use a thread lock to ensure this doesn't occur.
     unsafe fn unserialize_ex(
         class: Robj,
         state: Robj,
@@ -92,7 +101,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
     fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        Robj::from_sexp(manifest(x))
+        unsafe { Robj::from_sexp(manifest(x)) }
     }
 
     /// Coerce this object into some other type, if possible.
@@ -117,7 +126,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 
     /// Get the data pointer for this vector, possibly expanding the
     /// compact representation into a full R vector.
-    fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
+    ///
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `x` is a valid SEXP pointer.
+    unsafe fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
         single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
@@ -132,7 +146,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
 
     /// Get the data pointer for this vector, returning NULL
     /// if the object is unmaterialized.
-    fn dataptr_or_null(x: SEXP) -> *const u8 {
+    ///
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `x` is a valid SEXP pointer.
+    unsafe fn dataptr_or_null(x: SEXP) -> *const u8 {
         unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
@@ -442,6 +461,12 @@ pub trait AltComplexImpl: AltrepImpl {
     }
 }
 
+// Implement the trait methods for iterators
+make_from_iterator_impl!(AltIntegerImpl, Rint);
+make_from_iterator_impl!(AltLogicalImpl, Rbool);
+make_from_iterator_impl!(AltRealImpl, Rfloat);
+make_from_iterator_impl!(AltComplexImpl, Rcplx);
+
 pub trait AltStringImpl {
     /// Get a single element from this vector.
     fn elt(&self, _index: usize) -> Rstr;
@@ -571,8 +596,8 @@ impl Altrep {
                 Robj::from_sexp(class),
                 Robj::from_sexp(state),
                 Robj::from_sexp(attr),
-                objf as i32,
-                levs as i32,
+                objf,
+                levs,
             )
             .get()
         }
