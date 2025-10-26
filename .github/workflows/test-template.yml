@@ -1,14 +1,12 @@
-name: Tests
+name: Test Template (Reusable)
 
 on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
+  workflow_call:
+    inputs:
+      test-matrix:
+        description: 'JSON string defining the test matrix'
+        required: true
+        type: string
 
 # cargo error handling is wrapped by ci-cargo, for simplicity and better logging.
 # To use ci-cargo in a step, source ci-cargo.ps1 (using `. ./ci-cargo.ps`, note the extra dot in front).
@@ -16,68 +14,13 @@ on:
 # A special named parameter called `ActionName` can be used to set the name of current ci-cargo action,
 # used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
 jobs:
-  tests_no_bindgen:
+  tests:
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {
-              os: windows-latest,
-              r: "release",
-              rust-version: "stable-msvc",
-              rtools-version: "44",
-              features: "full-functionality",
-            }
-          - {
-              os: windows-latest,
-              r: "devel",
-              rust-version: "stable-msvc",
-              rtools-version: "44",
-              features: "default",
-            }
-          - {
-              os: windows-latest,
-              r: "oldrel",
-              rust-version: "stable-msvc",
-              rtools-version: "43",
-              features: "default",
-            }
-
-          - {
-              os: macOS-latest,
-              r: "release",
-              rust-version: "stable",
-              features: "full-functionality",
-            }
-          - {
-              os: ubuntu-latest,
-              r: "release",
-              rust-version: "stable",
-              features: "full-functionality",
-              check_fmt: true,
-            }
-          - {
-              os: ubuntu-latest,
-              r: "release",
-              rust-version: "nightly",
-              features: "full-functionality",
-              extra-args: ["-Zdoctest-xcompile"],
-            }
-          # R-devel requires LD_LIBRARY_PATH
-          - {
-              os: ubuntu-latest,
-              r: "devel",
-              rust-version: "stable",
-              features: "default",
-            }
-          - {
-              os: ubuntu-latest,
-              r: "oldrel",
-              rust-version: "stable",
-              features: "default",
-            }
+        config: ${{ fromJSON(inputs.test-matrix) }}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -98,7 +41,7 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
@@ -106,15 +49,27 @@ jobs:
           toolchain: ${{ matrix.config.rust-version }}
           components: rustfmt, clippy
 
-      - name: Install cargo-expand
-        run: cargo install cargo-expand
+      # Add rust-cache for faster builds
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ matrix.config.os }}-${{ matrix.config.rust-version }}
+          cache-on-failure: true
+
+      # Add sccache for compilation caching
+      - name: Setup sccache
+        uses: mozilla-actions/sccache-action@v0.0.9
+
+      - name: Configure sccache
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "RUSTC_WRAPPER=sccache" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools-version }}
-          # TODO: enable RSPM when all the packages are available
           use-public-rspm: true
 
       - name: Configure Windows
@@ -188,6 +143,7 @@ jobs:
           foreach($target in ($env:BUILD_TARGETS).Split(',')) {
             ci-cargo build $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Building for $target target"
           }
+
       # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
       # Required by Windows builds, does not affect other platforms
       # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
@@ -203,13 +159,6 @@ jobs:
             ci-cargo test --features ${{ matrix.config.features }} $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture @( $testArgs ) -ActionName "Testing for $target target"
           }
 
-      # c.f. https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
-      - name: Obtain 'rextendr'
-        uses: actions/checkout@v4
-        with:
-          repository: extendr/rextendr
-          path: ./tests/rextendr
-
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -217,15 +166,9 @@ jobs:
           install-pandoc: false
           install-quarto: false
           working-directory: tests/extendrtests
-          extra-packages: any::rcmdcheck
-
-      - name: Install dependencies for rextendr
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: 4
-          install-pandoc: false
-          install-quarto: false
-          working-directory: tests/rextendr
+          extra-packages: |
+            any::rcmdcheck
+            github::extendr/rextendr
 
       # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
       - name: Check R version
@@ -241,11 +184,15 @@ jobs:
 
       - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
         run: |
-          . ./ci-cargo.ps1
-          ci-cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
+          cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
+
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ format('{0}-{1}-r{2}-rust-version{3}-{4}-results', runner.os, runner.arch, matrix.config.r, matrix.config.rust-version, matrix.config.id || strategy.job-index) }}
           path: extendrtests_check
+
+      # Print sccache stats at the end
+      - name: Print sccache stats
+        run: sccache --show-stats

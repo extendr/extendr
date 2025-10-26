@@ -63,6 +63,11 @@ pub(crate) fn make_function_wrappers(
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
+    let opts_invisible = match opts.invisible {
+        Some(true) => quote!(Some(true)),
+        Some(false) => quote!(Some(false)),
+        None => quote!(None),
+    };
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -138,22 +143,24 @@ pub(crate) fn make_function_wrappers(
     //     }
     // }
     // ```
-    let rng_start = opts
-        .use_rng
-        .then(|| {
+    let rng_start = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
                 extendr_api::GetRNGstate();
             });)
-        })
-        .unwrap_or_default();
-    let rng_end = opts
-        .use_rng
-        .then(|| {
+        }
+    } else {
+        Default::default()
+    };
+    let rng_end = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
                 extendr_api::PutRNGstate();
             });)
-        })
-        .unwrap_or_default();
+        }
+    } else {
+        Default::default()
+    };
 
     // figure out if
     // -> &Self
@@ -278,6 +285,7 @@ pub(crate) fn make_function_wrappers(
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
+                invisible: #opts_invisible,
             })
         }
     ));
@@ -416,7 +424,9 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
-            let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
+            let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
+                quote!(Some(#default))
+            } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
             } else {
                 quote!(None)
@@ -454,6 +464,43 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             })
         }
     }
+}
+
+// Get defaults from #[extendr(default = "value")] attribute.
+fn get_defaults(attrs: &mut Vec<syn::Attribute>) -> Option<String> {
+    use syn::Lit;
+
+    let mut new_attrs = Vec::new();
+    let mut res = None;
+
+    for i in attrs.drain(0..) {
+        if let syn::Meta::List(ref meta_list) = i.meta {
+            if meta_list.path.is_ident("extendr") {
+                let mut default_value = None;
+                let mut theres_default = false;
+
+                let parse_result = meta_list.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("default") {
+                        theres_default = true;
+                        let value = meta.value()?;
+                        if let Ok(Lit::Str(litstr)) = value.parse() {
+                            default_value = Some(litstr.value());
+                        }
+                    }
+                    Ok(())
+                });
+
+                if parse_result.is_ok() && theres_default {
+                    res = default_value;
+                    continue;
+                }
+            }
+        }
+
+        new_attrs.push(i);
+    }
+    *attrs = new_attrs;
+    res
 }
 
 /// Convert `SEXP` arguments into `Robj`.
@@ -518,6 +565,7 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                     ..
                 }) = nv.value
                 {
+                    eprintln!("#[default = \"arg\"] is deprecated. Use #[extendr(default = \"arg\")] instead.");
                     res = Some(litstr.value());
                     continue;
                 }

@@ -26,7 +26,9 @@ impl Drop for DocumentMutHandle<'_> {
     }
 }
 
-pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentMutHandle, Box<dyn Error>> {
+pub(crate) fn swap_extendr_api_path(
+    shell: &Shell,
+) -> Result<DocumentMutHandle<'_>, Box<dyn Error>> {
     let current_path = shell.current_dir();
     let _rust_folder = shell.push_dir(RUST_FOLDER_PATH);
 

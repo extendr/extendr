@@ -103,6 +103,9 @@ impl Environment {
 
     #[cfg(feature = "non-api")]
     /// Set the environment flags.
+    /// # Safety
+    ///
+    /// Setting environment flag uses R's C API and is inherently unsafe.
     pub unsafe fn set_envflags(&mut self, flags: i32) -> &mut Self {
         single_threaded(|| unsafe {
             let sexp = self.robj.get_mut();

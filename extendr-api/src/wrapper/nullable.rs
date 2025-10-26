@@ -34,6 +34,26 @@ pub enum Nullable<T> {
     Null,
 }
 
+impl TryFrom<Robj> for Nullable<()> {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> Result<Self> {
+        Self::try_from(&value)
+    }
+}
+
+impl TryFrom<&Robj> for Nullable<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if value.is_null() {
+            Ok(Self::Null)
+        } else {
+            Err(Error::ExpectedNull(value.clone()))
+        }
+    }
+}
+
 impl<T> TryFrom<Robj> for Nullable<T>
 where
     T: TryFrom<Robj, Error = Error>,
@@ -52,7 +72,7 @@ where
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
     /// ```
-    fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(robj: Robj) -> Result<Self> {
         if robj.is_null() {
             Ok(Nullable::Null)
         } else {
@@ -79,7 +99,7 @@ where
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
     /// ```
-    fn try_from(robj: &'a Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(robj: &'a Robj) -> Result<Self> {
         if robj.is_null() {
             Ok(Nullable::Null)
         } else {

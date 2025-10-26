@@ -94,8 +94,9 @@ mod graphics_tests {
                     assert!(("epilogue not found", false).1);
                 }
             } else {
-                std::thread::sleep(std::time::Duration::from_millis(2000));
-                assert!(false); // did we check in the flag as "false?"
+                // previous code was assert!(false)
+                // which always panics using unreachable instead
+                unreachable!("This shouldn't be reached?");
             }
         }
     }

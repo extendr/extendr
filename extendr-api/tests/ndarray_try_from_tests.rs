@@ -74,7 +74,7 @@ mod ndarray_try_from_tests {
         test! {
              let robj = R!("matrix(c(1, 2, 3i, 4i, 5 + 5i, 6 - 6i), ncol = 2, nrow = 3, byrow = TRUE)")?;
 
-             let expected = vec![1, 2, 0, 0, 5, 6].iter().zip(vec![0, 0, 3, 4, 5, -6]).map(|(&re, im)| <c64>::new(re as f64, im as f64))
+             let expected = [1, 2, 0, 0, 5, 6].iter().zip(vec![0, 0, 3, 4, 5, -6]).map(|(&re, im)| <c64>::new(re as f64, im as f64))
              .collect::<Vec<_>>();
 
              let view = <ArrayView2<Rcplx>>::try_from(&robj)?;
@@ -161,7 +161,7 @@ mod ndarray_try_from_tests {
         test! {
              let robj = R!("matrix(c(1, 2, 3i, 4i, 5 + 5i, 6 - 6i), ncol = 1, nrow = 6)")?;
 
-             let expected = vec![1, 2, 0, 0, 5, 6].iter().zip(vec![0, 0, 3, 4, 5, -6]).map(|(&re, im)| <c64>::new(re as f64, im as f64))
+             let expected = [1, 2, 0, 0, 5, 6].iter().zip(vec![0, 0, 3, 4, 5, -6]).map(|(&re, im)| <c64>::new(re as f64, im as f64))
              .collect::<Vec<_>>();
 
              let view = <ArrayView1<Rcplx>>::try_from(&robj)?;

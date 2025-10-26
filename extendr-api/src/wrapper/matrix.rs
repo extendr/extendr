@@ -38,7 +38,7 @@ pub struct RArray<T, const NDIM: usize> {
 
 impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dimnames(&self) -> List {
-        List::try_from(Robj::from_sexp(unsafe { Rf_GetArrayDimnames(self.get()) })).unwrap()
+        unsafe { List::try_from(Robj::from_sexp(Rf_GetArrayDimnames(self.get()))).unwrap() }
     }
 
     /// Get the dimension vector of the array.
@@ -154,7 +154,7 @@ impl<T> RMatrix<T> {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
                     let colnames = Robj::from_sexp(maybe_colnames);
-                    Some(std::mem::transmute(colnames))
+                    Strings::try_from(colnames).ok()
                 }
                 _ => unreachable!(
                     "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
@@ -169,7 +169,7 @@ impl<T> RMatrix<T> {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
                     let rownames = Robj::from_sexp(maybe_rownames);
-                    Some(std::mem::transmute(rownames))
+                    Strings::try_from(rownames).ok()
                 }
                 _ => unreachable!(
                     "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
@@ -271,8 +271,8 @@ where
     /// * `nrows` - the number of rows the returned matrix will have
     /// * `ncols` - the number of columns the returned matrix will have
     /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
-    ///     It must return a scalar value that can be converted to an R scalar, such as `i32`, `u32`, or `f64`, i.e. see [ToVectorValue].
-    ///     It accepts two arguments:
+    ///   It must return a scalar value that can be converted to an R scalar, such as `i32`, `u32`, or `f64`, i.e. see [ToVectorValue].
+    ///   It accepts two arguments:
     ///     * `r` - the current row of the entry we are creating
     ///     * `c` - the current column of the entry we are creating
     pub fn new_matrix<F: Clone + FnMut(usize, usize) -> T>(

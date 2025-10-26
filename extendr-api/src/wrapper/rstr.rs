@@ -40,7 +40,7 @@ impl Rstr {
     /// Make a character object from a string.
     pub fn from_string(val: &str) -> Self {
         Rstr {
-            robj: Robj::from_sexp(str_to_character(val)),
+            robj: unsafe { Robj::from_sexp(str_to_character(val)) },
         }
     }
 

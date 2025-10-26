@@ -37,17 +37,17 @@ impl Symbol {
     pub fn from_string<S: AsRef<str>>(val: S) -> Self {
         let val = val.as_ref();
         Symbol {
-            robj: Robj::from_sexp(make_symbol(val)),
+            robj: unsafe { Robj::from_sexp(make_symbol(val)) },
         }
     }
 
     // Internal conversion for constant symbols.
-    fn from_sexp(sexp: SEXP) -> Symbol {
+    pub(crate) fn from_sexp(sexp: SEXP) -> Symbol {
         unsafe {
             assert!(TYPEOF(sexp) == SEXPTYPE::SYMSXP);
         }
         Symbol {
-            robj: Robj::from_sexp(sexp),
+            robj: unsafe { Robj::from_sexp(sexp) },
         }
     }
 
