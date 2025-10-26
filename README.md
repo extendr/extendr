@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06394/status.svg)](https://doi.org/10.21105/joss.06394)
 
-[![Logo](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/master/extendr-logo-256.png)
+[![Logo](https://github.com/extendr/extendr/raw/main/extendr-logo-256.png)](https://github.com/extendr/extendr/raw/main/extendr-logo-256.png)
 
 ## Welcome
 
