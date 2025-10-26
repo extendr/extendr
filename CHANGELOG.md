@@ -11,6 +11,7 @@
 
 ### Changed
 
+- **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]`
 
 ### Fixed
