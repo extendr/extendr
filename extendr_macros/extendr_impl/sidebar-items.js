@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["extendr_impl"]};
+window.SIDEBAR_ITEMS = {"fn":["extendr_impl","transform_method_doc_roxygen"]};
