@@ -234,6 +234,27 @@ to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
+#'\subsection{Method `me`}{
+#'Method for getting one's self.
+#'}
+#'
 MyClass <- new.env(parent = emptyenv())
 
 MyClass$new <- function() .Call(wrap__MyClass__new)
@@ -256,6 +277,16 @@ MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_v
 #' @export
 `[[.MyClass` <- `$.MyClass`
 
+#'
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `__name_test`}{
+#'Method with special name unsupported by R
+#'}
+#'
 `__MyClass` <- new.env(parent = emptyenv())
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
@@ -269,6 +300,15 @@ MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_v
 `[[.__MyClass` <- `$.__MyClass`
 
 #' Class for testing (unexported)
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
 MyClassUnexported <- new.env(parent = emptyenv())
 
 MyClassUnexported$new <- function() .Call(wrap__MyClassUnexported__new)
@@ -288,6 +328,23 @@ MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
 MySubmoduleClass <- new.env(parent = emptyenv())
 
 MySubmoduleClass$new <- function() .Call(wrap__MySubmoduleClass__new)
@@ -311,6 +368,47 @@ MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
+#'\subsection{Method `me_owned`}{
+#'Method for getting one's (by way of a copy) self.
+#'}
+#'
+#'\subsection{Method `me_ref`}{
+#'Method for getting one's (ref) self.
+#'}
+#'
+#'\subsection{Method `me_mut`}{
+#'Method for getting one's (ref mut) self.
+#'}
+#'
+#'\subsection{Method `me_explicit_ref`}{
+#'Method for getting one's ref (explicit) self.
+#'}
+#'
+#'\subsection{Method `me_explicit_mut`}{
+#'Method for getting one's ref mut (explicit) self.
+#'}
+#'
+#'\subsection{Method `max_ref_offset`}{
+#'`offset` does nothing.
+#'}
+#'
 Wrapper <- new.env(parent = emptyenv())
 
 Wrapper$new <- function() .Call(wrap__Wrapper__new)
