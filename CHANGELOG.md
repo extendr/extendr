@@ -11,7 +11,7 @@
 
 ### Changed
 
-- **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits
+- **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]`
 
 ### Fixed
