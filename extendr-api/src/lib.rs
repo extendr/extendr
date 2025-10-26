@@ -1,5 +1,3 @@
-#![allow(clippy::missing_transmute_annotations)]
-
 //! An ergonomic, opinionated, safe and user-friendly wrapper to the R-API
 //!
 //! This library aims to provide an interface that will be familiar to
@@ -428,7 +426,10 @@ unsafe fn make_method_def(
     cstrings.push(std::ffi::CString::new(wrapped_name).unwrap());
     rmethods.push(extendr_ffi::R_CallMethodDef {
         name: cstrings.last().unwrap().as_ptr(),
-        fun: Some(std::mem::transmute(func.func_ptr)),
+        fun: Some(std::mem::transmute::<
+            *const u8,
+            unsafe extern "C" fn() -> *mut std::ffi::c_void,
+        >(func.func_ptr)),
         numArgs: func.args.len() as i32,
     });
 }

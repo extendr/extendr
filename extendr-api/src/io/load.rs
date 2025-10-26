@@ -1,5 +1,3 @@
-#![allow(clippy::missing_transmute_annotations)]
-
 use super::PstreamFormat;
 use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
 use extendr_ffi::{R_NilValue, R_Unserialize, R_inpstream_st, R_inpstream_t, SEXP};
@@ -47,7 +45,7 @@ pub trait Load {
         }
 
         let read_ptr: *mut R = reader as &mut R;
-        let data = unsafe { std::mem::transmute(read_ptr) };
+        let data = read_ptr.cast::<std::ffi::c_void>();
 
         let (hook_func, hook_data) = if let Some(hook) = hook {
             (hook.func, hook.data)

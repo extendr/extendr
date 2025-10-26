@@ -1,5 +1,3 @@
-#![allow(clippy::missing_transmute_annotations)]
-
 //! Wrappers for matrices with deferred arithmetic.
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
@@ -156,7 +154,7 @@ impl<T> RMatrix<T> {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
                     let colnames = Robj::from_sexp(maybe_colnames);
-                    Some(std::mem::transmute(colnames))
+                    Strings::try_from(colnames).ok()
                 }
                 _ => unreachable!(
                     "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
