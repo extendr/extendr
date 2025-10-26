@@ -3,6 +3,7 @@ name = "extendr-macros"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 description = "Generate bindings from R to Rust."
 repository.workspace = true
 license.workspace = true
