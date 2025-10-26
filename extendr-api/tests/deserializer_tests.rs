@@ -132,15 +132,15 @@ mod test {
             // The Deserialize trait for Robj can also be used to generate
             // JSON and other formats for Robj.
             #[derive(Deserialize, PartialEq, Debug)]
-            struct ROBJ(Robj);
-            assert_eq!(from_robj::<ROBJ>(&r!(TRUE)), Ok(ROBJ(r!(TRUE))));
-            assert_eq!(from_robj::<ROBJ>(&r!(1)), Ok(ROBJ(r!(1))));
-            assert_eq!(from_robj::<ROBJ>(&r!(1.0)), Ok(ROBJ(r!(1.0))));
-            assert_eq!(from_robj::<ROBJ>(&r!("xyz")), Ok(ROBJ(r!("xyz"))));
+            struct MyRobj(Robj);
+            assert_eq!(from_robj::<MyRobj>(&r!(TRUE)), Ok(MyRobj(r!(TRUE))));
+            assert_eq!(from_robj::<MyRobj>(&r!(1)), Ok(MyRobj(r!(1))));
+            assert_eq!(from_robj::<MyRobj>(&r!(1.0)), Ok(MyRobj(r!(1.0))));
+            assert_eq!(from_robj::<MyRobj>(&r!("xyz")), Ok(MyRobj(r!("xyz"))));
 
             // Sequences are always converted to lists.
-            assert_eq!(from_robj::<ROBJ>(&r!([TRUE, FALSE])), Ok(ROBJ(r!(list!(TRUE, FALSE)))));
-            assert_eq!(from_robj::<ROBJ>(&r!([1, 2])), Ok(ROBJ(r!(list!(1, 2)))));
+            assert_eq!(from_robj::<MyRobj>(&r!([TRUE, FALSE])), Ok(MyRobj(r!(list!(TRUE, FALSE)))));
+            assert_eq!(from_robj::<MyRobj>(&r!([1, 2])), Ok(MyRobj(r!(list!(1, 2)))));
 
             // If you use a wrapper type, conversions are more specific.
             #[derive(Deserialize, PartialEq, Debug)]

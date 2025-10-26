@@ -45,7 +45,7 @@ pub trait Load {
         }
 
         let read_ptr: *mut R = reader as &mut R;
-        let data = unsafe { std::mem::transmute(read_ptr) };
+        let data = read_ptr.cast::<std::ffi::c_void>();
 
         let (hook_func, hook_data) = if let Some(hook) = hook {
             (hook.func, hook.data)
@@ -67,9 +67,11 @@ pub trait Load {
             nat2utf8_obj: std::ptr::null_mut(),
         };
 
-        Ok(Robj::from_sexp(catch_r_error(move || unsafe {
-            R_Unserialize(&mut state as R_inpstream_t)
-        })?))
+        Ok(unsafe {
+            Robj::from_sexp(catch_r_error(move || {
+                R_Unserialize(&mut state as R_inpstream_t)
+            })?)
+        })
     }
 }
 

@@ -314,7 +314,7 @@ mod num_complex {
     fn iter_mut() {
         test! {
             let mut vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
-            vec.iter_mut().for_each(|v| *v = *v + Rcplx::from(1.0));
+            vec.iter_mut().for_each(|v| *v += Rcplx::from(1.0));
             assert_eq!(vec, Complexes::from_values([1.0, 2.0, 3.0, 4.0]));
         }
     }

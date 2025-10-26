@@ -385,11 +385,11 @@ impl Metadata {
         unsafe { Ok(String::from_utf8_unchecked(w)) }
     }
 
-    fn impl_names<'a>(&'a self) -> Vec<&'a str> {
+    fn impl_names(&self) -> Vec<&str> {
         let mut vec: Vec<&str> = vec![];
         for impls in &self.impls {
             if !vec.contains(&impls.name) {
-                vec.push(&impls.name)
+                vec.push(impls.name)
             }
         }
         vec

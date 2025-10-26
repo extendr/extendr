@@ -9,7 +9,7 @@ fn iterating_unamed_list() {
         assert_eq!(unamed_list.iter().len(), 5);
 
         let empty_strings = unamed_list.iter().map(|(si, _)| si).collect::<Strings>();
-        let na_strs = (0..5).into_iter().map(|_| Rstr::na()).collect::<Strings>();
+        let na_strs = (0..5).map(|_| Rstr::na()).collect::<Strings>();
         assert_eq!(empty_strings, na_strs);
 
         let unamed_list = List::from_values::<[i32; 0]>([]);

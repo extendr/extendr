@@ -114,7 +114,7 @@ impl Version {
             }
         };
 
-        let r_ver = read_r_ver(&Path::new(&include_dir))?;
+        let r_ver = read_r_ver(Path::new(&include_dir))?;
 
         Ok(r_ver)
     }

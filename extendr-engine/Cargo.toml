@@ -4,6 +4,7 @@ description = "Safe and user friendly bindings to the R programming language."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 

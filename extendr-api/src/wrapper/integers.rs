@@ -180,8 +180,7 @@ mod tests {
     fn test_vec_i32_integers_conversion() {
         test! {
             let int_vec = vec![3,4,0,-2];
-            let int_vec_robj: Robj = int_vec.clone().try_into().unwrap();
-            // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
+            let int_vec_robj: Robj = int_vec.clone().into();
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

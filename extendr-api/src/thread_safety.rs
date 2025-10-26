@@ -11,7 +11,7 @@ use std::sync::Mutex;
 static R_API_LOCK: Mutex<()> = Mutex::new(());
 
 thread_local! {
-    static THREAD_HAS_LOCK: Cell<bool> = Cell::new(false);
+    static THREAD_HAS_LOCK: Cell<bool> = const { Cell::new(false) };
 }
 
 /// Run `f` while ensuring that `f` runs in a single-threaded manner.
@@ -70,7 +70,8 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
         R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
-        Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
+        let ptr = std::ptr::addr_of!(R_ERROR_BUF);
+        Rf_error((*ptr).as_ref().unwrap().as_ptr());
     };
 }
 
@@ -111,8 +112,14 @@ where
         let fun_ptr = do_call::<F> as *const ();
         let clean_ptr = do_cleanup as *const ();
         let x = false;
-        let fun = std::mem::transmute(fun_ptr);
-        let cleanfun = std::mem::transmute(clean_ptr);
+        let fun = std::mem::transmute::<
+            *const (),
+            Option<unsafe extern "C" fn(*mut std::ffi::c_void) -> *mut extendr_ffi::SEXPREC>,
+        >(fun_ptr);
+        let cleanfun = std::mem::transmute::<
+            *const (),
+            std::option::Option<unsafe extern "C" fn(*mut std::ffi::c_void, extendr_ffi::Rboolean)>,
+        >(clean_ptr);
         let data = &f as *const _ as _;
         let cleandata = &x as *const _ as _;
         let cont = R_MakeUnwindCont();

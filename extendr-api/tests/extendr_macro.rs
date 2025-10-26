@@ -19,29 +19,17 @@ fn test_i16(val: i16) -> i16 {
 
 #[extendr]
 fn test_option_i32(val: Option<i32>) -> i32 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1)
 }
 
 #[extendr]
 fn test_option_f64(val: Option<f64>) -> f64 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1.0
-    }
+    val.unwrap_or(-1f64)
 }
 
 #[extendr]
 fn test_option_i16(val: Option<i16>) -> i16 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1i16)
 }
 
 #[extendr]

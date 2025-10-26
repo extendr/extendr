@@ -397,7 +397,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // we just use `c.abs()`.
             //
             // [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617
-            if let Some(c) = std::char::from_u32(c.abs() as _) {
+            if let Some(c) = std::char::from_u32(c.unsigned_abs()) {
                 let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
                 let metric_info = data.char_metric(c, *gc, *dd);
                 *ascent = metric_info.ascent;

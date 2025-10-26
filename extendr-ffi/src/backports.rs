@@ -56,6 +56,11 @@ extern "C" {
 }
 
 /// Returns the enclosing environment of env, which will usually be of type ENVSXP, except for the special environment R_EmptyEnv, which terminates the environment chain; its enclosing environment is R_NilValue.
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP pointer to an environment.
 #[inline]
 pub unsafe fn get_parent_env(x: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -69,6 +74,11 @@ pub unsafe fn get_parent_env(x: SEXP) -> SEXP {
 }
 
 /// Returns a variable from an environment
+///
+/// # Safety
+///
+/// This function dereferences raw SEXP pointers.
+/// The caller must ensure that `symbol` and `env` are valid SEXP pointers.
 #[inline]
 pub unsafe fn get_var(symbol: SEXP, env: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -82,6 +92,11 @@ pub unsafe fn get_var(symbol: SEXP, env: SEXP) -> SEXP {
 }
 
 /// Returns the value of the requested variable in an environment
+///
+/// # Safety
+///
+/// This function dereferences raw SEXP pointers.
+/// The caller must ensure that `symbol` and `env` are valid SEXP pointers.
 #[inline]
 pub unsafe fn get_var_in_frame(symbol: SEXP, env: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -95,6 +110,11 @@ pub unsafe fn get_var_in_frame(symbol: SEXP, env: SEXP) -> SEXP {
 }
 
 /// Return the environment of a closure
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP pointer to a closure.
 #[inline]
 pub unsafe fn get_closure_env(x: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -108,6 +128,11 @@ pub unsafe fn get_closure_env(x: SEXP) -> SEXP {
 }
 
 /// Return the body of a closure
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP pointer to a closure.
 #[inline]
 pub unsafe fn get_closure_body(x: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -121,6 +146,11 @@ pub unsafe fn get_closure_body(x: SEXP) -> SEXP {
 }
 
 /// Access a closure's arguments
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP pointer to a closure.
 #[inline]
 pub unsafe fn get_closure_formals(x: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
@@ -134,6 +164,11 @@ pub unsafe fn get_closure_formals(x: SEXP) -> SEXP {
 }
 
 /// Access a DATAPTR
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP pointer.
 #[inline]
 pub unsafe fn dataptr(x: SEXP) -> *const ::std::os::raw::c_void {
     #[cfg(not(r_4_5))]

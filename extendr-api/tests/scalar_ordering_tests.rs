@@ -201,9 +201,11 @@ where
 
 #[test]
 fn collection_sort_bool() {
-    let raw = vec![true, false, true, false, true];
-    let ordered = vec![false, false, true, true, true];
+    let raw = [true, false, true, false, true];
+    let ordered = [false, false, true, true, true];
     let mut scalars: Vec<Rbool> = raw.iter().map(|&x| x.into()).collect();
     scalars.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    assert!(ordered.eq(&scalars));
+    for (xi, yi) in ordered.iter().zip(scalars.iter()) {
+        assert_eq!(*xi, yi.to_bool());
+    }
 }

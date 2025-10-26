@@ -426,7 +426,10 @@ unsafe fn make_method_def(
     cstrings.push(std::ffi::CString::new(wrapped_name).unwrap());
     rmethods.push(extendr_ffi::R_CallMethodDef {
         name: cstrings.last().unwrap().as_ptr(),
-        fun: Some(std::mem::transmute(func.func_ptr)),
+        fun: Some(std::mem::transmute::<
+            *const u8,
+            unsafe extern "C" fn() -> *mut std::ffi::c_void,
+        >(func.func_ptr)),
         numArgs: func.args.len() as i32,
     });
 }
@@ -626,6 +629,7 @@ mod tests {
     use extendr_macros::extendr_module;
     use extendr_macros::pairlist;
 
+    #[allow(clippy::too_many_arguments)]
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);
@@ -959,7 +963,7 @@ mod tests {
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
             // R interface
-            let robj = Robj::from_sexp(wrap__get_my_module_metadata());
+            let robj = unsafe { Robj::from_sexp(wrap__get_my_module_metadata()) };
             let functions = robj.dollar("functions").unwrap();
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);

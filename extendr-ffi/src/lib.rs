@@ -462,6 +462,10 @@ extern "C" {
 
 }
 
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `x` is a valid SEXP.
 pub unsafe fn Rf_isS4(arg1: SEXP) -> Rboolean {
     unsafe {
         if secret::Rf_isS4_original(arg1) == 0 {
