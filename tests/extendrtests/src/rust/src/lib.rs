@@ -6,6 +6,7 @@ mod dataframe;
 mod externalptr;
 mod graphic_device;
 mod hashmap;
+mod into_list_derive;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -26,6 +27,18 @@ fn hello_world() -> &'static str {
 // Do nothing.
 #[extendr]
 fn do_nothing() {}
+
+/// This is invisible by default
+#[extendr]
+fn result_unit() -> Result<()> {
+    Ok(())
+}
+
+/// Return a string but invisibly
+#[extendr(invisible)]
+fn invisible_string() -> &'static str {
+    "This should be invisible"
+}
 
 // TryFrom: conversions
 
@@ -163,8 +176,15 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Parsing
 
+// Deprecated default syntax
+//#[extendr]
+//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//    x.is_null()
+//}
+
+// New default syntax
 #[extendr]
-fn check_default(#[default = "NULL"] x: Robj) -> bool {
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
     x.is_null()
 }
 
@@ -308,6 +328,8 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
+    fn result_unit;
+    fn invisible_string;
 
     fn double_scalar;
     fn int_scalar;
@@ -354,6 +376,7 @@ extendr_module! {
     use attributes;
     use dataframe;
     use hashmap;
+    use into_list_derive;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;

@@ -580,6 +580,25 @@ impl_try_from_robj!(@generics<T> HashMap::<String,T> where T: TryFrom<Robj, Erro
 impl_try_from_robj!(HashMap::<&str, Robj>);
 impl_try_from_robj!(HashMap::<String, Robj>);
 
+impl TryFrom<&Robj> for Option<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if value.is_null() {
+            Ok(Some(()))
+        } else {
+            Err(Error::ExpectedNull(value.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Option<()> {
+    type Error = Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
 // NOTE: this is included for compatibility with previously defined `FromRobj`
 // One should prefer `List::from_hashmap` instead,
 // and this `impl` should be deprecated next.
@@ -671,7 +690,63 @@ impl_try_from_robj_for_arrays!(i32);
 impl_try_from_robj_for_arrays!(f64);
 
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
-impl_try_from_robj_tuples!((1, 12));
+// Single-element tuple manually implemented to avoid clippy::needless_question_mark
+
+// We implement the 1-length tuple variant manually
+// so that we avoid clippy needless Ok(?) lint
+impl<T0> TryFrom<&Robj> for (T0,)
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        let list: List = robj.try_into()?;
+        if list.len() != 1 {
+            return Err(Error::ExpectedLength(1));
+        }
+        Ok(((&list.elt(0)?).try_into()?,))
+    }
+}
+
+impl<T0> TryFrom<Robj> for (T0,)
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
+impl<T0> TryFrom<&Robj> for Option<(T0,)>
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_null() || robj.is_na() {
+            Ok(None)
+        } else {
+            <(T0,)>::try_from(robj).map(Some)
+        }
+    }
+}
+
+impl<T0> TryFrom<Robj> for Option<(T0,)>
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
+impl_try_from_robj_tuples!((2, 12));
 
 // The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
 // it requires returning a reference to a owned (moved) value

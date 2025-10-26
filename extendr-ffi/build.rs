@@ -114,7 +114,7 @@ impl Version {
             }
         };
 
-        let r_ver = read_r_ver(&Path::new(&include_dir))?;
+        let r_ver = read_r_ver(Path::new(&include_dir))?;
 
         Ok(r_ver)
     }
@@ -169,6 +169,9 @@ impl InstallationPaths {
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_16)");
+    println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_17)");
 
     // Fetch R_HOME and R version
     let r_paths = match InstallationPaths::try_new() {
@@ -195,6 +198,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // For Windows
         (true, "x86_64") => Path::new(&r_paths.r_home).join("bin").join("x64"),
         (true, "x86") => Path::new(&r_paths.r_home).join("bin").join("i386"),
+        (true, "aarch64") => Path::new(&r_paths.r_home).join("bin"),
         (true, _) => {
             return Err("Cannot build extendr-ffi for unknown architecture".into());
         }
@@ -219,6 +223,21 @@ fn main() -> Result<(), Box<dyn Error>> {
     // use r_4_5 config
     if (r_paths.version.major, r_paths.version.minor) >= (4, 5) {
         println!("cargo:rustc-cfg=r_4_5")
+    }
+
+    // Graphics engine version 15 was introduced in R 4.2
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 2) {
+        println!("cargo:rustc-cfg=use_r_ge_version_15")
+    }
+
+    // Graphics engine version 16 was introduced in R 4.3
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 3) {
+        println!("cargo:rustc-cfg=use_r_ge_version_16")
+    }
+
+    // Graphics engine version 17 was introduced in R 4.6
+    if (r_paths.version.major, r_paths.version.minor) >= (4, 6) {
+        println!("cargo:rustc-cfg=use_r_ge_version_17")
     }
 
     // Only re-run if the include directory changes

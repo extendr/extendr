@@ -14,6 +14,12 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
+#' This is invisible by default
+result_unit <- function() invisible(.Call(wrap__result_unit))
+
+#' Return a string but invisibly
+invisible_string <- function() invisible(.Call(wrap__invisible_string))
+
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
@@ -95,6 +101,30 @@ test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
 
 test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
+
+make_basic_struct <- function() .Call(wrap__make_basic_struct)
+
+make_rwrapper_struct <- function() .Call(wrap__make_rwrapper_struct)
+
+make_with_list <- function() .Call(wrap__make_with_list)
+
+make_with_robj <- function() .Call(wrap__make_with_robj)
+
+make_with_function <- function() .Call(wrap__make_with_function)
+
+make_with_pairlist <- function() .Call(wrap__make_with_pairlist)
+
+make_with_environment <- function() .Call(wrap__make_with_environment)
+
+make_with_ignored <- function() .Call(wrap__make_with_ignored)
+
+make_with_vectors <- function() .Call(wrap__make_with_vectors)
+
+make_nested_struct <- function() .Call(wrap__make_nested_struct)
+
+make_function_metadata <- function() .Call(wrap__make_function_metadata)
+
+make_all_r_types <- function() .Call(wrap__make_all_r_types)
 
 leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
 

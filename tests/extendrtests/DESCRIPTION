@@ -14,7 +14,7 @@ License: MIT + file LICENSE
 SystemRequirements: Cargo (Rust's package manager), rustc
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests:
     rextendr,
     brio,
@@ -29,4 +29,4 @@ Suggests:
 Remotes:
     extendr/rextendr
 Config/testthat/edition: 3
-Config/rextendr/version: 0.3.1.9001
+Config/rextendr/version: 0.4.2.9000
