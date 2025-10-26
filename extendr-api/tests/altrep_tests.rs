@@ -259,10 +259,7 @@ fn test_altlist() {
 
         impl AltListImpl for VecUsize {
             fn elt(&self, index: usize) -> Robj {
-                let mut v = Vec::with_capacity(1usize);
-                v.push(self.0[index]);
-                let v = v;
-
+                let v = vec![self.0[index]];
                 Self(v).into_robj()
             }
         }

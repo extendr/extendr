@@ -19,7 +19,7 @@ mod tests {
 
             let rust_struct = BasicTypes {
                 a: 42,
-                b: 3.14,
+                b: 4.14,
                 c: true,
                 d: String::from("hello"),
             };
@@ -28,7 +28,7 @@ mod tests {
             assert!(r_list.is_list());
 
             // Check that the list has the correct fields
-            let expected = R!("list(a = 42L, b = 3.14, c = TRUE, d = 'hello')").unwrap();
+            let expected = R!("list(a = 42L, b = 4.14, c = TRUE, d = 'hello')").unwrap();
             assert_eq!(r_list, expected);
         }
     }
@@ -357,7 +357,7 @@ mod tests {
                 hidden: bool,
             }
 
-            let args = vec![
+            let args = [
                 MyArg { name: "x".to_string(), arg_type: "f64".to_string() },
                 MyArg { name: "y".to_string(), arg_type: "i32".to_string() },
             ];

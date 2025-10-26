@@ -7,9 +7,9 @@
 //! These tests has to check two things:
 //!
 //! * That the seed is set and affects the sampling functions on the rust-side
-//! in the same way, as on the r-side.
+//!   in the same way, as on the r-side.
 //! * That the resulting sampled vector is not equal 0, as it would be that
-//! if `GetRNGstate()` is not called prior to sampling.
+//!   if `GetRNGstate()` is not called prior to sampling.
 //!
 //!
 use extendr_api::prelude::*;

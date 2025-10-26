@@ -76,9 +76,7 @@ impl Iterator for StrIter {
             let i = self.i;
             self.i += 1;
             let vector = self.vector.get();
-            if i >= self.len {
-                None
-            } else if TYPEOF(vector) == SEXPTYPE::NILSXP {
+            if i >= self.len || TYPEOF(vector) == SEXPTYPE::NILSXP {
                 None
             } else if TYPEOF(vector) == SEXPTYPE::STRSXP {
                 str_from_strsxp(vector, i)

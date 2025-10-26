@@ -196,14 +196,14 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_logical(&self) -> i32
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_raw(&self) -> u8
@@ -646,9 +646,8 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-impl<'a, T, const N: usize> From<[T; N]> for Robj
+impl<T, const N: usize> From<[T; N]> for Robj
 where
-    Self: 'a,
     T: ToVectorValue,
 {
     fn from(val: [T; N]) -> Self {

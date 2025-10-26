@@ -396,7 +396,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
-                        Ok(Some(<(#(#types,)*)>::try_from(robj)?))
+                        <(#(#types,)*)>::try_from(robj).map(Some)
                     }
                 }
             }
