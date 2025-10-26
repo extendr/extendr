@@ -74,7 +74,10 @@ impl Rstr {
     /// let len = rstr.len(); // calls str::len() via Deref
     /// # }
     /// ```
-    #[deprecated(since = "0.8.0", note = "Use `.as_ref()` or rely on `Deref` coercion instead")]
+    #[deprecated(
+        since = "0.8.0",
+        note = "Use `.as_ref()` or rely on `Deref` coercion instead"
+    )]
     pub fn as_str(&self) -> &str {
         self.into()
     }

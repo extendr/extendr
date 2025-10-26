@@ -12,6 +12,7 @@
 ### Changed
 
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]`
+- **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead
 
 ### Fixed
 
