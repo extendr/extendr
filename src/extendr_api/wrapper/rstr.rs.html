@@ -40,7 +40,7 @@
 <a href=#40 id=40 data-nosnippet>40</a>    <span class="doccomment">/// Make a character object from a string.
 <a href=#41 id=41 data-nosnippet>41</a>    </span><span class="kw">pub fn </span>from_string(val: <span class="kw-2">&amp;</span>str) -&gt; <span class="self">Self </span>{
 <a href=#42 id=42 data-nosnippet>42</a>        Rstr {
-<a href=#43 id=43 data-nosnippet>43</a>            robj: Robj::from_sexp(str_to_character(val)),
+<a href=#43 id=43 data-nosnippet>43</a>            robj: <span class="kw">unsafe </span>{ Robj::from_sexp(str_to_character(val)) },
 <a href=#44 id=44 data-nosnippet>44</a>        }
 <a href=#45 id=45 data-nosnippet>45</a>    }
 <a href=#46 id=46 data-nosnippet>46</a>

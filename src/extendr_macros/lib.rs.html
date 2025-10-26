@@ -396,7 +396,7 @@
 <a href=#396 id=396 data-nosnippet>396</a>                    <span class="kw">if </span>robj.is_null() || robj.is_na() {
 <a href=#397 id=397 data-nosnippet>397</a>                        <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
 <a href=#398 id=398 data-nosnippet>398</a>                    } <span class="kw">else </span>{
-<a href=#399 id=399 data-nosnippet>399</a>                        <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(&lt;(#(#types,)<span class="kw-2">*</span>)&gt;::try_from(robj)<span class="question-mark">?</span>))
+<a href=#399 id=399 data-nosnippet>399</a>                        &lt;(#(#types,)<span class="kw-2">*</span>)&gt;::try_from(robj).map(<span class="prelude-val">Some</span>)
 <a href=#400 id=400 data-nosnippet>400</a>                    }
 <a href=#401 id=401 data-nosnippet>401</a>                }
 <a href=#402 id=402 data-nosnippet>402</a>            }

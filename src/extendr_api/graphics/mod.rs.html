@@ -405,7 +405,7 @@
 <a href=#405 id=405 data-nosnippet>405</a>    </span>}
 <a href=#406 id=406 data-nosnippet>406</a>
 <a href=#407 id=407 data-nosnippet>407</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>context(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; pGEcontext {
-<a href=#408 id=408 data-nosnippet>408</a>        <span class="kw">unsafe </span>{ std::mem::transmute(<span class="kw-2">&amp;</span><span class="self">self</span>.context) }
+<a href=#408 id=408 data-nosnippet>408</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.context <span class="kw">as </span><span class="kw-2">*const </span>extendr_ffi::R_GE_gcontext <span class="kw">as </span><span class="kw-2">*mut </span>extendr_ffi::R_GE_gcontext
 <a href=#409 id=409 data-nosnippet>409</a>    }
 <a href=#410 id=410 data-nosnippet>410</a>
 <a href=#411 id=411 data-nosnippet>411</a>    <span class="comment">// Affine transform.

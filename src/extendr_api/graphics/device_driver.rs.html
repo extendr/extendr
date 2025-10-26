@@ -397,7 +397,7 @@
 <a href=#397 id=397 data-nosnippet>397</a>            // we just use `c.abs()`.
 <a href=#398 id=398 data-nosnippet>398</a>            //
 <a href=#399 id=399 data-nosnippet>399</a>            // [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617
-<a href=#400 id=400 data-nosnippet>400</a>            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(c) = std::char::from_u32(c.abs() <span class="kw">as _</span>) {
+<a href=#400 id=400 data-nosnippet>400</a>            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(c) = std::char::from_u32(c.unsigned_abs()) {
 <a href=#401 id=401 data-nosnippet>401</a>                <span class="kw">let </span>data = ((<span class="kw-2">*</span>dd).deviceSpecific <span class="kw">as </span><span class="kw-2">*mut </span>T).as_mut().unwrap();
 <a href=#402 id=402 data-nosnippet>402</a>                <span class="kw">let </span>metric_info = data.char_metric(c, <span class="kw-2">*</span>gc, <span class="kw-2">*</span>dd);
 <a href=#403 id=403 data-nosnippet>403</a>                <span class="kw-2">*</span>ascent = metric_info.ascent;

@@ -180,9 +180,8 @@
 <a href=#180 id=180 data-nosnippet>180</a>    </span><span class="kw">fn </span>test_vec_i32_integers_conversion() {
 <a href=#181 id=181 data-nosnippet>181</a>        <span class="macro">test!</span> {
 <a href=#182 id=182 data-nosnippet>182</a>            <span class="kw">let </span>int_vec = <span class="macro">vec!</span>[<span class="number">3</span>,<span class="number">4</span>,<span class="number">0</span>,-<span class="number">2</span>];
-<a href=#183 id=183 data-nosnippet>183</a>            <span class="kw">let </span>int_vec_robj: Robj = int_vec.clone().try_into().unwrap();
-<a href=#184 id=184 data-nosnippet>184</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
-<a href=#185 id=185 data-nosnippet>185</a>            </span><span class="macro">assert_eq!</span>(int_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
-<a href=#186 id=186 data-nosnippet>186</a>        }
-<a href=#187 id=187 data-nosnippet>187</a>    }
-<a href=#188 id=188 data-nosnippet>188</a>}</code></pre></div></section></main></body></html>
+<a href=#183 id=183 data-nosnippet>183</a>            <span class="kw">let </span>int_vec_robj: Robj = int_vec.clone().into();
+<a href=#184 id=184 data-nosnippet>184</a>            <span class="macro">assert_eq!</span>(int_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
+<a href=#185 id=185 data-nosnippet>185</a>        }
+<a href=#186 id=186 data-nosnippet>186</a>    }
+<a href=#187 id=187 data-nosnippet>187</a>}</code></pre></div></section></main></body></html>

@@ -38,7 +38,7 @@
 <a href=#38 id=38 data-nosnippet>38</a>
 <a href=#39 id=39 data-nosnippet>39</a><span class="kw">impl</span>&lt;T, <span class="kw">const </span>NDIM: usize&gt; RArray&lt;T, NDIM&gt; {
 <a href=#40 id=40 data-nosnippet>40</a>    <span class="kw">pub fn </span>get_dimnames(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; List {
-<a href=#41 id=41 data-nosnippet>41</a>        List::try_from(Robj::from_sexp(<span class="kw">unsafe </span>{ Rf_GetArrayDimnames(<span class="self">self</span>.get()) })).unwrap()
+<a href=#41 id=41 data-nosnippet>41</a>        <span class="kw">unsafe </span>{ List::try_from(Robj::from_sexp(Rf_GetArrayDimnames(<span class="self">self</span>.get()))).unwrap() }
 <a href=#42 id=42 data-nosnippet>42</a>    }
 <a href=#43 id=43 data-nosnippet>43</a>
 <a href=#44 id=44 data-nosnippet>44</a>    <span class="doccomment">/// Get the dimension vector of the array.
@@ -154,7 +154,7 @@
 <a href=#154 id=154 data-nosnippet>154</a>                SEXPTYPE::NILSXP =&gt; <span class="prelude-val">None</span>,
 <a href=#155 id=155 data-nosnippet>155</a>                SEXPTYPE::STRSXP =&gt; {
 <a href=#156 id=156 data-nosnippet>156</a>                    <span class="kw">let </span>colnames = Robj::from_sexp(maybe_colnames);
-<a href=#157 id=157 data-nosnippet>157</a>                    <span class="prelude-val">Some</span>(std::mem::transmute(colnames))
+<a href=#157 id=157 data-nosnippet>157</a>                    Strings::try_from(colnames).ok()
 <a href=#158 id=158 data-nosnippet>158</a>                }
 <a href=#159 id=159 data-nosnippet>159</a>                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(
 <a href=#160 id=160 data-nosnippet>160</a>                    <span class="string">"This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
@@ -169,7 +169,7 @@
 <a href=#169 id=169 data-nosnippet>169</a>                SEXPTYPE::NILSXP =&gt; <span class="prelude-val">None</span>,
 <a href=#170 id=170 data-nosnippet>170</a>                SEXPTYPE::STRSXP =&gt; {
 <a href=#171 id=171 data-nosnippet>171</a>                    <span class="kw">let </span>rownames = Robj::from_sexp(maybe_rownames);
-<a href=#172 id=172 data-nosnippet>172</a>                    <span class="prelude-val">Some</span>(std::mem::transmute(rownames))
+<a href=#172 id=172 data-nosnippet>172</a>                    Strings::try_from(rownames).ok()
 <a href=#173 id=173 data-nosnippet>173</a>                }
 <a href=#174 id=174 data-nosnippet>174</a>                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(
 <a href=#175 id=175 data-nosnippet>175</a>                    <span class="string">"This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"
@@ -271,8 +271,8 @@
 <a href=#271 id=271 data-nosnippet>271</a>    /// * `nrows` - the number of rows the returned matrix will have
 <a href=#272 id=272 data-nosnippet>272</a>    /// * `ncols` - the number of columns the returned matrix will have
 <a href=#273 id=273 data-nosnippet>273</a>    /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
-<a href=#274 id=274 data-nosnippet>274</a>    ///     It must return a scalar value that can be converted to an R scalar, such as `i32`, `u32`, or `f64`, i.e. see [ToVectorValue].
-<a href=#275 id=275 data-nosnippet>275</a>    ///     It accepts two arguments:
+<a href=#274 id=274 data-nosnippet>274</a>    ///   It must return a scalar value that can be converted to an R scalar, such as `i32`, `u32`, or `f64`, i.e. see [ToVectorValue].
+<a href=#275 id=275 data-nosnippet>275</a>    ///   It accepts two arguments:
 <a href=#276 id=276 data-nosnippet>276</a>    ///     * `r` - the current row of the entry we are creating
 <a href=#277 id=277 data-nosnippet>277</a>    ///     * `c` - the current column of the entry we are creating
 <a href=#278 id=278 data-nosnippet>278</a>    </span><span class="kw">pub fn </span>new_matrix&lt;F: Clone + FnMut(usize, usize) -&gt; T&gt;(

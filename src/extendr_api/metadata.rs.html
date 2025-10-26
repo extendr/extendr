@@ -403,11 +403,11 @@
 <a href=#403 id=403 data-nosnippet>403</a>        <span class="kw">unsafe </span>{ <span class="prelude-val">Ok</span>(String::from_utf8_unchecked(w)) }
 <a href=#404 id=404 data-nosnippet>404</a>    }
 <a href=#405 id=405 data-nosnippet>405</a>
-<a href=#406 id=406 data-nosnippet>406</a>    <span class="kw">fn </span>impl_names&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>) -&gt; Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; {
+<a href=#406 id=406 data-nosnippet>406</a>    <span class="kw">fn </span>impl_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;<span class="kw-2">&amp;</span>str&gt; {
 <a href=#407 id=407 data-nosnippet>407</a>        <span class="kw">let </span><span class="kw-2">mut </span>vec: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = <span class="macro">vec!</span>[];
 <a href=#408 id=408 data-nosnippet>408</a>        <span class="kw">for </span>impls <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.impls {
 <a href=#409 id=409 data-nosnippet>409</a>            <span class="kw">if </span>!vec.contains(<span class="kw-2">&amp;</span>impls.name) {
-<a href=#410 id=410 data-nosnippet>410</a>                vec.push(<span class="kw-2">&amp;</span>impls.name)
+<a href=#410 id=410 data-nosnippet>410</a>                vec.push(impls.name)
 <a href=#411 id=411 data-nosnippet>411</a>            }
 <a href=#412 id=412 data-nosnippet>412</a>        }
 <a href=#413 id=413 data-nosnippet>413</a>        vec

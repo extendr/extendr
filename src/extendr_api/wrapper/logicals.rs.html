@@ -106,7 +106,7 @@
 <a href=#106 id=106 data-nosnippet>106</a>    <span class="kw">fn </span>try_from(value: Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
 <a href=#107 id=107 data-nosnippet>107</a>        <span class="kw">let </span>bools = Logicals::try_from(<span class="kw-2">&amp;</span>value)<span class="question-mark">?</span>;
 <a href=#108 id=108 data-nosnippet>108</a>        <span class="kw">let </span><span class="kw-2">mut </span>res_vec = Vec::with_capacity(bools.len());
-<a href=#109 id=109 data-nosnippet>109</a>        <span class="kw">for </span>logi <span class="kw">in </span>bools.into_iter() {
+<a href=#109 id=109 data-nosnippet>109</a>        <span class="kw">for </span>logi <span class="kw">in </span>bools.iter() {
 <a href=#110 id=110 data-nosnippet>110</a>            <span class="kw">if </span>logi.is_na() {
 <a href=#111 id=111 data-nosnippet>111</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::MustNotBeNA(value.clone()));
 <a href=#112 id=112 data-nosnippet>112</a>            }
