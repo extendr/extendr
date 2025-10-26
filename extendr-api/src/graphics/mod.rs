@@ -1,4 +1,3 @@
-#![allow(clippy::missing_transmute_annotations)]
 // ## Resources for Developers
 //
 // Graphic device is documented in the R-internals. The header file also

@@ -357,7 +357,6 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         });
 
         TokenStream::from(quote! {
-            #[allow(clippy::needless_question_mark)]
             impl<#(#types),*> TryFrom<&Robj> for (#(#types,)*)
             where
                 #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*
@@ -397,8 +396,7 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
-                        let res = <(#(#types,)*)>::try_from(robj)?;
-                        Ok(Some(res))
+                        <(#(#types,)*)>::try_from(robj).map(Some)
                     }
                 }
             }

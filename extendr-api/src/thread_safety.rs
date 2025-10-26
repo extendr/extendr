@@ -1,5 +1,3 @@
-#![allow(clippy::missing_transmute_annotations)]
-
 //! Provide limited protection for multithreaded access to the R API.
 use crate::*;
 use extendr_ffi::{
@@ -114,8 +112,14 @@ where
         let fun_ptr = do_call::<F> as *const ();
         let clean_ptr = do_cleanup as *const ();
         let x = false;
-        let fun = std::mem::transmute(fun_ptr);
-        let cleanfun = std::mem::transmute(clean_ptr);
+        let fun = std::mem::transmute::<
+            *const (),
+            Option<unsafe extern "C" fn(*mut std::ffi::c_void) -> *mut extendr_ffi::SEXPREC>,
+        >(fun_ptr);
+        let cleanfun = std::mem::transmute::<
+            *const (),
+            std::option::Option<unsafe extern "C" fn(*mut std::ffi::c_void, extendr_ffi::Rboolean)>,
+        >(clean_ptr);
         let data = &f as *const _ as _;
         let cleandata = &x as *const _ as _;
         let cont = R_MakeUnwindCont();
