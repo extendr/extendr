@@ -169,7 +169,7 @@ impl<T> RMatrix<T> {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
                     let rownames = Robj::from_sexp(maybe_rownames);
-                    Some(std::mem::transmute(rownames))
+                    Strings::try_from(rownames).ok()
                 }
                 _ => unreachable!(
                     "This should not have occurred. Please report an error at https://github.com/extendr/extendr/issues"

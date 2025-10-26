@@ -42,7 +42,7 @@ impl Symbol {
     }
 
     // Internal conversion for constant symbols.
-    fn from_sexp(sexp: SEXP) -> Symbol {
+    pub(crate) fn from_sexp(sexp: SEXP) -> Symbol {
         unsafe {
             assert!(TYPEOF(sexp) == SEXPTYPE::SYMSXP);
         }
