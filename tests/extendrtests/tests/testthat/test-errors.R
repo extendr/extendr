@@ -1,6 +1,6 @@
 test_that("Error functions throw clean errors by default", {
-  # remove any extendr-traceback env vars
-  Sys.unsetenv("EXTENDR_TRACEBACK")
+  # remove any extendr-backtrace env vars
+  Sys.unsetenv("EXTENDR_BACKTRACE")
 
   expect_error(
     error_simple(),
@@ -43,7 +43,7 @@ test_that("Successful Result returns value correctly", {
 })
 
 test_that("Error messages do not contain Rust traceback by default", {
-  Sys.unsetenv("EXTENDR_TRACEBACK")
+  Sys.unsetenv("EXTENDR_BACKTRACE")
 
   err <- tryCatch(
     error_simple(),
@@ -57,10 +57,10 @@ test_that("Error messages do not contain Rust traceback by default", {
   expect_true(grepl("This is a simple error message", err, fixed = TRUE))
 })
 
-test_that("EXTENDR_TRACEBACK=true shows full traceback", {
-  orig_val <- Sys.getenv("EXTENDR_TRACEBACK", unset = NA)
+test_that("EXTENDR_BACKTRACE=true shows full traceback", {
+  orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
 
-  Sys.setenv(EXTENDR_TRACEBACK = "true")
+  Sys.setenv(EXTENDR_BACKTRACE = "true")
 
   # Capture the error
   err <- tryCatch(
@@ -69,20 +69,20 @@ test_that("EXTENDR_TRACEBACK=true shows full traceback", {
   )
 
   if (is.na(orig_val)) {
-    Sys.unsetenv("EXTENDR_TRACEBACK")
+    Sys.unsetenv("EXTENDR_BACKTRACE")
   } else {
-    Sys.setenv(EXTENDR_TRACEBACK = orig_val)
+    Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
   expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
-test_that("EXTENDR_TRACEBACK=1 also shows full traceback", {
-  orig_val <- Sys.getenv("EXTENDR_TRACEBACK", unset = NA)
+test_that("EXTENDR_BACKTRACE=1 also shows full traceback", {
+  orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
 
-  # extewndr traceback should honor a value of 1 too
-  Sys.setenv(EXTENDR_TRACEBACK = "1")
+  # extendr backtrace should honor a value of 1 too
+  Sys.setenv(EXTENDR_BACKTRACE = "1")
 
   err <- tryCatch(
     error_simple(),
@@ -90,19 +90,19 @@ test_that("EXTENDR_TRACEBACK=1 also shows full traceback", {
   )
 
   if (is.na(orig_val)) {
-    Sys.unsetenv("EXTENDR_TRACEBACK")
+    Sys.unsetenv("EXTENDR_BACKTRACE")
   } else {
-    Sys.setenv(EXTENDR_TRACEBACK = orig_val)
+    Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
   expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
-test_that("EXTENDR_TRACEBACK=false shows clean error", {
-  orig_val <- Sys.getenv("EXTENDR_TRACEBACK", unset = NA)
+test_that("EXTENDR_BACKTRACE=false shows clean error", {
+  orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
 
-  Sys.setenv(EXTENDR_TRACEBACK = "false")
+  Sys.setenv(EXTENDR_BACKTRACE = "false")
 
   err <- tryCatch(
     error_simple(),
@@ -110,9 +110,9 @@ test_that("EXTENDR_TRACEBACK=false shows clean error", {
   )
 
   if (is.na(orig_val)) {
-    Sys.unsetenv("EXTENDR_TRACEBACK")
+    Sys.unsetenv("EXTENDR_BACKTRACE")
   } else {
-    Sys.setenv(EXTENDR_TRACEBACK = orig_val)
+    Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
   expect_true(grepl("This is a simple error message", err, fixed = TRUE))
@@ -122,11 +122,11 @@ test_that("EXTENDR_TRACEBACK=false shows clean error", {
 test_that("Error handling does not leak memory", {
   skip_if_not_installed("lobstr")
 
-  # Save original EXTENDR_TRACEBACK value
-  orig_val <- Sys.getenv("EXTENDR_TRACEBACK", unset = NA)
+  # Save original EXTENDR_BACKTRACE value
+  orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
 
-  # Test with default (no traceback)
-  Sys.unsetenv("EXTENDR_TRACEBACK")
+  # Test with default (no backtrace)
+  Sys.unsetenv("EXTENDR_BACKTRACE")
 
   # Measure memory before
   mem_before <- lobstr::mem_used()
@@ -163,8 +163,8 @@ test_that("Error handling does not leak memory", {
     info = sprintf("Leaked %f bytes per iteration", leak_per_iter)
   )
 
-  # Test with EXTENDR_TRACEBACK=true
-  Sys.setenv(EXTENDR_TRACEBACK = "true")
+  # Test with EXTENDR_BACKTRACE=true
+  Sys.setenv(EXTENDR_BACKTRACE = "true")
 
   mem_before_tb <- lobstr::mem_used()
 
@@ -181,15 +181,15 @@ test_that("Error handling does not leak memory", {
   expect_true(
     leak_per_iter_tb <= 256,
     info = sprintf(
-      "Leaked %f bytes per iteration with traceback",
+      "Leaked %f bytes per iteration with backtrace",
       leak_per_iter_tb
     )
   )
 
   # Restore original value
   if (is.na(orig_val)) {
-    Sys.unsetenv("EXTENDR_TRACEBACK")
+    Sys.unsetenv("EXTENDR_BACKTRACE")
   } else {
-    Sys.setenv(EXTENDR_TRACEBACK = orig_val)
+    Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 })
