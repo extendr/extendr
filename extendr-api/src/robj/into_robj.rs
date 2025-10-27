@@ -38,7 +38,9 @@ impl From<()> for Robj {
 
 /// Convert a [`Result`] to an [`Robj`].
 ///
-/// Panics if there is an error.
+/// By default, shows the Display method from the Error.
+/// If the environment variable `EXTENDR_TRACEBACK` is set to either `true` or `1`,
+/// then it displays the entire Rust panic traceback.
 ///
 /// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
@@ -51,7 +53,7 @@ impl From<()> for Robj {
 /// * `result_list`: `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
 /// * `result_condition'`: `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
 /// * More than one enabled feature: Only one feature gate will take effect, the current order of precedence is [`result_list`, `result_condition`, ... ].
-/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()`, which is discouraged.
+/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok` and `Err(E)` will trigger `throw_r_error()` with the error message.
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
@@ -68,10 +70,24 @@ impl From<()> for Robj {
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
-    E: std::fmt::Debug,
+    E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
-        res.unwrap().into()
+        // if the envvar EXTENDR_TRACEBACK is set to true or 1
+        // then we panic and show the full thing
+        let show_traceback = std::env::var("EXTENDR_TRACEBACK")
+            .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
+            .unwrap_or(false);
+
+        if show_traceback {
+            res.unwrap().into()
+        } else {
+            // otherwise, we use throw_r_error here
+            match res {
+                Ok(val) => val.into(),
+                Err(err) => crate::throw_r_error(err.to_string()),
+            }
+        }
     }
 }
 
