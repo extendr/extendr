@@ -96,6 +96,18 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
+error_simple <- function() invisible(.Call(wrap__error_simple))
+
+error_parse_int <- function(s) invisible(.Call(wrap__error_parse_int, s))
+
+error_success <- function() invisible(.Call(wrap__error_success))
+
+error_division <- function(numerator, denominator) invisible(.Call(wrap__error_division, numerator, denominator))
+
+error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
+
+error_long_message <- function() invisible(.Call(wrap__error_long_message))
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)

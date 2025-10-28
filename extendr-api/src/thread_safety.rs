@@ -46,24 +46,6 @@ where
     result
 }
 
-/// This function is used by the wrapper logic to catch
-/// panics on return.
-///
-#[doc(hidden)]
-pub fn handle_panic<F, R>(err_str: &str, f: F) -> R
-where
-    F: FnOnce() -> R,
-    F: std::panic::UnwindSafe,
-{
-    match std::panic::catch_unwind(f) {
-        Ok(res) => res,
-        Err(_) => {
-            let err_str = CString::new(err_str).unwrap();
-            unsafe { Rf_error(err_str.as_ptr()) }
-        }
-    }
-}
-
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
