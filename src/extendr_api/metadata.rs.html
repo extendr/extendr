@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/metadata.rs`."><title>metadata.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (34f954f9b 2025-10-25)" data-channel="nightly" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/</div>metadata.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Module metadata
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/metadata.rs`."><title>metadata.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (adaa83897 2025-10-27)" data-channel="nightly" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/</div>metadata.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Module metadata
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! This data is returned by get_module_metadata()
 <a href=#4 id=4 data-nosnippet>4</a>//! which is generated by [extendr_module!].
@@ -145,7 +145,7 @@
 <a href=#145 id=145 data-nosnippet>145</a>}
 <a href=#146 id=146 data-nosnippet>146</a>
 <a href=#147 id=147 data-nosnippet>147</a><span class="kw">fn </span>write_doc(w: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;, doc: <span class="kw-2">&amp;</span>str) -&gt; std::io::Result&lt;()&gt; {
-<a href=#148 id=148 data-nosnippet>148</a>    <span class="kw">if </span>!doc.is_empty() {
+<a href=#148 id=148 data-nosnippet>148</a>    <span class="macro">if !</span>doc.is_empty() {
 <a href=#149 id=149 data-nosnippet>149</a>        <span class="macro">write!</span>(w, <span class="string">"#'"</span>)<span class="question-mark">?</span>;
 <a href=#150 id=150 data-nosnippet>150</a>        <span class="kw">for </span>c <span class="kw">in </span>doc.chars() {
 <a href=#151 id=151 data-nosnippet>151</a>            <span class="kw">if </span>c == <span class="string">'\n' </span>{
@@ -223,11 +223,11 @@
 <a href=#223 id=223 data-nosnippet>223</a>        <span class="macro">write!</span>(w, <span class="string">"\"wrap__{}\""</span>, func.mod_name)<span class="question-mark">?</span>;
 <a href=#224 id=224 data-nosnippet>224</a>    }
 <a href=#225 id=225 data-nosnippet>225</a>
-<a href=#226 id=226 data-nosnippet>226</a>    <span class="kw">if </span>!func.args.is_empty() {
+<a href=#226 id=226 data-nosnippet>226</a>    <span class="macro">if !</span>func.args.is_empty() {
 <a href=#227 id=227 data-nosnippet>227</a>        <span class="macro">write!</span>(w, <span class="string">", {}"</span>, join_str(actual_args, <span class="string">", "</span>))<span class="question-mark">?</span>;
 <a href=#228 id=228 data-nosnippet>228</a>    }
 <a href=#229 id=229 data-nosnippet>229</a>
-<a href=#230 id=230 data-nosnippet>230</a>    <span class="kw">if </span>!use_symbols {
+<a href=#230 id=230 data-nosnippet>230</a>    <span class="macro">if !</span>use_symbols {
 <a href=#231 id=231 data-nosnippet>231</a>        <span class="macro">write!</span>(w, <span class="string">", PACKAGE = \"{}\""</span>, package_name)<span class="question-mark">?</span>;
 <a href=#232 id=232 data-nosnippet>232</a>    }
 <a href=#233 id=233 data-nosnippet>233</a>
@@ -299,7 +299,7 @@
 <a href=#299 id=299 data-nosnippet>299</a>        <span class="macro">write!</span>(w, <span class="string">", {}"</span>, join_str(actual_args, <span class="string">", "</span>))<span class="question-mark">?</span>;
 <a href=#300 id=300 data-nosnippet>300</a>    }
 <a href=#301 id=301 data-nosnippet>301</a>
-<a href=#302 id=302 data-nosnippet>302</a>    <span class="kw">if </span>!use_symbols {
+<a href=#302 id=302 data-nosnippet>302</a>    <span class="macro">if !</span>use_symbols {
 <a href=#303 id=303 data-nosnippet>303</a>        <span class="macro">write!</span>(w, <span class="string">", PACKAGE = \"{}\""</span>, package_name)<span class="question-mark">?</span>;
 <a href=#304 id=304 data-nosnippet>304</a>    }
 <a href=#305 id=305 data-nosnippet>305</a>
@@ -323,7 +323,7 @@
 <a href=#323 id=323 data-nosnippet>323</a>    <span class="kw">let </span><span class="kw-2">mut </span>exported = <span class="bool-val">false</span>;
 <a href=#324 id=324 data-nosnippet>324</a>    {
 <a href=#325 id=325 data-nosnippet>325</a>        <span class="kw">for </span>imp <span class="kw">in </span>impls.iter().filter(|imp| imp.name == name) {
-<a href=#326 id=326 data-nosnippet>326</a>            <span class="kw">if </span>!exported {
+<a href=#326 id=326 data-nosnippet>326</a>            <span class="macro">if !</span>exported {
 <a href=#327 id=327 data-nosnippet>327</a>                exported = imp.doc.contains(<span class="string">"@export"</span>);
 <a href=#328 id=328 data-nosnippet>328</a>            }
 <a href=#329 id=329 data-nosnippet>329</a>            write_doc(w, imp.doc)<span class="question-mark">?</span>;
@@ -406,10 +406,11 @@
 <a href=#406 id=406 data-nosnippet>406</a>    <span class="kw">fn </span>impl_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;<span class="kw-2">&amp;</span>str&gt; {
 <a href=#407 id=407 data-nosnippet>407</a>        <span class="kw">let </span><span class="kw-2">mut </span>vec: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = <span class="macro">vec!</span>[];
 <a href=#408 id=408 data-nosnippet>408</a>        <span class="kw">for </span>impls <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.impls {
-<a href=#409 id=409 data-nosnippet>409</a>            <span class="kw">if </span>!vec.contains(<span class="kw-2">&amp;</span>impls.name) {
+<a href=#409 id=409 data-nosnippet>409</a>            <span class="macro">if !</span>vec.contains(<span class="kw-2">&amp;</span>impls.name) {
 <a href=#410 id=410 data-nosnippet>410</a>                vec.push(impls.name)
 <a href=#411 id=411 data-nosnippet>411</a>            }
 <a href=#412 id=412 data-nosnippet>412</a>        }
 <a href=#413 id=413 data-nosnippet>413</a>        vec
 <a href=#414 id=414 data-nosnippet>414</a>    }
-<a href=#415 id=415 data-nosnippet>415</a>}</code></pre></div></section></main></body></html>
+<a href=#415 id=415 data-nosnippet>415</a>}
+</code></pre></div></section></main></body></html>
