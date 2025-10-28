@@ -172,7 +172,7 @@
 <a href=#172 id=172 data-nosnippet>172</a>    <span class="kw">where
 <a href=#173 id=173 data-nosnippet>173</a>        </span>V: Visitor&lt;<span class="lifetime">'de</span>&gt;,
 <a href=#174 id=174 data-nosnippet>174</a>    {
-<a href=#175 id=175 data-nosnippet>175</a>        visitor.visit_borrowed_str(<span class="self">self</span>.as_str())
+<a href=#175 id=175 data-nosnippet>175</a>        visitor.visit_borrowed_str(<span class="self">self</span>)
 <a href=#176 id=176 data-nosnippet>176</a>    }
 <a href=#177 id=177 data-nosnippet>177</a>
 <a href=#178 id=178 data-nosnippet>178</a>    <span class="macro">forward_to_deserialize_any!</span> {
@@ -1121,7 +1121,7 @@
 <a href=#1121 id=1121 data-nosnippet>1121</a>    <span class="kw">where
 <a href=#1122 id=1122 data-nosnippet>1122</a>        </span>E: serde::de::Error,
 <a href=#1123 id=1123 data-nosnippet>1123</a>    {
-<a href=#1124 id=1124 data-nosnippet>1124</a>        <span class="prelude-val">Ok</span>(Rstr::from_string(&lt;<span class="kw-2">&amp;</span>str&gt;::na()))
+<a href=#1124 id=1124 data-nosnippet>1124</a>        <span class="prelude-val">Ok</span>(Rstr::na())
 <a href=#1125 id=1125 data-nosnippet>1125</a>    }
 <a href=#1126 id=1126 data-nosnippet>1126</a>
 <a href=#1127 id=1127 data-nosnippet>1127</a>    <span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, deserializer: D) -&gt; std::result::Result&lt;<span class="self">Self</span>::Value, D::Error&gt;
@@ -1135,7 +1135,7 @@
 <a href=#1135 id=1135 data-nosnippet>1135</a>    <span class="kw">where
 <a href=#1136 id=1136 data-nosnippet>1136</a>        </span>E: serde::de::Error,
 <a href=#1137 id=1137 data-nosnippet>1137</a>    {
-<a href=#1138 id=1138 data-nosnippet>1138</a>        <span class="prelude-val">Ok</span>(Rstr::from_string(&lt;<span class="kw-2">&amp;</span>str&gt;::na()))
+<a href=#1138 id=1138 data-nosnippet>1138</a>        <span class="prelude-val">Ok</span>(Rstr::na())
 <a href=#1139 id=1139 data-nosnippet>1139</a>    }
 <a href=#1140 id=1140 data-nosnippet>1140</a>}
 <a href=#1141 id=1141 data-nosnippet>1141</a>
