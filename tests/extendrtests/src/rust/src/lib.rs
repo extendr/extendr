@@ -3,6 +3,7 @@ use extendr_api::{graphics::*, prelude::*};
 mod altrep;
 mod attributes;
 mod dataframe;
+mod errors;
 mod externalptr;
 mod graphic_device;
 mod hashmap;
@@ -353,6 +354,7 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use errors;
     use hashmap;
     use memory_leaks;
     use optional_either;
