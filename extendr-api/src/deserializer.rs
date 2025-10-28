@@ -172,7 +172,7 @@ impl<'de> Deserializer<'de> for &'de Rstr {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_borrowed_str(self.as_str())
+        visitor.visit_borrowed_str(self)
     }
 
     forward_to_deserialize_any! {
@@ -1121,7 +1121,7 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::from_string(<&str>::na()))
+        Ok(Rstr::na())
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -1135,7 +1135,7 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::from_string(<&str>::na()))
+        Ok(Rstr::na())
     }
 }
 

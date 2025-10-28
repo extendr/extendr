@@ -31,7 +31,7 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"+\\\")\"");
         let r : Primitive  = R!("`if`")?.try_into()?;
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"if\\\")\"");
-        let r : Rstr = Rstr::from_string("xyz");
+        let r = Rstr::from("xyz");
         assert_eq!(format!("{:?}", r), "\"xyz\"");
         let r : Logicals = Logicals::from_values([TRUE]);
         assert_eq!(format!("{:?}", r), "TRUE");

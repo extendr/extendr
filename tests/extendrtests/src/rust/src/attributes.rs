@@ -17,9 +17,7 @@ fn dbls_named(mut x: Doubles) -> Doubles {
 fn strings_named(mut x: Strings) -> Strings {
     x.set_attrib(
         "names",
-        x.iter()
-            .map(|xi| xi.as_str().to_string())
-            .collect::<Vec<_>>(),
+        x.iter().map(|xi| xi.to_string()).collect::<Vec<_>>(),
     )
     .unwrap();
     x
