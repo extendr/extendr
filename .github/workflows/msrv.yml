@@ -50,7 +50,11 @@ jobs:
           echo "SCCACHE_GHA_ENABLED=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "RUSTC_WRAPPER=sccache" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Verify minimum rust version
+      - name: Verify minimum rust version of extendr-api
         run: |
           . ./ci-cargo.ps1
-          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
+          ci-cargo extendr msrv -ActionName "Verify Rust MSRV for extendr-api"
+      - name: Verify minimum rust version of extendr-api with full functionality
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr msrv --features=full-functionality -ActionName "Verify Rust MSRV for extendr-api"
