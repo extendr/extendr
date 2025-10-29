@@ -426,7 +426,6 @@ macro_rules! impl_str_tvv {
 impl_str_tvv! {&str}
 impl_str_tvv! {String}
 
-// Manual implementations for Rstr to work with make_conversions!
 impl ToVectorValue for Rstr {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::STRSXP
