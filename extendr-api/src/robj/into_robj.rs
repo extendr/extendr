@@ -426,6 +426,88 @@ macro_rules! impl_str_tvv {
 impl_str_tvv! {&str}
 impl_str_tvv! {String}
 
+// Manual implementations for Rstr to work with make_conversions!
+impl ToVectorValue for Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.get() }
+    }
+}
+
+impl ToVectorValue for &Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.get() }
+    }
+}
+
+impl ToVectorValue for Option<Rstr> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        if let Some(s) = self {
+            unsafe { s.get() }
+        } else {
+            unsafe { R_NaString }
+        }
+    }
+}
+
+impl TryFrom<&Robj> for Rstr {
+    type Error = crate::Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_char() {
+            Ok(Rstr { robj: robj.clone() })
+        } else {
+            Err(Error::ExpectedRstr(robj.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Rstr {
+    type Error = crate::Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Rstr::try_from(&robj)
+    }
+}
+
+impl GetSexp for Rstr {
+    unsafe fn get(&self) -> SEXP {
+        self.robj.get()
+    }
+
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.robj.get_mut()
+    }
+
+    fn as_robj(&self) -> &Robj {
+        &self.robj
+    }
+
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        &mut self.robj
+    }
+}
+
 impl ToVectorValue for bool {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::LGLSXP
@@ -729,13 +811,6 @@ impl From<Vec<Robj>> for Robj {
 impl From<&Vec<Robj>> for Robj {
     fn from(val: &Vec<Robj>) -> Self {
         List::from_values(val.iter()).into()
-    }
-}
-
-impl From<Vec<Rstr>> for Robj {
-    /// Convert a vector of Rstr into strings.
-    fn from(val: Vec<Rstr>) -> Self {
-        Strings::from_values(val).into()
     }
 }
 
