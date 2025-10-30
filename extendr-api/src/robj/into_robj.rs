@@ -473,7 +473,15 @@ impl TryFrom<&Robj> for Rstr {
     type Error = crate::Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        if robj.is_char() {
+        let sexptype = robj.sexptype();
+        if let SEXPTYPE::STRSXP = sexptype {
+            if robj.len() == 1 {
+                let strs = Strings::try_from(robj)?;
+                Ok(strs.elt(0))
+            } else {
+                Err(Error::ExpectedRstr(robj.clone()))
+            }
+        } else if let SEXPTYPE::CHARSXP = sexptype {
             Ok(Rstr { robj: robj.clone() })
         } else {
             Err(Error::ExpectedRstr(robj.clone()))
@@ -484,8 +492,8 @@ impl TryFrom<&Robj> for Rstr {
 impl TryFrom<Robj> for Rstr {
     type Error = crate::Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
-        Rstr::try_from(&robj)
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        Self::try_from(&value)
     }
 }
 
