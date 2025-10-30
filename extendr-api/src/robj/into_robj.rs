@@ -507,6 +507,14 @@ impl GetSexp for Rstr {
     }
 }
 
+// These traits all derive from GetSexp with default implementations
+impl Length for Rstr {}
+impl Types for Rstr {}
+impl Conversions for Rstr {}
+impl Rinternals for Rstr {}
+impl Slices for Rstr {}
+impl Operators for Rstr {}
+
 impl ToVectorValue for bool {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::LGLSXP
