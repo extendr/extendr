@@ -202,3 +202,18 @@ impl CanBeNA for Rstr {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate as extendr_api;
+
+    #[test]
+    fn test_rstr_as_char() {
+        test! {
+            let chr = r!(Rstr::from("xyz"));
+            let x = chr.as_char().unwrap();
+            assert_eq!(x.as_ref(), "xyz");
+        }
+    }
+}

@@ -120,8 +120,6 @@ make_conversions!(
 
 make_conversions!(Raw, ExpectedRaw, is_raw, "Not a raw object");
 
-make_conversions!(Rstr, ExpectedRstr, is_char, "Not a character object");
-
 make_conversions!(
     Environment,
     ExpectedEnvironment,

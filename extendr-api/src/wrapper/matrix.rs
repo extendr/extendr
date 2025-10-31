@@ -732,4 +732,24 @@ mod tests {
 
         }
     }
+
+    #[test]
+    fn test_rmatrix_with_rstr() {
+        test! {
+            // Test creating a matrix of strings using Rstr
+            let string_data = ["a", "b", "c", "d", "e", "f"];
+            let matrix: RMatrix<Rstr> = RMatrix::new_matrix(2, 3, |r, c| {
+                let idx = c * 2 + r;
+                Rstr::from(string_data[idx])
+            });
+
+            assert_eq!(matrix.nrows(), 2);
+            assert_eq!(matrix.ncols(), 3);
+
+            // Verify the matrix can be converted to Robj
+            let robj: Robj = matrix.into();
+            assert_eq!(robj.is_matrix(), true);
+            assert_eq!(robj.rtype(), Rtype::Strings);
+        }
+    }
 }
