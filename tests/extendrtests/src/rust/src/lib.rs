@@ -14,6 +14,7 @@ mod optional_either;
 mod optional_faer;
 mod optional_ndarray;
 mod raw_identifiers;
+mod signal;
 mod submodule;
 mod to_unique_character;
 mod tuple_conversions;
@@ -384,6 +385,7 @@ extendr_module! {
     use optional_ndarray;
     use optional_faer;
     use raw_identifiers;
+    use signal;
     use submodule;
     use tuple_conversions;
     use typedsliceargs;

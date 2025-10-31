@@ -321,6 +321,7 @@ pub mod prelude;
 pub mod rmacros;
 pub mod robj;
 pub mod scalar;
+pub mod signal;
 pub mod thread_safety;
 pub mod wrapper;
 
@@ -624,7 +625,6 @@ pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
 mod tests {
     use super::prelude::*;
     use crate as extendr_api;
-
     use extendr_macros::extendr;
     use extendr_macros::extendr_module;
     use extendr_macros::pairlist;

@@ -458,7 +458,12 @@ extern "C" {
     pub fn TAG(e: SEXP) -> SEXP;
     pub fn VECTOR_ELT(x: SEXP, i: R_xlen_t) -> SEXP;
     pub fn SETLEVELS(x: SEXP, v: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
-    // pub fn Rf_isS4(arg1: SEXP) -> Rboolean;
+    // User interrupts
+    // https://aitap.codeberg.page/R-api/#R_005fCheckUserInterrupt
+    pub fn R_CheckUserInterrupt();
+    // Signal interrupt
+    // https://aitap.codeberg.page/R-api/#Rf_005fonintr
+    pub fn Rf_onintr();
 
 }
 
