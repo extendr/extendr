@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added `check_user_interrupt()` and `signal_interrupt()` to a new module `signal`. Fixes <https://github.com/extendr/extendr/issues/925>.
 - Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present

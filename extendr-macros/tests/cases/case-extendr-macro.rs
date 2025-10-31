@@ -28,12 +28,6 @@ impl FooStruct {
 }
 
 #[extendr]
-default impl FooStruct {}
-
-#[extendr]
-unsafe impl FooStruct {}
-
-#[extendr]
 impl<const N: usize> FooStruct {}
 
 struct FooStructWithParam<A> {

@@ -189,6 +189,8 @@ true <- function() .Call(wrap__true)
 #' @export
 false <- function(type) .Call(wrap__false, type)
 
+test_signal <- function() invisible(.Call(wrap__test_signal))
+
 #' Return string `"Hello world!"` to R.
 #' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
