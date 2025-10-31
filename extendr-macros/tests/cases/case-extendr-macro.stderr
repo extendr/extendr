@@ -40,52 +40,40 @@ error: found &self in non-impl function - have you missed the #[extendr] before 
 27 |     fn misplaced_macro(&self) {}
    |                        ^^^^^
 
-error: default not allowed in #[extendr] impl
+error: const params not allowed in #[extendr] impl
   --> tests/cases/case-extendr-macro.rs:31:1
    |
-31 | default impl FooStruct {}
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error: unsafe not allowed in #[extendr] impl
-  --> tests/cases/case-extendr-macro.rs:34:1
-   |
-34 | unsafe impl FooStruct {}
-   | ^^^^^^^^^^^^^^^^^^^^^^^^
-
-error: const params not allowed in #[extendr] impl
-  --> tests/cases/case-extendr-macro.rs:37:1
-   |
-37 | impl<const N: usize> FooStruct {}
+31 | impl<const N: usize> FooStruct {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: type params not allowed in #[extendr] impl
-  --> tests/cases/case-extendr-macro.rs:44:1
+  --> tests/cases/case-extendr-macro.rs:38:1
    |
-44 | impl<A> FooStructWithParam<A> {}
+38 | impl<A> FooStructWithParam<A> {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: where clause not allowed in #[extendr] impl
-  --> tests/cases/case-extendr-macro.rs:47:1
+  --> tests/cases/case-extendr-macro.rs:41:1
    |
-47 | impl FooStructWithParam<A> where A: usize {}
+41 | impl FooStructWithParam<A> where A: usize {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: Only struct is supported
-  --> tests/cases/case-extendr-macro.rs:52:1
+  --> tests/cases/case-extendr-macro.rs:46:1
    |
-52 | / enum FooEnum1 {
-53 | |     A,
-54 | |     B,
-55 | |     C,
-56 | | }
+46 | / enum FooEnum1 {
+47 | |     A,
+48 | |     B,
+49 | |     C,
+50 | | }
    | |_^
 
 error: Only `struct` is supported
-  --> tests/cases/case-extendr-macro.rs:59:1
+  --> tests/cases/case-extendr-macro.rs:53:1
    |
-59 | / enum FooEnum2 {
-60 | |     A,
-61 | |     B,
-62 | |     C,
-63 | | }
+53 | / enum FooEnum2 {
+54 | |     A,
+55 | |     B,
+56 | |     C,
+57 | | }
    | |_^
