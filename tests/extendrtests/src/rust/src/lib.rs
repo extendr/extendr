@@ -2,6 +2,7 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
@@ -18,7 +19,6 @@ mod submodule;
 mod to_unique_character;
 mod tuple_conversions;
 mod typedsliceargs;
-mod custom_errors;
 
 // Return string `"Hello world!"` to R.
 #[extendr]

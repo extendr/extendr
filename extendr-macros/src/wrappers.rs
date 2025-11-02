@@ -251,10 +251,12 @@ pub(crate) fn make_function_wrappers(
             let wrap_result_state: std::result::Result<
                 std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>>,
                 Box<dyn std::any::Any + Send>
-            > = std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>> {
-                    #(#convert_args)*
-                    #return_type_conversion
-                }));
+            > = unsafe {
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>> {
+                        #(#convert_args)*
+                        #return_type_conversion
+                    }))
+                };
 
             // return RNG state back to r after evaluation
             #rng_end
