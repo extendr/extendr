@@ -239,6 +239,10 @@ to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 
+custom_error_return <- function() .Call(wrap__custom_error_return)
+
+custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
