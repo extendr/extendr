@@ -94,13 +94,43 @@ impl List {
         V: IntoRobj,
         K: Into<String>,
     {
-        let (names, values): (Vec<_>, Vec<_>) = val
-            .into_iter()
-            .map(|(k, v)| (k.into(), v.into_robj()))
-            .unzip();
-        let mut res: Self = Self::from_values(values);
-        res.set_names(names)?;
-        Ok(res)
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        Ok(result.into())
+    }
+
+    pub fn from_btreemap<K, V>(value: BTreeMap<K, V>) -> Result<Self>
+    where
+        K: AsRef<str>,
+        V: Into<Robj>,
+    {
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        Ok(result.into())
     }
 
     /// Build a list using separate names and values iterators.
