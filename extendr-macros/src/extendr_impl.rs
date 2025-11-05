@@ -95,7 +95,7 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> (String, Vec<St
     output.push_str(&format!("\\subsection{{Method `{}`}}{{\n", method_name));
     if !description.is_empty() {
         output.push_str(&description.join("\n"));
-        output.push_str("\n");
+        output.push('\n');
     }
     if !params.is_empty() {
         // params docstrings goes here
