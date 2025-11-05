@@ -1,0 +1,10 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "Cargo.toml",
+        "extendr-api/Cargo.toml",
+        "extendr-engine/Cargo.toml",
+        "extendr-ffi/Cargo.toml",
+        "xtask/Cargo.toml",
+        "tests/extendrtests/src/rust/Cargo.toml"
+    ]
+}
