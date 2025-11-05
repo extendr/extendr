@@ -1,4 +1,5 @@
 #![cfg(test)]
+use extendr_api::prelude::ndarray::{ArrayView1, ArrayView2};
 use extendr_api::prelude::*;
 
 #[test]
