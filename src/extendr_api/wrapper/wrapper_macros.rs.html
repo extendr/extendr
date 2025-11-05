@@ -3,7 +3,7 @@
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>extendr_ffi::{R_xlen_t, SET_VECTOR_ELT};
 <a href=#4 id=4 data-nosnippet>4</a>
 <a href=#5 id=5 data-nosnippet>5</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>make_symbol(name: <span class="kw-2">&amp;</span>str) -&gt; SEXP {
-<a href=#6 id=6 data-nosnippet>6</a>    <span class="kw">let </span>name = std::ffi::CString::new(name).unwrap();
+<a href=#6 id=6 data-nosnippet>6</a>    <span class="kw">let </span>name = CString::new(name).unwrap();
 <a href=#7 id=7 data-nosnippet>7</a>    <span class="kw">unsafe </span>{ extendr_ffi::Rf_install(name.as_ptr()) }
 <a href=#8 id=8 data-nosnippet>8</a>}
 <a href=#9 id=9 data-nosnippet>9</a>
