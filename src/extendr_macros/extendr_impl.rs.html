@@ -95,7 +95,7 @@
 <a href=#95 id=95 data-nosnippet>95</a>    output.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"\\subsection{{Method `{}`}}{{\n"</span>, method_name));
 <a href=#96 id=96 data-nosnippet>96</a>    <span class="macro">if !</span>description.is_empty() {
 <a href=#97 id=97 data-nosnippet>97</a>        output.push_str(<span class="kw-2">&amp;</span>description.join(<span class="string">"\n"</span>));
-<a href=#98 id=98 data-nosnippet>98</a>        output.push_str(<span class="string">"\n"</span>);
+<a href=#98 id=98 data-nosnippet>98</a>        output.push(<span class="string">'\n'</span>);
 <a href=#99 id=99 data-nosnippet>99</a>    }
 <a href=#100 id=100 data-nosnippet>100</a>    <span class="macro">if !</span>params.is_empty() {
 <a href=#101 id=101 data-nosnippet>101</a>        <span class="comment">// params docstrings goes here

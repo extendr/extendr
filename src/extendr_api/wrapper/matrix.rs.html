@@ -732,5 +732,25 @@
 <a href=#732 id=732 data-nosnippet>732</a>
 <a href=#733 id=733 data-nosnippet>733</a>        }
 <a href=#734 id=734 data-nosnippet>734</a>    }
-<a href=#735 id=735 data-nosnippet>735</a>}
+<a href=#735 id=735 data-nosnippet>735</a>
+<a href=#736 id=736 data-nosnippet>736</a>    <span class="attr">#[test]
+<a href=#737 id=737 data-nosnippet>737</a>    </span><span class="kw">fn </span>test_rmatrix_with_rstr() {
+<a href=#738 id=738 data-nosnippet>738</a>        <span class="macro">test!</span> {
+<a href=#739 id=739 data-nosnippet>739</a>            <span class="comment">// Test creating a matrix of strings using Rstr
+<a href=#740 id=740 data-nosnippet>740</a>            </span><span class="kw">let </span>string_data = [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>];
+<a href=#741 id=741 data-nosnippet>741</a>            <span class="kw">let </span>matrix: RMatrix&lt;Rstr&gt; = RMatrix::new_matrix(<span class="number">2</span>, <span class="number">3</span>, |r, c| {
+<a href=#742 id=742 data-nosnippet>742</a>                <span class="kw">let </span>idx = c * <span class="number">2 </span>+ r;
+<a href=#743 id=743 data-nosnippet>743</a>                Rstr::from(string_data[idx])
+<a href=#744 id=744 data-nosnippet>744</a>            });
+<a href=#745 id=745 data-nosnippet>745</a>
+<a href=#746 id=746 data-nosnippet>746</a>            <span class="macro">assert_eq!</span>(matrix.nrows(), <span class="number">2</span>);
+<a href=#747 id=747 data-nosnippet>747</a>            <span class="macro">assert_eq!</span>(matrix.ncols(), <span class="number">3</span>);
+<a href=#748 id=748 data-nosnippet>748</a>
+<a href=#749 id=749 data-nosnippet>749</a>            <span class="comment">// Verify the matrix can be converted to Robj
+<a href=#750 id=750 data-nosnippet>750</a>            </span><span class="kw">let </span>robj: Robj = matrix.into();
+<a href=#751 id=751 data-nosnippet>751</a>            <span class="macro">assert_eq!</span>(robj.is_matrix(), <span class="bool-val">true</span>);
+<a href=#752 id=752 data-nosnippet>752</a>            <span class="macro">assert_eq!</span>(robj.rtype(), Rtype::Strings);
+<a href=#753 id=753 data-nosnippet>753</a>        }
+<a href=#754 id=754 data-nosnippet>754</a>    }
+<a href=#755 id=755 data-nosnippet>755</a>}
 </code></pre></div></section></main></body></html>

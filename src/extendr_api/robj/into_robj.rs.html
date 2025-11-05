@@ -426,430 +426,520 @@
 <a href=#426 id=426 data-nosnippet>426</a><span class="macro">impl_str_tvv!</span> {<span class="kw-2">&amp;</span>str}
 <a href=#427 id=427 data-nosnippet>427</a><span class="macro">impl_str_tvv!</span> {String}
 <a href=#428 id=428 data-nosnippet>428</a>
-<a href=#429 id=429 data-nosnippet>429</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span>bool {
+<a href=#429 id=429 data-nosnippet>429</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span>Rstr {
 <a href=#430 id=430 data-nosnippet>430</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
-<a href=#431 id=431 data-nosnippet>431</a>        SEXPTYPE::LGLSXP
+<a href=#431 id=431 data-nosnippet>431</a>        SEXPTYPE::STRSXP
 <a href=#432 id=432 data-nosnippet>432</a>    }
 <a href=#433 id=433 data-nosnippet>433</a>
-<a href=#434 id=434 data-nosnippet>434</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#434 id=434 data-nosnippet>434</a>    <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
 <a href=#435 id=435 data-nosnippet>435</a>    <span class="kw">where
 <a href=#436 id=436 data-nosnippet>436</a>        </span><span class="self">Self</span>: Sized,
 <a href=#437 id=437 data-nosnippet>437</a>    {
-<a href=#438 id=438 data-nosnippet>438</a>        <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>i32
+<a href=#438 id=438 data-nosnippet>438</a>        <span class="kw">unsafe </span>{ <span class="self">self</span>.get() }
 <a href=#439 id=439 data-nosnippet>439</a>    }
 <a href=#440 id=440 data-nosnippet>440</a>}
 <a href=#441 id=441 data-nosnippet>441</a>
-<a href=#442 id=442 data-nosnippet>442</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>bool {
+<a href=#442 id=442 data-nosnippet>442</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>Rstr {
 <a href=#443 id=443 data-nosnippet>443</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
-<a href=#444 id=444 data-nosnippet>444</a>        SEXPTYPE::LGLSXP
+<a href=#444 id=444 data-nosnippet>444</a>        SEXPTYPE::STRSXP
 <a href=#445 id=445 data-nosnippet>445</a>    }
 <a href=#446 id=446 data-nosnippet>446</a>
-<a href=#447 id=447 data-nosnippet>447</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#447 id=447 data-nosnippet>447</a>    <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
 <a href=#448 id=448 data-nosnippet>448</a>    <span class="kw">where
 <a href=#449 id=449 data-nosnippet>449</a>        </span><span class="self">Self</span>: Sized,
 <a href=#450 id=450 data-nosnippet>450</a>    {
-<a href=#451 id=451 data-nosnippet>451</a>        <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>i32
+<a href=#451 id=451 data-nosnippet>451</a>        <span class="kw">unsafe </span>{ <span class="self">self</span>.get() }
 <a href=#452 id=452 data-nosnippet>452</a>    }
 <a href=#453 id=453 data-nosnippet>453</a>}
 <a href=#454 id=454 data-nosnippet>454</a>
-<a href=#455 id=455 data-nosnippet>455</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span>Rbool {
+<a href=#455 id=455 data-nosnippet>455</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;Rstr&gt; {
 <a href=#456 id=456 data-nosnippet>456</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
-<a href=#457 id=457 data-nosnippet>457</a>        SEXPTYPE::LGLSXP
+<a href=#457 id=457 data-nosnippet>457</a>        SEXPTYPE::STRSXP
 <a href=#458 id=458 data-nosnippet>458</a>    }
 <a href=#459 id=459 data-nosnippet>459</a>
-<a href=#460 id=460 data-nosnippet>460</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#460 id=460 data-nosnippet>460</a>    <span class="kw">fn </span>to_sexp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP
 <a href=#461 id=461 data-nosnippet>461</a>    <span class="kw">where
 <a href=#462 id=462 data-nosnippet>462</a>        </span><span class="self">Self</span>: Sized,
 <a href=#463 id=463 data-nosnippet>463</a>    {
-<a href=#464 id=464 data-nosnippet>464</a>        <span class="self">self</span>.inner()
-<a href=#465 id=465 data-nosnippet>465</a>    }
-<a href=#466 id=466 data-nosnippet>466</a>}
-<a href=#467 id=467 data-nosnippet>467</a>
-<a href=#468 id=468 data-nosnippet>468</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>Rbool {
-<a href=#469 id=469 data-nosnippet>469</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
-<a href=#470 id=470 data-nosnippet>470</a>        SEXPTYPE::LGLSXP
-<a href=#471 id=471 data-nosnippet>471</a>    }
-<a href=#472 id=472 data-nosnippet>472</a>
-<a href=#473 id=473 data-nosnippet>473</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
-<a href=#474 id=474 data-nosnippet>474</a>    <span class="kw">where
-<a href=#475 id=475 data-nosnippet>475</a>        </span><span class="self">Self</span>: Sized,
-<a href=#476 id=476 data-nosnippet>476</a>    {
-<a href=#477 id=477 data-nosnippet>477</a>        <span class="self">self</span>.inner()
-<a href=#478 id=478 data-nosnippet>478</a>    }
-<a href=#479 id=479 data-nosnippet>479</a>}
-<a href=#480 id=480 data-nosnippet>480</a>
-<a href=#481 id=481 data-nosnippet>481</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;bool&gt; {
-<a href=#482 id=482 data-nosnippet>482</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
-<a href=#483 id=483 data-nosnippet>483</a>        SEXPTYPE::LGLSXP
-<a href=#484 id=484 data-nosnippet>484</a>    }
-<a href=#485 id=485 data-nosnippet>485</a>
-<a href=#486 id=486 data-nosnippet>486</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
-<a href=#487 id=487 data-nosnippet>487</a>        <span class="kw">if </span><span class="self">self</span>.is_some() {
-<a href=#488 id=488 data-nosnippet>488</a>            <span class="self">self</span>.unwrap() <span class="kw">as </span>i32
-<a href=#489 id=489 data-nosnippet>489</a>        } <span class="kw">else </span>{
-<a href=#490 id=490 data-nosnippet>490</a>            <span class="kw">unsafe </span>{ R_NaInt }
-<a href=#491 id=491 data-nosnippet>491</a>        }
-<a href=#492 id=492 data-nosnippet>492</a>    }
-<a href=#493 id=493 data-nosnippet>493</a>}
+<a href=#464 id=464 data-nosnippet>464</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(s) = <span class="self">self </span>{
+<a href=#465 id=465 data-nosnippet>465</a>            <span class="kw">unsafe </span>{ s.get() }
+<a href=#466 id=466 data-nosnippet>466</a>        } <span class="kw">else </span>{
+<a href=#467 id=467 data-nosnippet>467</a>            <span class="kw">unsafe </span>{ R_NaString }
+<a href=#468 id=468 data-nosnippet>468</a>        }
+<a href=#469 id=469 data-nosnippet>469</a>    }
+<a href=#470 id=470 data-nosnippet>470</a>}
+<a href=#471 id=471 data-nosnippet>471</a>
+<a href=#472 id=472 data-nosnippet>472</a><span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>Robj&gt; <span class="kw">for </span>Rstr {
+<a href=#473 id=473 data-nosnippet>473</a>    <span class="kw">type </span>Error = <span class="kw">crate</span>::Error;
+<a href=#474 id=474 data-nosnippet>474</a>
+<a href=#475 id=475 data-nosnippet>475</a>    <span class="kw">fn </span>try_from(robj: <span class="kw-2">&amp;</span>Robj) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
+<a href=#476 id=476 data-nosnippet>476</a>        <span class="kw">let </span>sexptype = robj.sexptype();
+<a href=#477 id=477 data-nosnippet>477</a>        <span class="kw">if let </span>SEXPTYPE::STRSXP = sexptype {
+<a href=#478 id=478 data-nosnippet>478</a>            <span class="kw">if </span>robj.len() == <span class="number">1 </span>{
+<a href=#479 id=479 data-nosnippet>479</a>                <span class="kw">let </span>strs = Strings::try_from(robj)<span class="question-mark">?</span>;
+<a href=#480 id=480 data-nosnippet>480</a>                <span class="prelude-val">Ok</span>(strs.elt(<span class="number">0</span>))
+<a href=#481 id=481 data-nosnippet>481</a>            } <span class="kw">else </span>{
+<a href=#482 id=482 data-nosnippet>482</a>                <span class="prelude-val">Err</span>(Error::ExpectedRstr(robj.clone()))
+<a href=#483 id=483 data-nosnippet>483</a>            }
+<a href=#484 id=484 data-nosnippet>484</a>        } <span class="kw">else if let </span>SEXPTYPE::CHARSXP = sexptype {
+<a href=#485 id=485 data-nosnippet>485</a>            <span class="prelude-val">Ok</span>(Rstr { robj: robj.clone() })
+<a href=#486 id=486 data-nosnippet>486</a>        } <span class="kw">else </span>{
+<a href=#487 id=487 data-nosnippet>487</a>            <span class="prelude-val">Err</span>(Error::ExpectedRstr(robj.clone()))
+<a href=#488 id=488 data-nosnippet>488</a>        }
+<a href=#489 id=489 data-nosnippet>489</a>    }
+<a href=#490 id=490 data-nosnippet>490</a>}
+<a href=#491 id=491 data-nosnippet>491</a>
+<a href=#492 id=492 data-nosnippet>492</a><span class="kw">impl </span>TryFrom&lt;Robj&gt; <span class="kw">for </span>Rstr {
+<a href=#493 id=493 data-nosnippet>493</a>    <span class="kw">type </span>Error = <span class="kw">crate</span>::Error;
 <a href=#494 id=494 data-nosnippet>494</a>
-<a href=#495 id=495 data-nosnippet>495</a><span class="comment">// Not thread safe.
-<a href=#496 id=496 data-nosnippet>496</a></span><span class="kw">fn </span>fixed_size_collect&lt;I&gt;(iter: I, len: usize) -&gt; Robj
-<a href=#497 id=497 data-nosnippet>497</a><span class="kw">where
-<a href=#498 id=498 data-nosnippet>498</a>    </span>I: Iterator,
-<a href=#499 id=499 data-nosnippet>499</a>    I: Sized,
-<a href=#500 id=500 data-nosnippet>500</a>    I::Item: ToVectorValue,
-<a href=#501 id=501 data-nosnippet>501</a>{
-<a href=#502 id=502 data-nosnippet>502</a>    single_threaded(|| <span class="kw">unsafe </span>{
-<a href=#503 id=503 data-nosnippet>503</a>        <span class="comment">// Length of the vector is known in advance.
-<a href=#504 id=504 data-nosnippet>504</a>        </span><span class="kw">let </span>sexptype = I::Item::sexptype();
-<a href=#505 id=505 data-nosnippet>505</a>        <span class="kw">if </span><span class="macro">sexptype !</span>= SEXPTYPE::NILSXP {
-<a href=#506 id=506 data-nosnippet>506</a>            <span class="kw">let </span>res = Robj::alloc_vector(sexptype, len);
-<a href=#507 id=507 data-nosnippet>507</a>            <span class="kw">let </span>sexp = res.get();
-<a href=#508 id=508 data-nosnippet>508</a>            <span class="kw">match </span>sexptype {
-<a href=#509 id=509 data-nosnippet>509</a>                SEXPTYPE::REALSXP =&gt; {
-<a href=#510 id=510 data-nosnippet>510</a>                    <span class="kw">let </span>ptr = REAL(sexp);
-<a href=#511 id=511 data-nosnippet>511</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#512 id=512 data-nosnippet>512</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_real();
-<a href=#513 id=513 data-nosnippet>513</a>                    }
-<a href=#514 id=514 data-nosnippet>514</a>                }
-<a href=#515 id=515 data-nosnippet>515</a>                SEXPTYPE::CPLXSXP =&gt; {
-<a href=#516 id=516 data-nosnippet>516</a>                    <span class="kw">let </span>ptr = COMPLEX(sexp);
-<a href=#517 id=517 data-nosnippet>517</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#518 id=518 data-nosnippet>518</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_complex();
-<a href=#519 id=519 data-nosnippet>519</a>                    }
-<a href=#520 id=520 data-nosnippet>520</a>                }
-<a href=#521 id=521 data-nosnippet>521</a>                SEXPTYPE::INTSXP =&gt; {
-<a href=#522 id=522 data-nosnippet>522</a>                    <span class="kw">let </span>ptr = INTEGER(sexp);
-<a href=#523 id=523 data-nosnippet>523</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#524 id=524 data-nosnippet>524</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_integer();
-<a href=#525 id=525 data-nosnippet>525</a>                    }
-<a href=#526 id=526 data-nosnippet>526</a>                }
-<a href=#527 id=527 data-nosnippet>527</a>                SEXPTYPE::LGLSXP =&gt; {
-<a href=#528 id=528 data-nosnippet>528</a>                    <span class="kw">let </span>ptr = LOGICAL(sexp);
-<a href=#529 id=529 data-nosnippet>529</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#530 id=530 data-nosnippet>530</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_logical();
-<a href=#531 id=531 data-nosnippet>531</a>                    }
-<a href=#532 id=532 data-nosnippet>532</a>                }
-<a href=#533 id=533 data-nosnippet>533</a>                SEXPTYPE::STRSXP =&gt; {
-<a href=#534 id=534 data-nosnippet>534</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#535 id=535 data-nosnippet>535</a>                        SET_STRING_ELT(sexp, i <span class="kw">as </span>isize, v.to_sexp());
-<a href=#536 id=536 data-nosnippet>536</a>                    }
-<a href=#537 id=537 data-nosnippet>537</a>                }
-<a href=#538 id=538 data-nosnippet>538</a>                SEXPTYPE::RAWSXP =&gt; {
-<a href=#539 id=539 data-nosnippet>539</a>                    <span class="kw">let </span>ptr = RAW(sexp);
-<a href=#540 id=540 data-nosnippet>540</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
-<a href=#541 id=541 data-nosnippet>541</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_raw();
-<a href=#542 id=542 data-nosnippet>542</a>                    }
-<a href=#543 id=543 data-nosnippet>543</a>                }
-<a href=#544 id=544 data-nosnippet>544</a>                <span class="kw">_ </span>=&gt; {
-<a href=#545 id=545 data-nosnippet>545</a>                    <span class="macro">panic!</span>(<span class="string">"unexpected SEXPTYPE in collect_robj"</span>);
-<a href=#546 id=546 data-nosnippet>546</a>                }
-<a href=#547 id=547 data-nosnippet>547</a>            }
-<a href=#548 id=548 data-nosnippet>548</a>            res
-<a href=#549 id=549 data-nosnippet>549</a>        } <span class="kw">else </span>{
-<a href=#550 id=550 data-nosnippet>550</a>            Robj::from(())
-<a href=#551 id=551 data-nosnippet>551</a>        }
-<a href=#552 id=552 data-nosnippet>552</a>    })
-<a href=#553 id=553 data-nosnippet>553</a>}
-<a href=#554 id=554 data-nosnippet>554</a>
-<a href=#555 id=555 data-nosnippet>555</a><span class="doccomment">/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
-<a href=#556 id=556 data-nosnippet>556</a></span><span class="kw">pub trait </span>RobjItertools: Iterator {
-<a href=#557 id=557 data-nosnippet>557</a>    <span class="doccomment">/// Convert a wide range of iterators to Robj.
-<a href=#558 id=558 data-nosnippet>558</a>    /// ```
-<a href=#559 id=559 data-nosnippet>559</a>    /// use extendr_api::prelude::*;
-<a href=#560 id=560 data-nosnippet>560</a>    ///
-<a href=#561 id=561 data-nosnippet>561</a>    /// test! {
-<a href=#562 id=562 data-nosnippet>562</a>    /// // Integer iterators.
-<a href=#563 id=563 data-nosnippet>563</a>    /// let robj = (0..3).collect_robj();
-<a href=#564 id=564 data-nosnippet>564</a>    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
-<a href=#565 id=565 data-nosnippet>565</a>    ///
-<a href=#566 id=566 data-nosnippet>566</a>    /// // Logical iterators.
-<a href=#567 id=567 data-nosnippet>567</a>    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
-<a href=#568 id=568 data-nosnippet>568</a>    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
-<a href=#569 id=569 data-nosnippet>569</a>    ///
-<a href=#570 id=570 data-nosnippet>570</a>    /// // Numeric iterators.
-<a href=#571 id=571 data-nosnippet>571</a>    /// let robj = (0..3).map(|x| x as f64).collect_robj();
-<a href=#572 id=572 data-nosnippet>572</a>    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
-<a href=#573 id=573 data-nosnippet>573</a>    ///
-<a href=#574 id=574 data-nosnippet>574</a>    /// // String iterators.
-<a href=#575 id=575 data-nosnippet>575</a>    /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
-<a href=#576 id=576 data-nosnippet>576</a>    /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
-<a href=#577 id=577 data-nosnippet>577</a>    /// }
-<a href=#578 id=578 data-nosnippet>578</a>    /// ```
-<a href=#579 id=579 data-nosnippet>579</a>    </span><span class="kw">fn </span>collect_robj(<span class="self">self</span>) -&gt; Robj
-<a href=#580 id=580 data-nosnippet>580</a>    <span class="kw">where
-<a href=#581 id=581 data-nosnippet>581</a>        </span><span class="self">Self</span>: Iterator,
-<a href=#582 id=582 data-nosnippet>582</a>        <span class="self">Self</span>: Sized,
-<a href=#583 id=583 data-nosnippet>583</a>        <span class="self">Self</span>::Item: ToVectorValue,
-<a href=#584 id=584 data-nosnippet>584</a>    {
-<a href=#585 id=585 data-nosnippet>585</a>        <span class="kw">if let </span>(len, <span class="prelude-val">Some</span>(max)) = <span class="self">self</span>.size_hint() {
-<a href=#586 id=586 data-nosnippet>586</a>            <span class="kw">if </span>len == max {
-<a href=#587 id=587 data-nosnippet>587</a>                <span class="kw">return </span>fixed_size_collect(<span class="self">self</span>, len);
-<a href=#588 id=588 data-nosnippet>588</a>            }
-<a href=#589 id=589 data-nosnippet>589</a>        }
-<a href=#590 id=590 data-nosnippet>590</a>        <span class="comment">// If the size is indeterminate, create a vector and call recursively.
-<a href=#591 id=591 data-nosnippet>591</a>        </span><span class="kw">let </span>vec: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.collect();
-<a href=#592 id=592 data-nosnippet>592</a>        <span class="macro">assert!</span>(vec.iter().size_hint() == (vec.len(), <span class="prelude-val">Some</span>(vec.len())));
-<a href=#593 id=593 data-nosnippet>593</a>        vec.into_iter().collect_robj()
-<a href=#594 id=594 data-nosnippet>594</a>    }
-<a href=#595 id=595 data-nosnippet>595</a>
-<a href=#596 id=596 data-nosnippet>596</a>    <span class="doccomment">/// Collects an iterable into an [`RArray`].
-<a href=#597 id=597 data-nosnippet>597</a>    /// The iterable must yield items column by column (aka Fortan order)
-<a href=#598 id=598 data-nosnippet>598</a>    ///
-<a href=#599 id=599 data-nosnippet>599</a>    /// # Arguments
-<a href=#600 id=600 data-nosnippet>600</a>    ///
-<a href=#601 id=601 data-nosnippet>601</a>    /// * `dims` - an array containing the length of each dimension
-<a href=#602 id=602 data-nosnippet>602</a>    </span><span class="kw">fn </span>collect_rarray&lt;<span class="kw">const </span>LEN: usize&gt;(<span class="self">self</span>, dims: [usize; LEN]) -&gt; <span class="prelude-ty">Result</span>&lt;RArray&lt;<span class="self">Self</span>::Item, LEN&gt;&gt;
-<a href=#603 id=603 data-nosnippet>603</a>    <span class="kw">where
-<a href=#604 id=604 data-nosnippet>604</a>        </span><span class="self">Self</span>: Iterator,
-<a href=#605 id=605 data-nosnippet>605</a>        <span class="self">Self</span>: Sized,
-<a href=#606 id=606 data-nosnippet>606</a>        <span class="self">Self</span>::Item: ToVectorValue,
-<a href=#607 id=607 data-nosnippet>607</a>        Robj: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; AsTypedSlice&lt;<span class="lifetime">'a</span>, <span class="self">Self</span>::Item&gt;,
-<a href=#608 id=608 data-nosnippet>608</a>    {
-<a href=#609 id=609 data-nosnippet>609</a>        <span class="kw">let </span><span class="kw-2">mut </span>vector = <span class="self">self</span>.collect_robj();
-<a href=#610 id=610 data-nosnippet>610</a>        <span class="kw">let </span>prod = dims.iter().product::&lt;usize&gt;();
-<a href=#611 id=611 data-nosnippet>611</a>        <span class="kw">if </span><span class="macro">prod !</span>= vector.len() {
-<a href=#612 id=612 data-nosnippet>612</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Other(<span class="macro">format!</span>(
-<a href=#613 id=613 data-nosnippet>613</a>                <span class="string">"The vector length ({}) does not match the length implied by the dimensions ({})"</span>,
-<a href=#614 id=614 data-nosnippet>614</a>                vector.len(),
-<a href=#615 id=615 data-nosnippet>615</a>                prod
-<a href=#616 id=616 data-nosnippet>616</a>            )));
-<a href=#617 id=617 data-nosnippet>617</a>        }
-<a href=#618 id=618 data-nosnippet>618</a>        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())<span class="question-mark">?</span>;
-<a href=#619 id=619 data-nosnippet>619</a>        <span class="kw">let </span>_data = vector.as_typed_slice().ok_or(Error::Other(
-<a href=#620 id=620 data-nosnippet>620</a>            <span class="string">"Unknown error in converting to slice"</span>.to_string(),
-<a href=#621 id=621 data-nosnippet>621</a>        ))<span class="question-mark">?</span>;
-<a href=#622 id=622 data-nosnippet>622</a>        <span class="prelude-val">Ok</span>(RArray::from_parts(vector))
-<a href=#623 id=623 data-nosnippet>623</a>    }
-<a href=#624 id=624 data-nosnippet>624</a>}
-<a href=#625 id=625 data-nosnippet>625</a>
-<a href=#626 id=626 data-nosnippet>626</a><span class="comment">// Thanks to *pretzelhammer* on stackoverflow for this.
-<a href=#627 id=627 data-nosnippet>627</a></span><span class="kw">impl</span>&lt;T&gt; RobjItertools <span class="kw">for </span>T <span class="kw">where </span>T: Iterator {}
-<a href=#628 id=628 data-nosnippet>628</a>
-<a href=#629 id=629 data-nosnippet>629</a><span class="comment">// Scalars which are ToVectorValue
-<a href=#630 id=630 data-nosnippet>630</a></span><span class="kw">impl</span>&lt;T&gt; From&lt;T&gt; <span class="kw">for </span>Robj
-<a href=#631 id=631 data-nosnippet>631</a><span class="kw">where
-<a href=#632 id=632 data-nosnippet>632</a>    </span>T: ToVectorValue,
-<a href=#633 id=633 data-nosnippet>633</a>{
-<a href=#634 id=634 data-nosnippet>634</a>    <span class="kw">fn </span>from(scalar: T) -&gt; <span class="self">Self </span>{
-<a href=#635 id=635 data-nosnippet>635</a>        <span class="prelude-val">Some</span>(scalar).into_iter().collect_robj()
-<a href=#636 id=636 data-nosnippet>636</a>    }
-<a href=#637 id=637 data-nosnippet>637</a>}
-<a href=#638 id=638 data-nosnippet>638</a>
-<a href=#639 id=639 data-nosnippet>639</a><span class="macro">macro_rules!</span> impl_from_as_iterator {
-<a href=#640 id=640 data-nosnippet>640</a>    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
-<a href=#641 id=641 data-nosnippet>641</a>        <span class="kw">impl</span>&lt;T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
-<a href=#642 id=642 data-nosnippet>642</a>        <span class="kw">where
-<a href=#643 id=643 data-nosnippet>643</a>            </span><span class="macro-nonterminal">$t</span>: RobjItertools,
-<a href=#644 id=644 data-nosnippet>644</a>            &lt;<span class="macro-nonterminal">$t </span><span class="kw">as </span>Iterator&gt;::Item: ToVectorValue,
-<a href=#645 id=645 data-nosnippet>645</a>            T: ToVectorValue,
-<a href=#646 id=646 data-nosnippet>646</a>        {
-<a href=#647 id=647 data-nosnippet>647</a>            <span class="kw">fn </span>from(val: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
-<a href=#648 id=648 data-nosnippet>648</a>                val.collect_robj()
-<a href=#649 id=649 data-nosnippet>649</a>            }
-<a href=#650 id=650 data-nosnippet>650</a>        }
-<a href=#651 id=651 data-nosnippet>651</a>    };
-<a href=#652 id=652 data-nosnippet>652</a>}
-<a href=#653 id=653 data-nosnippet>653</a>
-<a href=#654 id=654 data-nosnippet>654</a><span class="comment">// impl&lt;T&gt; From&lt;Range&lt;T&gt;&gt; for Robj
-<a href=#655 id=655 data-nosnippet>655</a>// where
-<a href=#656 id=656 data-nosnippet>656</a>//     Range&lt;T&gt; : RobjItertools,
-<a href=#657 id=657 data-nosnippet>657</a>//     &lt;Range&lt;T&gt; as Iterator&gt;::Item: ToVectorValue,
-<a href=#658 id=658 data-nosnippet>658</a>//     T : ToVectorValue
-<a href=#659 id=659 data-nosnippet>659</a>// {
-<a href=#660 id=660 data-nosnippet>660</a>//     fn from(val: Range&lt;T&gt;) -&gt; Self {
-<a href=#661 id=661 data-nosnippet>661</a>//         val.collect_robj()
-<a href=#662 id=662 data-nosnippet>662</a>//     }
-<a href=#663 id=663 data-nosnippet>663</a>// } //
-<a href=#664 id=664 data-nosnippet>664</a>
-<a href=#665 id=665 data-nosnippet>665</a></span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; From&lt;[T; N]&gt; <span class="kw">for </span>Robj
-<a href=#666 id=666 data-nosnippet>666</a><span class="kw">where
-<a href=#667 id=667 data-nosnippet>667</a>    </span>T: ToVectorValue,
-<a href=#668 id=668 data-nosnippet>668</a>{
-<a href=#669 id=669 data-nosnippet>669</a>    <span class="kw">fn </span>from(val: [T; N]) -&gt; <span class="self">Self </span>{
-<a href=#670 id=670 data-nosnippet>670</a>        fixed_size_collect(val.into_iter(), N)
-<a href=#671 id=671 data-nosnippet>671</a>    }
-<a href=#672 id=672 data-nosnippet>672</a>}
-<a href=#673 id=673 data-nosnippet>673</a>
-<a href=#674 id=674 data-nosnippet>674</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, <span class="kw">const </span>N: usize&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T; N]&gt; <span class="kw">for </span>Robj
-<a href=#675 id=675 data-nosnippet>675</a><span class="kw">where
-<a href=#676 id=676 data-nosnippet>676</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
-<a href=#677 id=677 data-nosnippet>677</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span>T: ToVectorValue + <span class="lifetime">'a</span>,
-<a href=#678 id=678 data-nosnippet>678</a>{
-<a href=#679 id=679 data-nosnippet>679</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T; N]) -&gt; <span class="self">Self </span>{
-<a href=#680 id=680 data-nosnippet>680</a>        fixed_size_collect(val.iter(), N)
-<a href=#681 id=681 data-nosnippet>681</a>    }
-<a href=#682 id=682 data-nosnippet>682</a>}
-<a href=#683 id=683 data-nosnippet>683</a>
-<a href=#684 id=684 data-nosnippet>684</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, <span class="kw">const </span>N: usize&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T; N]&gt; <span class="kw">for </span>Robj
-<a href=#685 id=685 data-nosnippet>685</a><span class="kw">where
-<a href=#686 id=686 data-nosnippet>686</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
-<a href=#687 id=687 data-nosnippet>687</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>T: ToVectorValue + <span class="lifetime">'a</span>,
-<a href=#688 id=688 data-nosnippet>688</a>{
-<a href=#689 id=689 data-nosnippet>689</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T; N]) -&gt; <span class="self">Self </span>{
-<a href=#690 id=690 data-nosnippet>690</a>        fixed_size_collect(val.iter_mut(), N)
+<a href=#495 id=495 data-nosnippet>495</a>    <span class="kw">fn </span>try_from(value: Robj) -&gt; std::result::Result&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+<a href=#496 id=496 data-nosnippet>496</a>        <span class="self">Self</span>::try_from(<span class="kw-2">&amp;</span>value)
+<a href=#497 id=497 data-nosnippet>497</a>    }
+<a href=#498 id=498 data-nosnippet>498</a>}
+<a href=#499 id=499 data-nosnippet>499</a>
+<a href=#500 id=500 data-nosnippet>500</a><span class="kw">impl </span>GetSexp <span class="kw">for </span>Rstr {
+<a href=#501 id=501 data-nosnippet>501</a>    <span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SEXP {
+<a href=#502 id=502 data-nosnippet>502</a>        <span class="self">self</span>.robj.get()
+<a href=#503 id=503 data-nosnippet>503</a>    }
+<a href=#504 id=504 data-nosnippet>504</a>
+<a href=#505 id=505 data-nosnippet>505</a>    <span class="kw">unsafe fn </span>get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SEXP {
+<a href=#506 id=506 data-nosnippet>506</a>        <span class="self">self</span>.robj.get_mut()
+<a href=#507 id=507 data-nosnippet>507</a>    }
+<a href=#508 id=508 data-nosnippet>508</a>
+<a href=#509 id=509 data-nosnippet>509</a>    <span class="kw">fn </span>as_robj(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Robj {
+<a href=#510 id=510 data-nosnippet>510</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.robj
+<a href=#511 id=511 data-nosnippet>511</a>    }
+<a href=#512 id=512 data-nosnippet>512</a>
+<a href=#513 id=513 data-nosnippet>513</a>    <span class="kw">fn </span>as_robj_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Robj {
+<a href=#514 id=514 data-nosnippet>514</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>.robj
+<a href=#515 id=515 data-nosnippet>515</a>    }
+<a href=#516 id=516 data-nosnippet>516</a>}
+<a href=#517 id=517 data-nosnippet>517</a>
+<a href=#518 id=518 data-nosnippet>518</a><span class="comment">// These traits all derive from GetSexp with default implementations
+<a href=#519 id=519 data-nosnippet>519</a></span><span class="kw">impl </span>Length <span class="kw">for </span>Rstr {}
+<a href=#520 id=520 data-nosnippet>520</a><span class="kw">impl </span>Types <span class="kw">for </span>Rstr {}
+<a href=#521 id=521 data-nosnippet>521</a><span class="kw">impl </span>Conversions <span class="kw">for </span>Rstr {}
+<a href=#522 id=522 data-nosnippet>522</a><span class="kw">impl </span>Rinternals <span class="kw">for </span>Rstr {}
+<a href=#523 id=523 data-nosnippet>523</a><span class="kw">impl </span>Slices <span class="kw">for </span>Rstr {}
+<a href=#524 id=524 data-nosnippet>524</a><span class="kw">impl </span>Operators <span class="kw">for </span>Rstr {}
+<a href=#525 id=525 data-nosnippet>525</a>
+<a href=#526 id=526 data-nosnippet>526</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span>bool {
+<a href=#527 id=527 data-nosnippet>527</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+<a href=#528 id=528 data-nosnippet>528</a>        SEXPTYPE::LGLSXP
+<a href=#529 id=529 data-nosnippet>529</a>    }
+<a href=#530 id=530 data-nosnippet>530</a>
+<a href=#531 id=531 data-nosnippet>531</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#532 id=532 data-nosnippet>532</a>    <span class="kw">where
+<a href=#533 id=533 data-nosnippet>533</a>        </span><span class="self">Self</span>: Sized,
+<a href=#534 id=534 data-nosnippet>534</a>    {
+<a href=#535 id=535 data-nosnippet>535</a>        <span class="kw-2">*</span><span class="self">self </span><span class="kw">as </span>i32
+<a href=#536 id=536 data-nosnippet>536</a>    }
+<a href=#537 id=537 data-nosnippet>537</a>}
+<a href=#538 id=538 data-nosnippet>538</a>
+<a href=#539 id=539 data-nosnippet>539</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>bool {
+<a href=#540 id=540 data-nosnippet>540</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+<a href=#541 id=541 data-nosnippet>541</a>        SEXPTYPE::LGLSXP
+<a href=#542 id=542 data-nosnippet>542</a>    }
+<a href=#543 id=543 data-nosnippet>543</a>
+<a href=#544 id=544 data-nosnippet>544</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#545 id=545 data-nosnippet>545</a>    <span class="kw">where
+<a href=#546 id=546 data-nosnippet>546</a>        </span><span class="self">Self</span>: Sized,
+<a href=#547 id=547 data-nosnippet>547</a>    {
+<a href=#548 id=548 data-nosnippet>548</a>        <span class="kw-2">**</span><span class="self">self </span><span class="kw">as </span>i32
+<a href=#549 id=549 data-nosnippet>549</a>    }
+<a href=#550 id=550 data-nosnippet>550</a>}
+<a href=#551 id=551 data-nosnippet>551</a>
+<a href=#552 id=552 data-nosnippet>552</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span>Rbool {
+<a href=#553 id=553 data-nosnippet>553</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+<a href=#554 id=554 data-nosnippet>554</a>        SEXPTYPE::LGLSXP
+<a href=#555 id=555 data-nosnippet>555</a>    }
+<a href=#556 id=556 data-nosnippet>556</a>
+<a href=#557 id=557 data-nosnippet>557</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#558 id=558 data-nosnippet>558</a>    <span class="kw">where
+<a href=#559 id=559 data-nosnippet>559</a>        </span><span class="self">Self</span>: Sized,
+<a href=#560 id=560 data-nosnippet>560</a>    {
+<a href=#561 id=561 data-nosnippet>561</a>        <span class="self">self</span>.inner()
+<a href=#562 id=562 data-nosnippet>562</a>    }
+<a href=#563 id=563 data-nosnippet>563</a>}
+<a href=#564 id=564 data-nosnippet>564</a>
+<a href=#565 id=565 data-nosnippet>565</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="kw-2">&amp;</span>Rbool {
+<a href=#566 id=566 data-nosnippet>566</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+<a href=#567 id=567 data-nosnippet>567</a>        SEXPTYPE::LGLSXP
+<a href=#568 id=568 data-nosnippet>568</a>    }
+<a href=#569 id=569 data-nosnippet>569</a>
+<a href=#570 id=570 data-nosnippet>570</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32
+<a href=#571 id=571 data-nosnippet>571</a>    <span class="kw">where
+<a href=#572 id=572 data-nosnippet>572</a>        </span><span class="self">Self</span>: Sized,
+<a href=#573 id=573 data-nosnippet>573</a>    {
+<a href=#574 id=574 data-nosnippet>574</a>        <span class="self">self</span>.inner()
+<a href=#575 id=575 data-nosnippet>575</a>    }
+<a href=#576 id=576 data-nosnippet>576</a>}
+<a href=#577 id=577 data-nosnippet>577</a>
+<a href=#578 id=578 data-nosnippet>578</a><span class="kw">impl </span>ToVectorValue <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;bool&gt; {
+<a href=#579 id=579 data-nosnippet>579</a>    <span class="kw">fn </span>sexptype() -&gt; SEXPTYPE {
+<a href=#580 id=580 data-nosnippet>580</a>        SEXPTYPE::LGLSXP
+<a href=#581 id=581 data-nosnippet>581</a>    }
+<a href=#582 id=582 data-nosnippet>582</a>
+<a href=#583 id=583 data-nosnippet>583</a>    <span class="kw">fn </span>to_logical(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; i32 {
+<a href=#584 id=584 data-nosnippet>584</a>        <span class="kw">if </span><span class="self">self</span>.is_some() {
+<a href=#585 id=585 data-nosnippet>585</a>            <span class="self">self</span>.unwrap() <span class="kw">as </span>i32
+<a href=#586 id=586 data-nosnippet>586</a>        } <span class="kw">else </span>{
+<a href=#587 id=587 data-nosnippet>587</a>            <span class="kw">unsafe </span>{ R_NaInt }
+<a href=#588 id=588 data-nosnippet>588</a>        }
+<a href=#589 id=589 data-nosnippet>589</a>    }
+<a href=#590 id=590 data-nosnippet>590</a>}
+<a href=#591 id=591 data-nosnippet>591</a>
+<a href=#592 id=592 data-nosnippet>592</a><span class="comment">// Not thread safe.
+<a href=#593 id=593 data-nosnippet>593</a></span><span class="kw">fn </span>fixed_size_collect&lt;I&gt;(iter: I, len: usize) -&gt; Robj
+<a href=#594 id=594 data-nosnippet>594</a><span class="kw">where
+<a href=#595 id=595 data-nosnippet>595</a>    </span>I: Iterator,
+<a href=#596 id=596 data-nosnippet>596</a>    I: Sized,
+<a href=#597 id=597 data-nosnippet>597</a>    I::Item: ToVectorValue,
+<a href=#598 id=598 data-nosnippet>598</a>{
+<a href=#599 id=599 data-nosnippet>599</a>    single_threaded(|| <span class="kw">unsafe </span>{
+<a href=#600 id=600 data-nosnippet>600</a>        <span class="comment">// Length of the vector is known in advance.
+<a href=#601 id=601 data-nosnippet>601</a>        </span><span class="kw">let </span>sexptype = I::Item::sexptype();
+<a href=#602 id=602 data-nosnippet>602</a>        <span class="kw">if </span><span class="macro">sexptype !</span>= SEXPTYPE::NILSXP {
+<a href=#603 id=603 data-nosnippet>603</a>            <span class="kw">let </span>res = Robj::alloc_vector(sexptype, len);
+<a href=#604 id=604 data-nosnippet>604</a>            <span class="kw">let </span>sexp = res.get();
+<a href=#605 id=605 data-nosnippet>605</a>            <span class="kw">match </span>sexptype {
+<a href=#606 id=606 data-nosnippet>606</a>                SEXPTYPE::REALSXP =&gt; {
+<a href=#607 id=607 data-nosnippet>607</a>                    <span class="kw">let </span>ptr = REAL(sexp);
+<a href=#608 id=608 data-nosnippet>608</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#609 id=609 data-nosnippet>609</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_real();
+<a href=#610 id=610 data-nosnippet>610</a>                    }
+<a href=#611 id=611 data-nosnippet>611</a>                }
+<a href=#612 id=612 data-nosnippet>612</a>                SEXPTYPE::CPLXSXP =&gt; {
+<a href=#613 id=613 data-nosnippet>613</a>                    <span class="kw">let </span>ptr = COMPLEX(sexp);
+<a href=#614 id=614 data-nosnippet>614</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#615 id=615 data-nosnippet>615</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_complex();
+<a href=#616 id=616 data-nosnippet>616</a>                    }
+<a href=#617 id=617 data-nosnippet>617</a>                }
+<a href=#618 id=618 data-nosnippet>618</a>                SEXPTYPE::INTSXP =&gt; {
+<a href=#619 id=619 data-nosnippet>619</a>                    <span class="kw">let </span>ptr = INTEGER(sexp);
+<a href=#620 id=620 data-nosnippet>620</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#621 id=621 data-nosnippet>621</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_integer();
+<a href=#622 id=622 data-nosnippet>622</a>                    }
+<a href=#623 id=623 data-nosnippet>623</a>                }
+<a href=#624 id=624 data-nosnippet>624</a>                SEXPTYPE::LGLSXP =&gt; {
+<a href=#625 id=625 data-nosnippet>625</a>                    <span class="kw">let </span>ptr = LOGICAL(sexp);
+<a href=#626 id=626 data-nosnippet>626</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#627 id=627 data-nosnippet>627</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_logical();
+<a href=#628 id=628 data-nosnippet>628</a>                    }
+<a href=#629 id=629 data-nosnippet>629</a>                }
+<a href=#630 id=630 data-nosnippet>630</a>                SEXPTYPE::STRSXP =&gt; {
+<a href=#631 id=631 data-nosnippet>631</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#632 id=632 data-nosnippet>632</a>                        SET_STRING_ELT(sexp, i <span class="kw">as </span>isize, v.to_sexp());
+<a href=#633 id=633 data-nosnippet>633</a>                    }
+<a href=#634 id=634 data-nosnippet>634</a>                }
+<a href=#635 id=635 data-nosnippet>635</a>                SEXPTYPE::RAWSXP =&gt; {
+<a href=#636 id=636 data-nosnippet>636</a>                    <span class="kw">let </span>ptr = RAW(sexp);
+<a href=#637 id=637 data-nosnippet>637</a>                    <span class="kw">for </span>(i, v) <span class="kw">in </span>iter.enumerate() {
+<a href=#638 id=638 data-nosnippet>638</a>                        <span class="kw-2">*</span>ptr.add(i) = v.to_raw();
+<a href=#639 id=639 data-nosnippet>639</a>                    }
+<a href=#640 id=640 data-nosnippet>640</a>                }
+<a href=#641 id=641 data-nosnippet>641</a>                <span class="kw">_ </span>=&gt; {
+<a href=#642 id=642 data-nosnippet>642</a>                    <span class="macro">panic!</span>(<span class="string">"unexpected SEXPTYPE in collect_robj"</span>);
+<a href=#643 id=643 data-nosnippet>643</a>                }
+<a href=#644 id=644 data-nosnippet>644</a>            }
+<a href=#645 id=645 data-nosnippet>645</a>            res
+<a href=#646 id=646 data-nosnippet>646</a>        } <span class="kw">else </span>{
+<a href=#647 id=647 data-nosnippet>647</a>            Robj::from(())
+<a href=#648 id=648 data-nosnippet>648</a>        }
+<a href=#649 id=649 data-nosnippet>649</a>    })
+<a href=#650 id=650 data-nosnippet>650</a>}
+<a href=#651 id=651 data-nosnippet>651</a>
+<a href=#652 id=652 data-nosnippet>652</a><span class="doccomment">/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
+<a href=#653 id=653 data-nosnippet>653</a></span><span class="kw">pub trait </span>RobjItertools: Iterator {
+<a href=#654 id=654 data-nosnippet>654</a>    <span class="doccomment">/// Convert a wide range of iterators to Robj.
+<a href=#655 id=655 data-nosnippet>655</a>    /// ```
+<a href=#656 id=656 data-nosnippet>656</a>    /// use extendr_api::prelude::*;
+<a href=#657 id=657 data-nosnippet>657</a>    ///
+<a href=#658 id=658 data-nosnippet>658</a>    /// test! {
+<a href=#659 id=659 data-nosnippet>659</a>    /// // Integer iterators.
+<a href=#660 id=660 data-nosnippet>660</a>    /// let robj = (0..3).collect_robj();
+<a href=#661 id=661 data-nosnippet>661</a>    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+<a href=#662 id=662 data-nosnippet>662</a>    ///
+<a href=#663 id=663 data-nosnippet>663</a>    /// // Logical iterators.
+<a href=#664 id=664 data-nosnippet>664</a>    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+<a href=#665 id=665 data-nosnippet>665</a>    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+<a href=#666 id=666 data-nosnippet>666</a>    ///
+<a href=#667 id=667 data-nosnippet>667</a>    /// // Numeric iterators.
+<a href=#668 id=668 data-nosnippet>668</a>    /// let robj = (0..3).map(|x| x as f64).collect_robj();
+<a href=#669 id=669 data-nosnippet>669</a>    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+<a href=#670 id=670 data-nosnippet>670</a>    ///
+<a href=#671 id=671 data-nosnippet>671</a>    /// // String iterators.
+<a href=#672 id=672 data-nosnippet>672</a>    /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
+<a href=#673 id=673 data-nosnippet>673</a>    /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+<a href=#674 id=674 data-nosnippet>674</a>    /// }
+<a href=#675 id=675 data-nosnippet>675</a>    /// ```
+<a href=#676 id=676 data-nosnippet>676</a>    </span><span class="kw">fn </span>collect_robj(<span class="self">self</span>) -&gt; Robj
+<a href=#677 id=677 data-nosnippet>677</a>    <span class="kw">where
+<a href=#678 id=678 data-nosnippet>678</a>        </span><span class="self">Self</span>: Iterator,
+<a href=#679 id=679 data-nosnippet>679</a>        <span class="self">Self</span>: Sized,
+<a href=#680 id=680 data-nosnippet>680</a>        <span class="self">Self</span>::Item: ToVectorValue,
+<a href=#681 id=681 data-nosnippet>681</a>    {
+<a href=#682 id=682 data-nosnippet>682</a>        <span class="kw">if let </span>(len, <span class="prelude-val">Some</span>(max)) = <span class="self">self</span>.size_hint() {
+<a href=#683 id=683 data-nosnippet>683</a>            <span class="kw">if </span>len == max {
+<a href=#684 id=684 data-nosnippet>684</a>                <span class="kw">return </span>fixed_size_collect(<span class="self">self</span>, len);
+<a href=#685 id=685 data-nosnippet>685</a>            }
+<a href=#686 id=686 data-nosnippet>686</a>        }
+<a href=#687 id=687 data-nosnippet>687</a>        <span class="comment">// If the size is indeterminate, create a vector and call recursively.
+<a href=#688 id=688 data-nosnippet>688</a>        </span><span class="kw">let </span>vec: Vec&lt;<span class="kw">_</span>&gt; = <span class="self">self</span>.collect();
+<a href=#689 id=689 data-nosnippet>689</a>        <span class="macro">assert!</span>(vec.iter().size_hint() == (vec.len(), <span class="prelude-val">Some</span>(vec.len())));
+<a href=#690 id=690 data-nosnippet>690</a>        vec.into_iter().collect_robj()
 <a href=#691 id=691 data-nosnippet>691</a>    }
-<a href=#692 id=692 data-nosnippet>692</a>}
-<a href=#693 id=693 data-nosnippet>693</a>
-<a href=#694 id=694 data-nosnippet>694</a><span class="kw">impl</span>&lt;T: ToVectorValue + Clone&gt; From&lt;<span class="kw-2">&amp;</span>Vec&lt;T&gt;&gt; <span class="kw">for </span>Robj {
-<a href=#695 id=695 data-nosnippet>695</a>    <span class="kw">fn </span>from(value: <span class="kw-2">&amp;</span>Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
-<a href=#696 id=696 data-nosnippet>696</a>        <span class="kw">let </span>len = value.len();
-<a href=#697 id=697 data-nosnippet>697</a>        fixed_size_collect(value.iter().cloned(), len)
-<a href=#698 id=698 data-nosnippet>698</a>    }
-<a href=#699 id=699 data-nosnippet>699</a>}
-<a href=#700 id=700 data-nosnippet>700</a>
-<a href=#701 id=701 data-nosnippet>701</a><span class="kw">impl</span>&lt;T: ToVectorValue&gt; From&lt;Vec&lt;T&gt;&gt; <span class="kw">for </span>Robj {
-<a href=#702 id=702 data-nosnippet>702</a>    <span class="kw">fn </span>from(value: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
-<a href=#703 id=703 data-nosnippet>703</a>        <span class="kw">let </span>len = value.len();
-<a href=#704 id=704 data-nosnippet>704</a>        fixed_size_collect(value.into_iter(), len)
-<a href=#705 id=705 data-nosnippet>705</a>    }
-<a href=#706 id=706 data-nosnippet>706</a>}
-<a href=#707 id=707 data-nosnippet>707</a>
-<a href=#708 id=708 data-nosnippet>708</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T]&gt; <span class="kw">for </span>Robj
-<a href=#709 id=709 data-nosnippet>709</a><span class="kw">where
-<a href=#710 id=710 data-nosnippet>710</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
-<a href=#711 id=711 data-nosnippet>711</a>    T: <span class="lifetime">'a</span>,
-<a href=#712 id=712 data-nosnippet>712</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span>T: ToVectorValue,
-<a href=#713 id=713 data-nosnippet>713</a>{
-<a href=#714 id=714 data-nosnippet>714</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T]) -&gt; <span class="self">Self </span>{
-<a href=#715 id=715 data-nosnippet>715</a>        val.iter().collect_robj()
-<a href=#716 id=716 data-nosnippet>716</a>    }
-<a href=#717 id=717 data-nosnippet>717</a>}
-<a href=#718 id=718 data-nosnippet>718</a>
-<a href=#719 id=719 data-nosnippet>719</a><span class="macro">impl_from_as_iterator!</span> {Range&lt;T&gt;}
-<a href=#720 id=720 data-nosnippet>720</a><span class="macro">impl_from_as_iterator!</span> {RangeInclusive&lt;T&gt;}
-<a href=#721 id=721 data-nosnippet>721</a>
-<a href=#722 id=722 data-nosnippet>722</a><span class="kw">impl </span>From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
-<a href=#723 id=723 data-nosnippet>723</a>    <span class="doccomment">/// Convert a vector of Robj into a list.
-<a href=#724 id=724 data-nosnippet>724</a>    </span><span class="kw">fn </span>from(val: Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
-<a href=#725 id=725 data-nosnippet>725</a>        <span class="self">Self</span>::from(<span class="kw-2">&amp;</span>val)
-<a href=#726 id=726 data-nosnippet>726</a>    }
-<a href=#727 id=727 data-nosnippet>727</a>}
-<a href=#728 id=728 data-nosnippet>728</a>
-<a href=#729 id=729 data-nosnippet>729</a><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
-<a href=#730 id=730 data-nosnippet>730</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span>Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
-<a href=#731 id=731 data-nosnippet>731</a>        List::from_values(val.iter()).into()
-<a href=#732 id=732 data-nosnippet>732</a>    }
-<a href=#733 id=733 data-nosnippet>733</a>}
-<a href=#734 id=734 data-nosnippet>734</a>
-<a href=#735 id=735 data-nosnippet>735</a><span class="kw">impl </span>From&lt;Vec&lt;Rstr&gt;&gt; <span class="kw">for </span>Robj {
-<a href=#736 id=736 data-nosnippet>736</a>    <span class="doccomment">/// Convert a vector of Rstr into strings.
-<a href=#737 id=737 data-nosnippet>737</a>    </span><span class="kw">fn </span>from(val: Vec&lt;Rstr&gt;) -&gt; <span class="self">Self </span>{
-<a href=#738 id=738 data-nosnippet>738</a>        Strings::from_values(val).into()
-<a href=#739 id=739 data-nosnippet>739</a>    }
-<a href=#740 id=740 data-nosnippet>740</a>}
-<a href=#741 id=741 data-nosnippet>741</a>
-<a href=#742 id=742 data-nosnippet>742</a><span class="attr">#[cfg(test)]
-<a href=#743 id=743 data-nosnippet>743</a></span><span class="kw">mod </span>test {
-<a href=#744 id=744 data-nosnippet>744</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#745 id=745 data-nosnippet>745</a>    <span class="kw">use crate as </span>extendr_api;
-<a href=#746 id=746 data-nosnippet>746</a>
-<a href=#747 id=747 data-nosnippet>747</a>    <span class="attr">#[test]
-<a href=#748 id=748 data-nosnippet>748</a>    </span><span class="kw">fn </span>test_vec_rint_to_robj() {
-<a href=#749 id=749 data-nosnippet>749</a>        <span class="macro">test!</span> {
-<a href=#750 id=750 data-nosnippet>750</a>            <span class="kw">let </span>int_vec = <span class="macro">vec!</span>[<span class="number">3</span>,<span class="number">4</span>,<span class="number">0</span>,-<span class="number">2</span>];
-<a href=#751 id=751 data-nosnippet>751</a>            <span class="kw">let </span>int_vec_robj: Robj = int_vec.clone().into();
-<a href=#752 id=752 data-nosnippet>752</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
-<a href=#753 id=753 data-nosnippet>753</a>            </span><span class="macro">assert_eq!</span>(int_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
-<a href=#754 id=754 data-nosnippet>754</a>
-<a href=#755 id=755 data-nosnippet>755</a>            <span class="kw">let </span>rint_vec = <span class="macro">vec!</span>[Rint::from(<span class="number">3</span>), Rint::from(<span class="number">4</span>), Rint::from(<span class="number">0</span>), Rint::from(-<span class="number">2</span>)];
-<a href=#756 id=756 data-nosnippet>756</a>            <span class="kw">let </span>rint_vec_robj: Robj = rint_vec.into();
-<a href=#757 id=757 data-nosnippet>757</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
-<a href=#758 id=758 data-nosnippet>758</a>            </span><span class="macro">assert_eq!</span>(rint_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
-<a href=#759 id=759 data-nosnippet>759</a>        }
-<a href=#760 id=760 data-nosnippet>760</a>    }
+<a href=#692 id=692 data-nosnippet>692</a>
+<a href=#693 id=693 data-nosnippet>693</a>    <span class="doccomment">/// Collects an iterable into an [`RArray`].
+<a href=#694 id=694 data-nosnippet>694</a>    /// The iterable must yield items column by column (aka Fortan order)
+<a href=#695 id=695 data-nosnippet>695</a>    ///
+<a href=#696 id=696 data-nosnippet>696</a>    /// # Arguments
+<a href=#697 id=697 data-nosnippet>697</a>    ///
+<a href=#698 id=698 data-nosnippet>698</a>    /// * `dims` - an array containing the length of each dimension
+<a href=#699 id=699 data-nosnippet>699</a>    </span><span class="kw">fn </span>collect_rarray&lt;<span class="kw">const </span>LEN: usize&gt;(<span class="self">self</span>, dims: [usize; LEN]) -&gt; <span class="prelude-ty">Result</span>&lt;RArray&lt;<span class="self">Self</span>::Item, LEN&gt;&gt;
+<a href=#700 id=700 data-nosnippet>700</a>    <span class="kw">where
+<a href=#701 id=701 data-nosnippet>701</a>        </span><span class="self">Self</span>: Iterator,
+<a href=#702 id=702 data-nosnippet>702</a>        <span class="self">Self</span>: Sized,
+<a href=#703 id=703 data-nosnippet>703</a>        <span class="self">Self</span>::Item: ToVectorValue,
+<a href=#704 id=704 data-nosnippet>704</a>        Robj: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; AsTypedSlice&lt;<span class="lifetime">'a</span>, <span class="self">Self</span>::Item&gt;,
+<a href=#705 id=705 data-nosnippet>705</a>    {
+<a href=#706 id=706 data-nosnippet>706</a>        <span class="kw">let </span><span class="kw-2">mut </span>vector = <span class="self">self</span>.collect_robj();
+<a href=#707 id=707 data-nosnippet>707</a>        <span class="kw">let </span>prod = dims.iter().product::&lt;usize&gt;();
+<a href=#708 id=708 data-nosnippet>708</a>        <span class="kw">if </span><span class="macro">prod !</span>= vector.len() {
+<a href=#709 id=709 data-nosnippet>709</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Other(<span class="macro">format!</span>(
+<a href=#710 id=710 data-nosnippet>710</a>                <span class="string">"The vector length ({}) does not match the length implied by the dimensions ({})"</span>,
+<a href=#711 id=711 data-nosnippet>711</a>                vector.len(),
+<a href=#712 id=712 data-nosnippet>712</a>                prod
+<a href=#713 id=713 data-nosnippet>713</a>            )));
+<a href=#714 id=714 data-nosnippet>714</a>        }
+<a href=#715 id=715 data-nosnippet>715</a>        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())<span class="question-mark">?</span>;
+<a href=#716 id=716 data-nosnippet>716</a>        <span class="kw">let </span>_data = vector.as_typed_slice().ok_or(Error::Other(
+<a href=#717 id=717 data-nosnippet>717</a>            <span class="string">"Unknown error in converting to slice"</span>.to_string(),
+<a href=#718 id=718 data-nosnippet>718</a>        ))<span class="question-mark">?</span>;
+<a href=#719 id=719 data-nosnippet>719</a>        <span class="prelude-val">Ok</span>(RArray::from_parts(vector))
+<a href=#720 id=720 data-nosnippet>720</a>    }
+<a href=#721 id=721 data-nosnippet>721</a>}
+<a href=#722 id=722 data-nosnippet>722</a>
+<a href=#723 id=723 data-nosnippet>723</a><span class="comment">// Thanks to *pretzelhammer* on stackoverflow for this.
+<a href=#724 id=724 data-nosnippet>724</a></span><span class="kw">impl</span>&lt;T&gt; RobjItertools <span class="kw">for </span>T <span class="kw">where </span>T: Iterator {}
+<a href=#725 id=725 data-nosnippet>725</a>
+<a href=#726 id=726 data-nosnippet>726</a><span class="comment">// Scalars which are ToVectorValue
+<a href=#727 id=727 data-nosnippet>727</a></span><span class="kw">impl</span>&lt;T&gt; From&lt;T&gt; <span class="kw">for </span>Robj
+<a href=#728 id=728 data-nosnippet>728</a><span class="kw">where
+<a href=#729 id=729 data-nosnippet>729</a>    </span>T: ToVectorValue,
+<a href=#730 id=730 data-nosnippet>730</a>{
+<a href=#731 id=731 data-nosnippet>731</a>    <span class="kw">fn </span>from(scalar: T) -&gt; <span class="self">Self </span>{
+<a href=#732 id=732 data-nosnippet>732</a>        <span class="prelude-val">Some</span>(scalar).into_iter().collect_robj()
+<a href=#733 id=733 data-nosnippet>733</a>    }
+<a href=#734 id=734 data-nosnippet>734</a>}
+<a href=#735 id=735 data-nosnippet>735</a>
+<a href=#736 id=736 data-nosnippet>736</a><span class="macro">macro_rules!</span> impl_from_as_iterator {
+<a href=#737 id=737 data-nosnippet>737</a>    (<span class="macro-nonterminal">$t</span>: ty) =&gt; {
+<a href=#738 id=738 data-nosnippet>738</a>        <span class="kw">impl</span>&lt;T&gt; From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span>Robj
+<a href=#739 id=739 data-nosnippet>739</a>        <span class="kw">where
+<a href=#740 id=740 data-nosnippet>740</a>            </span><span class="macro-nonterminal">$t</span>: RobjItertools,
+<a href=#741 id=741 data-nosnippet>741</a>            &lt;<span class="macro-nonterminal">$t </span><span class="kw">as </span>Iterator&gt;::Item: ToVectorValue,
+<a href=#742 id=742 data-nosnippet>742</a>            T: ToVectorValue,
+<a href=#743 id=743 data-nosnippet>743</a>        {
+<a href=#744 id=744 data-nosnippet>744</a>            <span class="kw">fn </span>from(val: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+<a href=#745 id=745 data-nosnippet>745</a>                val.collect_robj()
+<a href=#746 id=746 data-nosnippet>746</a>            }
+<a href=#747 id=747 data-nosnippet>747</a>        }
+<a href=#748 id=748 data-nosnippet>748</a>    };
+<a href=#749 id=749 data-nosnippet>749</a>}
+<a href=#750 id=750 data-nosnippet>750</a>
+<a href=#751 id=751 data-nosnippet>751</a><span class="comment">// impl&lt;T&gt; From&lt;Range&lt;T&gt;&gt; for Robj
+<a href=#752 id=752 data-nosnippet>752</a>// where
+<a href=#753 id=753 data-nosnippet>753</a>//     Range&lt;T&gt; : RobjItertools,
+<a href=#754 id=754 data-nosnippet>754</a>//     &lt;Range&lt;T&gt; as Iterator&gt;::Item: ToVectorValue,
+<a href=#755 id=755 data-nosnippet>755</a>//     T : ToVectorValue
+<a href=#756 id=756 data-nosnippet>756</a>// {
+<a href=#757 id=757 data-nosnippet>757</a>//     fn from(val: Range&lt;T&gt;) -&gt; Self {
+<a href=#758 id=758 data-nosnippet>758</a>//         val.collect_robj()
+<a href=#759 id=759 data-nosnippet>759</a>//     }
+<a href=#760 id=760 data-nosnippet>760</a>// } //
 <a href=#761 id=761 data-nosnippet>761</a>
-<a href=#762 id=762 data-nosnippet>762</a>    <span class="attr">#[test]
-<a href=#763 id=763 data-nosnippet>763</a>    </span><span class="kw">fn </span>test_collect_rarray_matrix() {
-<a href=#764 id=764 data-nosnippet>764</a>        <span class="macro">test!</span> {
-<a href=#765 id=765 data-nosnippet>765</a>            <span class="comment">// Check that collect_rarray works the same as R's matrix() function
-<a href=#766 id=766 data-nosnippet>766</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">4</span>, <span class="number">4</span>]);
-<a href=#767 id=767 data-nosnippet>767</a>            <span class="macro">assert!</span>(rmat.is_ok());
-<a href=#768 id=768 data-nosnippet>768</a>            <span class="macro">assert_eq!</span>(Robj::from(rmat), <span class="macro">R!</span>(<span class="string">"matrix(1:16, nrow=4)"</span>).unwrap());
-<a href=#769 id=769 data-nosnippet>769</a>        }
-<a href=#770 id=770 data-nosnippet>770</a>    }
-<a href=#771 id=771 data-nosnippet>771</a>
-<a href=#772 id=772 data-nosnippet>772</a>    <span class="attr">#[test]
-<a href=#773 id=773 data-nosnippet>773</a>    </span><span class="kw">fn </span>test_collect_rarray_tensor() {
-<a href=#774 id=774 data-nosnippet>774</a>        <span class="macro">test!</span> {
-<a href=#775 id=775 data-nosnippet>775</a>            <span class="comment">// Check that collect_rarray works the same as R's array() function
-<a href=#776 id=776 data-nosnippet>776</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>]);
-<a href=#777 id=777 data-nosnippet>777</a>            <span class="macro">assert!</span>(rmat.is_ok());
-<a href=#778 id=778 data-nosnippet>778</a>            <span class="macro">assert_eq!</span>(Robj::from(rmat), <span class="macro">R!</span>(<span class="string">"array(1:16, dim=c(2, 4, 2))"</span>).unwrap());
-<a href=#779 id=779 data-nosnippet>779</a>        }
-<a href=#780 id=780 data-nosnippet>780</a>    }
-<a href=#781 id=781 data-nosnippet>781</a>
-<a href=#782 id=782 data-nosnippet>782</a>    <span class="attr">#[test]
-<a href=#783 id=783 data-nosnippet>783</a>    </span><span class="kw">fn </span>test_collect_rarray_matrix_failure() {
-<a href=#784 id=784 data-nosnippet>784</a>        <span class="macro">test!</span> {
-<a href=#785 id=785 data-nosnippet>785</a>            <span class="comment">// Check that collect_rarray fails when given an invalid shape
-<a href=#786 id=786 data-nosnippet>786</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>]);
-<a href=#787 id=787 data-nosnippet>787</a>            <span class="macro">assert!</span>(rmat.is_err());
-<a href=#788 id=788 data-nosnippet>788</a>            <span class="kw">let </span>msg = rmat.unwrap_err().to_string();
-<a href=#789 id=789 data-nosnippet>789</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">'9'</span>));
-<a href=#790 id=790 data-nosnippet>790</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"dimension"</span>));
-<a href=#791 id=791 data-nosnippet>791</a>        }
-<a href=#792 id=792 data-nosnippet>792</a>    }
-<a href=#793 id=793 data-nosnippet>793</a>
-<a href=#794 id=794 data-nosnippet>794</a>    <span class="attr">#[test]
-<a href=#795 id=795 data-nosnippet>795</a>    </span><span class="kw">fn </span>test_collect_tensor_failure() {
-<a href=#796 id=796 data-nosnippet>796</a>        <span class="macro">test!</span> {
-<a href=#797 id=797 data-nosnippet>797</a>            <span class="comment">// Check that collect_rarray fails when given an invalid shape
-<a href=#798 id=798 data-nosnippet>798</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]);
-<a href=#799 id=799 data-nosnippet>799</a>            <span class="macro">assert!</span>(rmat.is_err());
-<a href=#800 id=800 data-nosnippet>800</a>            <span class="kw">let </span>msg = rmat.unwrap_err().to_string();
-<a href=#801 id=801 data-nosnippet>801</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"27"</span>));
-<a href=#802 id=802 data-nosnippet>802</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"dimension"</span>));
-<a href=#803 id=803 data-nosnippet>803</a>        }
-<a href=#804 id=804 data-nosnippet>804</a>    }
-<a href=#805 id=805 data-nosnippet>805</a>
-<a href=#806 id=806 data-nosnippet>806</a>    <span class="attr">#[test]
-<a href=#807 id=807 data-nosnippet>807</a>    #[cfg(all(feature = <span class="string">"result_condition"</span>, not(feature = <span class="string">"result_list"</span>)))]
-<a href=#808 id=808 data-nosnippet>808</a>    </span><span class="kw">fn </span>test_result_condition() {
-<a href=#809 id=809 data-nosnippet>809</a>        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
-<a href=#810 id=810 data-nosnippet>810</a>        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, f64&gt; {
-<a href=#811 id=811 data-nosnippet>811</a>            <span class="prelude-val">Err</span>(<span class="number">42.0</span>) <span class="comment">// return err float
-<a href=#812 id=812 data-nosnippet>812</a>        </span>}
-<a href=#813 id=813 data-nosnippet>813</a>
-<a href=#814 id=814 data-nosnippet>814</a>        <span class="macro">test!</span> {
-<a href=#815 id=815 data-nosnippet>815</a>                  <span class="macro">assert_eq!</span>(
-<a href=#816 id=816 data-nosnippet>816</a>                    <span class="macro">r!</span>(my_err_f()),
-<a href=#817 id=817 data-nosnippet>817</a>                    <span class="macro">R!</span>(
-<a href=#818 id=818 data-nosnippet>818</a>        <span class="string">"structure(list(message = 'extendr_err',
-<a href=#819 id=819 data-nosnippet>819</a>        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
-<a href=#820 id=820 data-nosnippet>820</a>                    </span>).unwrap()
-<a href=#821 id=821 data-nosnippet>821</a>                );
-<a href=#822 id=822 data-nosnippet>822</a>            }
+<a href=#762 id=762 data-nosnippet>762</a></span><span class="kw">impl</span>&lt;T, <span class="kw">const </span>N: usize&gt; From&lt;[T; N]&gt; <span class="kw">for </span>Robj
+<a href=#763 id=763 data-nosnippet>763</a><span class="kw">where
+<a href=#764 id=764 data-nosnippet>764</a>    </span>T: ToVectorValue,
+<a href=#765 id=765 data-nosnippet>765</a>{
+<a href=#766 id=766 data-nosnippet>766</a>    <span class="kw">fn </span>from(val: [T; N]) -&gt; <span class="self">Self </span>{
+<a href=#767 id=767 data-nosnippet>767</a>        fixed_size_collect(val.into_iter(), N)
+<a href=#768 id=768 data-nosnippet>768</a>    }
+<a href=#769 id=769 data-nosnippet>769</a>}
+<a href=#770 id=770 data-nosnippet>770</a>
+<a href=#771 id=771 data-nosnippet>771</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, <span class="kw">const </span>N: usize&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T; N]&gt; <span class="kw">for </span>Robj
+<a href=#772 id=772 data-nosnippet>772</a><span class="kw">where
+<a href=#773 id=773 data-nosnippet>773</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
+<a href=#774 id=774 data-nosnippet>774</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span>T: ToVectorValue + <span class="lifetime">'a</span>,
+<a href=#775 id=775 data-nosnippet>775</a>{
+<a href=#776 id=776 data-nosnippet>776</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T; N]) -&gt; <span class="self">Self </span>{
+<a href=#777 id=777 data-nosnippet>777</a>        fixed_size_collect(val.iter(), N)
+<a href=#778 id=778 data-nosnippet>778</a>    }
+<a href=#779 id=779 data-nosnippet>779</a>}
+<a href=#780 id=780 data-nosnippet>780</a>
+<a href=#781 id=781 data-nosnippet>781</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T, <span class="kw">const </span>N: usize&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T; N]&gt; <span class="kw">for </span>Robj
+<a href=#782 id=782 data-nosnippet>782</a><span class="kw">where
+<a href=#783 id=783 data-nosnippet>783</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
+<a href=#784 id=784 data-nosnippet>784</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>T: ToVectorValue + <span class="lifetime">'a</span>,
+<a href=#785 id=785 data-nosnippet>785</a>{
+<a href=#786 id=786 data-nosnippet>786</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>[T; N]) -&gt; <span class="self">Self </span>{
+<a href=#787 id=787 data-nosnippet>787</a>        fixed_size_collect(val.iter_mut(), N)
+<a href=#788 id=788 data-nosnippet>788</a>    }
+<a href=#789 id=789 data-nosnippet>789</a>}
+<a href=#790 id=790 data-nosnippet>790</a>
+<a href=#791 id=791 data-nosnippet>791</a><span class="kw">impl</span>&lt;T: ToVectorValue + Clone&gt; From&lt;<span class="kw-2">&amp;</span>Vec&lt;T&gt;&gt; <span class="kw">for </span>Robj {
+<a href=#792 id=792 data-nosnippet>792</a>    <span class="kw">fn </span>from(value: <span class="kw-2">&amp;</span>Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
+<a href=#793 id=793 data-nosnippet>793</a>        <span class="kw">let </span>len = value.len();
+<a href=#794 id=794 data-nosnippet>794</a>        fixed_size_collect(value.iter().cloned(), len)
+<a href=#795 id=795 data-nosnippet>795</a>    }
+<a href=#796 id=796 data-nosnippet>796</a>}
+<a href=#797 id=797 data-nosnippet>797</a>
+<a href=#798 id=798 data-nosnippet>798</a><span class="kw">impl</span>&lt;T: ToVectorValue&gt; From&lt;Vec&lt;T&gt;&gt; <span class="kw">for </span>Robj {
+<a href=#799 id=799 data-nosnippet>799</a>    <span class="kw">fn </span>from(value: Vec&lt;T&gt;) -&gt; <span class="self">Self </span>{
+<a href=#800 id=800 data-nosnippet>800</a>        <span class="kw">let </span>len = value.len();
+<a href=#801 id=801 data-nosnippet>801</a>        fixed_size_collect(value.into_iter(), len)
+<a href=#802 id=802 data-nosnippet>802</a>    }
+<a href=#803 id=803 data-nosnippet>803</a>}
+<a href=#804 id=804 data-nosnippet>804</a>
+<a href=#805 id=805 data-nosnippet>805</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, T&gt; From&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T]&gt; <span class="kw">for </span>Robj
+<a href=#806 id=806 data-nosnippet>806</a><span class="kw">where
+<a href=#807 id=807 data-nosnippet>807</a>    </span><span class="self">Self</span>: <span class="lifetime">'a</span>,
+<a href=#808 id=808 data-nosnippet>808</a>    T: <span class="lifetime">'a</span>,
+<a href=#809 id=809 data-nosnippet>809</a>    <span class="kw-2">&amp;</span><span class="lifetime">'a </span>T: ToVectorValue,
+<a href=#810 id=810 data-nosnippet>810</a>{
+<a href=#811 id=811 data-nosnippet>811</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[T]) -&gt; <span class="self">Self </span>{
+<a href=#812 id=812 data-nosnippet>812</a>        val.iter().collect_robj()
+<a href=#813 id=813 data-nosnippet>813</a>    }
+<a href=#814 id=814 data-nosnippet>814</a>}
+<a href=#815 id=815 data-nosnippet>815</a>
+<a href=#816 id=816 data-nosnippet>816</a><span class="macro">impl_from_as_iterator!</span> {Range&lt;T&gt;}
+<a href=#817 id=817 data-nosnippet>817</a><span class="macro">impl_from_as_iterator!</span> {RangeInclusive&lt;T&gt;}
+<a href=#818 id=818 data-nosnippet>818</a>
+<a href=#819 id=819 data-nosnippet>819</a><span class="kw">impl </span>From&lt;Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
+<a href=#820 id=820 data-nosnippet>820</a>    <span class="doccomment">/// Convert a vector of Robj into a list.
+<a href=#821 id=821 data-nosnippet>821</a>    </span><span class="kw">fn </span>from(val: Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
+<a href=#822 id=822 data-nosnippet>822</a>        <span class="self">Self</span>::from(<span class="kw-2">&amp;</span>val)
 <a href=#823 id=823 data-nosnippet>823</a>    }
-<a href=#824 id=824 data-nosnippet>824</a>
-<a href=#825 id=825 data-nosnippet>825</a>    <span class="attr">#[test]
-<a href=#826 id=826 data-nosnippet>826</a>    #[cfg(feature = <span class="string">"result_list"</span>)]
-<a href=#827 id=827 data-nosnippet>827</a>    </span><span class="kw">fn </span>test_result_list() {
-<a href=#828 id=828 data-nosnippet>828</a>        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
-<a href=#829 id=829 data-nosnippet>829</a>        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, String&gt; {
-<a href=#830 id=830 data-nosnippet>830</a>            <span class="prelude-val">Err</span>(<span class="string">"We have water in the engine room!"</span>.to_string())
-<a href=#831 id=831 data-nosnippet>831</a>        }
-<a href=#832 id=832 data-nosnippet>832</a>
-<a href=#833 id=833 data-nosnippet>833</a>        <span class="kw">fn </span>my_ok_f() -&gt; std::result::Result&lt;f64, String&gt; {
-<a href=#834 id=834 data-nosnippet>834</a>            <span class="prelude-val">Ok</span>(<span class="number">123.123</span>)
-<a href=#835 id=835 data-nosnippet>835</a>        }
+<a href=#824 id=824 data-nosnippet>824</a>}
+<a href=#825 id=825 data-nosnippet>825</a>
+<a href=#826 id=826 data-nosnippet>826</a><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Vec&lt;Robj&gt;&gt; <span class="kw">for </span>Robj {
+<a href=#827 id=827 data-nosnippet>827</a>    <span class="kw">fn </span>from(val: <span class="kw-2">&amp;</span>Vec&lt;Robj&gt;) -&gt; <span class="self">Self </span>{
+<a href=#828 id=828 data-nosnippet>828</a>        List::from_values(val.iter()).into()
+<a href=#829 id=829 data-nosnippet>829</a>    }
+<a href=#830 id=830 data-nosnippet>830</a>}
+<a href=#831 id=831 data-nosnippet>831</a>
+<a href=#832 id=832 data-nosnippet>832</a><span class="attr">#[cfg(test)]
+<a href=#833 id=833 data-nosnippet>833</a></span><span class="kw">mod </span>test {
+<a href=#834 id=834 data-nosnippet>834</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#835 id=835 data-nosnippet>835</a>    <span class="kw">use crate as </span>extendr_api;
 <a href=#836 id=836 data-nosnippet>836</a>
-<a href=#837 id=837 data-nosnippet>837</a>        <span class="macro">test!</span> {
-<a href=#838 id=838 data-nosnippet>838</a>            <span class="macro">assert_eq!</span>(
-<a href=#839 id=839 data-nosnippet>839</a>                <span class="macro">r!</span>(my_err_f()),
-<a href=#840 id=840 data-nosnippet>840</a>                <span class="macro">R!</span>(<span class="string">"x=list(ok=NULL, err='We have water in the engine room!')
-<a href=#841 id=841 data-nosnippet>841</a>                    class(x)='extendr_result'
-<a href=#842 id=842 data-nosnippet>842</a>                    x"
-<a href=#843 id=843 data-nosnippet>843</a>                </span>).unwrap()
-<a href=#844 id=844 data-nosnippet>844</a>            );
-<a href=#845 id=845 data-nosnippet>845</a>            <span class="macro">assert_eq!</span>(
-<a href=#846 id=846 data-nosnippet>846</a>                <span class="macro">r!</span>(my_ok_f()),
-<a href=#847 id=847 data-nosnippet>847</a>                <span class="macro">R!</span>(<span class="string">"x = list(ok=123.123, err=NULL)
-<a href=#848 id=848 data-nosnippet>848</a>                    class(x)='extendr_result'
-<a href=#849 id=849 data-nosnippet>849</a>                    x"
-<a href=#850 id=850 data-nosnippet>850</a>                </span>).unwrap()
-<a href=#851 id=851 data-nosnippet>851</a>            );
-<a href=#852 id=852 data-nosnippet>852</a>        }
-<a href=#853 id=853 data-nosnippet>853</a>    }
-<a href=#854 id=854 data-nosnippet>854</a>}
+<a href=#837 id=837 data-nosnippet>837</a>    <span class="attr">#[test]
+<a href=#838 id=838 data-nosnippet>838</a>    </span><span class="kw">fn </span>test_vec_rint_to_robj() {
+<a href=#839 id=839 data-nosnippet>839</a>        <span class="macro">test!</span> {
+<a href=#840 id=840 data-nosnippet>840</a>            <span class="kw">let </span>int_vec = <span class="macro">vec!</span>[<span class="number">3</span>,<span class="number">4</span>,<span class="number">0</span>,-<span class="number">2</span>];
+<a href=#841 id=841 data-nosnippet>841</a>            <span class="kw">let </span>int_vec_robj: Robj = int_vec.clone().into();
+<a href=#842 id=842 data-nosnippet>842</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
+<a href=#843 id=843 data-nosnippet>843</a>            </span><span class="macro">assert_eq!</span>(int_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
+<a href=#844 id=844 data-nosnippet>844</a>
+<a href=#845 id=845 data-nosnippet>845</a>            <span class="kw">let </span>rint_vec = <span class="macro">vec!</span>[Rint::from(<span class="number">3</span>), Rint::from(<span class="number">4</span>), Rint::from(<span class="number">0</span>), Rint::from(-<span class="number">2</span>)];
+<a href=#846 id=846 data-nosnippet>846</a>            <span class="kw">let </span>rint_vec_robj: Robj = rint_vec.into();
+<a href=#847 id=847 data-nosnippet>847</a>            <span class="comment">// unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
+<a href=#848 id=848 data-nosnippet>848</a>            </span><span class="macro">assert_eq!</span>(rint_vec_robj.as_integer_slice().unwrap(), <span class="kw-2">&amp;</span>int_vec);
+<a href=#849 id=849 data-nosnippet>849</a>        }
+<a href=#850 id=850 data-nosnippet>850</a>    }
+<a href=#851 id=851 data-nosnippet>851</a>
+<a href=#852 id=852 data-nosnippet>852</a>    <span class="attr">#[test]
+<a href=#853 id=853 data-nosnippet>853</a>    </span><span class="kw">fn </span>test_collect_rarray_matrix() {
+<a href=#854 id=854 data-nosnippet>854</a>        <span class="macro">test!</span> {
+<a href=#855 id=855 data-nosnippet>855</a>            <span class="comment">// Check that collect_rarray works the same as R's matrix() function
+<a href=#856 id=856 data-nosnippet>856</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">4</span>, <span class="number">4</span>]);
+<a href=#857 id=857 data-nosnippet>857</a>            <span class="macro">assert!</span>(rmat.is_ok());
+<a href=#858 id=858 data-nosnippet>858</a>            <span class="macro">assert_eq!</span>(Robj::from(rmat), <span class="macro">R!</span>(<span class="string">"matrix(1:16, nrow=4)"</span>).unwrap());
+<a href=#859 id=859 data-nosnippet>859</a>        }
+<a href=#860 id=860 data-nosnippet>860</a>    }
+<a href=#861 id=861 data-nosnippet>861</a>
+<a href=#862 id=862 data-nosnippet>862</a>    <span class="attr">#[test]
+<a href=#863 id=863 data-nosnippet>863</a>    </span><span class="kw">fn </span>test_collect_rarray_tensor() {
+<a href=#864 id=864 data-nosnippet>864</a>        <span class="macro">test!</span> {
+<a href=#865 id=865 data-nosnippet>865</a>            <span class="comment">// Check that collect_rarray works the same as R's array() function
+<a href=#866 id=866 data-nosnippet>866</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>]);
+<a href=#867 id=867 data-nosnippet>867</a>            <span class="macro">assert!</span>(rmat.is_ok());
+<a href=#868 id=868 data-nosnippet>868</a>            <span class="macro">assert_eq!</span>(Robj::from(rmat), <span class="macro">R!</span>(<span class="string">"array(1:16, dim=c(2, 4, 2))"</span>).unwrap());
+<a href=#869 id=869 data-nosnippet>869</a>        }
+<a href=#870 id=870 data-nosnippet>870</a>    }
+<a href=#871 id=871 data-nosnippet>871</a>
+<a href=#872 id=872 data-nosnippet>872</a>    <span class="attr">#[test]
+<a href=#873 id=873 data-nosnippet>873</a>    </span><span class="kw">fn </span>test_collect_rarray_matrix_failure() {
+<a href=#874 id=874 data-nosnippet>874</a>        <span class="macro">test!</span> {
+<a href=#875 id=875 data-nosnippet>875</a>            <span class="comment">// Check that collect_rarray fails when given an invalid shape
+<a href=#876 id=876 data-nosnippet>876</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>]);
+<a href=#877 id=877 data-nosnippet>877</a>            <span class="macro">assert!</span>(rmat.is_err());
+<a href=#878 id=878 data-nosnippet>878</a>            <span class="kw">let </span>msg = rmat.unwrap_err().to_string();
+<a href=#879 id=879 data-nosnippet>879</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">'9'</span>));
+<a href=#880 id=880 data-nosnippet>880</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"dimension"</span>));
+<a href=#881 id=881 data-nosnippet>881</a>        }
+<a href=#882 id=882 data-nosnippet>882</a>    }
+<a href=#883 id=883 data-nosnippet>883</a>
+<a href=#884 id=884 data-nosnippet>884</a>    <span class="attr">#[test]
+<a href=#885 id=885 data-nosnippet>885</a>    </span><span class="kw">fn </span>test_collect_tensor_failure() {
+<a href=#886 id=886 data-nosnippet>886</a>        <span class="macro">test!</span> {
+<a href=#887 id=887 data-nosnippet>887</a>            <span class="comment">// Check that collect_rarray fails when given an invalid shape
+<a href=#888 id=888 data-nosnippet>888</a>            </span><span class="kw">let </span>rmat = (<span class="number">1i32</span>..=<span class="number">16</span>).collect_rarray([<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]);
+<a href=#889 id=889 data-nosnippet>889</a>            <span class="macro">assert!</span>(rmat.is_err());
+<a href=#890 id=890 data-nosnippet>890</a>            <span class="kw">let </span>msg = rmat.unwrap_err().to_string();
+<a href=#891 id=891 data-nosnippet>891</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"27"</span>));
+<a href=#892 id=892 data-nosnippet>892</a>            <span class="macro">assert!</span>(msg.contains(<span class="string">"dimension"</span>));
+<a href=#893 id=893 data-nosnippet>893</a>        }
+<a href=#894 id=894 data-nosnippet>894</a>    }
+<a href=#895 id=895 data-nosnippet>895</a>
+<a href=#896 id=896 data-nosnippet>896</a>    <span class="attr">#[test]
+<a href=#897 id=897 data-nosnippet>897</a>    #[cfg(all(feature = <span class="string">"result_condition"</span>, not(feature = <span class="string">"result_list"</span>)))]
+<a href=#898 id=898 data-nosnippet>898</a>    </span><span class="kw">fn </span>test_result_condition() {
+<a href=#899 id=899 data-nosnippet>899</a>        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+<a href=#900 id=900 data-nosnippet>900</a>        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, f64&gt; {
+<a href=#901 id=901 data-nosnippet>901</a>            <span class="prelude-val">Err</span>(<span class="number">42.0</span>) <span class="comment">// return err float
+<a href=#902 id=902 data-nosnippet>902</a>        </span>}
+<a href=#903 id=903 data-nosnippet>903</a>
+<a href=#904 id=904 data-nosnippet>904</a>        <span class="macro">test!</span> {
+<a href=#905 id=905 data-nosnippet>905</a>                  <span class="macro">assert_eq!</span>(
+<a href=#906 id=906 data-nosnippet>906</a>                    <span class="macro">r!</span>(my_err_f()),
+<a href=#907 id=907 data-nosnippet>907</a>                    <span class="macro">R!</span>(
+<a href=#908 id=908 data-nosnippet>908</a>        <span class="string">"structure(list(message = 'extendr_err',
+<a href=#909 id=909 data-nosnippet>909</a>        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
+<a href=#910 id=910 data-nosnippet>910</a>                    </span>).unwrap()
+<a href=#911 id=911 data-nosnippet>911</a>                );
+<a href=#912 id=912 data-nosnippet>912</a>            }
+<a href=#913 id=913 data-nosnippet>913</a>    }
+<a href=#914 id=914 data-nosnippet>914</a>
+<a href=#915 id=915 data-nosnippet>915</a>    <span class="attr">#[test]
+<a href=#916 id=916 data-nosnippet>916</a>    #[cfg(feature = <span class="string">"result_list"</span>)]
+<a href=#917 id=917 data-nosnippet>917</a>    </span><span class="kw">fn </span>test_result_list() {
+<a href=#918 id=918 data-nosnippet>918</a>        <span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+<a href=#919 id=919 data-nosnippet>919</a>        <span class="kw">fn </span>my_err_f() -&gt; std::result::Result&lt;f64, String&gt; {
+<a href=#920 id=920 data-nosnippet>920</a>            <span class="prelude-val">Err</span>(<span class="string">"We have water in the engine room!"</span>.to_string())
+<a href=#921 id=921 data-nosnippet>921</a>        }
+<a href=#922 id=922 data-nosnippet>922</a>
+<a href=#923 id=923 data-nosnippet>923</a>        <span class="kw">fn </span>my_ok_f() -&gt; std::result::Result&lt;f64, String&gt; {
+<a href=#924 id=924 data-nosnippet>924</a>            <span class="prelude-val">Ok</span>(<span class="number">123.123</span>)
+<a href=#925 id=925 data-nosnippet>925</a>        }
+<a href=#926 id=926 data-nosnippet>926</a>
+<a href=#927 id=927 data-nosnippet>927</a>        <span class="macro">test!</span> {
+<a href=#928 id=928 data-nosnippet>928</a>            <span class="macro">assert_eq!</span>(
+<a href=#929 id=929 data-nosnippet>929</a>                <span class="macro">r!</span>(my_err_f()),
+<a href=#930 id=930 data-nosnippet>930</a>                <span class="macro">R!</span>(<span class="string">"x=list(ok=NULL, err='We have water in the engine room!')
+<a href=#931 id=931 data-nosnippet>931</a>                    class(x)='extendr_result'
+<a href=#932 id=932 data-nosnippet>932</a>                    x"
+<a href=#933 id=933 data-nosnippet>933</a>                </span>).unwrap()
+<a href=#934 id=934 data-nosnippet>934</a>            );
+<a href=#935 id=935 data-nosnippet>935</a>            <span class="macro">assert_eq!</span>(
+<a href=#936 id=936 data-nosnippet>936</a>                <span class="macro">r!</span>(my_ok_f()),
+<a href=#937 id=937 data-nosnippet>937</a>                <span class="macro">R!</span>(<span class="string">"x = list(ok=123.123, err=NULL)
+<a href=#938 id=938 data-nosnippet>938</a>                    class(x)='extendr_result'
+<a href=#939 id=939 data-nosnippet>939</a>                    x"
+<a href=#940 id=940 data-nosnippet>940</a>                </span>).unwrap()
+<a href=#941 id=941 data-nosnippet>941</a>            );
+<a href=#942 id=942 data-nosnippet>942</a>        }
+<a href=#943 id=943 data-nosnippet>943</a>    }
+<a href=#944 id=944 data-nosnippet>944</a>}
 </code></pre></div></section></main></body></html>
