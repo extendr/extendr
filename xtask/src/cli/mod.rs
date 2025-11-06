@@ -1,9 +1,11 @@
 use clap::{Parser, Subcommand};
 
 pub(crate) mod devtools_test;
+pub(crate) mod msrv;
 pub(crate) mod r_cmd_check;
 
 use devtools_test::DevtoolsTestArg;
+use msrv::MsrvArg;
 use r_cmd_check::RCmdCheckArg;
 
 #[derive(Parser, Debug)]
@@ -24,7 +26,7 @@ pub(crate) enum Commands {
     #[command(about = "Generate documentation for all features")]
     Doc,
     #[command(about = "Check that the specified rust-version is MSRV")]
-    Msrv,
+    Msrv(MsrvArg),
     #[command(about = "Run devtools::test() on {extendrtests} and generate snapshots")]
     DevtoolsTest(DevtoolsTestArg),
     #[command(about = "Generate wrappers by `rextendr::document()`")]
