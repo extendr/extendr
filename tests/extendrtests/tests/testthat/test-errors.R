@@ -193,3 +193,6 @@ test_that("Error handling does not leak memory", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 })
+
+
+Sys.unsetenv("EXTENDR_BACKTRACE")
