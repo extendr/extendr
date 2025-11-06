@@ -4,13 +4,13 @@ use std::collections::HashMap;
 #[extendr]
 fn test_hm_string(mut x: HashMap<String, Robj>) -> List {
     x.insert("inserted_value".to_string(), List::new(0).into());
-    List::from_hashmap(x).unwrap()
+    x.try_into().unwrap()
 }
 
 #[extendr]
 fn test_hm_i32(mut x: HashMap<String, i32>) -> List {
     x.insert("inserted_value".to_string(), 314);
-    List::from_hashmap(x).unwrap()
+    x.try_into().unwrap()
 }
 
 struct Point {
@@ -43,7 +43,7 @@ impl From<Point> for Robj {
 #[extendr]
 fn test_hm_custom_try_from(mut x: HashMap<&str, Point>) -> List {
     x.insert("inserted_value", Point { x: 3.0, y: 0.1415 });
-    List::from_hashmap(x).unwrap()
+    x.try_into().unwrap()
 }
 
 extendr_module! {

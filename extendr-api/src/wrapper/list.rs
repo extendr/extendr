@@ -72,6 +72,10 @@ impl List {
 
     /// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
     /// The `HashMap` is consumed.
+    ///
+    /// # Deprecated
+    /// Use `List::try_from(map)` or `map.try_into()` instead.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// use std::collections::HashMap;
@@ -80,7 +84,7 @@ impl List {
     ///     map.insert("a", r!(1));
     ///     map.insert("b", r!(2));
     ///
-    ///     let list = List::from_hashmap(map).unwrap();
+    ///     let list = List::try_from(map).unwrap();
     ///     assert_eq!(list.is_list(), true);
     ///
     ///     let mut names : Vec<_> = list.names().unwrap().collect();
@@ -88,18 +92,16 @@ impl List {
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
+    #[deprecated(
+        since = "0.8.1",
+        note = "Use `List::try_from(map)` or `map.try_into()` instead"
+    )]
     pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
         V: IntoRobj,
         K: Into<String>,
     {
-        let (names, values): (Vec<_>, Vec<_>) = val
-            .into_iter()
-            .map(|(k, v)| (k.into(), v.into_robj()))
-            .unzip();
-        let mut res: Self = Self::from_values(values);
-        res.set_names(names)?;
-        Ok(res)
+        val.try_into()
     }
 
     /// Build a list using separate names and values iterators.
@@ -241,6 +243,24 @@ impl TryFrom<&List> for HashMap<String, Robj> {
     fn try_from(value: &List) -> Result<Self> {
         let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+impl<K, V> TryFrom<HashMap<K, V>> for List
+where
+    K: Into<String>,
+    V: IntoRobj,
+{
+    type Error = Error;
+
+    fn try_from(val: HashMap<K, V>) -> Result<Self> {
+        let (names, values): (Vec<_>, Vec<_>) = val
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into_robj()))
+            .unzip();
+        let mut res: Self = Self::from_values(values);
+        res.set_names(names)?;
+        Ok(res)
     }
 }
 
