@@ -4,16 +4,18 @@
 
 ### Added
 
+- It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
+`TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
 - Implements ToVectorValue for `Rstr` enabling the creating of character matrices
 - Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
-- Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present
-- Added `impl From<&Vec<Robj>> for Robj`
+- Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present [[#864]](https://github.com/extendr/extendr/pull/864)
+- Added `impl From<&Vec<Robj>> for Robj` [[#864]](https://github.com/extendr/extendr/pull/864)
 
 ### Changed
 
 - **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
-- **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]`
+- **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]` [[952]](https://github.com/extendr/extendr/pull/952)
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
 
 ### Fixed
