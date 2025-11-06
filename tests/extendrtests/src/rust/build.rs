@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 fn main() {
+    println!("cargo:rustc-check-cfg=cfg(use_r_altlist)");
     println!("cargo:rerun-if-env-changed=R_HOME");
     println!("cargo::rerun-if-changed=build.rs");
 

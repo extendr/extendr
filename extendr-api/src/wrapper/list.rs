@@ -1,6 +1,7 @@
 use super::*;
 use crate::robj::Attributes;
 use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
+use std::collections::{BTreeMap, HashMap};
 use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]
@@ -88,18 +89,48 @@ impl List {
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
-    pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
+    pub fn from_hashmap<K, V>(value: HashMap<K, V>) -> Result<Self>
     where
-        V: IntoRobj,
-        K: Into<String>,
+        V: Into<Robj>,
+        K: AsRef<str>,
     {
-        let (names, values): (Vec<_>, Vec<_>) = val
-            .into_iter()
-            .map(|(k, v)| (k.into(), v.into_robj()))
-            .unzip();
-        let mut res: Self = Self::from_values(values);
-        res.set_names(names)?;
-        Ok(res)
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        Ok(result.into())
+    }
+
+    pub fn from_btreemap<K, V>(value: BTreeMap<K, V>) -> Result<Self>
+    where
+        K: AsRef<str>,
+        V: Into<Robj>,
+    {
+        let map_length = value.len();
+        let mut result = List::new(map_length);
+        let mut names = List::new(map_length);
+        for (id, (name, element)) in value.into_iter().enumerate() {
+            let name = name.as_ref().into();
+            names.set_elt(id, name).unwrap();
+            result.set_elt(id, element.into()).unwrap();
+        }
+        let names = names;
+        result
+            .set_attrib(wrapper::symbol::names_symbol(), names)
+            .unwrap();
+        let result = result;
+
+        Ok(result.into())
     }
 
     /// Build a list using separate names and values iterators.

@@ -3,7 +3,7 @@ use crate as extendr_api;
 use extendr_ffi::{R_xlen_t, SET_VECTOR_ELT};
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
-    let name = CString::new(name).unwrap();
+    let name = std::ffi::CString::new(name).unwrap();
     unsafe { extendr_ffi::Rf_install(name.as_ptr()) }
 }
 
