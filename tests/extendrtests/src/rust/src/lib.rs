@@ -2,6 +2,7 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
@@ -392,4 +393,5 @@ extendr_module! {
     use externalptr;
     use matrix;
     use to_unique_character;
+    use custom_errors;
 }
