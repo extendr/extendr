@@ -6,6 +6,9 @@ use extendr_ffi::{
     R_CheckDeviceAvailable, R_GE_checkVersionOrDie, R_GE_definitions, R_GE_gcontext, R_GE_version,
     R_NilValue, Rboolean,
 };
+
+#[cfg(use_r_ge_version_17)]
+use extendr_ffi::{GEcreateDD, GEfreeDD};
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
 /// - `canClip`
@@ -691,12 +694,18 @@ pub trait DeviceDriver: std::marker::Sized {
         // side. If we allocate memory on R's side, it needs to be freed on R's
         // side. Here, `DevDesc` is the latter case.
         //
-        // The problem is that, while `DevDesc` is supposed to be `free()`ed on
-        // R's side when device is closed by `dev.off()` (more specifically, in
-        // `GEdestroyDevDesc()`), there's no API that creates a `DevDesc`
-        // instance; typically, it's created by `calloc()` and a manual cast to
-        // `DevDesc*`. Please see [the example code on R Internals].
+        // `DevDesc` is supposed to be `free()`ed on R's side when device is
+        // closed by `dev.off()` (more specifically, in `GEdestroyDevDesc()`).
         //
+        // For R >= 4.6, R provides `GEcreateDD()` to allocate and initialize
+        // the `DevDesc` structure, which ensures proper memory allocation
+        // without risk of allocator mismatch between Rust and R.
+        //
+        // For R < 4.6, there's no API that creates a `DevDesc` instance;
+        // typically, it's created by `calloc()` and a manual cast to `DevDesc*`.
+        // Please see [the example code on R Internals].
+        //
+        // Prior to 4.6:
         // Because of the absence of such an API, the only choice here is to use
         // `libc::calloc()` and treat it as `*DevDesc`, taking the risk of
         // uninitialized fields. This solves the problem if the same "libc" (or
@@ -707,6 +716,16 @@ pub trait DeviceDriver: std::marker::Sized {
         //
         // [Example code on R Internals]:
         //     https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Device-structures
+        #[cfg(use_r_ge_version_17)]
+        let p_dev_desc = unsafe {
+            let ptr = GEcreateDD();
+            if ptr.is_null() {
+                panic!("Failed to allocate DevDesc via GEcreateDD()");
+            }
+            ptr
+        };
+
+        #[cfg(not(use_r_ge_version_17))]
         let p_dev_desc = unsafe { libc::calloc(1, std::mem::size_of::<DevDesc>()) as *mut DevDesc };
 
         unsafe {

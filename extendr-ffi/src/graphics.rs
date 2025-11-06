@@ -398,7 +398,11 @@ extern "C" {
     pub fn GEaddDevice2(arg1: pGEDevDesc, arg2: *const ::std::os::raw::c_char);
     pub fn GECap(dd: pGEDevDesc) -> SEXP;
     pub fn GECircle(x: f64, y: f64, radius: f64, gc: pGEcontext, dd: pGEDevDesc);
+    #[cfg(use_r_ge_version_17)]
+    pub fn GEcreateDD() -> pDevDesc;
     pub fn GEcreateDevDesc(dev: pDevDesc) -> pGEDevDesc;
+    #[cfg(use_r_ge_version_17)]
+    pub fn GEfreeDD(dd: pDevDesc);
     pub fn GEcurrentDevice() -> pGEDevDesc;
     pub fn GEdeviceNumber(arg1: pGEDevDesc) -> ::std::os::raw::c_int;
     pub fn GEExpressionHeight(expr: SEXP, gc: pGEcontext, dd: pGEDevDesc) -> f64;
