@@ -7,13 +7,13 @@ on:
       - main
 
 jobs:
-	dispatch-to-rextendr:
-		if: github.event.pull_request.merged == true
-		runs-on: ubuntu-latest
-		steps:
-			- name: Trigger rextendr test workflow
-				uses: peter-evans/repository-dispatch@v3
-				with:
-					token: ${{ secrets.GITHUB_TOKEN }}
-					repository: extendr/rextendr
-					event-type: extendr-pr-merged
+  dispatch-to-rextendr:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rextendr test workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: extendr/rextendr
+          event-type: extendr-pr-merged
