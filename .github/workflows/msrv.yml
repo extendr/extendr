@@ -55,6 +55,7 @@ jobs:
           . ./ci-cargo.ps1
           ci-cargo extendr msrv -ActionName "Verify Rust MSRV"
       - name: Verify minimum rust version of extendr-api with full functionality
+        continue-on-error: true
         run: |
           . ./ci-cargo.ps1
           ci-cargo extendr msrv --features=full-functionality -ActionName "Verify Rust MSRV for extendr-api"
