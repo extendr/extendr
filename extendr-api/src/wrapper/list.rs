@@ -184,6 +184,9 @@ impl List {
 
     /// Convert a `List` into a `HashMap`, consuming the list.
     ///
+    /// # Deprecated
+    /// Use `HashMap::try_from(list)` or `list.try_into()` instead.
+    ///
     /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
     /// - If there are some duplicated names (including no name, which will be translated as `""`) of elements, only one of those will be preserved.
     /// ```
@@ -191,12 +194,16 @@ impl List {
     /// use std::collections::HashMap;
     /// test! {
     ///     let mut robj = list!(a=1, 2);
-    ///     let names_and_values = robj.as_list().unwrap().into_hashmap();
+    ///     let names_and_values: HashMap<&str, Robj> = robj.as_list().unwrap().try_into().unwrap();
     ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))].into_iter().collect::<HashMap<_, _>>());
     /// }
     /// ```
+    #[deprecated(
+        since = "0.8.1",
+        note = "Use `HashMap::try_from(list)` or `list.try_into()` instead"
+    )]
     pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
-        self.as_robj().try_into().unwrap()
+        self.try_into().unwrap()
     }
 }
 
@@ -243,6 +250,44 @@ impl TryFrom<&List> for HashMap<String, Robj> {
     fn try_from(value: &List) -> Result<Self> {
         let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+impl<T> TryFrom<List> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl<T> TryFrom<List> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl TryFrom<List> for HashMap<&str, Robj> {
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl TryFrom<List> for HashMap<String, Robj> {
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
     }
 }
 

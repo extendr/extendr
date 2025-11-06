@@ -2,6 +2,12 @@ use extendr_api::prelude::*;
 use std::collections::HashMap;
 
 #[extendr]
+fn test_try_from_hm(x: List) -> Result<List> {
+    let hm = HashMap::<String, Robj>::try_from(x)?;
+    hm.try_into()
+}
+
+#[extendr]
 fn test_hm_string(mut x: HashMap<String, Robj>) -> List {
     x.insert("inserted_value".to_string(), List::new(0).into());
     x.try_into().unwrap()
@@ -50,5 +56,6 @@ extendr_module! {
     mod hashmap;
     fn test_hm_string;
     fn test_hm_i32;
+    fn test_try_from_hm;
     fn test_hm_custom_try_from;
 }
