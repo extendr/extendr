@@ -247,6 +247,10 @@ must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_
 
 must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
 
+must_see_drop_msg_r_error_heap <- function() invisible(.Call(wrap__must_see_drop_msg_r_error_heap))
+
+must_see_drop_msg_panic_heap <- function() invisible(.Call(wrap__must_see_drop_msg_panic_heap))
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

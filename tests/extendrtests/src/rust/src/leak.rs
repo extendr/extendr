@@ -22,6 +22,20 @@ fn must_see_drop_msg_panic() {
     panic!()
 }
 
+#[extendr]
+fn must_see_drop_msg_r_error_heap() {
+    let _a = Box::new(MsgOnDrop);
+
+    unsafe { Rf_error(c"%s".as_ptr(), c"threw an r error!".as_ptr()) }
+}
+
+#[extendr]
+fn must_see_drop_msg_panic_heap() {
+    let _a = Box::new(MsgOnDrop);
+
+    panic!()
+}
+
 extern "C" {
     pub fn Rf_error(arg1: *const ::std::os::raw::c_char, ...) -> !;
 
@@ -32,4 +46,7 @@ extendr_module! {
 
     fn must_see_drop_msg_r_error;
     fn must_see_drop_msg_panic;
+
+    fn must_see_drop_msg_r_error_heap;
+    fn must_see_drop_msg_panic_heap;
 }
