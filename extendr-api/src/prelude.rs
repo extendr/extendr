@@ -38,7 +38,7 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
+    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D,
 };
 
 #[cfg(use_r_altlist)]
@@ -53,7 +53,7 @@ pub use super::robj::{
     RobjItertools, Slices, Types,
 };
 
-pub use super::thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
+pub use super::thread_safety::{catch_r_error, single_threaded, throw_r_error};
 
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
@@ -61,7 +61,9 @@ pub use super::wrapper::{
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
-pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
+pub use extendr_macros::{
+    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromRobj, R,
+};
 
 pub use super::iter::StrIter;
 
@@ -72,10 +74,10 @@ pub use super::scalar::*;
 pub use super::Nullable::*;
 
 #[cfg(feature = "ndarray")]
-pub use ::ndarray::*;
+pub use ::ndarray;
 
 #[cfg(feature = "either")]
 pub use ::either::*;
 
 #[cfg(feature = "faer")]
-pub use ::faer::*;
+pub use ::faer;

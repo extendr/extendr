@@ -58,6 +58,7 @@
 mod R;
 mod call;
 mod dataframe;
+mod extendr_conversion;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
@@ -91,6 +92,13 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
+        Item::Struct(str) => {
+            let struct_name = str.ident.to_string();
+            let struct_doc = crate::wrappers::get_doc_string(&str.attrs);
+            crate::wrappers::register_struct_doc(&struct_name, &struct_doc);
+            extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts)
+        }
+        Item::Enum(enm) => extendr_conversion::extendr_type_conversion(Item::Enum(enm), &opts),
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
         Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
             Ok(result) => result,
@@ -238,11 +246,11 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// `Foo` struct.
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::IntoRobj;
+/// use extendr_macros::IntoList;
 ///
 /// # use extendr_api::test;
 /// # test!{
-/// #[derive(IntoRobj)]
+/// #[derive(IntoList)]
 /// struct Foo {
 ///     a: u32,
 ///     b: String
@@ -260,16 +268,36 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// instantiation of a rust type, by an R list with fields corresponding to
 /// said type.
 ///
+/// Supported field attributes
+///
+/// - `#[into_list(ignore)]` omits the field from being added to the R `list()`
+///
 /// # Details
 ///
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
-/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
+/// Rust functions on that pointer. The implementation from `#[derive(IntoList)]` actually converts the Rust structure
 /// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
+#[proc_macro_derive(IntoList, attributes(into_list))]
+pub fn derive_into_list(item: TokenStream) -> TokenStream {
+    match list_struct::derive_into_list(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
+}
+
+/// Deprecated: Use [`IntoList`] instead.
+///
+/// This is an alias for `IntoList` maintained for backward compatibility.
+/// `IntoRobj` is too generic - this macro specifically creates a named list from a struct.
+#[deprecated(
+    since = "0.8.1",
+    note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
+)]
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
-    match list_struct::derive_into_robj(item) {
+    match list_struct::derive_into_list(item) {
         Ok(result) => result,
         Err(e) => e.into_compile_error().into(),
     }
@@ -336,11 +364,11 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         TokenStream::from(quote! {
             impl<#(#types),*> TryFrom<&Robj> for (#(#types,)*)
             where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*
             {
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     let list: List = robj.try_into()?;
                     if list.len() != #n {
                         return Err(Error::ExpectedLength(#n));
@@ -356,34 +384,34 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
 
             impl<#(#types),*> TryFrom<Robj> for (#(#types,)*)
             where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),* {
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),* {
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }
 
             impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
             where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
-                        Ok(Some(<(#(#types,)*)>::try_from(robj)?))
+                        <(#(#types,)*)>::try_from(robj).map(Some)
                     }
                 }
             }
 
             impl<#(#types),*> TryFrom<Robj> for Option<(#(#types,)*)>
             where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = crate::error::Error>),*{
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
                     Self::try_from(&robj)
                 }
             }

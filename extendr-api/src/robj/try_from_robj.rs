@@ -6,9 +6,9 @@
 //!
 //!
 //! [`ownership`]: crate::ownership
-use crate::conversions::try_into_int::FloatToInt;
-
 use super::*;
+use crate as extendr_api;
+use crate::conversions::try_into_int::FloatToInt;
 
 macro_rules! impl_try_from_scalar_integer {
     ($t:ty) => {
@@ -34,11 +34,7 @@ macro_rules! impl_try_from_scalar_integer {
                 // is problematic when converting a negative value to unsigned
                 // integer types (e.g. `-1i32 as u8` becomes 255).
                 if let Some(v) = robj.as_integer() {
-                    if let Ok(v) = Self::try_from(v) {
-                        return Ok(v);
-                    } else {
-                        return Err(Error::OutOfLimits(robj.clone()));
-                    }
+                    return Self::try_from(v).map_err(|_| Error::OutOfLimits(robj.clone()));
                 }
 
                 // If the conversion is float-to-int, check if the value is
@@ -468,15 +464,6 @@ impl TryFrom<&Robj> for Rcplx {
 // Convert TryFrom<&Robj> into TryFrom<Robj>. Sadly, we are unable to make a blanket
 // conversion using GetSexp with the current version of Rust.
 macro_rules! impl_try_from_robj {
-    () => {};
-    (&mut [$type:ty], $($rest:tt)*) => {
-        impl_try_from_robj!(&mut [$type]);
-        impl_try_from_robj!($($rest)*);
-    };
-    ($type:ty, $($rest:tt)*) => {
-        impl_try_from_robj!($type);
-        impl_try_from_robj!($($rest)*);
-    };
     (&mut [$type:ty]) => {
         impl TryFrom<Robj> for &mut [$type] {
             type Error = Error;
@@ -506,9 +493,8 @@ macro_rules! impl_try_from_robj {
             }
         }
     };
-
-    ($type:ty) => {
-        impl TryFrom<Robj> for $type {
+    ($(@generics<$generics:tt>)? $type:ty $(where $($where_clause:tt)*)?) => {
+        impl$(<$generics>)? TryFrom<Robj> for $type $(where $($where_clause)*)? {
             type Error = Error;
 
             fn try_from(robj: Robj) -> Result<Self> {
@@ -516,7 +502,7 @@ macro_rules! impl_try_from_robj {
             }
         }
 
-        impl TryFrom<&Robj> for Option<$type> {
+        impl$(<$generics>)? TryFrom<&Robj> for Option<$type> $(where $($where_clause)*)? {
             type Error = Error;
 
             fn try_from(robj: &Robj) -> Result<Self> {
@@ -528,7 +514,7 @@ macro_rules! impl_try_from_robj {
             }
         }
 
-        impl TryFrom<Robj> for Option<$type> {
+        impl$(<$generics>)? TryFrom<Robj> for Option<$type> $(where $($where_clause)*)? {
             type Error = Error;
 
             fn try_from(robj: Robj) -> Result<Self> {
@@ -537,46 +523,112 @@ macro_rules! impl_try_from_robj {
         }
     };
 }
-
 #[rustfmt::skip]
-impl_try_from_robj!(
-    u8, u16, u32, u64, usize,
-    i8, i16, i32, i64, isize,
-    bool,
-    Rint, Rfloat, Rbool, Rcplx,
-    f32, f64,
-    Vec::<String>,
-    HashMap::<String, Robj>, HashMap::<&str, Robj>,
-    Vec::<Rint>, Vec::<Rfloat>, Vec::<Rbool>, Vec::<Rcplx>, Vec::<u8>, Vec::<i32>, Vec::<f64>,
-    &[Rint], &[Rfloat], &[Rbool], &[Rcplx], &[u8], &[i32], &[f64],
-    &mut [Rint], &mut [Rfloat], &mut [Rbool], &mut [Rcplx], &mut [u8], &mut [i32], &mut [f64],
-    &str, String,
-);
+impl_try_from_robj!(u8);
+impl_try_from_robj!(u16);
+impl_try_from_robj!(u32);
+impl_try_from_robj!(u64);
+impl_try_from_robj!(usize);
+
+impl_try_from_robj!(i8);
+impl_try_from_robj!(i16);
+impl_try_from_robj!(i32);
+impl_try_from_robj!(i64);
+impl_try_from_robj!(isize);
+
+impl_try_from_robj!(bool);
+
+impl_try_from_robj!(Rint);
+impl_try_from_robj!(Rfloat);
+impl_try_from_robj!(Rbool);
+impl_try_from_robj!(Rcplx);
+
+impl_try_from_robj!(f32);
+impl_try_from_robj!(f64);
+
+impl_try_from_robj!(Vec::<String>);
+impl_try_from_robj!(Vec::<Rint>);
+impl_try_from_robj!(Vec::<Rfloat>);
+impl_try_from_robj!(Vec::<Rbool>);
+impl_try_from_robj!(Vec::<Rcplx>);
+impl_try_from_robj!(Vec::<u8>);
+impl_try_from_robj!(Vec::<i32>);
+impl_try_from_robj!(Vec::<f64>);
+
+impl_try_from_robj!(&[Rint]);
+impl_try_from_robj!(&[Rfloat]);
+impl_try_from_robj!(&[Rbool]);
+impl_try_from_robj!(&[Rcplx]);
+impl_try_from_robj!(&[u8]);
+impl_try_from_robj!(&[i32]);
+impl_try_from_robj!(&[f64]);
+
+impl_try_from_robj!(&mut [Rint]);
+impl_try_from_robj!(&mut [Rfloat]);
+impl_try_from_robj!(&mut [Rbool]);
+impl_try_from_robj!(&mut [Rcplx]);
+impl_try_from_robj!(&mut [u8]);
+impl_try_from_robj!(&mut [i32]);
+impl_try_from_robj!(&mut [f64]);
+
+impl_try_from_robj!(&str);
+impl_try_from_robj!(String);
+
+impl_try_from_robj!(@generics<T> HashMap::<&str, T> where T: TryFrom<Robj, Error = error::Error>);
+impl_try_from_robj!(@generics<T> HashMap::<String,T> where T: TryFrom<Robj, Error = error::Error>);
+
+impl_try_from_robj!(HashMap::<&str, Robj>);
+impl_try_from_robj!(HashMap::<String, Robj>);
+
+impl TryFrom<&Robj> for Option<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if value.is_null() {
+            Ok(Some(()))
+        } else {
+            Err(Error::ExpectedNull(value.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Option<()> {
+    type Error = Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
 
 // NOTE: this is included for compatibility with previously defined `FromRobj`
 // One should prefer `List::from_hashmap` instead,
 // and this `impl` should be deprecated next.
 
-impl TryFrom<&Robj> for HashMap<String, Robj> {
+impl<T> TryFrom<&Robj> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
     type Error = Error;
-    fn try_from(robj: &Robj) -> Result<Self> {
-        Ok(robj
-            .as_list()
-            .map(|l| l.iter())
-            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
-            .map(|(k, v)| (k.to_string(), v))
-            .collect::<HashMap<String, Robj>>())
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: List = value.try_into()?;
+
+        let value = value
+            .iter()
+            .map(|(name, value)| -> Result<(&str, T)> { value.try_into().map(|x| (name, x)) })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        Ok(value)
     }
 }
 
-impl TryFrom<&Robj> for HashMap<&str, Robj> {
+impl<T> TryFrom<&Robj> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
     type Error = Error;
-    fn try_from(robj: &Robj) -> Result<Self> {
-        Ok(robj
-            .as_list()
-            .map(|l| l.iter())
-            .ok_or_else(|| Error::ExpectedList(robj.clone()))?
-            .collect::<HashMap<&str, Robj>>())
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
     }
 }
 
@@ -638,4 +690,80 @@ impl_try_from_robj_for_arrays!(i32);
 impl_try_from_robj_for_arrays!(f64);
 
 // Choosing arity 12.. As the Rust compiler did for these [Tuple to array conversion](https://doc.rust-lang.org/stable/std/primitive.tuple.html#trait-implementations-1)
-impl_try_from_robj_tuples!((1, 12));
+// Single-element tuple manually implemented to avoid clippy::needless_question_mark
+
+// We implement the 1-length tuple variant manually
+// so that we avoid clippy needless Ok(?) lint
+impl<T0> TryFrom<&Robj> for (T0,)
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        let list: List = robj.try_into()?;
+        if list.len() != 1 {
+            return Err(Error::ExpectedLength(1));
+        }
+        Ok(((&list.elt(0)?).try_into()?,))
+    }
+}
+
+impl<T0> TryFrom<Robj> for (T0,)
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
+impl<T0> TryFrom<&Robj> for Option<(T0,)>
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_null() || robj.is_na() {
+            Ok(None)
+        } else {
+            <(T0,)>::try_from(robj).map(Some)
+        }
+    }
+}
+
+impl<T0> TryFrom<Robj> for Option<(T0,)>
+where
+    T0: for<'a> TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
+impl_try_from_robj_tuples!((2, 12));
+
+// The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
+// it requires returning a reference to a owned (moved) value
+
+impl TryFrom<&Robj> for HashMap<&str, Robj> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: List = value.try_into()?;
+        Ok(value.into_iter().collect())
+    }
+}
+
+impl TryFrom<&Robj> for HashMap<String, Robj> {
+    type Error = Error;
+    fn try_from(value: &Robj) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}

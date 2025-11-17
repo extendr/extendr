@@ -21,7 +21,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn fred;    
+//!    fn fred;
 //! }
 //!
 //! ```
@@ -41,26 +41,26 @@
 //!     // An R object with a single string "hello"
 //!     let character = r!("hello");
 //!     let character = r!(["hello", "goodbye"]);
-//!    
+//!
 //!     // An R integer object with a single number 1L.
 //!     // Note that in Rust, 1 is an integer and 1.0 is a real.
 //!     let integer = r!(1);
-//!    
+//!
 //!     // An R real object with a single number 1.
 //!     // Note that in R, 1 is a real and 1L is an integer.
 //!     let real = r!(1.0);
-//!    
+//!
 //!     // An R real vector.
 //!     let real_vector = r!([1.0, 2.0]);
 //!     let real_vector = &[1.0, 2.0].iter().collect_robj();
 //!     let real_vector = r!(vec![1.0, 2.0]);
-//!    
+//!
 //!     // An R function object.
 //!     let function = R!("function(x, y) { x + y }")?;
-//!    
+//!
 //!     // A named list using the list! macro.
 //!     let list = list!(a = 1, b = 2);
-//!    
+//!
 //!     // An unnamed list (of R objects) using the List wrapper.
 //!     let list = r!(List::from_values(vec![1, 2, 3]));
 //!     let list = r!(List::from_values(vec!["a", "b", "c"]));
@@ -82,11 +82,11 @@
 //!     // 1 ..= 100 is the same as 1:100
 //!     let res = r!(1 ..= 100);
 //!     assert_eq!(res, R!("1:100")?);
-//!    
+//!
 //!     // Rust arrays are zero-indexed so it is more common to use 0 .. 100.
 //!     let res = r!(0 .. 100);
 //!     assert_eq!(res.len(), 100);
-//!    
+//!
 //!     // Using map is a super fast way to generate vectors.
 //!     let iter = (0..3).map(|i| format!("fred{}", i));
 //!     let character = iter.collect_robj();
@@ -115,13 +115,13 @@
 //! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0, 3.0]);
-//!    
+//!
 //!     // one-based indexing [[i]], returns an object.
 //!     assert_eq!(vals.index(1)?, r!(1.0));
-//!    
+//!
 //!     // one-based slicing [x], returns an object.
 //!     assert_eq!(vals.slice(1..=2)?, r!([1.0, 2.0]));
-//!    
+//!
 //!     // $ operator, returns an object
 //!     let list = list!(a = 1.0, b = "xyz");
 //!     assert_eq!(list.dollar("a")?, r!(1.0));
@@ -191,7 +191,7 @@
 //! test! {
 //!     // robj is an "Owned" object that controls the memory allocated.
 //!     let robj = r!([1, 2, 3]);
-//!    
+//!
 //!     // Here slice is a "borrowed" reference to the bytes in robj.
 //!     // and cannot live longer than robj.
 //!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
@@ -215,7 +215,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn things;    
+//!    fn things;
 //! }
 //!
 //!
@@ -253,7 +253,7 @@
 //! // define exports using extendr_module
 //! extendr_module! {
 //!    mod mymodule;
-//!    fn oups;    
+//!    fn oups;
 //! }
 //!
 //! ```
@@ -279,7 +279,7 @@
 //!
 //! # handling example for result_condition
 //! oups_handled <- function(a) {
-//!   val_or_err <- oups(1)  
+//!   val_or_err <- oups(1)
 //!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
 //!   val_or_err
 //! }
@@ -314,9 +314,20 @@ pub mod io;
 pub mod iter;
 pub mod lang_macros;
 pub mod metadata;
+pub mod na;
+pub mod optional;
 pub mod ownership;
 pub mod prelude;
 pub mod rmacros;
+pub mod robj;
+pub mod scalar;
+pub mod thread_safety;
+pub mod wrapper;
+
+pub use robj::Robj;
+pub use std::convert::{TryFrom, TryInto};
+pub use std::ops::Deref;
+pub use std::ops::DerefMut;
 
 #[cfg(feature = "serde")]
 pub mod serializer;
@@ -327,22 +338,7 @@ pub mod deserializer;
 #[cfg(feature = "graphics")]
 pub mod graphics;
 
-pub mod robj;
-pub mod scalar;
-pub mod thread_safety;
-pub mod wrapper;
-
-pub mod na;
-
-pub mod optional;
-
 pub(crate) mod conversions;
-
-pub use std::convert::{TryFrom, TryInto};
-pub use std::ops::Deref;
-pub use std::ops::DerefMut;
-
-pub use robj::Robj;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprecated
@@ -356,11 +352,12 @@ pub use functions::*;
 pub use lang_macros::*;
 pub use na::*;
 pub use robj::*;
-pub use thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
+pub use thread_safety::{catch_r_error, single_threaded, throw_r_error};
 pub use wrapper::*;
 
 pub use extendr_macros::*;
 
+use extendr_ffi::SEXPTYPE;
 use scalar::Rbool;
 
 //////////////////////////////////////////////////
@@ -391,25 +388,22 @@ pub use std::collections::HashMap;
 
 /// This is needed for the generation of wrappers.
 #[doc(hidden)]
-pub use libR_sys::DllInfo;
+pub use extendr_ffi::DllInfo;
 
 /// This is necessary for `#[extendr]`-impl
 #[doc(hidden)]
-pub use libR_sys::R_ExternalPtrAddr;
+pub use extendr_ffi::R_ExternalPtrAddr;
 
 /// This is used in `#[extendr(use_rng = true)]` on `fn`-items.
 #[doc(hidden)]
-pub use libR_sys::GetRNGstate;
+pub use extendr_ffi::GetRNGstate;
 
 /// This is used in `#[extendr(use_rng = true)]` on `fn`-items.
 #[doc(hidden)]
-pub use libR_sys::PutRNGstate;
+pub use extendr_ffi::PutRNGstate;
 
 #[doc(hidden)]
-pub use libR_sys::SEXP;
-
-#[doc(hidden)]
-use libR_sys::*;
+pub use extendr_ffi::SEXP;
 
 #[doc(hidden)]
 use std::ffi::CString;
@@ -425,14 +419,17 @@ pub struct CallMethod {
 
 unsafe fn make_method_def(
     cstrings: &mut Vec<std::ffi::CString>,
-    rmethods: &mut Vec<libR_sys::R_CallMethodDef>,
+    rmethods: &mut Vec<extendr_ffi::R_CallMethodDef>,
     func: &metadata::Func,
     wrapped_name: &str,
 ) {
     cstrings.push(std::ffi::CString::new(wrapped_name).unwrap());
-    rmethods.push(libR_sys::R_CallMethodDef {
+    rmethods.push(extendr_ffi::R_CallMethodDef {
         name: cstrings.last().unwrap().as_ptr(),
-        fun: Some(std::mem::transmute(func.func_ptr)),
+        fun: Some(std::mem::transmute::<
+            *const u8,
+            unsafe extern "C" fn() -> *mut std::ffi::c_void,
+        >(func.func_ptr)),
         numArgs: func.args.len() as i32,
     });
 }
@@ -440,7 +437,7 @@ unsafe fn make_method_def(
 // Internal function used to implement the .Call interface.
 // This is called from the code generated by the #[extendr] attribute.
 #[doc(hidden)]
-pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Metadata) {
+pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: Metadata) {
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
@@ -455,13 +452,13 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
         }
     }
 
-    rmethods.push(libR_sys::R_CallMethodDef {
+    rmethods.push(extendr_ffi::R_CallMethodDef {
         name: std::ptr::null(),
         fun: None,
         numArgs: 0,
     });
 
-    libR_sys::R_registerRoutines(
+    extendr_ffi::R_registerRoutines(
         info,
         std::ptr::null(),
         rmethods.as_ptr(),
@@ -470,8 +467,8 @@ pub unsafe fn register_call_methods(info: *mut libR_sys::DllInfo, metadata: Meta
     );
 
     // This seems to allow both symbols and strings,
-    libR_sys::R_useDynamicSymbols(info, Rboolean::FALSE);
-    libR_sys::R_forceSymbols(info, Rboolean::FALSE);
+    extendr_ffi::R_useDynamicSymbols(info, extendr_ffi::Rboolean::FALSE);
+    extendr_ffi::R_forceSymbols(info, extendr_ffi::Rboolean::FALSE);
 }
 
 /// Type of R objects used by [Robj::rtype].
@@ -539,73 +536,70 @@ pub enum Rany<'a> {
 /// Convert extendr's Rtype to R's SEXPTYPE.
 /// Panics if the type is Unknown.
 pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
-    use Rtype::*;
-    use SEXPTYPE::*;
+    use extendr_ffi::SEXPTYPE;
     match rtype {
-        Null => NILSXP,
-        Symbol => SYMSXP,
-        Pairlist => LISTSXP,
-        Function => CLOSXP,
-        Environment => ENVSXP,
-        Promise => PROMSXP,
-        Language => LANGSXP,
-        Special => SPECIALSXP,
-        Builtin => BUILTINSXP,
-        Rstr => CHARSXP,
-        Logicals => LGLSXP,
-        Integers => INTSXP,
-        Doubles => REALSXP,
-        Complexes => CPLXSXP,
-        Strings => STRSXP,
-        Dot => DOTSXP,
-        Any => ANYSXP,
-        List => VECSXP,
-        Expressions => EXPRSXP,
-        Bytecode => BCODESXP,
-        ExternalPtr => EXTPTRSXP,
-        WeakRef => WEAKREFSXP,
-        Raw => RAWSXP,
+        Rtype::Null => SEXPTYPE::NILSXP,
+        Rtype::Symbol => SEXPTYPE::SYMSXP,
+        Rtype::Pairlist => SEXPTYPE::LISTSXP,
+        Rtype::Function => SEXPTYPE::CLOSXP,
+        Rtype::Environment => SEXPTYPE::ENVSXP,
+        Rtype::Promise => SEXPTYPE::PROMSXP,
+        Rtype::Language => SEXPTYPE::LANGSXP,
+        Rtype::Special => SEXPTYPE::SPECIALSXP,
+        Rtype::Builtin => SEXPTYPE::BUILTINSXP,
+        Rtype::Rstr => SEXPTYPE::CHARSXP,
+        Rtype::Logicals => SEXPTYPE::LGLSXP,
+        Rtype::Integers => SEXPTYPE::INTSXP,
+        Rtype::Doubles => SEXPTYPE::REALSXP,
+        Rtype::Complexes => SEXPTYPE::CPLXSXP,
+        Rtype::Strings => SEXPTYPE::STRSXP,
+        Rtype::Dot => SEXPTYPE::DOTSXP,
+        Rtype::Any => SEXPTYPE::ANYSXP,
+        Rtype::List => SEXPTYPE::VECSXP,
+        Rtype::Expressions => SEXPTYPE::EXPRSXP,
+        Rtype::Bytecode => SEXPTYPE::BCODESXP,
+        Rtype::ExternalPtr => SEXPTYPE::EXTPTRSXP,
+        Rtype::WeakRef => SEXPTYPE::WEAKREFSXP,
+        Rtype::Raw => SEXPTYPE::RAWSXP,
         #[cfg(not(use_objsxp))]
-        S4 => S4SXP,
+        Rtype::S4 => SEXPTYPE::S4SXP,
         #[cfg(use_objsxp)]
-        S4 => OBJSXP,
-        Unknown => panic!("attempt to use Unknown Rtype"),
+        Rtype::S4 => SEXPTYPE::OBJSXP,
+        Rtype::Unknown => panic!("attempt to use Unknown Rtype"),
     }
 }
 
 /// Convert R's SEXPTYPE to extendr's Rtype.
 pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
-    use Rtype::*;
-    use SEXPTYPE::*;
     match sxptype {
-        NILSXP => Null,
-        SYMSXP => Symbol,
-        LISTSXP => Pairlist,
-        CLOSXP => Function,
-        ENVSXP => Environment,
-        PROMSXP => Promise,
-        LANGSXP => Language,
-        SPECIALSXP => Special,
-        BUILTINSXP => Builtin,
-        CHARSXP => Rstr,
-        LGLSXP => Logicals,
-        INTSXP => Integers,
-        REALSXP => Doubles,
-        CPLXSXP => Complexes,
-        STRSXP => Strings,
-        DOTSXP => Dot,
-        ANYSXP => Any,
-        VECSXP => List,
-        EXPRSXP => Expressions,
-        BCODESXP => Bytecode,
-        EXTPTRSXP => ExternalPtr,
-        WEAKREFSXP => WeakRef,
-        RAWSXP => Raw,
+        SEXPTYPE::NILSXP => Rtype::Null,
+        SEXPTYPE::SYMSXP => Rtype::Symbol,
+        SEXPTYPE::LISTSXP => Rtype::Pairlist,
+        SEXPTYPE::CLOSXP => Rtype::Function,
+        SEXPTYPE::ENVSXP => Rtype::Environment,
+        SEXPTYPE::PROMSXP => Rtype::Promise,
+        SEXPTYPE::LANGSXP => Rtype::Language,
+        SEXPTYPE::SPECIALSXP => Rtype::Special,
+        SEXPTYPE::BUILTINSXP => Rtype::Builtin,
+        SEXPTYPE::CHARSXP => Rtype::Rstr,
+        SEXPTYPE::LGLSXP => Rtype::Logicals,
+        SEXPTYPE::INTSXP => Rtype::Integers,
+        SEXPTYPE::REALSXP => Rtype::Doubles,
+        SEXPTYPE::CPLXSXP => Rtype::Complexes,
+        SEXPTYPE::STRSXP => Rtype::Strings,
+        SEXPTYPE::DOTSXP => Rtype::Dot,
+        SEXPTYPE::ANYSXP => Rtype::Any,
+        SEXPTYPE::VECSXP => Rtype::List,
+        SEXPTYPE::EXPRSXP => Rtype::Expressions,
+        SEXPTYPE::BCODESXP => Rtype::Bytecode,
+        SEXPTYPE::EXTPTRSXP => Rtype::ExternalPtr,
+        SEXPTYPE::WEAKREFSXP => Rtype::WeakRef,
+        SEXPTYPE::RAWSXP => Rtype::Raw,
         #[cfg(not(use_objsxp))]
-        S4SXP => S4,
+        SEXPTYPE::S4SXP => Rtype::S4,
         #[cfg(use_objsxp)]
-        OBJSXP => S4,
-        _ => Unknown,
+        SEXPTYPE::OBJSXP => Rtype::S4,
+        _ => Rtype::Unknown,
     }
 }
 
@@ -614,7 +608,7 @@ const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
+        extendr_ffi::Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -622,7 +616,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
     let cs = CString::new(s).expect("NulError");
     unsafe {
-        REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
+        extendr_ffi::REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
 }
 
@@ -635,6 +629,7 @@ mod tests {
     use extendr_macros::extendr_module;
     use extendr_macros::pairlist;
 
+    #[allow(clippy::too_many_arguments)]
     #[extendr]
     pub fn inttypes(a: i8, b: u8, c: i16, d: u16, e: i32, f: u32, g: i64, h: u64) {
         assert_eq!(a, 1);
@@ -760,6 +755,7 @@ mod tests {
         x
     }
 
+    #[extendr]
     struct Person {
         pub name: String,
     }
@@ -967,7 +963,7 @@ mod tests {
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
             // R interface
-            let robj = Robj::from_sexp(wrap__get_my_module_metadata());
+            let robj = unsafe { Robj::from_sexp(wrap__get_my_module_metadata()) };
             let functions = robj.dollar("functions").unwrap();
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);

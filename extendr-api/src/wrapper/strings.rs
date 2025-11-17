@@ -1,7 +1,9 @@
+use super::*;
+use extendr_ffi::{
+    R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
+};
 use std::convert::From;
 use std::iter::FromIterator;
-
-use super::*;
 
 #[derive(PartialEq, Clone)]
 pub struct Strings {
@@ -77,9 +79,11 @@ impl Strings {
         if i >= self.len() {
             Rstr::na()
         } else {
-            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
-                .try_into()
-                .unwrap()
+            unsafe {
+                Robj::from_sexp(STRING_ELT(self.get(), i as R_xlen_t))
+                    .try_into()
+                    .unwrap()
+            }
         }
     }
 

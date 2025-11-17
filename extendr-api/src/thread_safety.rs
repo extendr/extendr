@@ -1,6 +1,8 @@
 //! Provide limited protection for multithreaded access to the R API.
-
 use crate::*;
+use extendr_ffi::{
+    R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_error, Rf_protect, Rf_unprotect,
+};
 use std::cell::Cell;
 use std::sync::Mutex;
 
@@ -9,7 +11,7 @@ use std::sync::Mutex;
 static R_API_LOCK: Mutex<()> = Mutex::new(());
 
 thread_local! {
-    static THREAD_HAS_LOCK: Cell<bool> = Cell::new(false);
+    static THREAD_HAS_LOCK: Cell<bool> = const { Cell::new(false) };
 }
 
 /// Run `f` while ensuring that `f` runs in a single-threaded manner.
@@ -44,31 +46,14 @@ where
     result
 }
 
-/// This function is used by the wrapper logic to catch
-/// panics on return.
-///
-#[doc(hidden)]
-pub fn handle_panic<F, R>(err_str: &str, f: F) -> R
-where
-    F: FnOnce() -> R,
-    F: std::panic::UnwindSafe,
-{
-    match std::panic::catch_unwind(f) {
-        Ok(res) => res,
-        Err(_) => {
-            let err_str = CString::new(err_str).unwrap();
-            unsafe { libR_sys::Rf_error(err_str.as_ptr()) }
-        }
-    }
-}
-
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
         R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
-        libR_sys::Rf_error(R_ERROR_BUF.as_ref().unwrap().as_ptr());
+        let ptr = std::ptr::addr_of!(R_ERROR_BUF);
+        Rf_error((*ptr).as_ref().unwrap().as_ptr());
     };
 }
 
@@ -109,8 +94,14 @@ where
         let fun_ptr = do_call::<F> as *const ();
         let clean_ptr = do_cleanup as *const ();
         let x = false;
-        let fun = std::mem::transmute(fun_ptr);
-        let cleanfun = std::mem::transmute(clean_ptr);
+        let fun = std::mem::transmute::<
+            *const (),
+            Option<unsafe extern "C" fn(*mut std::ffi::c_void) -> *mut extendr_ffi::SEXPREC>,
+        >(fun_ptr);
+        let cleanfun = std::mem::transmute::<
+            *const (),
+            std::option::Option<unsafe extern "C" fn(*mut std::ffi::c_void, extendr_ffi::Rboolean)>,
+        >(clean_ptr);
         let data = &f as *const _ as _;
         let cleandata = &x as *const _ as _;
         let cont = R_MakeUnwindCont();

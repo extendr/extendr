@@ -1,5 +1,6 @@
 use super::scalar::{c64, Rcplx};
 use super::*;
+use extendr_ffi::{dataptr, R_xlen_t, Rcomplex, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's complex vectors.
@@ -8,7 +9,7 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Complexes>();
+///     let mut vec = (0..5).map(|i| c64::from(i as f64)).collect::<Complexes>();
 ///     assert_eq!(vec.len(), 5);
 /// }
 /// ```
@@ -17,8 +18,7 @@ pub struct Complexes {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::CPLXSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Complexes,
     scalar_type: Rcplx,
     primitive_type: c64,
@@ -26,6 +26,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: CPLXSXP,
     doc_name: complex,
     altrep_constructor: make_altcomplex_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Complexes,
+    collect_from_type: c64,
+    underlying_type: Rcplx,
+    SEXP: CPLXSXP,
+    assignment: |dest: &mut Rcplx, val: c64| *dest = val.into()
 );
 
 impl Complexes {
@@ -54,7 +62,7 @@ impl Deref for Complexes {
     /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rcplx;
+            let ptr = dataptr(self.get()) as *const Rcplx;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -64,7 +72,7 @@ impl DerefMut for Complexes {
     /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rcplx;
+            let ptr = dataptr(self.get_mut()) as *mut Rcplx;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -83,7 +91,7 @@ impl std::fmt::Debug for Complexes {
 impl TryFrom<Vec<c64>> for Complexes {
     type Error = Error;
 
-    fn try_from(value: Vec<c64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<c64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }

@@ -1,22 +1,24 @@
 [package]
 name = "extendr-macros"
-description = "Generate bindings from R to Rust."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
-license.workspace = true
+rust-version.workspace = true
+description = "Generate bindings from R to Rust."
 repository.workspace = true
+license.workspace = true
 
 [lib]
 proc-macro = true
 
 [dependencies]
-syn = { version = "2.0", features = ["full", "extra-traits"] }
-quote = "1.0"
-proc-macro2 = { version = "1.0" }
+proc-macro2 = { version = "1.0.103" }
+lazy_static = "1.5.0"
+quote = "1.0.42"
+syn = { version = "2.0.109", features = ["extra-traits", "full"] }
 
 [dev-dependencies]
 extendr-api = { path = "../extendr-api" }
 extendr-engine = { path = "../extendr-engine" }
-libR-sys = { workspace = true }
-trybuild = "1.0"
+extendr-ffi = { workspace = true }
+trybuild = "1.0.113"

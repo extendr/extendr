@@ -1,4 +1,4 @@
-pub type PstreamFormat = libR_sys::R_pstream_format_t;
+pub type PstreamFormat = extendr_ffi::R_pstream_format_t;
 
 mod load;
 mod save;

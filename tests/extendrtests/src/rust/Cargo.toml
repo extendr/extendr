@@ -29,7 +29,6 @@ extendr-api = { version = "*", features = [
     "faer",
     "either",
 ] }
-faer = "0.20"
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
@@ -37,7 +36,7 @@ faer = "0.20"
 ## CI overrides this path.
 extendr-api = { path = "../../../../extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
-# extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
+# extendr-api = { path = "../../../../../../../../../extendr/extendr-api" }
 
 
 ## Build against current extendr version on github. Not recommended

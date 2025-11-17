@@ -1,0 +1,63 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+# Cancel previous runs when new commits are pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr_tests:
+    uses: ./.github/workflows/test-template.yml
+    with:
+      test-matrix: |
+        [
+          {
+            "os": "windows-latest",
+            "r": "release",
+            "rust-version": "stable-msvc",
+            "rtools-version": "44",
+            "features": "full-functionality"
+          },
+          {
+            "os": "windows-latest",
+            "r": "oldrel",
+            "rust-version": "stable-msvc",
+            "rtools-version": "43",
+            "features": "default"
+          },
+          {
+            "os": "macOS-latest",
+            "r": "release",
+            "rust-version": "stable",
+            "features": "full-functionality"
+          },
+          {
+            "os": "macOS-latest",
+            "r": "oldrel",
+            "rust-version": "stable",
+            "features": "default"
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "release",
+            "rust-version": "stable",
+            "features": "full-functionality",
+            "check_fmt": true
+          },
+          {
+            "os": "ubuntu-latest",
+            "r": "oldrel",
+            "rust-version": "stable",
+            "features": "default"
+          }
+        ]
+
+  # Call MSRV check workflow after PR tests pass
+  msrv_check:
+    needs: pr_tests
+    uses: ./.github/workflows/msrv.yml

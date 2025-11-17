@@ -19,9 +19,7 @@ fn protect_lim2(n: i32) -> List {
 // #[extendr]
 fn prot_strs(n: i32) -> Strings {
     let n = n as usize;
-    (0..n)
-        .map(|_| Rstr::from_string("val"))
-        .collect::<Strings>()
+    (0..n).map(|_| Rstr::from("val")).collect::<Strings>()
 }
 
 #[test]
@@ -47,7 +45,7 @@ fn test_with_gc_torture_small() {
 #[test]
 fn test_with_gc_torture_large() {
     test!(
-        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {libR_sys::Rf_runif(0., 100.)}));
+        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {extendr_ffi::Rf_runif(0., 100.)}));
         R!("gctorture(on = TRUE)")?;
         let list: List = x.into_iter().collect();
         R!("gctorture(on = FALSE)")?;

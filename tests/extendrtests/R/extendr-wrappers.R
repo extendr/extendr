@@ -14,6 +14,12 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
+#' This is invisible by default
+result_unit <- function() invisible(.Call(wrap__result_unit))
+
+#' Return a string but invisibly
+invisible_string <- function() invisible(.Call(wrap__invisible_string))
+
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
 
 int_scalar <- function(x) .Call(wrap__int_scalar, x)
@@ -89,6 +95,48 @@ list_named <- function(x, nms) .Call(wrap__list_named, x, nms)
 test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
+
+error_simple <- function() invisible(.Call(wrap__error_simple))
+
+error_parse_int <- function(s) invisible(.Call(wrap__error_parse_int, s))
+
+error_success <- function() invisible(.Call(wrap__error_success))
+
+error_division <- function(numerator, denominator) invisible(.Call(wrap__error_division, numerator, denominator))
+
+error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
+
+error_long_message <- function() invisible(.Call(wrap__error_long_message))
+
+test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
+
+test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
+
+test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
+
+make_basic_struct <- function() .Call(wrap__make_basic_struct)
+
+make_rwrapper_struct <- function() .Call(wrap__make_rwrapper_struct)
+
+make_with_list <- function() .Call(wrap__make_with_list)
+
+make_with_robj <- function() .Call(wrap__make_with_robj)
+
+make_with_function <- function() .Call(wrap__make_with_function)
+
+make_with_pairlist <- function() .Call(wrap__make_with_pairlist)
+
+make_with_environment <- function() .Call(wrap__make_with_environment)
+
+make_with_ignored <- function() .Call(wrap__make_with_ignored)
+
+make_with_vectors <- function() .Call(wrap__make_with_vectors)
+
+make_nested_struct <- function() .Call(wrap__make_nested_struct)
+
+make_function_metadata <- function() .Call(wrap__make_function_metadata)
+
+make_all_r_types <- function() .Call(wrap__make_all_r_types)
 
 leak_arg2_try_implicit_strings <- function(`_y`, x) .Call(wrap__leak_arg2_try_implicit_strings, `_y`, x)
 
@@ -181,9 +229,27 @@ fetch_rownames <- function(x) .Call(wrap__fetch_rownames, x)
 
 change_dimnames <- function(x) .Call(wrap__change_dimnames, x)
 
+matrix_3d_return <- function(x) .Call(wrap__matrix_3d_return, x)
+
+matrix_4d_return <- function(x) .Call(wrap__matrix_4d_return, x)
+
+matrix_5d_return <- function(x) .Call(wrap__matrix_5d_return, x)
+
 to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
+
+custom_error_return <- function() .Call(wrap__custom_error_return)
+
+custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
+
+must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
+
+must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
+
+must_see_drop_msg_r_error_heap <- function() invisible(.Call(wrap__must_see_drop_msg_r_error_heap))
+
+must_see_drop_msg_panic_heap <- function() invisible(.Call(wrap__must_see_drop_msg_panic_heap))
 
 #' Class for testing (exported)
 #' @examples
@@ -192,6 +258,27 @@ to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
+#'\subsection{Method `me`}{
+#'Method for getting one's self.
+#'}
+#'
 MyClass <- new.env(parent = emptyenv())
 
 MyClass$new <- function() .Call(wrap__MyClass__new)
@@ -214,6 +301,16 @@ MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_v
 #' @export
 `[[.MyClass` <- `$.MyClass`
 
+#'
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `__name_test`}{
+#'Method with special name unsupported by R
+#'}
+#'
 `__MyClass` <- new.env(parent = emptyenv())
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
@@ -227,6 +324,15 @@ MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_v
 `[[.__MyClass` <- `$.__MyClass`
 
 #' Class for testing (unexported)
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
 MyClassUnexported <- new.env(parent = emptyenv())
 
 MyClassUnexported$new <- function() .Call(wrap__MyClassUnexported__new)
@@ -246,6 +352,23 @@ MyClassUnexported$a <- function() .Call(wrap__MyClassUnexported__a, self)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
 MySubmoduleClass <- new.env(parent = emptyenv())
 
 MySubmoduleClass$new <- function() .Call(wrap__MySubmoduleClass__new)
@@ -269,6 +392,47 @@ MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
 #' x$set_a(10)
 #' x$a()
 #' @export
+#' @section Methods:
+#'\subsection{Method `new`}{
+#'Method for making a new object.
+#'}
+#'
+#'\subsection{Method `set_a`}{
+#'Method for setting stuff.
+#' \subsection{Arguments}{
+#'\describe{
+#'\item{`x`}{a number}
+#'}}
+#'}
+#'
+#'\subsection{Method `a`}{
+#'Method for getting stuff.
+#'}
+#'
+#'\subsection{Method `me_owned`}{
+#'Method for getting one's (by way of a copy) self.
+#'}
+#'
+#'\subsection{Method `me_ref`}{
+#'Method for getting one's (ref) self.
+#'}
+#'
+#'\subsection{Method `me_mut`}{
+#'Method for getting one's (ref mut) self.
+#'}
+#'
+#'\subsection{Method `me_explicit_ref`}{
+#'Method for getting one's ref (explicit) self.
+#'}
+#'
+#'\subsection{Method `me_explicit_mut`}{
+#'Method for getting one's ref mut (explicit) self.
+#'}
+#'
+#'\subsection{Method `max_ref_offset`}{
+#'`offset` does nothing.
+#'}
+#'
 Wrapper <- new.env(parent = emptyenv())
 
 Wrapper$new <- function() .Call(wrap__Wrapper__new)
@@ -293,6 +457,8 @@ Wrapper$max_ref_offset <- function(other, `_offset`) .Call(wrap__Wrapper__max_re
 
 Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
 
+Wrapper$a_10 <- function() .Call(wrap__Wrapper__a_10, self)
+
 #' @rdname Wrapper
 #' @usage NULL
 #' @export
@@ -300,6 +466,20 @@ Wrapper$max_ref2 <- function(other) .Call(wrap__Wrapper__max_ref2, self, other)
 
 #' @export
 `[[.Wrapper` <- `$.Wrapper`
+
+Animal <- new.env(parent = emptyenv())
+
+Animal$new_dog <- function() .Call(wrap__Animal__new_dog)
+
+Animal$new_cat <- function() .Call(wrap__Animal__new_cat)
+
+Animal$speak <- function() .Call(wrap__Animal__speak, self)
+
+#' @export
+`$.Animal` <- function (self, name) { func <- Animal[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Animal` <- `$.Animal`
 
 
 # nolint end

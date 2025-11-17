@@ -1,7 +1,7 @@
-use crate::robj::Attributes;
-use std::iter::FromIterator;
-
 use super::*;
+use crate::robj::Attributes;
+use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
+use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]
 pub struct List {
@@ -88,12 +88,17 @@ impl List {
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
-    pub fn from_hashmap<K>(val: HashMap<K, Robj>) -> Result<Self>
+    pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
+        V: IntoRobj,
         K: Into<String>,
     {
-        let mut res: Self = Self::from_values(val.values());
-        res.set_names(val.into_keys().map(|k| k.into()))?;
+        let (names, values): (Vec<_>, Vec<_>) = val
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into_robj()))
+            .unzip();
+        let mut res: Self = Self::from_values(values);
+        res.set_names(names)?;
         Ok(res)
     }
 
@@ -145,7 +150,7 @@ impl List {
     /// Get the list a slice of `Robj`s.
     pub fn as_slice(&self) -> &[Robj] {
         unsafe {
-            let data = DATAPTR(self.robj.get()) as *const Robj;
+            let data = dataptr(self.robj.get()) as *const Robj;
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }
@@ -175,7 +180,7 @@ impl List {
         })
     }
 
-    /// Convert a List into a HashMap, consuming the list.
+    /// Convert a `List` into a `HashMap`, consuming the list.
     ///
     /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
     /// - If there are some duplicated names (including no name, which will be translated as `""`) of elements, only one of those will be preserved.
@@ -189,7 +194,53 @@ impl List {
     /// }
     /// ```
     pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
-        self.iter().collect::<HashMap<&str, Robj>>()
+        self.as_robj().try_into().unwrap()
+    }
+}
+
+impl<T> TryFrom<&List> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: &List) -> Result<Self> {
+        let value = value
+            .iter()
+            .map(|(name, value)| -> Result<(&str, T)> { value.try_into().map(|x| (name, x)) })
+            .collect::<Result<HashMap<_, _>>>()?;
+
+        Ok(value)
+    }
+}
+
+impl<T> TryFrom<&List> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+    fn try_from(value: &List) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+// The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
+// it requires returning a reference to a owned (moved) value
+
+impl TryFrom<&List> for HashMap<&str, Robj> {
+    type Error = Error;
+
+    fn try_from(value: &List) -> Result<Self> {
+        Ok(value.iter().collect())
+    }
+}
+
+impl TryFrom<&List> for HashMap<String, Robj> {
+    type Error = Error;
+    fn try_from(value: &List) -> Result<Self> {
+        let value: HashMap<&str, _> = value.try_into()?;
+        Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
     }
 }
 
@@ -224,7 +275,7 @@ impl IntoIterator for List {
 ///       }
 ///     }
 ///     assert_eq!(total, 3);
-///    
+///
 ///     for name in my_list.names().unwrap() {
 ///        assert!(name == "a" || name == "b")
 ///     }
