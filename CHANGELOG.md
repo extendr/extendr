@@ -4,6 +4,7 @@
 
 ### Added
 
+- `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values <https://github.com/extendr/extendr/pull/871>
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
 `TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
 - Implements ToVectorValue for `Rstr` enabling the creating of character matrices
