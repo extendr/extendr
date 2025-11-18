@@ -9,6 +9,7 @@ mod externalptr;
 mod graphic_device;
 mod hashmap;
 mod into_list_derive;
+mod leak;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -392,4 +393,5 @@ extendr_module! {
     use matrix;
     use to_unique_character;
     use custom_errors;
+    use leak;
 }

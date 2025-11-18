@@ -245,6 +245,14 @@ custom_error_return <- function() .Call(wrap__custom_error_return)
 
 custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
 
+must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
+
+must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
+
+must_see_drop_msg_r_error_heap <- function() invisible(.Call(wrap__must_see_drop_msg_r_error_heap))
+
+must_see_drop_msg_panic_heap <- function() invisible(.Call(wrap__must_see_drop_msg_panic_heap))
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

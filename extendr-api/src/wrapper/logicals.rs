@@ -197,6 +197,17 @@ mod tests {
     }
 
     #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Logicals::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rbool::na()).collect::<Logicals>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
     fn test_vec_bool_logicals_conversion() {
         test! {
             let test = vec![false, true, true, false];

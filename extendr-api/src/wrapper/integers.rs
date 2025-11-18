@@ -177,6 +177,16 @@ mod tests {
     }
 
     #[test]
+    fn new_with_na() {
+        test! {
+            let vec = Integers::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rint::na()).collect::<Integers>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
     fn test_vec_i32_integers_conversion() {
         test! {
             let int_vec = vec![3,4,0,-2];
