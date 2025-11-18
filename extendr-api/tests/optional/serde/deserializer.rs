@@ -1,6 +1,8 @@
 use extendr_api::deserializer::from_robj;
 use extendr_api::prelude::*;
-use serde::Deserialize;
+use extendr_api::serializer::to_robj;
+use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -167,5 +169,81 @@ fn test_deserialize_robj() {
         // assert_eq!(from_robj::<RStrings>(&r!("xyz")), Ok(RStrings(Strings::from_values(["xyz"]))));
         // assert_eq!(from_robj::<RStrings>(&r!(["a", "b"])), Ok(RStrings(Strings::from_values(["a", "b"]))));
         // assert_eq!(from_robj::<RStrings>(&r!(0)).is_err(), true);
+    }
+}
+
+#[test]
+fn test_deserialize_complex_named_list() {
+    test! {
+        #[derive(Debug, PartialEq, Serialize, Deserialize)]
+        struct RunStartFile {
+            model: String,
+        }
+
+        #[derive(Debug, PartialEq, Serialize, Deserialize)]
+        struct OutputFileHash {
+            path: String,
+            hash: String,
+        }
+
+        #[derive(Debug, PartialEq, Serialize, Deserialize)]
+        struct RRunEndFile {
+            start: String,
+            end: String,
+            runtime_ms: f64,
+            files_copied: HashSet<String>,
+            output_files_rewrites: HashMap<String, String>,
+            output_files_hashes: Vec<OutputFileHash>,
+        }
+
+        #[derive(Debug, PartialEq, Serialize, Deserialize)]
+        struct ModelMetadata {
+            name: String,
+        }
+
+        #[derive(Debug, PartialEq, Serialize, Deserialize)]
+        struct RLineageTree {
+            nodes: HashMap<String, ModelMetadata>,
+            metadata: HashMap<String, (RunStartFile, Option<RRunEndFile>)>,
+        }
+
+        let mut files_copied = HashSet::new();
+        files_copied.insert("input.lst".to_string());
+
+        let mut output_files_rewrites = HashMap::new();
+        output_files_rewrites.insert("out.lst".to_string(), "rewritten.lst".to_string());
+
+        let end_file = RRunEndFile {
+            start: "2024-01-01T00:00:00Z".into(),
+            end: "2024-01-01T01:00:00Z".into(),
+            runtime_ms: 3600_000.0,
+            files_copied,
+            output_files_rewrites,
+            output_files_hashes: vec![OutputFileHash {
+                path: "out.lst".into(),
+                hash: "abc123".into(),
+            }],
+        };
+
+        let lineage = RLineageTree {
+            nodes: [("node_a".to_string(), ModelMetadata { name: "model_a".into() })]
+                .into_iter()
+                .collect(),
+            metadata: [(
+                "node_a".to_string(),
+                (
+                    RunStartFile {
+                        model: "model_a.mod".into(),
+                    },
+                    Some(end_file),
+                ),
+            )]
+            .into_iter()
+            .collect(),
+        };
+
+        let robj = to_robj(&lineage)?;
+        let round_trip: RLineageTree = from_robj(&robj)?;
+        assert_eq!(lineage, round_trip);
     }
 }
