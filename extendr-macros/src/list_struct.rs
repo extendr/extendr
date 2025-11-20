@@ -1,5 +1,4 @@
 use proc_macro::TokenStream;
-use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::{Data, DeriveInput};
 
@@ -15,14 +14,29 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
     let struct_name = ast.ident;
 
     // Iterate each struct field and capture a conversion from Robj for each field
-    let mut tokens = Vec::<TokenStream2>::with_capacity(inside.fields.len());
-    for field in inside.fields {
-        let field_name = field.ident.as_ref().unwrap();
-        let field_str = field_name.to_string();
-        // This is like `value$foo` in R
-        tokens.push(quote!(
-            #field_name: value.dollar(#field_str)?.try_into()?
-        ));
+    let mut tokens = Vec::<_>::with_capacity(inside.fields.len());
+    let is_tuple_struct = inside
+        .fields
+        .iter()
+        .next()
+        .map(|x| x.ident.is_none())
+        .unwrap_or(false);
+    for (id_field, field) in inside.fields.iter().enumerate() {
+        if is_tuple_struct {
+            let field_name = syn::Index::from(id_field);
+            let field_str = format!(".{id_field}");
+            // This is like `value$.0` in R
+            tokens.push(quote!(
+                #field_name: value.dollar(#field_str)?.try_into()?
+            ));
+        } else {
+            let field_name = field.ident.as_ref().unwrap();
+            let field_str = field_name.to_string();
+            // This is like `value$foo` in R
+            tokens.push(quote!(
+                #field_name: value.dollar(#field_str)?.try_into()?
+            ));
+        }
     }
 
     // Emit the conversion trait impl
@@ -62,9 +76,9 @@ pub fn derive_into_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
 
     // Iterate each struct field and capture a token that creates a KeyValue pair (tuple) for
     // each field
-    let mut tokens = Vec::<TokenStream2>::with_capacity(inside.fields.len());
+    let mut tokens = Vec::<_>::with_capacity(inside.fields.len());
 
-    for field in inside.fields {
+    for (id_field, field) in inside.fields.iter().enumerate() {
         let mut ignore = false;
 
         let field_attributes = &field.attrs;
@@ -92,11 +106,20 @@ pub fn derive_into_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
             continue;
         }
 
-        let field_name = field.ident.as_ref().unwrap();
-        let field_str = field_name.to_string();
-        tokens.push(quote!(
-            (#field_str, (&value.#field_name).into())
-        ));
+        let is_tuple_struct = field.colon_token.is_none();
+        if is_tuple_struct {
+            let dot_field_name = format!(".{id_field}");
+            let id_field_index = syn::Index::from(id_field);
+            tokens.push(quote!(
+                (#dot_field_name, (&value.#id_field_index).into())
+            ));
+        } else {
+            let field_name = field.ident.as_ref().unwrap();
+            let field_str = field_name.to_string();
+            tokens.push(quote!(
+                (#field_str, (&value.#field_name).into())
+            ));
+        }
     }
 
     // The only thing we emit from this macro is the conversion trait impl

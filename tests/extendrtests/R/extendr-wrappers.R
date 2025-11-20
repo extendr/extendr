@@ -243,6 +243,8 @@ custom_error_return <- function() .Call(wrap__custom_error_return)
 
 custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
 
+take_and_return_B <- function(b) .Call(wrap__take_and_return_B, b)
+
 must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
 
 must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
