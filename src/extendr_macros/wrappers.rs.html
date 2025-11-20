@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (f15a7f385 2025-11-04)" data-channel="nightly" data-search-js="search-5c29b3b5.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_macros/</div>wrappers.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! This is responsible for generating the C functions that act as wrappers of
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-macros/src/wrappers.rs`."><title>wrappers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (07bdbaedc 2025-11-19)" data-channel="nightly" data-search-js="search-680b2199.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_macros/</div>wrappers.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! This is responsible for generating the C functions that act as wrappers of
 <a href=#2 id=2 data-nosnippet>2</a>//! the exported Rust functions.
 <a href=#3 id=3 data-nosnippet>3</a>//!
 <a href=#4 id=4 data-nosnippet>4</a>//! extendr relies on the [`.Call`-interface](https://cran.r-project.org/doc/manuals/R-exts.html#Calling-_002eCall)
@@ -232,7 +232,7 @@
 <a href=#232 id=232 data-nosnippet>232</a>                    <span class="kw">return </span><span class="prelude-val">Ok</span>(extendr_api::Robj::from_sexp(#sexp_args))
 <a href=#233 id=233 data-nosnippet>233</a>                }
 <a href=#234 id=234 data-nosnippet>234</a>            )*
-<a href=#235 id=235 data-nosnippet>235</a>            <span class="prelude-val">Err</span>(Error::ExpectedExternalPtrReference)
+<a href=#235 id=235 data-nosnippet>235</a>            <span class="prelude-val">Err</span>(Error::ExpectedExternalPtrReference.into())
 <a href=#236 id=236 data-nosnippet>236</a>        )
 <a href=#237 id=237 data-nosnippet>237</a>    } <span class="kw">else </span>{
 <a href=#238 id=238 data-nosnippet>238</a>        <span class="macro">quote!</span>(<span class="prelude-val">Ok</span>(extendr_api::Robj::from(#call_name(#actual_args))))
@@ -249,14 +249,14 @@
 <a href=#249 id=249 data-nosnippet>249</a>            </span>#rng_start
 <a href=#250 id=250 data-nosnippet>250</a>
 <a href=#251 id=251 data-nosnippet>251</a>            <span class="kw">let </span>wrap_result_state: std::result::Result&lt;
-<a href=#252 id=252 data-nosnippet>252</a>                std::result::Result&lt;extendr_api::Robj, extendr_api::Error&gt;,
+<a href=#252 id=252 data-nosnippet>252</a>                std::result::Result&lt;extendr_api::Robj, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt;,
 <a href=#253 id=253 data-nosnippet>253</a>                Box&lt;<span class="kw">dyn </span>std::any::Any + Send&gt;
 <a href=#254 id=254 data-nosnippet>254</a>            &gt; = <span class="kw">unsafe </span>{
-<a href=#255 id=255 data-nosnippet>255</a>                std::panic::catch_unwind(std::panic::AssertUnwindSafe(<span class="kw">move </span>|| -&gt; std::result::Result&lt;extendr_api::Robj, extendr_api::Error&gt; {
-<a href=#256 id=256 data-nosnippet>256</a>                    #(#convert_args)*
-<a href=#257 id=257 data-nosnippet>257</a>                    #return_type_conversion
-<a href=#258 id=258 data-nosnippet>258</a>                }))
-<a href=#259 id=259 data-nosnippet>259</a>            };
+<a href=#255 id=255 data-nosnippet>255</a>                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(<span class="kw">move </span>|| -&gt; std::result::Result&lt;extendr_api::Robj, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+<a href=#256 id=256 data-nosnippet>256</a>                        #(#convert_args)*
+<a href=#257 id=257 data-nosnippet>257</a>                        #return_type_conversion
+<a href=#258 id=258 data-nosnippet>258</a>                    }))
+<a href=#259 id=259 data-nosnippet>259</a>                };
 <a href=#260 id=260 data-nosnippet>260</a>
 <a href=#261 id=261 data-nosnippet>261</a>            <span class="comment">// return RNG state back to r after evaluation
 <a href=#262 id=262 data-nosnippet>262</a>            </span>#rng_end
@@ -319,7 +319,7 @@
 <a href=#319 id=319 data-nosnippet>319</a></span><span class="kw">pub fn </span>get_doc_string(attrs: <span class="kw-2">&amp;</span>[syn::Attribute]) -&gt; String {
 <a href=#320 id=320 data-nosnippet>320</a>    <span class="kw">let </span><span class="kw-2">mut </span>res = String::new();
 <a href=#321 id=321 data-nosnippet>321</a>    <span class="kw">for </span>attr <span class="kw">in </span>attrs {
-<a href=#322 id=322 data-nosnippet>322</a>        <span class="macro">if !</span>attr.path().is_ident(<span class="string">"doc"</span>) {
+<a href=#322 id=322 data-nosnippet>322</a>        <span class="kw">if </span>!attr.path().is_ident(<span class="string">"doc"</span>) {
 <a href=#323 id=323 data-nosnippet>323</a>            <span class="kw">continue</span>;
 <a href=#324 id=324 data-nosnippet>324</a>        }
 <a href=#325 id=325 data-nosnippet>325</a>
@@ -329,7 +329,7 @@
 <a href=#329 id=329 data-nosnippet>329</a>                ..
 <a href=#330 id=330 data-nosnippet>330</a>            }) = nv.value
 <a href=#331 id=331 data-nosnippet>331</a>            {
-<a href=#332 id=332 data-nosnippet>332</a>                <span class="macro">if !</span>res.is_empty() {
+<a href=#332 id=332 data-nosnippet>332</a>                <span class="kw">if </span>!res.is_empty() {
 <a href=#333 id=333 data-nosnippet>333</a>                    res.push(<span class="string">'\n'</span>);
 <a href=#334 id=334 data-nosnippet>334</a>                }
 <a href=#335 id=335 data-nosnippet>335</a>                res.push_str(<span class="kw-2">&amp;</span>litstr.value());
@@ -402,7 +402,7 @@
 <a href=#402 id=402 data-nosnippet>402</a>        }
 <a href=#403 id=403 data-nosnippet>403</a>        <span class="comment">// &amp;self / &amp;mut self
 <a href=#404 id=404 data-nosnippet>404</a>        </span>FnArg::Receiver(<span class="kw-2">ref </span>receiver) =&gt; {
-<a href=#405 id=405 data-nosnippet>405</a>            <span class="macro">if !</span>receiver.attrs.is_empty() || receiver.reference.is_none() {
+<a href=#405 id=405 data-nosnippet>405</a>            <span class="kw">if </span>!receiver.attrs.is_empty() || receiver.reference.is_none() {
 <a href=#406 id=406 data-nosnippet>406</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new_spanned(
 <a href=#407 id=407 data-nosnippet>407</a>                    input,
 <a href=#408 id=408 data-nosnippet>408</a>                    <span class="string">"expected &amp;self or &amp;mut self"</span>,
@@ -463,7 +463,7 @@
 <a href=#463 id=463 data-nosnippet>463</a>        }
 <a href=#464 id=464 data-nosnippet>464</a>        <span class="comment">// &amp;self
 <a href=#465 id=465 data-nosnippet>465</a>        </span>FnArg::Receiver(<span class="kw-2">ref </span>receiver) =&gt; {
-<a href=#466 id=466 data-nosnippet>466</a>            <span class="macro">if !</span>receiver.attrs.is_empty() || receiver.reference.is_none() {
+<a href=#466 id=466 data-nosnippet>466</a>            <span class="kw">if </span>!receiver.attrs.is_empty() || receiver.reference.is_none() {
 <a href=#467 id=467 data-nosnippet>467</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new_spanned(
 <a href=#468 id=468 data-nosnippet>468</a>                    input,
 <a href=#469 id=469 data-nosnippet>469</a>                    <span class="string">"expected &amp;self or &amp;mut self"</span>,

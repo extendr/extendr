@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/macros.rs`."><title>macros.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (f15a7f385 2025-11-04)" data-channel="nightly" data-search-js="search-5c29b3b5.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/scalar/</div>macros.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/scalar/macros.rs`."><title>macros.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (07bdbaedc 2025-11-19)" data-channel="nightly" data-search-js="search-680b2199.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/scalar/</div>macros.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/// Generates an implementation of a unary operator Trait for a scalar type
 <a href=#2 id=2 data-nosnippet>2</a>///
 <a href=#3 id=3 data-nosnippet>3</a>/// Generates the implementation of the specified unary operator for both `Type` and
 <a href=#4 id=4 data-nosnippet>4</a>/// `&amp;Type`, using the logic of the provided closure to provide functionality.
@@ -21,7 +21,7 @@
 <a href=#21 id=21 data-nosnippet>21</a>/// - `impl Neg for Rint`
 <a href=#22 id=22 data-nosnippet>22</a>/// - `impl Neg for &amp;Rint`
 <a href=#23 id=23 data-nosnippet>23</a></span><span class="macro">macro_rules!</span> gen_unop {
-<a href=#24 id=24 data-nosnippet>24</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+<a href=#24 id=24 data-nosnippet>24</a>    (<span class="macro-nonterminal">$type </span>: ty, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
 <a href=#25 id=25 data-nosnippet>25</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#26 id=26 data-nosnippet>26</a>        //
 <a href=#27 id=27 data-nosnippet>27</a>        // impl Neg for Rint {
@@ -37,21 +37,21 @@
 <a href=#37 id=37 data-nosnippet>37</a>        //          }
 <a href=#38 id=38 data-nosnippet>38</a>        //          Rint::na()
 <a href=#39 id=39 data-nosnippet>39</a>        //      }
-<a href=#40 id=40 data-nosnippet>40</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#41 id=41 data-nosnippet>41</a>            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#40 id=40 data-nosnippet>40</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#41 id=41 data-nosnippet>41</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#42 id=42 data-nosnippet>42</a>
 <a href=#43 id=43 data-nosnippet>43</a>            <span class="macro">paste::paste!</span> {
-<a href=#44 id=44 data-nosnippet>44</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#44 id=44 data-nosnippet>44</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#45 id=45 data-nosnippet>45</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg
 <a href=#46 id=46 data-nosnippet>46</a>                </span><span class="kw">fn </span>[&lt;<span class="macro-nonterminal">$opname</span>:lower&gt;](<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#47 id=47 data-nosnippet>47</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.into() {
 <a href=#48 id=48 data-nosnippet>48</a>                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#49 id=49 data-nosnippet>49</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs) {
 <a href=#50 id=50 data-nosnippet>50</a>                            <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#51 id=51 data-nosnippet>51</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#51 id=51 data-nosnippet>51</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#52 id=52 data-nosnippet>52</a>                        }
 <a href=#53 id=53 data-nosnippet>53</a>                    }
-<a href=#54 id=54 data-nosnippet>54</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#54 id=54 data-nosnippet>54</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#55 id=55 data-nosnippet>55</a>                }
 <a href=#56 id=56 data-nosnippet>56</a>            }
 <a href=#57 id=57 data-nosnippet>57</a>        }
@@ -71,21 +71,21 @@
 <a href=#71 id=71 data-nosnippet>71</a>        //          }
 <a href=#72 id=72 data-nosnippet>72</a>        //          Rint::na()
 <a href=#73 id=73 data-nosnippet>73</a>        //      }
-<a href=#74 id=74 data-nosnippet>74</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#75 id=75 data-nosnippet>75</a>            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#74 id=74 data-nosnippet>74</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname </span><span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$type </span>{
+<a href=#75 id=75 data-nosnippet>75</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#76 id=76 data-nosnippet>76</a>
 <a href=#77 id=77 data-nosnippet>77</a>            <span class="macro">paste::paste!</span> {
-<a href=#78 id=78 data-nosnippet>78</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#78 id=78 data-nosnippet>78</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#79 id=79 data-nosnippet>79</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Neg -&gt; neg
 <a href=#80 id=80 data-nosnippet>80</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#81 id=81 data-nosnippet>81</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = (<span class="kw-2">*</span><span class="self">self</span>).into() {
 <a href=#82 id=82 data-nosnippet>82</a>                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#83 id=83 data-nosnippet>83</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs) {
 <a href=#84 id=84 data-nosnippet>84</a>                            <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#85 id=85 data-nosnippet>85</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#85 id=85 data-nosnippet>85</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#86 id=86 data-nosnippet>86</a>                        }
 <a href=#87 id=87 data-nosnippet>87</a>                    }
-<a href=#88 id=88 data-nosnippet>88</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#88 id=88 data-nosnippet>88</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#89 id=89 data-nosnippet>89</a>                }
 <a href=#90 id=90 data-nosnippet>90</a>            }
 <a href=#91 id=91 data-nosnippet>91</a>        }
@@ -116,7 +116,7 @@
 <a href=#116 id=116 data-nosnippet>116</a>/// - `impl Add&lt;Rint&gt; for i32`
 <a href=#117 id=117 data-nosnippet>117</a></span><span class="comment">// TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
 <a href=#118 id=118 data-nosnippet>118</a></span><span class="macro">macro_rules!</span> gen_binop {
-<a href=#119 id=119 data-nosnippet>119</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+<a href=#119 id=119 data-nosnippet>119</a>    (<span class="macro-nonterminal">$type </span>: tt, <span class="macro-nonterminal">$type_prim </span>: tt, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
 <a href=#120 id=120 data-nosnippet>120</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#121 id=121 data-nosnippet>121</a>        //
 <a href=#122 id=122 data-nosnippet>122</a>        // impl Add&lt;Rint&gt; for Rint {
@@ -134,23 +134,23 @@
 <a href=#134 id=134 data-nosnippet>134</a>        //         Rint::na()
 <a href=#135 id=135 data-nosnippet>135</a>        //     }
 <a href=#136 id=136 data-nosnippet>136</a>        // }
-<a href=#137 id=137 data-nosnippet>137</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#138 id=138 data-nosnippet>138</a>            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#137 id=137 data-nosnippet>137</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#138 id=138 data-nosnippet>138</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#139 id=139 data-nosnippet>139</a>
 <a href=#140 id=140 data-nosnippet>140</a>            <span class="macro">paste::paste!</span> {
-<a href=#141 id=141 data-nosnippet>141</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#141 id=141 data-nosnippet>141</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#142 id=142 data-nosnippet>142</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
-<a href=#143 id=143 data-nosnippet>143</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+<a href=#143 id=143 data-nosnippet>143</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$type</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#144 id=144 data-nosnippet>144</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
 <a href=#145 id=145 data-nosnippet>145</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.into() {
 <a href=#146 id=146 data-nosnippet>146</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#147 id=147 data-nosnippet>147</a>                            <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
 <a href=#148 id=148 data-nosnippet>148</a>                                <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#149 id=149 data-nosnippet>149</a>                                </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#149 id=149 data-nosnippet>149</a>                                </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#150 id=150 data-nosnippet>150</a>                            }
 <a href=#151 id=151 data-nosnippet>151</a>                        }
 <a href=#152 id=152 data-nosnippet>152</a>                    }
-<a href=#153 id=153 data-nosnippet>153</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#153 id=153 data-nosnippet>153</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#154 id=154 data-nosnippet>154</a>                }
 <a href=#155 id=155 data-nosnippet>155</a>            }
 <a href=#156 id=156 data-nosnippet>156</a>        }
@@ -172,23 +172,23 @@
 <a href=#172 id=172 data-nosnippet>172</a>        //          Rint::na()
 <a href=#173 id=173 data-nosnippet>173</a>        //      }
 <a href=#174 id=174 data-nosnippet>174</a>        // }
-<a href=#175 id=175 data-nosnippet>175</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#176 id=176 data-nosnippet>176</a>            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#175 id=175 data-nosnippet>175</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$type </span>{
+<a href=#176 id=176 data-nosnippet>176</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#177 id=177 data-nosnippet>177</a>
 <a href=#178 id=178 data-nosnippet>178</a>            <span class="macro">paste::paste!</span> {
-<a href=#179 id=179 data-nosnippet>179</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#179 id=179 data-nosnippet>179</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#180 id=180 data-nosnippet>180</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
-<a href=#181 id=181 data-nosnippet>181</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+<a href=#181 id=181 data-nosnippet>181</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$type</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#182 id=182 data-nosnippet>182</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
 <a href=#183 id=183 data-nosnippet>183</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.into() {
 <a href=#184 id=184 data-nosnippet>184</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#185 id=185 data-nosnippet>185</a>                            <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
 <a href=#186 id=186 data-nosnippet>186</a>                                <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#187 id=187 data-nosnippet>187</a>                                </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#187 id=187 data-nosnippet>187</a>                                </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#188 id=188 data-nosnippet>188</a>                            }
 <a href=#189 id=189 data-nosnippet>189</a>                        }
 <a href=#190 id=190 data-nosnippet>190</a>                    }
-<a href=#191 id=191 data-nosnippet>191</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#191 id=191 data-nosnippet>191</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#192 id=192 data-nosnippet>192</a>                }
 <a href=#193 id=193 data-nosnippet>193</a>            }
 <a href=#194 id=194 data-nosnippet>194</a>        }
@@ -208,21 +208,21 @@
 <a href=#208 id=208 data-nosnippet>208</a>        //          Rint::na()
 <a href=#209 id=209 data-nosnippet>209</a>        //      }
 <a href=#210 id=210 data-nosnippet>210</a>        // }
-<a href=#211 id=211 data-nosnippet>211</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#212 id=212 data-nosnippet>212</a>            <span class="kw">type </span><span class="macro-nonterminal">Output </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#211 id=211 data-nosnippet>211</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#212 id=212 data-nosnippet>212</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#213 id=213 data-nosnippet>213</a>
 <a href=#214 id=214 data-nosnippet>214</a>            <span class="macro">paste::paste!</span> {
-<a href=#215 id=215 data-nosnippet>215</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#215 id=215 data-nosnippet>215</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#216 id=216 data-nosnippet>216</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
 <a href=#217 id=217 data-nosnippet>217</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#218 id=218 data-nosnippet>218</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(lhs) = <span class="self">self</span>.clone().into() {
 <a href=#219 id=219 data-nosnippet>219</a>                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#220 id=220 data-nosnippet>220</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(lhs, rhs) {
 <a href=#221 id=221 data-nosnippet>221</a>                            <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#222 id=222 data-nosnippet>222</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#222 id=222 data-nosnippet>222</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#223 id=223 data-nosnippet>223</a>                        }
 <a href=#224 id=224 data-nosnippet>224</a>                    }
-<a href=#225 id=225 data-nosnippet>225</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#225 id=225 data-nosnippet>225</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#226 id=226 data-nosnippet>226</a>                }
 <a href=#227 id=227 data-nosnippet>227</a>            }
 <a href=#228 id=228 data-nosnippet>228</a>        }
@@ -242,21 +242,21 @@
 <a href=#242 id=242 data-nosnippet>242</a>        //          Rint::na()
 <a href=#243 id=243 data-nosnippet>243</a>        //      }
 <a href=#244 id=244 data-nosnippet>244</a>        // }
-<a href=#245 id=245 data-nosnippet>245</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
-<a href=#246 id=246 data-nosnippet>246</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+<a href=#245 id=245 data-nosnippet>245</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
+<a href=#246 id=246 data-nosnippet>246</a>            <span class="kw">type </span>Output = <span class="macro-nonterminal">$type</span>;
 <a href=#247 id=247 data-nosnippet>247</a>
 <a href=#248 id=248 data-nosnippet>248</a>            <span class="macro">paste::paste!</span> {
-<a href=#249 id=249 data-nosnippet>249</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#249 id=249 data-nosnippet>249</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#250 id=250 data-nosnippet>250</a>                </span><span class="comment">// Note: $opname:lower lowercases the Trait name, i.e. Add -&gt; add
-<a href=#251 id=251 data-nosnippet>251</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">Self::Output </span>{
+<a href=#251 id=251 data-nosnippet>251</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:lower &gt;](<span class="self">self</span>, rhs: <span class="macro-nonterminal">$type</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#252 id=252 data-nosnippet>252</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(rhs) = rhs.clone().into() {
 <a href=#253 id=253 data-nosnippet>253</a>                        <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#254 id=254 data-nosnippet>254</a>                        <span class="kw">if let </span><span class="prelude-val">Some</span>(res) = f(<span class="self">self</span>, rhs) {
 <a href=#255 id=255 data-nosnippet>255</a>                            <span class="comment">// Note that if res is NA, this will also be NA.
-<a href=#256 id=256 data-nosnippet>256</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res);
+<a href=#256 id=256 data-nosnippet>256</a>                            </span><span class="kw">return </span><span class="macro-nonterminal">$type</span>::from(res);
 <a href=#257 id=257 data-nosnippet>257</a>                        }
 <a href=#258 id=258 data-nosnippet>258</a>                    }
-<a href=#259 id=259 data-nosnippet>259</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#259 id=259 data-nosnippet>259</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#260 id=260 data-nosnippet>260</a>                }
 <a href=#261 id=261 data-nosnippet>261</a>            }
 <a href=#262 id=262 data-nosnippet>262</a>        }
@@ -287,7 +287,7 @@
 <a href=#287 id=287 data-nosnippet>287</a>/// - `impl AddAssign&lt;i32&gt; for &amp;mut Rint`
 <a href=#288 id=288 data-nosnippet>288</a>/// - `impl AddAssign&lt;Rint&gt; for Option&lt;i32&gt;`
 <a href=#289 id=289 data-nosnippet>289</a></span><span class="macro">macro_rules!</span> gen_binopassign {
-<a href=#290 id=290 data-nosnippet>290</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ty</span>, <span class="macro-nonterminal">$type_prim </span>: ty, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
+<a href=#290 id=290 data-nosnippet>290</a>    (<span class="macro-nonterminal">$type </span>: ty, <span class="macro-nonterminal">$type_prim </span>: ty, <span class="macro-nonterminal">$opname </span>: ident, <span class="macro-nonterminal">$expr</span>: expr, <span class="macro-nonterminal">$docstring</span>: expr) =&gt; {
 <a href=#291 id=291 data-nosnippet>291</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#292 id=292 data-nosnippet>292</a>        //
 <a href=#293 id=293 data-nosnippet>293</a>        // impl AddAssign&lt;Rint&gt; for Rint {
@@ -305,21 +305,21 @@
 <a href=#305 id=305 data-nosnippet>305</a>        //          }
 <a href=#306 id=306 data-nosnippet>306</a>        //      }
 <a href=#307 id=307 data-nosnippet>307</a>        // }
-<a href=#308 id=308 data-nosnippet>308</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#308 id=308 data-nosnippet>308</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#309 id=309 data-nosnippet>309</a>            <span class="macro">paste::paste!</span> {
-<a href=#310 id=310 data-nosnippet>310</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#310 id=310 data-nosnippet>310</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#311 id=311 data-nosnippet>311</a>                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
-<a href=#312 id=312 data-nosnippet>312</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+<a href=#312 id=312 data-nosnippet>312</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type</span>) {
 <a href=#313 id=313 data-nosnippet>313</a>                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
-<a href=#314 id=314 data-nosnippet>314</a>                    </span><span class="kw">match </span>(<span class="macro-nonterminal">self</span>.clone().into(), other.into()) {
+<a href=#314 id=314 data-nosnippet>314</a>                    </span><span class="kw">match </span>(<span class="self">self</span>.clone().into(), other.into()) {
 <a href=#315 id=315 data-nosnippet>315</a>                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
 <a href=#316 id=316 data-nosnippet>316</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#317 id=317 data-nosnippet>317</a>                            <span class="kw">match </span>f(lhs, rhs) {
-<a href=#318 id=318 data-nosnippet>318</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
-<a href=#319 id=319 data-nosnippet>319</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#318 id=318 data-nosnippet>318</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::from(res),
+<a href=#319 id=319 data-nosnippet>319</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#320 id=320 data-nosnippet>320</a>                            }
 <a href=#321 id=321 data-nosnippet>321</a>                        },
-<a href=#322 id=322 data-nosnippet>322</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#322 id=322 data-nosnippet>322</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#323 id=323 data-nosnippet>323</a>                    }
 <a href=#324 id=324 data-nosnippet>324</a>                }
 <a href=#325 id=325 data-nosnippet>325</a>            }
@@ -342,21 +342,21 @@
 <a href=#342 id=342 data-nosnippet>342</a>        //          }
 <a href=#343 id=343 data-nosnippet>343</a>        //      }
 <a href=#344 id=344 data-nosnippet>344</a>        // }
-<a href=#345 id=345 data-nosnippet>345</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#345 id=345 data-nosnippet>345</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$type </span>{
 <a href=#346 id=346 data-nosnippet>346</a>            <span class="macro">paste::paste!</span> {
-<a href=#347 id=347 data-nosnippet>347</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#347 id=347 data-nosnippet>347</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#348 id=348 data-nosnippet>348</a>                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
-<a href=#349 id=349 data-nosnippet>349</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
+<a href=#349 id=349 data-nosnippet>349</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type</span>) {
 <a href=#350 id=350 data-nosnippet>350</a>                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
-<a href=#351 id=351 data-nosnippet>351</a>                    </span><span class="kw">match </span>(<span class="macro-nonterminal">self</span>.clone().into(), other.into()) {
+<a href=#351 id=351 data-nosnippet>351</a>                    </span><span class="kw">match </span>(<span class="self">self</span>.clone().into(), other.into()) {
 <a href=#352 id=352 data-nosnippet>352</a>                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
 <a href=#353 id=353 data-nosnippet>353</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#354 id=354 data-nosnippet>354</a>                            <span class="kw">match </span>f(lhs, rhs) {
-<a href=#355 id=355 data-nosnippet>355</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
-<a href=#356 id=356 data-nosnippet>356</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#355 id=355 data-nosnippet>355</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::from(res),
+<a href=#356 id=356 data-nosnippet>356</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#357 id=357 data-nosnippet>357</a>                            }
 <a href=#358 id=358 data-nosnippet>358</a>                        },
-<a href=#359 id=359 data-nosnippet>359</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#359 id=359 data-nosnippet>359</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#360 id=360 data-nosnippet>360</a>                    }
 <a href=#361 id=361 data-nosnippet>361</a>                }
 <a href=#362 id=362 data-nosnippet>362</a>            }
@@ -380,9 +380,9 @@
 <a href=#380 id=380 data-nosnippet>380</a>        //          }
 <a href=#381 id=381 data-nosnippet>381</a>        //      }
 <a href=#382 id=382 data-nosnippet>382</a>        // }
-<a href=#383 id=383 data-nosnippet>383</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#383 id=383 data-nosnippet>383</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#384 id=384 data-nosnippet>384</a>            <span class="macro">paste::paste!</span> {
-<a href=#385 id=385 data-nosnippet>385</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#385 id=385 data-nosnippet>385</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#386 id=386 data-nosnippet>386</a>                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
 <a href=#387 id=387 data-nosnippet>387</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type_prim</span>) {
 <a href=#388 id=388 data-nosnippet>388</a>                    <span class="comment">// `.clone()` is needed to convert &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
@@ -390,11 +390,11 @@
 <a href=#390 id=390 data-nosnippet>390</a>                        <span class="prelude-val">Some</span>(lhs) =&gt; {
 <a href=#391 id=391 data-nosnippet>391</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#392 id=392 data-nosnippet>392</a>                            <span class="kw">match </span>f(lhs, other) {
-<a href=#393 id=393 data-nosnippet>393</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
-<a href=#394 id=394 data-nosnippet>394</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#393 id=393 data-nosnippet>393</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::from(res),
+<a href=#394 id=394 data-nosnippet>394</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#395 id=395 data-nosnippet>395</a>                            }
 <a href=#396 id=396 data-nosnippet>396</a>                        }
-<a href=#397 id=397 data-nosnippet>397</a>                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#397 id=397 data-nosnippet>397</a>                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">*</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#398 id=398 data-nosnippet>398</a>                    }
 <a href=#399 id=399 data-nosnippet>399</a>                }
 <a href=#400 id=400 data-nosnippet>400</a>            }
@@ -418,9 +418,9 @@
 <a href=#418 id=418 data-nosnippet>418</a>        //          }
 <a href=#419 id=419 data-nosnippet>419</a>        //      }
 <a href=#420 id=420 data-nosnippet>420</a>        // }
-<a href=#421 id=421 data-nosnippet>421</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#421 id=421 data-nosnippet>421</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$type </span>{
 <a href=#422 id=422 data-nosnippet>422</a>            <span class="macro">paste::paste!</span> {
-<a href=#423 id=423 data-nosnippet>423</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="macro-nonterminal">$docstring</span>]
+<a href=#423 id=423 data-nosnippet>423</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#424 id=424 data-nosnippet>424</a>                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
 <a href=#425 id=425 data-nosnippet>425</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type_prim</span>) {
 <a href=#426 id=426 data-nosnippet>426</a>                    <span class="comment">// `.clone()` is needed to convert &amp;mut &amp;mut Rint -&gt; Rint -&gt; Option&lt;$type_prim&gt;
@@ -428,11 +428,11 @@
 <a href=#428 id=428 data-nosnippet>428</a>                        <span class="prelude-val">Some</span>(lhs) =&gt; {
 <a href=#429 id=429 data-nosnippet>429</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#430 id=430 data-nosnippet>430</a>                            <span class="kw">match </span>f(lhs, other) {
-<a href=#431 id=431 data-nosnippet>431</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(res),
-<a href=#432 id=432 data-nosnippet>432</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#431 id=431 data-nosnippet>431</a>                                <span class="prelude-val">Some</span>(res) =&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::from(res),
+<a href=#432 id=432 data-nosnippet>432</a>                                <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#433 id=433 data-nosnippet>433</a>                            }
 <a href=#434 id=434 data-nosnippet>434</a>                        }
-<a href=#435 id=435 data-nosnippet>435</a>                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>(),
+<a href=#435 id=435 data-nosnippet>435</a>                        <span class="prelude-val">None </span>=&gt; <span class="kw-2">**</span><span class="self">self </span>= <span class="macro-nonterminal">$type</span>::na(),
 <a href=#436 id=436 data-nosnippet>436</a>                    }
 <a href=#437 id=437 data-nosnippet>437</a>                }
 <a href=#438 id=438 data-nosnippet>438</a>            }
@@ -452,12 +452,12 @@
 <a href=#452 id=452 data-nosnippet>452</a>        //          }
 <a href=#453 id=453 data-nosnippet>453</a>        //      }
 <a href=#454 id=454 data-nosnippet>454</a>        //  }
-<a href=#455 id=455 data-nosnippet>455</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; {
+<a href=#455 id=455 data-nosnippet>455</a>        </span><span class="kw">impl </span><span class="macro-nonterminal">$opname</span>&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt; {
 <a href=#456 id=456 data-nosnippet>456</a>            <span class="macro">paste::paste!</span> {
 <a href=#457 id=457 data-nosnippet>457</a>                <span class="attr">#[doc = <span class="macro-nonterminal">$docstring</span>]
 <a href=#458 id=458 data-nosnippet>458</a>                </span><span class="comment">// Note: $opname:snake snake cases the Trait name, i.e. AddAssign -&gt; add_assign
-<a href=#459 id=459 data-nosnippet>459</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$</span><span class="kw">type</span>) {
-<a href=#460 id=460 data-nosnippet>460</a>                    <span class="kw">match </span>(<span class="kw-2">*</span><span class="macro-nonterminal">self</span>, other.into()) {
+<a href=#459 id=459 data-nosnippet>459</a>                </span><span class="kw">fn </span>[&lt; <span class="macro-nonterminal">$opname</span>:snake &gt;](<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$type</span>) {
+<a href=#460 id=460 data-nosnippet>460</a>                    <span class="kw">match </span>(<span class="kw-2">*</span><span class="self">self</span>, other.into()) {
 <a href=#461 id=461 data-nosnippet>461</a>                        (<span class="prelude-val">Some</span>(lhs), <span class="prelude-val">Some</span>(rhs)) =&gt; {
 <a href=#462 id=462 data-nosnippet>462</a>                            <span class="kw">let </span>f = <span class="macro-nonterminal">$expr</span>;
 <a href=#463 id=463 data-nosnippet>463</a>                            <span class="kw">let _ </span>= (); <span class="comment">// confuse clippy.
@@ -489,7 +489,7 @@
 <a href=#489 id=489 data-nosnippet>489</a>/// - `From&lt;i32&gt; for Rint`
 <a href=#490 id=490 data-nosnippet>490</a>/// - `From&lt;Option&lt;i32&gt;&gt; for Rint`
 <a href=#491 id=491 data-nosnippet>491</a></span><span class="macro">macro_rules!</span> gen_from_primitive {
-<a href=#492 id=492 data-nosnippet>492</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">tt</span>, <span class="macro-nonterminal">$type_prim </span>: tt) =&gt; {
+<a href=#492 id=492 data-nosnippet>492</a>    (<span class="macro-nonterminal">$type </span>: tt, <span class="macro-nonterminal">$type_prim </span>: tt) =&gt; {
 <a href=#493 id=493 data-nosnippet>493</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#494 id=494 data-nosnippet>494</a>        //
 <a href=#495 id=495 data-nosnippet>495</a>        // impl From&lt;i32&gt; for Rint {
@@ -497,15 +497,15 @@
 <a href=#497 id=497 data-nosnippet>497</a>        //         Self(v)
 <a href=#498 id=498 data-nosnippet>498</a>        //     }
 <a href=#499 id=499 data-nosnippet>499</a>        // }
-<a href=#500 id=500 data-nosnippet>500</a>        </span><span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#501 id=501 data-nosnippet>501</a>            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
+<a href=#500 id=500 data-nosnippet>500</a>        </span><span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#501 id=501 data-nosnippet>501</a>            <span class="kw">fn </span>from(v: <span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
 <a href=#502 id=502 data-nosnippet>502</a>                <span class="self">Self</span>(v)
 <a href=#503 id=503 data-nosnippet>503</a>            }
 <a href=#504 id=504 data-nosnippet>504</a>        }
 <a href=#505 id=505 data-nosnippet>505</a>
 <a href=#506 id=506 data-nosnippet>506</a>        <span class="comment">// Same but for references
-<a href=#507 id=507 data-nosnippet>507</a>        </span><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#508 id=508 data-nosnippet>508</a>            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
+<a href=#507 id=507 data-nosnippet>507</a>        </span><span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#508 id=508 data-nosnippet>508</a>            <span class="kw">fn </span>from(v: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="self">Self </span>{
 <a href=#509 id=509 data-nosnippet>509</a>                <span class="self">Self</span>(<span class="kw-2">*</span>v)
 <a href=#510 id=510 data-nosnippet>510</a>            }
 <a href=#511 id=511 data-nosnippet>511</a>        }
@@ -521,23 +521,23 @@
 <a href=#521 id=521 data-nosnippet>521</a>        //         }
 <a href=#522 id=522 data-nosnippet>522</a>        //     }
 <a href=#523 id=523 data-nosnippet>523</a>        // }
-<a href=#524 id=524 data-nosnippet>524</a>        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#525 id=525 data-nosnippet>525</a>            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
+<a href=#524 id=524 data-nosnippet>524</a>        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#525 id=525 data-nosnippet>525</a>            <span class="kw">fn </span>from(v: <span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
 <a href=#526 id=526 data-nosnippet>526</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = v {
 <a href=#527 id=527 data-nosnippet>527</a>                    v.into()
 <a href=#528 id=528 data-nosnippet>528</a>                } <span class="kw">else </span>{
-<a href=#529 id=529 data-nosnippet>529</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#529 id=529 data-nosnippet>529</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#530 id=530 data-nosnippet>530</a>                }
 <a href=#531 id=531 data-nosnippet>531</a>            }
 <a href=#532 id=532 data-nosnippet>532</a>        }
 <a href=#533 id=533 data-nosnippet>533</a>
 <a href=#534 id=534 data-nosnippet>534</a>        <span class="comment">// Same but for references
-<a href=#535 id=535 data-nosnippet>535</a>        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#536 id=536 data-nosnippet>536</a>            <span class="kw">fn </span><span class="macro-nonterminal">from</span>(v: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
+<a href=#535 id=535 data-nosnippet>535</a>        </span><span class="kw">impl </span>From&lt;<span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#536 id=536 data-nosnippet>536</a>            <span class="kw">fn </span>from(v: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>&gt;) -&gt; <span class="self">Self </span>{
 <a href=#537 id=537 data-nosnippet>537</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = v {
 <a href=#538 id=538 data-nosnippet>538</a>                    v.into()
 <a href=#539 id=539 data-nosnippet>539</a>                } <span class="kw">else </span>{
-<a href=#540 id=540 data-nosnippet>540</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>()
+<a href=#540 id=540 data-nosnippet>540</a>                    <span class="macro-nonterminal">$type</span>::na()
 <a href=#541 id=541 data-nosnippet>541</a>                }
 <a href=#542 id=542 data-nosnippet>542</a>            }
 <a href=#543 id=543 data-nosnippet>543</a>        }
@@ -569,7 +569,7 @@
 <a href=#569 id=569 data-nosnippet>569</a>/// - `impl PartialEq&lt;i32&gt; for Rint`      // Includes doc test
 <a href=#570 id=570 data-nosnippet>570</a>/// - `impl Default for Rint`             // Includes doc test
 <a href=#571 id=571 data-nosnippet>571</a></span><span class="macro">macro_rules!</span> gen_trait_impl {
-<a href=#572 id=572 data-nosnippet>572</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$type_prim </span>: ty, <span class="macro-nonterminal">$na_check </span>: expr, <span class="macro-nonterminal">$na_val </span>: expr) =&gt; {
+<a href=#572 id=572 data-nosnippet>572</a>    (<span class="macro-nonterminal">$type </span>: ident, <span class="macro-nonterminal">$type_prim </span>: ty, <span class="macro-nonterminal">$na_check </span>: expr, <span class="macro-nonterminal">$na_val </span>: expr) =&gt; {
 <a href=#573 id=573 data-nosnippet>573</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#574 id=574 data-nosnippet>574</a>        //
 <a href=#575 id=575 data-nosnippet>575</a>        // impl Clone for Rint {
@@ -577,8 +577,8 @@
 <a href=#577 id=577 data-nosnippet>577</a>        //         Self(self.0)
 <a href=#578 id=578 data-nosnippet>578</a>        //     }
 <a href=#579 id=579 data-nosnippet>579</a>        // }
-<a href=#580 id=580 data-nosnippet>580</a>        </span><span class="kw">impl </span>Clone <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#581 id=581 data-nosnippet>581</a>            <span class="kw">fn </span><span class="macro-nonterminal">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+<a href=#580 id=580 data-nosnippet>580</a>        </span><span class="kw">impl </span>Clone <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#581 id=581 data-nosnippet>581</a>            <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
 <a href=#582 id=582 data-nosnippet>582</a>                <span class="kw-2">*</span><span class="self">self
 <a href=#583 id=583 data-nosnippet>583</a>            </span>}
 <a href=#584 id=584 data-nosnippet>584</a>        }
@@ -586,7 +586,7 @@
 <a href=#586 id=586 data-nosnippet>586</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#587 id=587 data-nosnippet>587</a>        //
 <a href=#588 id=588 data-nosnippet>588</a>        // impl Copy for Rint {}
-<a href=#589 id=589 data-nosnippet>589</a>        </span><span class="kw">impl </span>Copy <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{}
+<a href=#589 id=589 data-nosnippet>589</a>        </span><span class="kw">impl </span>Copy <span class="kw">for </span><span class="macro-nonterminal">$type </span>{}
 <a href=#590 id=590 data-nosnippet>590</a>
 <a href=#591 id=591 data-nosnippet>591</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#592 id=592 data-nosnippet>592</a>        //
@@ -601,20 +601,20 @@
 <a href=#601 id=601 data-nosnippet>601</a>        //     }
 <a href=#602 id=602 data-nosnippet>602</a>        // }
 <a href=#603 id=603 data-nosnippet>603</a>        </span><span class="macro">paste::paste!</span> {
-<a href=#604 id=604 data-nosnippet>604</a>            <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="string">"```"</span>]
+<a href=#604 id=604 data-nosnippet>604</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#605 id=605 data-nosnippet>605</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#606 id=606 data-nosnippet>606</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#607 id=607 data-nosnippet>607</a>            #[doc = <span class="string">"    assert!((&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na()).is_na());"</span>]
-<a href=#608 id=608 data-nosnippet>608</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#607 id=607 data-nosnippet>607</a>            #[doc = <span class="string">"    assert!((&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na()).is_na());"</span>]
+<a href=#608 id=608 data-nosnippet>608</a>            #[doc = <span class="string">"}"</span>]
 <a href=#609 id=609 data-nosnippet>609</a>            #[doc = <span class="string">"```"</span>]
-<a href=#610 id=610 data-nosnippet>610</a>            </span><span class="kw">impl </span>CanBeNA <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#610 id=610 data-nosnippet>610</a>            </span><span class="kw">impl </span>CanBeNA <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#611 id=611 data-nosnippet>611</a>                <span class="doccomment">/// Return true is the is a NA value.
-<a href=#612 id=612 data-nosnippet>612</a>                </span><span class="kw">fn </span><span class="macro-nonterminal">is_na</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+<a href=#612 id=612 data-nosnippet>612</a>                </span><span class="kw">fn </span>is_na(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 <a href=#613 id=613 data-nosnippet>613</a>                    <span class="macro-nonterminal">$na_check</span>(<span class="self">self</span>)
 <a href=#614 id=614 data-nosnippet>614</a>                }
 <a href=#615 id=615 data-nosnippet>615</a>                <span class="doccomment">/// Construct a NA.
 <a href=#616 id=616 data-nosnippet>616</a>                </span><span class="kw">fn </span>na() -&gt; <span class="self">Self </span>{
-<a href=#617 id=617 data-nosnippet>617</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span>(<span class="macro-nonterminal">$na_val</span>)
+<a href=#617 id=617 data-nosnippet>617</a>                    <span class="macro-nonterminal">$type</span>(<span class="macro-nonterminal">$na_val</span>)
 <a href=#618 id=618 data-nosnippet>618</a>                }
 <a href=#619 id=619 data-nosnippet>619</a>            }
 <a href=#620 id=620 data-nosnippet>620</a>        }
@@ -632,12 +632,12 @@
 <a href=#632 id=632 data-nosnippet>632</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#633 id=633 data-nosnippet>633</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#634 id=634 data-nosnippet>634</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#635 id=635 data-nosnippet>635</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default()));"</span>]
-<a href=#636 id=636 data-nosnippet>636</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert!(!&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na().eq(&amp;&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na()));"</span>]
-<a href=#637 id=637 data-nosnippet>637</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#635 id=635 data-nosnippet>635</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default()));"</span>]
+<a href=#636 id=636 data-nosnippet>636</a>            #[doc = <span class="string">"    assert!(!&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na().eq(&amp;&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na()));"</span>]
+<a href=#637 id=637 data-nosnippet>637</a>            #[doc = <span class="string">"}"</span>]
 <a href=#638 id=638 data-nosnippet>638</a>            #[doc = <span class="string">"```"</span>]
-<a href=#639 id=639 data-nosnippet>639</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#640 id=640 data-nosnippet>640</a>                <span class="kw">fn </span><span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">bool </span>{
+<a href=#639 id=639 data-nosnippet>639</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#640 id=640 data-nosnippet>640</a>                <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type</span>) -&gt; bool {
 <a href=#641 id=641 data-nosnippet>641</a>                    !(<span class="self">self</span>.is_na() || other.is_na()) &amp;&amp; <span class="self">self</span>.inner().eq(<span class="kw-2">&amp;</span>other.inner())
 <a href=#642 id=642 data-nosnippet>642</a>                }
 <a href=#643 id=643 data-nosnippet>643</a>            }
@@ -647,12 +647,12 @@
 <a href=#647 id=647 data-nosnippet>647</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#648 id=648 data-nosnippet>648</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#649 id=649 data-nosnippet>649</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#650 id=650 data-nosnippet>650</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default()));"</span>]
+<a href=#650 id=650 data-nosnippet>650</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default()));"</span>]
 <a href=#651 id=651 data-nosnippet>651</a>            #[doc = <span class="string">"}"</span>]
 <a href=#652 id=652 data-nosnippet>652</a>            #[doc = <span class="string">"```"</span>]
-<a href=#653 id=653 data-nosnippet>653</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#653 id=653 data-nosnippet>653</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#654 id=654 data-nosnippet>654</a>                <span class="doccomment">/// NA always fails.
-<a href=#655 id=655 data-nosnippet>655</a>                </span><span class="kw">fn </span><span class="macro-nonterminal">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; bool {
+<a href=#655 id=655 data-nosnippet>655</a>                </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; bool {
 <a href=#656 id=656 data-nosnippet>656</a>                    &lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt;::try_from(<span class="self">self</span>.clone()) == <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>other))
 <a href=#657 id=657 data-nosnippet>657</a>                }
 <a href=#658 id=658 data-nosnippet>658</a>            }
@@ -661,11 +661,11 @@
 <a href=#661 id=661 data-nosnippet>661</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#662 id=662 data-nosnippet>662</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#663 id=663 data-nosnippet>663</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#664 id=664 data-nosnippet>664</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default()));"</span>]
-<a href=#665 id=665 data-nosnippet>665</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#664 id=664 data-nosnippet>664</a>            #[doc = <span class="string">"    assert!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default().eq(&amp;&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default()));"</span>]
+<a href=#665 id=665 data-nosnippet>665</a>            #[doc = <span class="string">"}"</span>]
 <a href=#666 id=666 data-nosnippet>666</a>            #[doc = <span class="string">"```"</span>]
-<a href=#667 id=667 data-nosnippet>667</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
-<a href=#668 id=668 data-nosnippet>668</a>                <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="macro-nonterminal">bool </span>{
+<a href=#667 id=667 data-nosnippet>667</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
+<a href=#668 id=668 data-nosnippet>668</a>                <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type</span>) -&gt; bool {
 <a href=#669 id=669 data-nosnippet>669</a>                    &lt;<span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">$type_prim</span>&gt;&gt;::try_from(<span class="kw-2">*</span>other) == <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="self">self</span>))
 <a href=#670 id=670 data-nosnippet>670</a>                }
 <a href=#671 id=671 data-nosnippet>671</a>            }
@@ -683,12 +683,12 @@
 <a href=#683 id=683 data-nosnippet>683</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#684 id=684 data-nosnippet>684</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#685 id=685 data-nosnippet>685</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#686 id=686 data-nosnippet>686</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), &lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default());"</span>]
+<a href=#686 id=686 data-nosnippet>686</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), &lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default());"</span>]
 <a href=#687 id=687 data-nosnippet>687</a>            #[doc = <span class="string">"}"</span>]
 <a href=#688 id=688 data-nosnippet>688</a>            #[doc = <span class="string">"```"</span>]
-<a href=#689 id=689 data-nosnippet>689</a>            </span><span class="kw">impl </span>std::default::Default <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#690 id=690 data-nosnippet>690</a>                <span class="kw">fn </span><span class="macro-nonterminal">default</span>() -&gt; <span class="self">Self </span>{
-<a href=#691 id=691 data-nosnippet>691</a>                    <span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::from</span>(&lt;<span class="macro-nonterminal">$type_prim</span>&gt;::default())
+<a href=#689 id=689 data-nosnippet>689</a>            </span><span class="kw">impl </span>std::default::Default <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#690 id=690 data-nosnippet>690</a>                <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+<a href=#691 id=691 data-nosnippet>691</a>                    <span class="macro-nonterminal">$type</span>::from(&lt;<span class="macro-nonterminal">$type_prim</span>&gt;::default())
 <a href=#692 id=692 data-nosnippet>692</a>                }
 <a href=#693 id=693 data-nosnippet>693</a>            }
 <a href=#694 id=694 data-nosnippet>694</a>        }
@@ -696,23 +696,23 @@
 <a href=#696 id=696 data-nosnippet>696</a>}
 <a href=#697 id=697 data-nosnippet>697</a>
 <a href=#698 id=698 data-nosnippet>698</a><span class="macro">macro_rules!</span> gen_partial_ord {
-<a href=#699 id=699 data-nosnippet>699</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$type_prim </span>: ty) =&gt; {
+<a href=#699 id=699 data-nosnippet>699</a>    (<span class="macro-nonterminal">$type </span>: ident, <span class="macro-nonterminal">$type_prim </span>: ty) =&gt; {
 <a href=#700 id=700 data-nosnippet>700</a>        <span class="macro">paste::paste!</span> {
 <a href=#701 id=701 data-nosnippet>701</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#702 id=702 data-nosnippet>702</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#703 id=703 data-nosnippet>703</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#704 id=704 data-nosnippet>704</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#705 id=705 data-nosnippet>705</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#706 id=706 data-nosnippet>706</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#707 id=707 data-nosnippet>707</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#708 id=708 data-nosnippet>708</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#709 id=709 data-nosnippet>709</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#710 id=710 data-nosnippet>710</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#711 id=711 data-nosnippet>711</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#712 id=712 data-nosnippet>712</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#704 id=704 data-nosnippet>704</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#705 id=705 data-nosnippet>705</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#706 id=706 data-nosnippet>706</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#707 id=707 data-nosnippet>707</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#708 id=708 data-nosnippet>708</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#709 id=709 data-nosnippet>709</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#710 id=710 data-nosnippet>710</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#711 id=711 data-nosnippet>711</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#712 id=712 data-nosnippet>712</a>            #[doc = <span class="string">"}"</span>]
 <a href=#713 id=713 data-nosnippet>713</a>            #[doc = <span class="string">"```"</span>]
-<a href=#714 id=714 data-nosnippet>714</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#715 id=715 data-nosnippet>715</a>                <span class="kw">fn </span><span class="macro-nonterminal">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">std::cmp::Ordering</span>&gt; {
+<a href=#714 id=714 data-nosnippet>714</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#715 id=715 data-nosnippet>715</a>                <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type</span>) -&gt; <span class="prelude-ty">Option</span>&lt;std::cmp::Ordering&gt; {
 <a href=#716 id=716 data-nosnippet>716</a>                    <span class="kw">if </span><span class="self">self</span>.is_na() || other.is_na() {
 <a href=#717 id=717 data-nosnippet>717</a>                        <span class="prelude-val">None
 <a href=#718 id=718 data-nosnippet>718</a>                    </span>} <span class="kw">else </span>{
@@ -726,19 +726,19 @@
 <a href=#726 id=726 data-nosnippet>726</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#727 id=727 data-nosnippet>727</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#728 id=728 data-nosnippet>728</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#729 id=729 data-nosnippet>729</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#730 id=730 data-nosnippet>730</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#731 id=731 data-nosnippet>731</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#732 id=732 data-nosnippet>732</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::na(), false);"</span>]
-<a href=#733 id=733 data-nosnippet>733</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#734 id=734 data-nosnippet>734</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#735 id=735 data-nosnippet>735</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#736 id=736 data-nosnippet>736</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#737 id=737 data-nosnippet>737</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#729 id=729 data-nosnippet>729</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#730 id=730 data-nosnippet>730</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#731 id=731 data-nosnippet>731</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#732 id=732 data-nosnippet>732</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::na(), false);"</span>]
+<a href=#733 id=733 data-nosnippet>733</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#734 id=734 data-nosnippet>734</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#735 id=735 data-nosnippet>735</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#736 id=736 data-nosnippet>736</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type_prim </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#737 id=737 data-nosnippet>737</a>            #[doc = <span class="string">"}"</span>]
 <a href=#738 id=738 data-nosnippet>738</a>            #[doc = <span class="string">"```"</span>]
-<a href=#739 id=739 data-nosnippet>739</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#740 id=740 data-nosnippet>740</a>                <span class="kw">fn </span><span class="macro-nonterminal">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="prelude-ty">Option</span>&lt;std::cmp::Ordering&gt; {
-<a href=#741 id=741 data-nosnippet>741</a>                    <span class="kw">let </span>other: <span class="macro-nonterminal">$</span><span class="kw">type </span>= (<span class="kw-2">*</span><span class="macro-nonterminal">other</span>).try_into().unwrap_or(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>());
+<a href=#739 id=739 data-nosnippet>739</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$type_prim</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
+<a href=#740 id=740 data-nosnippet>740</a>                <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type_prim</span>) -&gt; <span class="prelude-ty">Option</span>&lt;std::cmp::Ordering&gt; {
+<a href=#741 id=741 data-nosnippet>741</a>                    <span class="kw">let </span>other: <span class="macro-nonterminal">$type </span>= (<span class="kw-2">*</span>other).try_into().unwrap_or(<span class="macro-nonterminal">$type</span>::na());
 <a href=#742 id=742 data-nosnippet>742</a>                    <span class="self">self</span>.partial_cmp(<span class="kw-2">&amp;</span>other)
 <a href=#743 id=743 data-nosnippet>743</a>                }
 <a href=#744 id=744 data-nosnippet>744</a>            }
@@ -748,15 +748,15 @@
 <a href=#748 id=748 data-nosnippet>748</a>            <span class="attr">#[doc = <span class="string">"```"</span>]
 <a href=#749 id=749 data-nosnippet>749</a>            #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#750 id=750 data-nosnippet>750</a>            #[doc = <span class="string">"test! {"</span>]
-<a href=#751 id=751 data-nosnippet>751</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#752 id=752 data-nosnippet>752</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#753 id=753 data-nosnippet>753</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), false);"</span>]
-<a href=#754 id=754 data-nosnippet>754</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default(), true);"</span>]
-<a href=#755 id=755 data-nosnippet>755</a>            #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#751 id=751 data-nosnippet>751</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#752 id=752 data-nosnippet>752</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &lt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#753 id=753 data-nosnippet>753</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;  &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), false);"</span>]
+<a href=#754 id=754 data-nosnippet>754</a>            #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default() &gt;= &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default(), true);"</span>]
+<a href=#755 id=755 data-nosnippet>755</a>            #[doc = <span class="string">"}"</span>]
 <a href=#756 id=756 data-nosnippet>756</a>            #[doc = <span class="string">"```"</span>]
-<a href=#757 id=757 data-nosnippet>757</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
-<a href=#758 id=758 data-nosnippet>758</a>                <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="kw">type</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="macro-nonterminal">std::cmp::Ordering</span>&gt; {
-<a href=#759 id=759 data-nosnippet>759</a>                    <span class="kw">let </span>slf: <span class="macro-nonterminal">$</span><span class="kw">type </span>= (<span class="kw-2">*</span><span class="macro-nonterminal">self</span>).try_into().unwrap_or(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::na</span>());
+<a href=#757 id=757 data-nosnippet>757</a>            </span><span class="kw">impl </span>std::cmp::PartialOrd&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type_prim </span>{
+<a href=#758 id=758 data-nosnippet>758</a>                <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type</span>) -&gt; <span class="prelude-ty">Option</span>&lt;std::cmp::Ordering&gt; {
+<a href=#759 id=759 data-nosnippet>759</a>                    <span class="kw">let </span>slf: <span class="macro-nonterminal">$type </span>= (<span class="kw-2">*</span><span class="self">self</span>).try_into().unwrap_or(<span class="macro-nonterminal">$type</span>::na());
 <a href=#760 id=760 data-nosnippet>760</a>                    slf.partial_cmp(other)
 <a href=#761 id=761 data-nosnippet>761</a>                }
 <a href=#762 id=762 data-nosnippet>762</a>            }
@@ -776,7 +776,7 @@
 <a href=#776 id=776 data-nosnippet>776</a>/// gen_sum_iter!(Rint);
 <a href=#777 id=777 data-nosnippet>777</a>/// ```
 <a href=#778 id=778 data-nosnippet>778</a></span><span class="macro">macro_rules!</span> gen_sum_iter {
-<a href=#779 id=779 data-nosnippet>779</a>    (<span class="macro-nonterminal">$</span><span class="kw">type </span>: <span class="macro-nonterminal">ty</span>) =&gt; {
+<a href=#779 id=779 data-nosnippet>779</a>    (<span class="macro-nonterminal">$type </span>: ty) =&gt; {
 <a href=#780 id=780 data-nosnippet>780</a>        <span class="comment">// The 'example usage' expands to...
 <a href=#781 id=781 data-nosnippet>781</a>        //
 <a href=#782 id=782 data-nosnippet>782</a>        // impl std::iter::Sum for $type {
@@ -785,19 +785,19 @@
 <a href=#785 id=785 data-nosnippet>785</a>        //         iter.fold(Rint::default(), |a, b| a + b)
 <a href=#786 id=786 data-nosnippet>786</a>        //     }
 <a href=#787 id=787 data-nosnippet>787</a>        // }
-<a href=#788 id=788 data-nosnippet>788</a>        </span><span class="kw">impl </span>std::iter::Sum <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#788 id=788 data-nosnippet>788</a>        </span><span class="kw">impl </span>std::iter::Sum <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#789 id=789 data-nosnippet>789</a>            <span class="macro">paste::paste!</span> {
-<a href=#790 id=790 data-nosnippet>790</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="string">"Yields NA on overflow if NAs present."</span>]
+<a href=#790 id=790 data-nosnippet>790</a>                <span class="attr">#[doc = <span class="string">"Yields NA on overflow if NAs present."</span>]
 <a href=#791 id=791 data-nosnippet>791</a>                #[doc = <span class="string">"```"</span>]
 <a href=#792 id=792 data-nosnippet>792</a>                #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#793 id=793 data-nosnippet>793</a>                #[doc = <span class="string">"use std::iter::Sum;"</span>]
 <a href=#794 id=794 data-nosnippet>794</a>                #[doc = <span class="string">"test! {"</span>]
-<a href=#795 id=795 data-nosnippet>795</a>                #[doc = <span class="string">"    let x = (0..100).map(|x| " </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"::default());"</span>]
-<a href=#796 id=796 data-nosnippet>796</a>                #[<span class="macro-nonterminal">doc </span>= <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">" as Sum&gt;::sum(x), &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default());"</span>]
-<a href=#797 id=797 data-nosnippet>797</a>                #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#795 id=795 data-nosnippet>795</a>                #[doc = <span class="string">"    let x = (0..100).map(|x| " </span><span class="macro-nonterminal">$type </span><span class="string">"::default());"</span>]
+<a href=#796 id=796 data-nosnippet>796</a>                #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">" as Sum&gt;::sum(x), &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default());"</span>]
+<a href=#797 id=797 data-nosnippet>797</a>                #[doc = <span class="string">"}"</span>]
 <a href=#798 id=798 data-nosnippet>798</a>                #[doc = <span class="string">"```"</span>]
-<a href=#799 id=799 data-nosnippet>799</a>                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;&gt;(<span class="macro-nonterminal">iter</span>: I) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#800 id=800 data-nosnippet>800</a>                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::default</span>(), |a, b| a + b)
+<a href=#799 id=799 data-nosnippet>799</a>                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="macro-nonterminal">$type</span>&gt;&gt;(iter: I) -&gt; <span class="macro-nonterminal">$type </span>{
+<a href=#800 id=800 data-nosnippet>800</a>                    iter.fold(<span class="macro-nonterminal">$type</span>::default(), |a, b| a + b)
 <a href=#801 id=801 data-nosnippet>801</a>                }
 <a href=#802 id=802 data-nosnippet>802</a>            }
 <a href=#803 id=803 data-nosnippet>803</a>        }
@@ -810,20 +810,20 @@
 <a href=#810 id=810 data-nosnippet>810</a>        //         iter.fold(Rint::default(), |a, b| a + b)
 <a href=#811 id=811 data-nosnippet>811</a>        //     }
 <a href=#812 id=812 data-nosnippet>812</a>        // }
-<a href=#813 id=813 data-nosnippet>813</a>        </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::iter::Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$</span><span class="kw">type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type </span>{
+<a href=#813 id=813 data-nosnippet>813</a>        </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::iter::Sum&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#814 id=814 data-nosnippet>814</a>            <span class="macro">paste::paste!</span> {
-<a href=#815 id=815 data-nosnippet>815</a>                <span class="attr">#[<span class="macro-nonterminal">doc </span>= <span class="string">"Yields NA on overflow if NAs present."</span>]
+<a href=#815 id=815 data-nosnippet>815</a>                <span class="attr">#[doc = <span class="string">"Yields NA on overflow if NAs present."</span>]
 <a href=#816 id=816 data-nosnippet>816</a>                #[doc = <span class="string">"```"</span>]
 <a href=#817 id=817 data-nosnippet>817</a>                #[doc = <span class="string">"use extendr_api::prelude::*;"</span>]
 <a href=#818 id=818 data-nosnippet>818</a>                #[doc = <span class="string">"use std::iter::Sum;"</span>]
 <a href=#819 id=819 data-nosnippet>819</a>                #[doc = <span class="string">"test! {"</span>]
-<a href=#820 id=820 data-nosnippet>820</a>                #[doc = <span class="string">"    let z =" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"::default();"</span>]
-<a href=#821 id=821 data-nosnippet>821</a>                #[<span class="macro-nonterminal">doc </span>= <span class="string">"    let x = (0..100).map(|_| &amp;z);"</span>]
-<a href=#822 id=822 data-nosnippet>822</a>                #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">" as Sum&lt;&amp; " </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;&gt;::sum(x), &lt;" </span><span class="macro-nonterminal">$</span><span class="kw">type </span><span class="string">"&gt;::default());"</span>]
-<a href=#823 id=823 data-nosnippet>823</a>                #[<span class="macro-nonterminal">doc </span>= <span class="string">"}"</span>]
+<a href=#820 id=820 data-nosnippet>820</a>                #[doc = <span class="string">"    let z =" </span><span class="macro-nonterminal">$type </span><span class="string">"::default();"</span>]
+<a href=#821 id=821 data-nosnippet>821</a>                #[doc = <span class="string">"    let x = (0..100).map(|_| &amp;z);"</span>]
+<a href=#822 id=822 data-nosnippet>822</a>                #[doc = <span class="string">"    assert_eq!(&lt;" </span><span class="macro-nonterminal">$type </span><span class="string">" as Sum&lt;&amp; " </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;&gt;::sum(x), &lt;" </span><span class="macro-nonterminal">$type </span><span class="string">"&gt;::default());"</span>]
+<a href=#823 id=823 data-nosnippet>823</a>                #[doc = <span class="string">"}"</span>]
 <a href=#824 id=824 data-nosnippet>824</a>                #[doc = <span class="string">"```"</span>]
-<a href=#825 id=825 data-nosnippet>825</a>                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;&gt;(<span class="macro-nonterminal">iter</span>: I) -&gt; <span class="macro-nonterminal">$</span><span class="kw">type </span>{
-<a href=#826 id=826 data-nosnippet>826</a>                    <span class="macro-nonterminal">iter</span>.fold(<span class="macro-nonterminal">$</span><span class="kw">type</span><span class="macro-nonterminal">::default</span>(), |a, b| a + <span class="kw-2">*</span>b)
+<a href=#825 id=825 data-nosnippet>825</a>                </span><span class="kw">fn </span>sum&lt;I: Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$type</span>&gt;&gt;(iter: I) -&gt; <span class="macro-nonterminal">$type </span>{
+<a href=#826 id=826 data-nosnippet>826</a>                    iter.fold(<span class="macro-nonterminal">$type</span>::default(), |a, b| a + <span class="kw-2">*</span>b)
 <a href=#827 id=827 data-nosnippet>827</a>                }
 <a href=#828 id=828 data-nosnippet>828</a>            }
 <a href=#829 id=829 data-nosnippet>829</a>        }

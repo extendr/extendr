@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["THREAD_HAS_LOCK"],"fn":["catch_r_error","single_threaded","throw_r_error"],"static":["R_API_LOCK","R_ERROR_BUF"]};
+window.SIDEBAR_ITEMS = {"constant":["THREAD_HAS_LOCK"],"fn":["catch_r_error","register_extendr_panic_hook","single_threaded","throw_r_error"],"static":["R_API_LOCK","R_ERROR_BUF"]};

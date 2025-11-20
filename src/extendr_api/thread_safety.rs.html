@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/thread_safety.rs`."><title>thread_safety.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (f15a7f385 2025-11-04)" data-channel="nightly" data-search-js="search-5c29b3b5.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/</div>thread_safety.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/thread_safety.rs`."><title>thread_safety.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (07bdbaedc 2025-11-19)" data-channel="nightly" data-search-js="search-680b2199.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/</div>thread_safety.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Provide limited protection for multithreaded access to the R API.
 <a href=#2 id=2 data-nosnippet>2</a></span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>extendr_ffi::{
 <a href=#4 id=4 data-nosnippet>4</a>    R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_error, Rf_protect, Rf_unprotect,
@@ -27,7 +27,7 @@
 <a href=#27 id=27 data-nosnippet>27</a>    <span class="kw">let </span>has_lock = THREAD_HAS_LOCK.with(|x| x.get());
 <a href=#28 id=28 data-nosnippet>28</a>
 <a href=#29 id=29 data-nosnippet>29</a>    <span class="comment">// acquire R-API lock
-<a href=#30 id=30 data-nosnippet>30</a>    </span><span class="kw">let </span>_guard = <span class="macro">if !</span>has_lock {
+<a href=#30 id=30 data-nosnippet>30</a>    </span><span class="kw">let </span>_guard = <span class="kw">if </span>!has_lock {
 <a href=#31 id=31 data-nosnippet>31</a>        <span class="prelude-val">Some</span>(R_API_LOCK.lock().unwrap())
 <a href=#32 id=32 data-nosnippet>32</a>    } <span class="kw">else </span>{
 <a href=#33 id=33 data-nosnippet>33</a>        <span class="prelude-val">None
@@ -118,4 +118,30 @@
 <a href=#118 id=118 data-nosnippet>118</a>        res
 <a href=#119 id=119 data-nosnippet>119</a>    })
 <a href=#120 id=120 data-nosnippet>120</a>}
+<a href=#121 id=121 data-nosnippet>121</a>
+<a href=#122 id=122 data-nosnippet>122</a><span class="doccomment">/// This function registers a configurable print panic hook, for use in extendr-based R-packages.
+<a href=#123 id=123 data-nosnippet>123</a>/// If the environment variable `EXTENDR_BACKTRACE` is set to either `true` or `1`,
+<a href=#124 id=124 data-nosnippet>124</a>/// then it displays the entire Rust panic traceback (default hook), otherwise it omits the panic backtrace.
+<a href=#125 id=125 data-nosnippet>125</a></span><span class="attr">#[no_mangle]
+<a href=#126 id=126 data-nosnippet>126</a></span><span class="kw">pub extern </span><span class="string">"C" </span><span class="kw">fn </span>register_extendr_panic_hook() {
+<a href=#127 id=127 data-nosnippet>127</a>    <span class="kw">static </span>RUN_ONCE: std::sync::Once = std::sync::Once::new();
+<a href=#128 id=128 data-nosnippet>128</a>    RUN_ONCE.call_once_force(|x| {
+<a href=#129 id=129 data-nosnippet>129</a>        <span class="comment">// just ignore repeated calls to this function
+<a href=#130 id=130 data-nosnippet>130</a>        </span><span class="kw">if </span>x.is_poisoned() {
+<a href=#131 id=131 data-nosnippet>131</a>            <span class="macro">println!</span>(<span class="string">"warning: extendr panic hook info registration was done more than once"</span>);
+<a href=#132 id=132 data-nosnippet>132</a>            <span class="kw">return</span>;
+<a href=#133 id=133 data-nosnippet>133</a>        }
+<a href=#134 id=134 data-nosnippet>134</a>        <span class="kw">let </span>default_hook = std::panic::take_hook();
+<a href=#135 id=135 data-nosnippet>135</a>        std::panic::set_hook(Box::new(<span class="kw">move </span>|x| {
+<a href=#136 id=136 data-nosnippet>136</a>            <span class="kw">let </span>show_traceback = std::env::var(<span class="string">"EXTENDR_BACKTRACE"</span>)
+<a href=#137 id=137 data-nosnippet>137</a>                .map(|v| v.eq_ignore_ascii_case(<span class="string">"true"</span>) || v == <span class="string">"1"</span>)
+<a href=#138 id=138 data-nosnippet>138</a>                .unwrap_or(<span class="bool-val">false</span>);
+<a href=#139 id=139 data-nosnippet>139</a>            <span class="kw">if </span>show_traceback {
+<a href=#140 id=140 data-nosnippet>140</a>                default_hook(x)
+<a href=#141 id=141 data-nosnippet>141</a>            } <span class="kw">else </span>{
+<a href=#142 id=142 data-nosnippet>142</a>                <span class="kw">return</span>;
+<a href=#143 id=143 data-nosnippet>143</a>            }
+<a href=#144 id=144 data-nosnippet>144</a>        }));
+<a href=#145 id=145 data-nosnippet>145</a>    });
+<a href=#146 id=146 data-nosnippet>146</a>}
 </code></pre></div></section></main></body></html>
