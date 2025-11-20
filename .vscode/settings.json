@@ -7,4 +7,10 @@
         "xtask/Cargo.toml",
         "tests/extendrtests/src/rust/Cargo.toml"
     ],
+    // enable to debug proc-macros
+    // "rust-analyzer.cargo.extraEnv": {
+    //     "RUSTUP_TOOLCHAIN": "nightly",
+    //     "RUSTFLAGS": "-Zmacro-backtrace",
+    //     "RUSTUP_AUTO_INSTALL": "1"
+    // },
 }
