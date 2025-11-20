@@ -38,10 +38,6 @@ impl From<()> for Robj {
 
 /// Convert a [`Result`] to an [`Robj`].
 ///
-/// By default, shows the Display method from the Error.
-/// If the environment variable `EXTENDR_BACKTRACE` is set to either `true` or `1`,
-/// then it displays the entire Rust panic traceback.
-///
 /// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
@@ -73,21 +69,7 @@ where
     E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
-        // if the envvar EXTENDR_BACKTRACE is set to true or 1
-        // then we panic and show the full thing
-        let show_traceback = std::env::var("EXTENDR_BACKTRACE")
-            .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
-            .unwrap_or(false);
-
-        if show_traceback {
-            res.unwrap().into()
-        } else {
-            // otherwise, we use throw_r_error here
-            match res {
-                Ok(val) => val.into(),
-                Err(err) => crate::throw_r_error(err.to_string()),
-            }
-        }
+        res.unwrap().into()
     }
 }
 
