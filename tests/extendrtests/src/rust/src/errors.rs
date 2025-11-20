@@ -48,6 +48,11 @@ fn error_long_message() -> Result<()> {
     ))
 }
 
+#[extendr]
+fn error_on_panic() {
+    panic!("this does circumvents the hook mechanism");
+}
+
 extendr_module! {
     mod errors;
     fn error_simple;
@@ -56,4 +61,5 @@ extendr_module! {
     fn error_division;
     fn error_chain;
     fn error_long_message;
+    fn error_on_panic;
 }

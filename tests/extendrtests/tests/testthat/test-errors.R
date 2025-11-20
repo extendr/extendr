@@ -193,3 +193,22 @@ test_that("Error handling does not leak memory", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 })
+
+test_that("Error handling on panic", {
+  # Save original EXTENDR_BACKTRACE value
+  orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
+
+  # Test with default (no backtrace)
+  Sys.unsetenv("EXTENDR_BACKTRACE")
+
+  expect_error(
+    error_on_panic()
+  )
+  
+  # Restore original value
+  if (is.na(orig_val)) {
+    Sys.unsetenv("EXTENDR_BACKTRACE")
+  } else {
+    Sys.setenv(EXTENDR_BACKTRACE = orig_val)
+  }
+})

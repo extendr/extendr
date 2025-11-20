@@ -108,6 +108,8 @@ error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
 
 error_long_message <- function() invisible(.Call(wrap__error_long_message))
 
+error_on_panic <- function() invisible(.Call(wrap__error_on_panic))
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
