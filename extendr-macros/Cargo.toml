@@ -12,13 +12,13 @@ license.workspace = true
 proc-macro = true
 
 [dependencies]
-proc-macro2 = { version = "1.0" }
-lazy_static = "1.5"
-quote = "1.0"
-syn = { version = "=2.0.106", features = ["extra-traits", "full"] }
+proc-macro2 = { version = "1.0.103" }
+lazy_static = "1.5.0"
+quote = "1.0.42"
+syn = { version = "2.0.109", features = ["extra-traits", "full"] }
 
 [dev-dependencies]
 extendr-api = { path = "../extendr-api" }
 extendr-engine = { path = "../extendr-engine" }
 extendr-ffi = { workspace = true }
-trybuild = "1.0"
+trybuild = "1.0.113"

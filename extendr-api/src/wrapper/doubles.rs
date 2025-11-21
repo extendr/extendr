@@ -116,6 +116,26 @@ mod tests {
     use crate as extendr_api;
 
     #[test]
+    fn new() {
+        test! {
+            let vec = Doubles::new(10);
+            assert_eq!(vec.is_number(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Doubles::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rfloat::na()).collect::<Doubles>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
     fn test_vec_f64_doubles_conversion() {
         test! {
             let test_vec = vec![0., 1., std::f64::consts::PI, -1.];

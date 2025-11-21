@@ -93,6 +93,20 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
+error_simple <- function() invisible(.Call(wrap__error_simple))
+
+error_parse_int <- function(s) invisible(.Call(wrap__error_parse_int, s))
+
+error_success <- function() invisible(.Call(wrap__error_success))
+
+error_division <- function(numerator, denominator) invisible(.Call(wrap__error_division, numerator, denominator))
+
+error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
+
+error_long_message <- function() invisible(.Call(wrap__error_long_message))
+
+error_on_panic <- function() invisible(.Call(wrap__error_on_panic))
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
@@ -223,6 +237,20 @@ matrix_5d_return <- function(x) .Call(wrap__matrix_5d_return, x)
 to_unique_rstr <- function(r_char_vec) .Call(wrap__to_unique_rstr, r_char_vec)
 
 to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
+
+custom_error_return <- function() .Call(wrap__custom_error_return)
+
+custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
+
+take_and_return_B <- function(b) .Call(wrap__take_and_return_B, b)
+
+must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
+
+must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
+
+must_see_drop_msg_r_error_heap <- function() invisible(.Call(wrap__must_see_drop_msg_r_error_heap))
+
+must_see_drop_msg_panic_heap <- function() invisible(.Call(wrap__must_see_drop_msg_panic_heap))
 
 #' Class for testing (exported)
 #' @examples

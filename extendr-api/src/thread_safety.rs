@@ -46,24 +46,6 @@ where
     result
 }
 
-/// This function is used by the wrapper logic to catch
-/// panics on return.
-///
-#[doc(hidden)]
-pub fn handle_panic<F, R>(err_str: &str, f: F) -> R
-where
-    F: FnOnce() -> R,
-    F: std::panic::UnwindSafe,
-{
-    match std::panic::catch_unwind(f) {
-        Ok(res) => res,
-        Err(_) => {
-            let err_str = CString::new(err_str).unwrap();
-            unsafe { Rf_error(err_str.as_ptr()) }
-        }
-    }
-}
-
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
@@ -135,4 +117,30 @@ where
         Rf_unprotect(1);
         res
     })
+}
+
+/// This function registers a configurable print panic hook, for use in extendr-based R-packages.
+/// If the environment variable `EXTENDR_BACKTRACE` is set to either `true` or `1`,
+/// then it displays the entire Rust panic traceback (default hook), otherwise it omits the panic backtrace.
+#[no_mangle]
+pub extern "C" fn register_extendr_panic_hook() {
+    static RUN_ONCE: std::sync::Once = std::sync::Once::new();
+    RUN_ONCE.call_once_force(|x| {
+        // just ignore repeated calls to this function
+        if x.is_poisoned() {
+            println!("warning: extendr panic hook info registration was done more than once");
+            return;
+        }
+        let default_hook = std::panic::take_hook();
+        std::panic::set_hook(Box::new(move |x| {
+            let show_traceback = std::env::var("EXTENDR_BACKTRACE")
+                .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
+                .unwrap_or(false);
+            if show_traceback {
+                default_hook(x)
+            } else {
+                return;
+            }
+        }));
+    });
 }
