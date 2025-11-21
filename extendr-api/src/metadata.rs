@@ -196,8 +196,8 @@ fn write_function_wrapper(
         Some(true) => true,
         Some(false) => false,
         None => {
-            // previous logic that guarantees invisible for () and Result types
-            func.return_type == "()" || func.return_type == "Result"
+            // previous logic that guarantees invisible for null return
+            func.return_type == "()"
         }
     };
 
@@ -267,7 +267,7 @@ fn write_method_wrapper(
     let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
-        None => func.return_type == "()" || func.return_type == "Result",
+        None => func.return_type == "()",
     };
 
     if should_be_invisible {
