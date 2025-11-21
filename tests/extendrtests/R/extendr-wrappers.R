@@ -155,8 +155,8 @@ leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 #' Calculate Euclidean distance matrix
-#' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
-#' @param a : Matrix of real values or `NULL`
+#' Test case adopted from <https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5>
+#' @param a Matrix of real values or `NULL`
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
