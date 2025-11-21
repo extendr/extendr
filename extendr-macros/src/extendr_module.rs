@@ -1,7 +1,13 @@
+use crate::utils::type_name;
 use crate::wrappers;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
+use syn::{
+    parse::{Parse, ParseStream},
+    parse_macro_input,
+    punctuated::Punctuated,
+    Ident, Token, Type,
+};
 
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
@@ -11,7 +17,6 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         implnames,
         usenames,
     } = module;
-    let modname = modname.expect("cannot include unnamed modules");
     let modname_string = modname.to_string();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
 
@@ -30,7 +35,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, id));
     let implmetanames = implnames
         .iter()
-        .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, wrappers::type_name(id)));
+        .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, type_name(id)));
     let usemetanames = usenames
         .iter()
         .map(|id| format_ident!("get_{}_metadata", id))
@@ -56,6 +61,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 doc: "Metadata access function.",
                 rust_name: #module_metadata_name_string,
                 mod_name: #module_metadata_name_string,
+                c_name: stringify!(#wrap_module_metadata_name),
                 r_name: #module_metadata_name_string,
                 args: Vec::new(),
                 return_type: "Metadata",
@@ -73,6 +79,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 doc: "Wrapper generator.",
                 rust_name: #make_module_wrappers_name_string,
                 mod_name: #make_module_wrappers_name_string,
+                c_name: stringify!(#wrap_make_module_wrappers),
                 r_name: #make_module_wrappers_name_string,
                 args,
                 return_type: "String",
@@ -130,44 +137,71 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 
 #[derive(Debug)]
 struct Module {
-    modname: Option<Ident>,
+    modname: Ident,
     fnnames: Vec<Ident>,
     implnames: Vec<Type>,
     usenames: Vec<Ident>,
 }
 
-// Custom parser for the module.
-impl syn::parse::Parse for Module {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        use syn::spanned::Spanned;
-        let mut res = Self {
-            modname: None,
-            fnnames: Vec::new(),
-            implnames: Vec::new(),
-            usenames: Vec::new(),
-        };
-        while !input.is_empty() {
-            if let Ok(kmod) = input.parse::<Token![mod]>() {
-                let name: Ident = input.parse()?;
-                if res.modname.is_some() {
-                    return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
-                }
-                res.modname = Some(name);
-            } else if input.parse::<Token![fn]>().is_ok() {
-                res.fnnames.push(input.parse()?);
-            } else if input.parse::<Token![impl]>().is_ok() {
-                res.implnames.push(input.parse()?);
-            } else if input.parse::<Token![use]>().is_ok() {
-                res.usenames.push(input.parse()?);
-            } else {
-                return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
-            }
+#[derive(Debug)]
+enum ModuleItem {
+    Mod(Ident),
+    Fn(Ident),
+    Impl(Type),
+    Use(Ident),
+}
 
-            input.parse::<Token![;]>()?;
+// Custom parser for the module.
+impl Parse for Module {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let items: Punctuated<ModuleItem, Token![;]> = Punctuated::parse_terminated(input)?;
+
+        let mut modname: Option<Ident> = None;
+        let mut fnnames = Vec::new();
+        let mut implnames = Vec::new();
+        let mut usenames = Vec::new();
+
+        for item in items {
+            match item {
+                ModuleItem::Mod(name) => {
+                    if modname.replace(name).is_some() {
+                        return Err(syn::Error::new(input.span(), "only one mod allowed"));
+                    }
+                }
+                ModuleItem::Fn(name) => fnnames.push(name),
+                ModuleItem::Impl(ty) => implnames.push(ty),
+                ModuleItem::Use(name) => usenames.push(name),
+            }
         }
-        if res.modname.is_none() {
-            return Err(syn::Error::new(input.span(), "expected one 'mod name'"));
+
+        let modname =
+            modname.ok_or_else(|| syn::Error::new(input.span(), "expected one 'mod name'"))?;
+
+        Ok(Self {
+            modname,
+            fnnames,
+            implnames,
+            usenames,
+        })
+    }
+}
+
+impl Parse for ModuleItem {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        if input.peek(Token![mod]) {
+            input.parse::<Token![mod]>()?;
+            Ok(Self::Mod(input.parse()?))
+        } else if input.peek(Token![fn]) {
+            input.parse::<Token![fn]>()?;
+            Ok(Self::Fn(input.parse()?))
+        } else if input.peek(Token![impl]) {
+            input.parse::<Token![impl]>()?;
+            Ok(Self::Impl(input.parse()?))
+        } else if input.peek(Token![use]) {
+            input.parse::<Token![use]>()?;
+            Ok(Self::Use(input.parse()?))
+        } else {
+            Err(syn::Error::new(input.span(), "expected mod, fn or impl"))
         }
-        Ok(res)
     }
 }

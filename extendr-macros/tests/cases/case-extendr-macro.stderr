@@ -38,7 +38,7 @@ error: found &self in non-impl function - have you missed the #[extendr] before 
   --> tests/cases/case-extendr-macro.rs:27:24
    |
 27 |     fn misplaced_macro(&self) {}
-   |                        ^^^^^
+   |                        ^
 
 error: const params not allowed in #[extendr] impl
   --> tests/cases/case-extendr-macro.rs:31:1

@@ -130,7 +130,7 @@ where
     /// with all entries set to `NA`.
     ///
     /// Note that since [`Raw`] does not have an NA representation in R,
-    /// this method is not implemented for [`Rbyte`].
+    /// this method is not implemented for `Rbyte`.
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {

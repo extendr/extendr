@@ -67,6 +67,7 @@ mod list;
 mod list_struct;
 mod pairlist;
 mod pairs;
+mod utils;
 mod wrappers;
 
 use proc_macro::TokenStream;
@@ -94,7 +95,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     match parse_macro_input!(item as Item) {
         Item::Struct(str) => {
             let struct_name = str.ident.to_string();
-            let struct_doc = crate::wrappers::get_doc_string(&str.attrs);
+            let struct_doc = crate::utils::doc_string(&str.attrs);
             crate::wrappers::register_struct_doc(&struct_name, &struct_doc);
             extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts)
         }

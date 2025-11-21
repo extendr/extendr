@@ -8,7 +8,7 @@ extendr-api = { version = "0.8.0", features = ["ndarray"] }
 ```
 
 Specifically, extendr supports the following conversions:
-* [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust:
+* `Robj` → `ArrayView1`, for when you have an R vector that you want to analyse in Rust:
     ```rust
     use extendr_api::prelude::*;
     use ndarray::ArrayView1;
@@ -18,7 +18,7 @@ Specifically, extendr supports the following conversions:
         println!("This R vector has length {:?}", vector.len())
     }
     ```
-* [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
+* `Robj` → `ArrayView2`, for when you have an R matrix that you want to analyse in Rust.
     ```rust
     use extendr_api::prelude::*;
     use ndarray::ArrayView2;
@@ -28,7 +28,7 @@ Specifically, extendr supports the following conversions:
         println!("This R matrix has shape {:?}", matrix.dim())
     }
     ```
-* [`ArrayBase` → `Robj`](Robj#impl-TryFrom<ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
+* [`ArrayBase`] → `Robj`, for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
     ```rust
     use extendr_api::prelude::*;
     use ndarray::Array2;

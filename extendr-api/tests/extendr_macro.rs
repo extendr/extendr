@@ -207,6 +207,7 @@ fn test_metadata() {
             func_ptr: wrap__test_metadata_1 as *const u8,
             hidden: false,
             invisible: None,
+            c_name: "wrap__test_metadata_1"
         }
     );
 }

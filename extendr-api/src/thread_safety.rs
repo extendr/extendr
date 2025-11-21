@@ -137,9 +137,7 @@ pub extern "C" fn register_extendr_panic_hook() {
                 .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
                 .unwrap_or(false);
             if show_traceback {
-                default_hook(x)
-            } else {
-                return;
+                default_hook(x);
             }
         }));
     });

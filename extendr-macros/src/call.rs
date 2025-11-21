@@ -1,27 +1,32 @@
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse::ParseStream, punctuated::Punctuated, Token};
-use syn::{parse_macro_input, parse_quote, Expr, ExprAssign, ExprPath, LitStr};
+use syn::{parse_macro_input, parse_quote, Expr, LitStr};
+
+use crate::pairs::{Pair, Pairs};
 
 #[derive(Debug)]
 struct Call {
     caller: LitStr,
-    pairs: Punctuated<Expr, Token![,]>,
+    pairs: Pairs,
 }
 
 // Custom parser for a call eg. call!("xyz", a=1, b, c)
 impl syn::parse::Parse for Call {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let mut res = Self {
-            caller: input.parse::<LitStr>()?,
-            pairs: Punctuated::new(),
+        let caller = input.parse::<LitStr>()?;
+        let pairs = if input.is_empty() {
+            Pairs {
+                pairs: Punctuated::new(),
+            }
+        } else {
+            input.parse::<Token![,]>()?;
+            Pairs {
+                pairs: input.parse_terminated(Expr::parse, Token![,])?,
+            }
         };
 
-        while !input.is_empty() {
-            input.parse::<Token![,]>()?;
-            res.pairs.push(input.parse::<Expr>()?);
-        }
-        Ok(res)
+        Ok(Self { caller, pairs })
     }
 }
 
@@ -35,16 +40,9 @@ pub fn call(item: TokenStream) -> TokenStream {
     let pairs = call
         .pairs
         .iter()
-        .map(|e| {
-            if let Expr::Assign(ExprAssign { left, right, .. }) = e {
-                if let Expr::Path(ExprPath { path, .. }) = &**left {
-                    if let Some(ident) = path.get_ident() {
-                        let s = ident.to_string();
-                        return parse_quote!( (#s, extendr_api::Robj::from(#right)) );
-                    }
-                }
-            }
-            parse_quote!( ("", extendr_api::Robj::from(#e)) )
+        .map(|pair| match pair {
+            Pair::Named { name, value } => parse_quote!((#name, extendr_api::Robj::from(#value))),
+            Pair::Unnamed(expr) => parse_quote!(("", extendr_api::Robj::from(#expr))),
         })
         .collect::<Vec<Expr>>();
 

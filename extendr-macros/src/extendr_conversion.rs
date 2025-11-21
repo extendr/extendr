@@ -1,4 +1,4 @@
-use crate::{extendr_options::ExtendrOptions, wrappers};
+use crate::{extendr_options::ExtendrOptions, utils::doc_string};
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::Attribute;
@@ -62,7 +62,7 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
     // TODO: Should documenting the struct be moved to R?
     // At the moment, only documentattion above the impl
     // block makes it to R.
-    let _doc_string = wrappers::get_doc_string(&attrs);
+    let _doc_string = doc_string(&attrs);
 
     let conversion_impls = quote! {
         // Output conversion function for this type.

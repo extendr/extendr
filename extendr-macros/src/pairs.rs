@@ -1,43 +1,48 @@
 //! Internal module for parsing R-like variadic arguments.
 
-use syn::{parse::ParseStream, punctuated::Punctuated, Expr, ExprAssign, ExprPath, Token};
+use syn::{
+    parse::{Parse, ParseStream},
+    punctuated::Punctuated,
+    Expr, ExprAssign, ExprPath, Token,
+};
 
 #[derive(Debug)]
 pub(crate) struct Pairs {
-    pub pairs: Punctuated<Expr, Token![,]>,
+    pub(crate) pairs: Punctuated<Expr, Token![,]>,
 }
 
-// Custom parser for a pairlist (a=1, 2, 3) or (1, 2, 3) or (1, b=2, c=3) etc.
-impl syn::parse::Parse for Pairs {
+#[derive(Debug)]
+pub(crate) enum Pair<'a> {
+    Named { name: String, value: &'a Expr },
+    Unnamed(&'a Expr),
+}
+
+impl Parse for Pairs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        let mut res = Self {
-            pairs: Punctuated::new(),
-        };
-        while !input.is_empty() {
-            res.pairs.push(input.parse::<Expr>()?);
-            if input.is_empty() {
-                break;
-            }
-            input.parse::<Token![,]>()?;
-        }
-        Ok(res)
+        Ok(Self {
+            pairs: input.parse_terminated(Expr::parse, Token![,])?,
+        })
     }
 }
 
 impl Pairs {
-    // Having parsed a variadic expression, extract the names and values.
-    pub(crate) fn names_and_values(&self) -> Vec<(String, &Expr)> {
-        self.pairs
-            .iter()
-            .map(|e| -> (String, &Expr) {
-                if let Expr::Assign(ExprAssign { left, right, .. }) = e {
-                    if let Expr::Path(ExprPath { path, .. }) = &**left {
-                        let s = path.get_ident().unwrap().to_string();
-                        return (s, right.as_ref());
+    pub(crate) fn iter(&self) -> impl Iterator<Item = Pair<'_>> {
+        self.pairs.iter().map(|expr| {
+            if let Expr::Assign(ExprAssign { left, right, .. }) = expr {
+                if let Expr::Path(ExprPath { path, .. }) = &**left {
+                    if let Some(ident) = path.get_ident() {
+                        return Pair::Named {
+                            name: ident.to_string(),
+                            value: right.as_ref(),
+                        };
                     }
                 }
-                ("".to_owned(), e)
-            })
-            .collect()
+            }
+            Pair::Unnamed(expr)
+        })
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        self.pairs.is_empty()
     }
 }

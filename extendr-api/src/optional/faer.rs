@@ -18,7 +18,7 @@ impl From<Mat<f64>> for Robj {
 
 /// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not `NA` aware.
 impl From<MatRef<'_, f64>> for RMatrix<f64> {
-    /// Convert a faer MatRef<f64> into Robj.
+    /// Convert a faer `MatRef<f64>` into Robj.
     fn from(value: MatRef<'_, f64>) -> Self {
         RMatrix::new_matrix(value.nrows(), value.ncols(), |i, j| value.read(i, j))
     }

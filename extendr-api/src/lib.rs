@@ -359,6 +359,7 @@ pub use extendr_macros::*;
 
 use extendr_ffi::SEXPTYPE;
 use scalar::Rbool;
+use std::ffi::CString;
 
 //////////////////////////////////////////////////
 
@@ -383,9 +384,6 @@ pub const NA_STRING: Option<&str> = None;
 /// NA value for logical. `r!(NA_LOGICAL)`
 pub const NA_LOGICAL: Rbool = Rbool::na_value();
 
-#[doc(hidden)]
-pub use std::collections::HashMap;
-
 /// This is needed for the generation of wrappers.
 #[doc(hidden)]
 pub use extendr_ffi::DllInfo;
@@ -404,9 +402,6 @@ pub use extendr_ffi::PutRNGstate;
 
 #[doc(hidden)]
 pub use extendr_ffi::SEXP;
-
-#[doc(hidden)]
-use std::ffi::CString;
 
 pub use metadata::Metadata;
 
@@ -441,14 +436,12 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
-        let wrapped_name = format!("wrap__{}", func.mod_name);
-        make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+        make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
     }
 
     for imp in metadata.impls {
         for func in imp.methods {
-            let wrapped_name = format!("wrap__{}__{}", imp.name, func.mod_name);
-            make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+            make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
         }
     }
 
