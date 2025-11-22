@@ -305,7 +305,16 @@ impl<'a> WrapperBuilder<'a> {
             .iter()
             .map(|param| {
                 let robj_ident = format_ident!("_{}_robj", param.ident);
-                parse_quote! { #robj_ident.try_into()? }
+                let arg_name = param.ident.to_string();
+                parse_quote! {
+                    #robj_ident
+                        .try_into()
+                        .map_err(|e| extendr_api::error::Error::Other(format!(
+                            "failed to convert argument '{}' from R: {}",
+                            #arg_name,
+                            e
+                        )))?
+                }
             })
             .collect()
     }

@@ -12,6 +12,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
         return Err(syn::Error::new_spanned(ast, "Only struct is supported"));
     };
     let struct_name = ast.ident;
+    let struct_name_str = struct_name.to_string();
 
     // Iterate each struct field and capture a conversion from Robj for each field
     let mut tokens = Vec::<_>::with_capacity(inside.fields.len());
@@ -27,14 +28,30 @@ pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream
             let field_str = format!(".{id_field}");
             // This is like `value$.0` in R
             tokens.push(quote!(
-                #field_name: value.dollar(#field_str)?.try_into()?
+                #field_name: value
+                    .dollar(#field_str)?
+                    .try_into()
+                    .map_err(|e| extendr_api::error::Error::Other(format!(
+                        "failed to convert tuple field {} on {}: {}",
+                        #field_str,
+                        #struct_name_str,
+                        e
+                    )))?
             ));
         } else {
             let field_name = field.ident.as_ref().unwrap();
             let field_str = field_name.to_string();
             // This is like `value$foo` in R
             tokens.push(quote!(
-                #field_name: value.dollar(#field_str)?.try_into()?
+                #field_name: value
+                    .dollar(#field_str)?
+                    .try_into()
+                    .map_err(|e| extendr_api::error::Error::Other(format!(
+                        "failed to convert field '{}' on {}: {}",
+                        #field_str,
+                        #struct_name_str,
+                        e
+                    )))?
             ));
         }
     }

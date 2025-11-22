@@ -361,7 +361,13 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         let indices = 0..n;
         let element_extraction = indices.map(|idx| {
             quote! {
-                (&list.elt(#idx)?).try_into()?
+                (&list.elt(#idx)?)
+                    .try_into()
+                    .map_err(|e| extendr_api::error::Error::Other(format!(
+                        "failed to convert tuple element {}: {}",
+                        #idx,
+                        e
+                    )))?
             }
         });
 
