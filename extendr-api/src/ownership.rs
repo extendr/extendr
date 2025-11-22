@@ -275,6 +275,7 @@ mod test {
     use extendr_ffi::{Rf_ScalarInteger, Rf_protect};
 
     #[test]
+    #[ignore = "must run in isolation, due to usage of static"]
     fn basic_test() {
         test! {
             single_threaded(|| unsafe {
@@ -338,6 +339,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "must run in isolation, due to usage of static"]
     fn collection_test() {
         test! {
             single_threaded(|| unsafe {
