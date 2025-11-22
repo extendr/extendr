@@ -108,6 +108,8 @@ error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
 
 error_long_message <- function() invisible(.Call(wrap__error_long_message))
 
+error_on_panic <- function() invisible(.Call(wrap__error_on_panic))
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
@@ -244,6 +246,8 @@ to_unique_str <- function(r_char_vec) .Call(wrap__to_unique_str, r_char_vec)
 custom_error_return <- function() .Call(wrap__custom_error_return)
 
 custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion, `_val`)
+
+take_and_return_B <- function(b) .Call(wrap__take_and_return_B, b)
 
 must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
 

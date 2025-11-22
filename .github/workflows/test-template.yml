@@ -41,7 +41,7 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
