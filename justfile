@@ -35,6 +35,15 @@ test *cargo_flags:
     cargo test --workspace --features=full-functionality -j1 {{cargo_flags}}
     cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml -j1 {{cargo_flags}}
 
+tree *cargo_flags:
+  cargo tree --workspace {{cargo_flags}}
+  cargo tree --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+
+expand *cargo_flags:
+    cargo expand -p extendr-api {{cargo_flags}}
+    cargo expand -p extendr-macros {{cargo_flags}}
+    cargo expand --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)
 msrv FEATURES="":
     if [ "{{FEATURES}}" = "" ]; then \
@@ -42,10 +51,6 @@ msrv FEATURES="":
     else \
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
     fi
-
-tree *cargo_flags:
-  cargo tree --workspace {{cargo_flags}}
-  cargo tree --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 # Generate documentation (R wrappers) via rextendr::document()
 document:
