@@ -174,6 +174,14 @@ robj_to_mat <- function(x) .Call(wrap__robj_to_mat, x)
 
 matref_to_mat <- function(x) .Call(wrap__matref_to_mat, x)
 
+result_list_ok <- function() .Call(wrap__result_list_ok)
+
+result_list_err <- function() .Call(wrap__result_list_err)
+
+result_condition_ok <- function() .Call(wrap__result_condition_ok)
+
+result_condition_err <- function() .Call(wrap__result_condition_err)
+
 #' Test raw identifiers (`r#`) in function arguments are parsed correctly.
 #' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 #' @param type : i32 or `NULL`

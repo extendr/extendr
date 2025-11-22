@@ -27,12 +27,6 @@ rstest = "0.22.0"
 
 [features]
 
-# Features to modify behaviour of returning Result<T,E> from extendr to R, instead of unwrap-throw_r_error().
-# Add new features below
-# None, one or both can be set, but the one with highest precedence will take effect.
-result_list = []
-result_condition = []
-
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
 full-functionality = [

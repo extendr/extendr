@@ -41,92 +41,29 @@ impl From<()> for Robj {
 /// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
-/// Alternative behaviors enabled by feature toggles:
-/// extendr-api supports different conversions from [`Result<T,E>`] into `Robj`.
-/// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
-/// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
-/// extendr-api
-/// * `result_list`: `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
-/// * `result_condition'`: `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
-/// * More than one enabled feature: Only one feature gate will take effect, the current order of precedence is [`result_list`, `result_condition`, ... ].
-/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok` and `Err(E)` will trigger `throw_r_error()` with the error message.
-/// ```
-/// use extendr_api::prelude::*;
-/// fn my_func() -> Result<f64> {
-///     Ok(1.0)
-/// }
-///
-/// test! {
-///     assert_eq!(r!(my_func()), r!(1.0));
-/// }
-/// ```
-///
 /// [`extendr_api::error::Result`]: crate::error::Result
-#[cfg(not(any(feature = "result_list", feature = "result_condition")))]
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
     E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
-        res.unwrap().into()
-    }
-}
-
-/// Convert a [`Result`] to an [`Robj`]. Return either `Ok` value or `Err` value wrapped in an
-/// error condition. This allows using `?` operator in functions
-/// and returning [`Result<T>`] without panicking on `Err`. `T` must implement [`IntoRobj`].
-///
-/// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
-/// $value field of the condition, and its message is set to 'extendr_err'
-#[cfg(all(feature = "result_condition", not(feature = "result_list")))]
-impl<T, E> From<std::result::Result<T, E>> for Robj
-where
-    T: Into<Robj>,
-    E: Into<Robj>,
-{
-    fn from(res: std::result::Result<T, E>) -> Self {
-        use crate as extendr_api;
         match res {
-            Ok(x) => x.into(),
-            Err(x) => {
-                let mut err = list!(message = "extendr_err", value = x.into());
-                err.set_class(["extendr_error", "error", "condition"])
-                    .expect("internal error: failed to set class");
-                err.into()
+            Ok(val) => val.into(),
+            Err(err) => {
+                // Respect EXTENDR_BACKTRACE but avoid panicking so we don't lose the
+                // underlying message when the user expects a clean R error.
+                let show_backtrace = std::env::var("EXTENDR_BACKTRACE")
+                    .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
+                    .unwrap_or(false);
+                let msg = if show_backtrace {
+                    format!("called `Result::unwrap()` on an `Err` value: {}", err)
+                } else {
+                    err.to_string()
+                };
+                crate::throw_r_error(msg);
             }
         }
-    }
-}
-
-/// Convert a `Result` to an R `List` with an `ok` and `err` elements.
-/// This allows using `?` operator in functions
-/// and returning [`std::result::Result`] or [`extendr_api::error::Result`]
-/// without panicking on `Err`.
-///
-/// [`extendr_api::error::Result`]: crate::error::Result
-#[cfg(feature = "result_list")]
-impl<T, E> From<std::result::Result<T, E>> for Robj
-where
-    T: Into<Robj>,
-    E: Into<Robj>,
-{
-    fn from(res: std::result::Result<T, E>) -> Self {
-        use crate as extendr_api;
-        let mut result = match res {
-            Ok(x) => list!(ok = x.into(), err = NULL),
-            Err(x) => {
-                let err_robj = x.into();
-                if err_robj.is_null() {
-                    panic!("Internal error: result_list not allowed to return NULL as err-value")
-                }
-                list!(ok = NULL, err = err_robj)
-            }
-        };
-        result
-            .set_class(&["extendr_result"])
-            .expect("Internal error: failed to set class");
-        result.into()
     }
 }
 
@@ -875,52 +812,5 @@ mod test {
         }
     }
 
-    #[test]
-    #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
-    fn test_result_condition() {
-        use crate::prelude::*;
-        fn my_err_f() -> std::result::Result<f64, f64> {
-            Err(42.0) // return err float
-        }
-
-        test! {
-                  assert_eq!(
-                    r!(my_err_f()),
-                    R!(
-        "structure(list(message = 'extendr_err',
-        value = 42.0), class = c('extendr_error', 'error', 'condition'))"
-                    ).unwrap()
-                );
-            }
-    }
-
-    #[test]
-    #[cfg(feature = "result_list")]
-    fn test_result_list() {
-        use crate::prelude::*;
-        fn my_err_f() -> std::result::Result<f64, String> {
-            Err("We have water in the engine room!".to_string())
-        }
-
-        fn my_ok_f() -> std::result::Result<f64, String> {
-            Ok(123.123)
-        }
-
-        test! {
-            assert_eq!(
-                r!(my_err_f()),
-                R!("x=list(ok=NULL, err='We have water in the engine room!')
-                    class(x)='extendr_result'
-                    x"
-                ).unwrap()
-            );
-            assert_eq!(
-                r!(my_ok_f()),
-                R!("x = list(ok=123.123, err=NULL)
-                    class(x)='extendr_result'
-                    x"
-                ).unwrap()
-            );
-        }
-    }
+    // No feature-specific Result encoding tests: behavior is driven by per-function attributes in extendr-macros.
 }

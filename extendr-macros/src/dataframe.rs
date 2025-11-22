@@ -4,9 +4,15 @@ use syn::{parse_macro_input, Data, DataStruct, DeriveInput};
 
 fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
     let structname = &input.ident;
-    let mut a = Vec::new();
+    let mut a: Vec<syn::Ident> = Vec::new();
+    let mut a_names = Vec::new();
     for f in &datastruct.fields {
-        a.push(f.ident.clone());
+        let ident = f
+            .ident
+            .clone()
+            .expect("struct fields must be named for IntoDataFrameRow");
+        a_names.push(syn::LitStr::new(&ident.to_string(), ident.span()));
+        a.push(ident);
     }
     quote! {
         impl extendr_api::wrapper::IntoDataFrameRow<#structname> for Vec<#structname>
@@ -18,7 +24,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
                 }
                 let caller = extendr_api::functions::eval_string("data.frame")?;
                 let res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[
-                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                    #((#a_names, extendr_api::robj::Robj::from(#a))),*
                 ]))?;
                 res.try_into()
             }
@@ -36,7 +42,7 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
                 }
                 let caller = extendr_api::functions::eval_string("data.frame")?;
                 let res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[
-                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                    #((#a_names, extendr_api::robj::Robj::from(#a))),*
                 ]))?;
                 res.try_into()
             }

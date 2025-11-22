@@ -72,7 +72,7 @@ mod wrappers;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Item};
+use syn::{parse::Parser, parse_macro_input, Item};
 
 /// The `#[extendr]`-macro may be placed on three items
 ///
@@ -89,8 +89,11 @@ use syn::{parse_macro_input, Item};
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut opts = extendr_options::ExtendrOptions::default();
 
-    let extendr_opts_parser = syn::meta::parser(|meta| opts.parse(meta));
-    parse_macro_input!(attr with extendr_opts_parser);
+    let attr_tokens: proc_macro2::TokenStream = attr.into();
+    let parser = syn::meta::parser(|meta| opts.parse(meta));
+    if let Err(err) = parser.parse2(attr_tokens) {
+        return err.to_compile_error().into();
+    }
 
     match parse_macro_input!(item as Item) {
         Item::Struct(str) => {

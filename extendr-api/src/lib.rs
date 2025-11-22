@@ -233,57 +233,13 @@
 //!
 //! ## Returning `Result<T, E>` to R
 //!
-//! Two experimental features for returning error-aware R `list`s, `result_list` and `result_condition`,
-//! can be toggled to avoid panics on `Err`. Instead, an `Err` `x` is returned as either
-//!  - list: `list(ok=NULL, err=x)` when `result_list` is enabled,
-//!  - error condition: `<error: extendr_error>`, with `x` placed in `condition$value`, when `resultd_condition` is enabled.
-//!
-//! It is currently solely up to the user to handle any result on R side.
-//!
-//! There is an added overhead of wrapping Rust results in an R `list` object.
-//!
-//! ```ignore
-//! use extendr_api::prelude::*;
-//! // simple function always returning an Err string
-//! #[extendr]
-//! fn oups(a: i32) -> std::result::Result<i32, String> {
-//!     Err("I did it again".to_string())
-//! }
-//!
-//! // define exports using extendr_module
-//! extendr_module! {
-//!    mod mymodule;
-//!    fn oups;
-//! }
-//!
-//! ```
-//!
-//! In R:
-//!
-//! ```ignore
-//! # default result_panic feature
-//! oups(1)
-//! > ... long panic traceback from rust printed to stderr
-//!
-//! # result_list feature
-//! lst <- oups(1)
-//! print(lst)
-//! > list(ok = NULL, err = "I did it again")
-//!
-//! # result_condition feature
-//! cnd <- oups(1)
-//! print(cnd)
-//! > <error: extendr_error>
-//! print(cnd$value)
-//! > "I did it again"
-//!
-//! # handling example for result_condition
-//! oups_handled <- function(a) {
-//!   val_or_err <- oups(1)
-//!   if (inherits(val_or_err, "extendr_error")) stop(val_or_err)
-//!   val_or_err
-//! }
-//! ```
+//! By default, `Result<T, E>` is converted with `Ok` values passed through and
+//! `Err` values turned into an R error via `throw_r_error`, honoring the
+//! `EXTENDR_BACKTRACE` environment variable for message verbosity. If you want
+//! alternative encodings (e.g., `list(ok=?, err=?)` or an `extendr_error`
+//! condition), set the per-function attribute `#[extendr(result = "list")]` or
+//! `#[extendr(result = "condition")]` on your exported function. This is handled
+//! in `extendr-macros` and does not rely on Cargo features.
 //!
 //! ## Feature gates
 //!
@@ -295,15 +251,6 @@
 //! - `graphics`: provides the functionality to control or implement graphics devices.
 //! - `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 //! - `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
-//!
-//! extendr-api supports three ways of returning a Result<T,E> to R.
-//! Only one behavior feature can be enabled at a time.
-//! - `result_panic`: Default behavior, return `Ok` as is, panic! on any `Err`
-//!
-//! Default behavior can be overridden by specifying `extend_api` features, i.e. `extendr-api = {..., default-features = false, features= ["result_condition"]}`
-//! These features are experimental and are subject to change.
-//! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
-//! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
 )]

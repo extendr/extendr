@@ -3,7 +3,7 @@
 //! associated metadata in an idiomatic, parsed form.
 
 use crate::{
-    extendr_options::ExtendrOptions,
+    extendr_options::{ExtendrOptions, ResultMode},
     utils::{doc_string, sanitize_identifier, take_string_literal_attr, type_name},
 };
 use proc_macro2::Ident;
@@ -167,6 +167,9 @@ impl<'a> WrapperBuilder<'a> {
         );
         let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, self.prefix, mod_ident);
         let meta_name = format_ident!("{}{}{}", META_PREFIX, self.prefix, mod_ident);
+        let rust_name_str = rust_name.to_string();
+        let wrap_name_str = wrap_name.to_string();
+        let mod_name_str = mod_ident.to_string();
         let doc_string = doc_string(self.attrs);
         let return_type_string = return_type(&self.return_type);
         let opts_invisible = match self.opts.invisible {
@@ -219,9 +222,21 @@ impl<'a> WrapperBuilder<'a> {
                         extendr_api::throw_r_error(&err_string);
                     }
                     Err(unwind_err) => {
-                        drop(unwind_err);
-                        let err_string = format!("User function panicked: {}", #r_name);
-                        extendr_api::throw_r_error(err_string.as_str());
+                        let mut msg = if let Some(s) = unwind_err.downcast_ref::<&str>() {
+                            s.to_string()
+                        } else if let Some(s) = unwind_err.downcast_ref::<String>() {
+                            s.clone()
+                        } else {
+                            format!("panic in {}", #r_name)
+                        };
+
+                        let env_bt = std::env::var("EXTENDR_BACKTRACE")
+                            .map(|v| v.eq_ignore_ascii_case("true") || v == "1")
+                            .unwrap_or(false);
+                        if !env_bt {
+                            // leave msg as-is to avoid Rust backtrace noise
+                        }
+                        extendr_api::throw_r_error(msg.as_str());
                     }
                 }
             }
@@ -239,10 +254,10 @@ impl<'a> WrapperBuilder<'a> {
 
                 metadata.push(extendr_api::metadata::Func {
                     doc: #doc_string,
-                    rust_name: stringify!(#rust_name),
+                    rust_name: #rust_name_str,
                     r_name: #r_name,
-                    c_name: stringify!(#wrap_name),
-                    mod_name: stringify!(#mod_ident),
+                    c_name: #wrap_name_str,
+                    mod_name: #mod_name_str,
                     args: args,
                     return_type: #return_type_string,
                     func_ptr: #wrap_name as * const u8,
@@ -317,6 +332,42 @@ impl<'a> WrapperBuilder<'a> {
         call_expression: proc_macro2::TokenStream,
         sexp_args: &[Ident],
     ) -> proc_macro2::TokenStream {
+        if let Some(result_mode) = self.opts.result_mode {
+            if is_result_type(&self.return_type) {
+                return match result_mode {
+                    ResultMode::Default => {
+                        quote!(Ok(extendr_api::Robj::from(#call_expression)))
+                    }
+                    ResultMode::List => quote!({
+                        match #call_expression {
+                            Ok(val) => Ok(extendr_api::Robj::from(extendr_api::list!(ok = extendr_api::Robj::from(val), err = extendr_api::NULL))),
+                            Err(err) => {
+                                let err_robj = extendr_api::robj::IntoRobj::into_robj(err);
+                                if err_robj.is_null() {
+                                    return Err("result_list not allowed to return NULL as err-value".into());
+                                }
+                                Ok(extendr_api::Robj::from(extendr_api::list!(ok = extendr_api::NULL, err = err_robj)))
+                            }
+                        }
+                    }),
+                    ResultMode::Condition => quote!({
+                        match #call_expression {
+                            Ok(val) => Ok(extendr_api::robj::IntoRobj::into_robj(val)),
+                            Err(err) => {
+                                let mut cond = extendr_api::list!(
+                                    message = "extendr_err",
+                                    value = extendr_api::robj::IntoRobj::into_robj(err)
+                                );
+                                cond.set_class(["extendr_error", "error", "condition"])
+                                    .map_err(|e| -> Box<dyn std::error::Error> { Box::new(e) })?;
+                                Ok(extendr_api::Robj::from(cond))
+                            }
+                        }
+                    }),
+                };
+            }
+        }
+
         if !returns_self_reference(&self.return_type, self.self_ty) {
             return quote!(Ok(extendr_api::Robj::from(#call_expression)));
         }
@@ -428,6 +479,35 @@ fn returns_self_reference(output: &ReturnType, self_ty: Option<&Type>) -> bool {
             _ => false,
         },
     }
+}
+
+fn is_result_type(output: &ReturnType) -> bool {
+    let ty = match output {
+        ReturnType::Type(_, ty) => ty,
+        ReturnType::Default => return false,
+    };
+    if let Type::Path(path) = ty.as_ref() {
+        let ident_matches = |ident: &syn::Ident| ident == "Result";
+        if let Some(last) = path.path.segments.last() {
+            if ident_matches(&last.ident) {
+                return true;
+            }
+        }
+        if let Some(first) = path.path.segments.first() {
+            if first.ident == "std" || first.ident == "core" {
+                if let Some(second) = path.path.segments.iter().nth(1) {
+                    if second.ident == "result" {
+                        if let Some(third) = path.path.segments.iter().nth(2) {
+                            if ident_matches(&third.ident) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    false
 }
 
 fn extendr_default(attr: &mut syn::PatType) -> Option<String> {

@@ -251,14 +251,11 @@ extendr-api has some optional features behind these feature gates:
 * `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 * `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 
-extendr-api has different encodings (conversions) of a `Result<T,E>` into an `Robj`.
-In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
-Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
-extendr-api
-
-* `result_list'` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`
-* `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
-* Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
+By default, `Result<T,E>` is forwarded with `Ok` values passed through and `Err`
+values converted to an R error (honoring `EXTENDR_BACKTRACE` for verbosity). If
+you want a different encoding (e.g., list or condition), use the per-function
+attribute in `extendr-macros`: `#[extendr(result = \"list\")]` or
+`#[extendr(result = \"condition\")]`.
 
 Finally, there are parts of R's API that are deemed non-API, in that R packages
 on CRAN are recommended not to have these available in packages. If you want

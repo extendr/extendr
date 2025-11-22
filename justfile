@@ -3,36 +3,37 @@
 default:
     echo 'Hello, world!'
 
-build:
-    cargo build --workspace
-    cargo build -p extendr-api
-    cargo build -p extendr-macros
-    cargo build -p extendr-ffi
-    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml
+build *cargo_flags:
+    cargo build --workspace {{cargo_flags}}
+    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-clippy:
-    cargo clippy --workspace
-    cargo clippy --manifest-path=tests/extendrtests/src/rust/Cargo.toml
+check *cargo_flags:
+    cargo check --workspace {{cargo_flags}}
+    cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-doc-check:
-    cargo +nightly doc --no-deps --document-private-items --features full-functionality --workspace
-    cargo +nightly doc --no-deps --document-private-items --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml
+clippy *cargo_flags:
+    cargo clippy --workspace {{cargo_flags}}
+    cargo clippy --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-doc:
-    cargo +nightly doc --document-private-items --features full-functionality --workspace
-    cargo +nightly doc --document-private-items --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml
+doc-check *cargo_flags:
+    cargo +nightly doc --no-deps --document-private-items --features full-functionality --workspace {{cargo_flags}}
+    cargo +nightly doc --no-deps --document-private-items --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-fmt:
-    cargo fmt --all
-    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml
+doc *cargo_flags:
+    cargo +nightly doc --document-private-items --features full-functionality --workspace {{cargo_flags}}
+    cargo +nightly doc --document-private-items --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml --open {{cargo_flags}}
 
-fmt-check:
-    cargo fmt --all -- --check
-    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml -- --check
+fmt *cargo_flags:
+    cargo fmt --all {{cargo_flags}}
+    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-test:
-    cargo test --workspace --features=full-functionality -- -j1
-    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml -- -j1
+fmt-check *cargo_flags:
+    cargo fmt --all {{cargo_flags}} -- --check
+    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}} -- --check
+
+test *cargo_flags:
+    cargo test --workspace --features=full-functionality -j1 {{cargo_flags}}
+    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml -j1 {{cargo_flags}}
 
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)
 msrv FEATURES="":
@@ -41,6 +42,10 @@ msrv FEATURES="":
     else \
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
     fi
+
+tree *cargo_flags:
+  cargo tree --workspace {{cargo_flags}}
+  cargo tree --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 # Generate documentation (R wrappers) via rextendr::document()
 document:
