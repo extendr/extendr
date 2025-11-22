@@ -51,7 +51,7 @@ impl Rstr {
     /// let rstr: Rstr = "hello".into();
     /// # }
     /// ```
-    #[deprecated(since = "0.8.0", note = "Use `Rstr::from()` or `.into()` instead")]
+    #[deprecated(since = "0.8.1", note = "Use `Rstr::from()` or `.into()` instead")]
     pub fn from_string(val: &str) -> Self {
         Rstr {
             robj: unsafe { Robj::from_sexp(str_to_character(val)) },
@@ -75,7 +75,7 @@ impl Rstr {
     /// # }
     /// ```
     #[deprecated(
-        since = "0.8.0",
+        since = "0.8.1",
         note = "Use `.as_ref()` or rely on `Deref` coercion instead"
     )]
     pub fn as_str(&self) -> &str {

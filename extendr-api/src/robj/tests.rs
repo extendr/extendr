@@ -83,7 +83,7 @@ fn test_try_from_robj() {
 
         assert_eq!(hmap_borrowed["a"], Robj::from(1));
         assert_eq!(hmap_borrowed["b"], Robj::from(2));
-        let hmap_borrowed = list.as_list().unwrap().into_hashmap();
+        let hmap_borrowed: HashMap<&str, Robj> = list.as_list().unwrap().try_into().unwrap();
         assert_eq!(hmap_borrowed, hmap2);
 
         let na_integer = eval_string("NA_integer_").unwrap();

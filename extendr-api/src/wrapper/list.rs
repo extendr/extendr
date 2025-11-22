@@ -72,6 +72,10 @@ impl List {
 
     /// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
     /// The `HashMap` is consumed.
+    ///
+    /// # Deprecated
+    /// Use `List::try_from(map)` or `map.try_into()` instead.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// use std::collections::HashMap;
@@ -80,7 +84,7 @@ impl List {
     ///     map.insert("a", r!(1));
     ///     map.insert("b", r!(2));
     ///
-    ///     let list = List::from_hashmap(map).unwrap();
+    ///     let list = List::try_from(map).unwrap();
     ///     assert_eq!(list.is_list(), true);
     ///
     ///     let mut names : Vec<_> = list.names().unwrap().collect();
@@ -88,18 +92,16 @@ impl List {
     ///     assert_eq!(names, vec!["a", "b"]);
     /// }
     /// ```
+    #[deprecated(
+        since = "0.8.1",
+        note = "Use `List::try_from(map)` or `map.try_into()` instead"
+    )]
     pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
         V: IntoRobj,
         K: Into<String>,
     {
-        let (names, values): (Vec<_>, Vec<_>) = val
-            .into_iter()
-            .map(|(k, v)| (k.into(), v.into_robj()))
-            .unzip();
-        let mut res: Self = Self::from_values(values);
-        res.set_names(names)?;
-        Ok(res)
+        val.try_into()
     }
 
     /// Build a list using separate names and values iterators.
@@ -182,6 +184,9 @@ impl List {
 
     /// Convert a `List` into a `HashMap`, consuming the list.
     ///
+    /// # Deprecated
+    /// Use `HashMap::try_from(list)` or `list.try_into()` instead.
+    ///
     /// - If an element doesn't have a name, an empty string (i.e. `""`) will be used as the key.
     /// - If there are some duplicated names (including no name, which will be translated as `""`) of elements, only one of those will be preserved.
     /// ```
@@ -189,12 +194,16 @@ impl List {
     /// use std::collections::HashMap;
     /// test! {
     ///     let mut robj = list!(a=1, 2);
-    ///     let names_and_values = robj.as_list().unwrap().into_hashmap();
+    ///     let names_and_values: HashMap<&str, Robj> = robj.as_list().unwrap().try_into().unwrap();
     ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))].into_iter().collect::<HashMap<_, _>>());
     /// }
     /// ```
+    #[deprecated(
+        since = "0.8.1",
+        note = "Use `HashMap::try_from(list)` or `list.try_into()` instead"
+    )]
     pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
-        self.as_robj().try_into().unwrap()
+        self.try_into().unwrap()
     }
 }
 
@@ -241,6 +250,62 @@ impl TryFrom<&List> for HashMap<String, Robj> {
     fn try_from(value: &List) -> Result<Self> {
         let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+impl<T> TryFrom<List> for HashMap<&str, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl<T> TryFrom<List> for HashMap<String, T>
+where
+    T: TryFrom<Robj, Error = error::Error>,
+{
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl TryFrom<List> for HashMap<&str, Robj> {
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl TryFrom<List> for HashMap<String, Robj> {
+    type Error = Error;
+
+    fn try_from(value: List) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl<K, V> TryFrom<HashMap<K, V>> for List
+where
+    K: Into<String>,
+    V: IntoRobj,
+{
+    type Error = Error;
+
+    fn try_from(val: HashMap<K, V>) -> Result<Self> {
+        let (names, values): (Vec<_>, Vec<_>) = val
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into_robj()))
+            .unzip();
+        let mut res: Self = Self::from_values(values);
+        res.set_names(names)?;
+        Ok(res)
     }
 }
 
