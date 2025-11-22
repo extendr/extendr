@@ -14,9 +14,6 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() invisible(.Call(wrap__do_nothing))
 
-#' This is invisible by default
-result_unit <- function() invisible(.Call(wrap__result_unit))
-
 #' Return a string but invisibly
 invisible_string <- function() invisible(.Call(wrap__invisible_string))
 
