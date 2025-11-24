@@ -99,8 +99,8 @@ impl List {
     )]
     pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
-        V: IntoRobj,
-        K: Into<String>,
+        V: Into<Robj>,
+        K: AsRef<str>,
     {
         let map_length = value.len();
         let mut result = List::new(map_length);
