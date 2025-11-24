@@ -8,7 +8,8 @@ fn hello_submodule() -> &'static str {
 }
 
 // Class for testing
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone, Copy)]
+#[extendr]
 struct MySubmoduleClass {
     a: i32,
 }
@@ -26,24 +27,18 @@ impl MySubmoduleClass {
     fn new() -> Self {
         Self { a: 0 }
     }
-    
+
     /// Method for setting stuff.
     /// @param x a number
-    fn set_a(& mut self, x: i32) {
+    fn set_a(&mut self, x: i32) {
         self.a = x;
     }
-    
+
     /// Method for getting stuff.
     fn a(&self) -> i32 {
         self.a
     }
-    
-    /// Method for getting one's self.
-    fn me(&self) -> &Self {
-        self
-    }
 }
-
 
 // Macro to generate exports
 extendr_module! {

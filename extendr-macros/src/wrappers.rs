@@ -1,27 +1,69 @@
+//! This is responsible for generating the C functions that act as wrappers of
+//! the exported Rust functions.
+//!
+//! extendr relies on the [`.Call`-interface](https://cran.r-project.org/doc/manuals/R-exts.html#Calling-_002eCall)
+//! In short, it is necessary the the signature of the C-function have [`SEXP`]
+//! as the type for return type, and argument types.
+//!
+//! For instance, if your function returns nothing, the return type is not
+//! allowed to be `void`, instead `SEXP` must be used, and one should return
+//! [`R_NilValue`].
+//!
+//! ## R wrappers
+//!
+//! Within R, you may call `rextendr::document()` to generate R functions,
+//! that use the `.Call`-interface, to call the wrapped Rust functions.
+//!
+//! You may also manually implement these wrappers, in order to do special
+//! type-checking, or other annotation, that could be more convenient to do
+//! on the R-side. The C-functions are named according to `"{WRAP_PREFIX}{prefix}{mod_name}"`.
+//! See [`WRAP_PREFIX`], and note that `prefix` is set specifically for methods in
+//! `extendr`-impl blocks, while for functions have no prefix.
+//!
+//! [`R_NilValue`]: https://extendr.github.io/libR-sys/libR_sys/static.R_NilValue.html
+//! [`SEXP`]: https://extendr.github.io/libR-sys/libR_sys/type.SEXP.html
+
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
+use std::{collections::HashMap, sync::Mutex};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
+
+use crate::extendr_options::ExtendrOptions;
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
 
-#[derive(Debug, Default)]
-pub struct ExtendrOptions {
-    pub use_try_from: bool,
-    pub r_name: Option<String>,
-    pub mod_name: Option<String>,
-    pub use_rng: bool,
+lazy_static::lazy_static! {
+    static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+}
+
+/// Called by the struct‐level #[extendr] macro to register docstrings.
+pub fn register_struct_doc(name: &str, doc: &str) {
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .insert(name.to_string(), doc.to_string());
+}
+
+/// Retrieve the struct‐level docs (or empty if none).
+pub fn get_struct_doc(name: &str) -> String {
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .get(name)
+        .cloned()
+        .unwrap_or_default()
 }
 
 // Generate wrappers for a specific function.
-pub fn make_function_wrappers(
+pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
     wrappers: &mut Vec<ItemFn>,
     prefix: &str,
     attrs: &[syn::Attribute],
     sig: &mut syn::Signature,
     self_ty: Option<&syn::Type>,
-) {
+) -> syn::Result<()> {
     let rust_name = sig.ident.clone();
 
     let r_name_str = if let Some(r_name) = opts.r_name.as_ref() {
@@ -44,24 +86,29 @@ pub fn make_function_wrappers(
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
+    let opts_invisible = match opts.invisible {
+        Some(true) => quote!(Some(true)),
+        Some(false) => quote!(Some(false)),
+        None => quote!(None),
+    };
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
-            Some(FnArg::Receiver(ref reciever)) => reciever.mutability.is_some(),
+            Some(FnArg::Receiver(ref receiver)) => receiver.mutability.is_some(),
             _ => false,
         };
         if is_mut {
             // eg. Person::name(&mut self)
-            quote! { extendr_api::unwrap_or_throw(
-                <&mut #self_ty>::from_robj(&_self_robj)
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&mut #self_ty>::try_from(&mut _self_robj)
             ).#rust_name }
         } else {
             // eg. Person::name(&self)
-            quote! { extendr_api::unwrap_or_throw(
-                <&#self_ty>::from_robj(&_self_robj)
+            quote! { extendr_api::unwrap_or_throw_error(
+                <&#self_ty>::try_from(&_self_robj)
             ).#rust_name }
         }
     } else if let Some(ref self_ty) = &self_ty {
@@ -72,22 +119,40 @@ pub fn make_function_wrappers(
         quote! { #rust_name }
     };
 
-    let formal_args: Punctuated<FnArg, Token![,]> = inputs
+    // arguments for the wrapper with type being `SEXP`
+    let formal_args = inputs
         .iter()
         .map(|input| translate_formal(input, self_ty))
-        .collect();
+        .collect::<syn::Result<Punctuated<FnArg, Token![,]>>>()?;
 
-    let convert_args: Vec<syn::Stmt> = inputs.iter().map(translate_to_robj).collect();
+    // extract the names of the arguments only (`mut` are ignored in `formal_args` already)
+    let sexp_args = formal_args
+        .clone()
+        .into_iter()
+        .map(|x| match x {
+            // the wrapper doesn't use `self` arguments
+            FnArg::Receiver(_) => unreachable!(),
+            FnArg::Typed(ref typed) => match typed.pat.as_ref() {
+                syn::Pat::Ident(ref pat_ident) => pat_ident.ident.clone(),
+                _ => unreachable!(),
+            },
+        })
+        .collect::<Vec<Ident>>();
 
-    let actual_args: Punctuated<Expr, Token![,]> = inputs
+    // arguments from R (`SEXP`s) are converted to `Robj`
+    let convert_args: Vec<syn::Stmt> = inputs
         .iter()
-        .filter_map(|input| translate_actual(opts, input))
-        .collect();
+        .map(translate_to_robj)
+        .collect::<syn::Result<Vec<syn::Stmt>>>()?;
+
+    let actual_args: Punctuated<Expr, Token![,]> =
+        inputs.iter().filter_map(translate_actual).collect();
 
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
-        .collect();
+        .collect::<syn::Result<Vec<Expr>>>()?;
+    let len_meta_args = meta_args.len();
 
     // Generate wrappers for rust functions to be called from R.
     // Example:
@@ -101,22 +166,79 @@ pub fn make_function_wrappers(
     //     }
     // }
     // ```
-    let rng_start = opts
-        .use_rng
-        .then(|| {
+    let rng_start = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
-                libR_sys::GetRNGstate();
+                extendr_api::GetRNGstate();
             });)
-        })
-        .unwrap_or_default();
-    let rng_end = opts
-        .use_rng
-        .then(|| {
+        }
+    } else {
+        Default::default()
+    };
+    let rng_end = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
-                libR_sys::PutRNGstate();
+                extendr_api::PutRNGstate();
             });)
-        })
-        .unwrap_or_default();
+        }
+    } else {
+        Default::default()
+    };
+
+    // figure out if
+    // -> &Self
+    // -> &mut Self
+    // Or if instead of `Self` the type name is used directly
+    // -> &ImplType / &mut ImplType
+    let return_is_ref_self = {
+        match sig.output {
+            // matches -> () or no-return type
+            syn::ReturnType::Default => false,
+            // ignoring the `-> Self` or `-> ImplType`, as that is not a Reference-type
+            // matches -> &T or &mut T
+            syn::ReturnType::Type(_, ref return_type) => match return_type.as_ref() {
+                Type::Reference(ref reference_type) => {
+                    // checks if T is Self or explicit impl type name
+                    if let Type::Path(path) = reference_type.elem.as_ref() {
+                        let is_typename_impl_type = self_ty
+                            .map(|x| x == reference_type.elem.as_ref())
+                            .unwrap_or(false);
+                        path.path.is_ident("Self") || is_typename_impl_type
+                    } else {
+                        false
+                    }
+                }
+                _ => false,
+            },
+        }
+    };
+
+    let return_type_conversion = if return_is_ref_self {
+        // instead of converting &Self / &mut Self, pass on the passed
+        // ExternalPtr<Self>
+        quote!(
+            let return_ref_to_self = #call_name(#actual_args);
+
+            #(
+            let arg_ref = extendr_api::R_ExternalPtrAddr(#sexp_args)
+                .cast::<Box<dyn std::any::Any>>()
+                .as_ref()
+                .unwrap()
+                .downcast_ref::<#self_ty>()
+                .unwrap();
+            if std::ptr::addr_eq(
+                arg_ref,
+                std::ptr::from_ref(return_ref_to_self)) {
+                    return Ok(extendr_api::Robj::from_sexp(#sexp_args))
+                }
+            )*
+            Err(Error::ExpectedExternalPtrReference.into())
+        )
+    } else {
+        quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
+    };
+
+    // TODO: the unsafe in here is unnecessary
     wrappers.push(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
@@ -127,14 +249,14 @@ pub fn make_function_wrappers(
             #rng_start
 
             let wrap_result_state: std::result::Result<
-                std::result::Result<Robj, extendr_api::Error>,
+                std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                #( #convert_args )*
-                std::panic::catch_unwind(||-> std::result::Result<Robj, extendr_api::Error> {
-                    Ok(extendr_api::Robj::from(#call_name(#actual_args)))
-                })
-            };
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>> {
+                        #(#convert_args)*
+                        #return_type_conversion
+                    }))
+                };
 
             // return RNG state back to r after evaluation
             #rng_end
@@ -144,7 +266,7 @@ pub fn make_function_wrappers(
                 Ok(Ok(zz)) => {
                     return unsafe { zz.get() };
                 }
-                // any conversion error bubbled from #actual_args conversions of incomming args from R.
+                // any conversion error bubbled from #actual_args conversions of incoming args from R.
                 Ok(Err(conversion_err)) => {
                     let err_string = conversion_err.to_string();
                     drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
@@ -152,18 +274,17 @@ pub fn make_function_wrappers(
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)
                 Err(unwind_err) => {
-                    drop(unwind_err); //did not notice any difference if dropped or not.
-                    // It should be possible to downcast the unwind_err Any type to the error
-                    // included in panic. The advantage would be the panic cause could be included
-                    // in the R terminal error message and not only via std-err.
-                    // but it should be handled in a separate function and not in-lined here.
-                    let err_string = format!("user function panicked: {}\0",#r_name_str);
-                    // cannot use throw_r_error here for some reason.
-                    // handle_panic() exports err string differently than throw_r_error.
-                    extendr_api::handle_panic(err_string.as_str(), || panic!());
+                    let panic_msg = if let Some(s) = unwind_err.downcast_ref::<&str>() {
+                        (*s).to_string()
+                    } else if let Some(s) = unwind_err.downcast_ref::<String>() {
+                        s.clone()
+                    } else {
+                        format!("User function panicked: {}", #r_name_str)
+                    };
+
+                    extendr_api::throw_r_error(&panic_msg);
                 }
             }
-            unreachable!("internal extendr error, this should never happen.")
         }
     ));
 
@@ -171,9 +292,11 @@ pub fn make_function_wrappers(
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-            let mut args = vec![
-                #( #meta_args, )*
-            ];
+            let mut args = Vec::with_capacity(#len_meta_args);
+            #(
+                args.push(#meta_args);
+            )*
+            let args = args;
 
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,
@@ -184,9 +307,12 @@ pub fn make_function_wrappers(
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
+                invisible: #opts_invisible,
             })
         }
     ));
+
+    Ok(())
 }
 
 // Extract doc strings from attributes.
@@ -236,7 +362,7 @@ pub fn mangled_type_name(type_: &Type) -> String {
     res
 }
 
-// Return a simplified type name that will be meaningful to R. Defaults to a digest.
+/// Return a simplified type name that will be meaningful to R. Defaults to a digest.
 // For example:
 // & Fred -> Fred
 // * Fred -> Fred
@@ -265,102 +391,177 @@ pub fn type_name(type_: &Type) -> String {
 }
 
 // Generate a list of arguments for the wrapper. All arguments are SEXP for .Call in R.
-pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> FnArg {
+pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Result<FnArg> {
     match input {
         // function argument.
         FnArg::Typed(ref pattype) => {
-            let pat = &pattype.pat.as_ref();
-            parse_quote! { #pat : extendr_api::SEXP }
+            let pat = pattype.pat.as_ref();
+            // ensure that `mut` in args are ignored in the wrapper
+            let pat_ident = translate_only_alias(pat)?;
+            Ok(parse_quote! { #pat_ident: extendr_api::SEXP })
         }
-        // &self
-        FnArg::Receiver(ref reciever) => {
-            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
-                panic!("expected &self or &mut self");
+        // &self / &mut self
+        FnArg::Receiver(ref receiver) => {
+            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
+                return Err(syn::Error::new_spanned(
+                    input,
+                    "expected &self or &mut self",
+                ));
             }
             if self_ty.is_none() {
-                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+                return Err(syn::Error::new_spanned(
+                    input,"found &self in non-impl function - have you missed the #[extendr] before the impl?"
+                ));
             }
-            parse_quote! { _self : extendr_api::SEXP }
+            Ok(parse_quote! { _self : extendr_api::SEXP })
         }
     }
 }
 
+/// Returns only the alias from a function argument.
+///
+/// For example `mut x: Vec<i32>`, the alias is `x`, but the `mut` would still
+/// be present if only the `Ident` of `PatType` was used.
+fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
+    Ok(match pat {
+        syn::Pat::Ident(ref pat_ident) => &pat_ident.ident,
+        _ => {
+            return Err(syn::Error::new_spanned(
+                pat,
+                "failed to translate name of argument",
+            ));
+        }
+    })
+}
+
 // Generate code to make a metadata::Arg.
-fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> Expr {
+fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Result<Expr> {
     match input {
         // function argument.
         FnArg::Typed(ref mut pattype) => {
             let pat = pattype.pat.as_ref();
             let ty = pattype.ty.as_ref();
-            let name_string = quote! { #pat }.to_string();
+            // here the argument name is extracted, without the `mut` keyword,
+            // ensuring the generated r-wrappers, can use these argument names
+            let pat_ident = translate_only_alias(pat)?;
+            let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
-            let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
+            let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
+                quote!(Some(#default))
+            } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
             } else {
                 quote!(None)
             };
-            parse_quote! {
+            Ok(parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
                     default: #default
                 }
-            }
+            })
         }
         // &self
-        FnArg::Receiver(ref reciever) => {
-            if !reciever.attrs.is_empty() || reciever.reference.is_none() {
-                panic!("expected &self or &mut self");
+        FnArg::Receiver(ref receiver) => {
+            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
+                return Err(syn::Error::new_spanned(
+                    input,
+                    "expected &self or &mut self",
+                ));
             }
             if self_ty.is_none() {
-                panic!("found &self in non-impl function - have you missed the #[extendr] before the impl?");
+                return Err(syn::Error::new_spanned(
+                    input,
+            "found &self in non-impl function - have you missed the #[extendr] before the impl?"
+        )
+    );
             }
             let type_string = type_name(self_ty.unwrap());
-            parse_quote! {
+            Ok(parse_quote! {
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
                     default: None
                 }
-            }
+            })
         }
     }
 }
 
+// Get defaults from #[extendr(default = "value")] attribute.
+fn get_defaults(attrs: &mut Vec<syn::Attribute>) -> Option<String> {
+    use syn::Lit;
+
+    let mut new_attrs = Vec::new();
+    let mut res = None;
+
+    for i in attrs.drain(0..) {
+        if let syn::Meta::List(ref meta_list) = i.meta {
+            if meta_list.path.is_ident("extendr") {
+                let mut default_value = None;
+                let mut theres_default = false;
+
+                let parse_result = meta_list.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("default") {
+                        theres_default = true;
+                        let value = meta.value()?;
+                        if let Ok(Lit::Str(litstr)) = value.parse() {
+                            default_value = Some(litstr.value());
+                        }
+                    }
+                    Ok(())
+                });
+
+                if parse_result.is_ok() && theres_default {
+                    res = default_value;
+                    continue;
+                }
+            }
+        }
+
+        new_attrs.push(i);
+    }
+    *attrs = new_attrs;
+    res
+}
+
 /// Convert `SEXP` arguments into `Robj`.
 /// This maintains the lifetime of references.
-fn translate_to_robj(input: &FnArg) -> syn::Stmt {
+///
+/// These conversions are from R into Rust
+fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#pat); }
+                let ident = &ident.ident;
+                // TODO: these do not need protection, as they come from R
+                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
             } else {
-                panic!("expect identifier as arg name")
+                Err(syn::Error::new_spanned(
+                    input,
+                    "expect identifier as arg name",
+                ))
             }
         }
         FnArg::Receiver(_) => {
-            parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); }
+            // this is `mut`, in case of a mutable reference
+            Ok(parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); })
         }
     }
 }
 
 // Generate actual argument list for the call (ie. a list of conversions).
-fn translate_actual(opts: &ExtendrOptions, input: &FnArg) -> Option<Expr> {
+fn translate_actual(input: &FnArg) -> Option<Expr> {
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
-            let ty = &pattype.ty.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                if opts.use_try_from {
-                    Some(parse_quote! {
-                        #varname.try_into()?
-                    })
-                } else {
-                    Some(parse_quote! { <#ty>::from_robj(&#varname)? })
-                }
+                Some(parse_quote! {
+                    #varname.try_into()?
+                })
             } else {
                 None
             }
@@ -386,6 +587,7 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                     ..
                 }) = nv.value
                 {
+                    eprintln!("#[default = \"arg\"] is deprecated. Use #[extendr(default = \"arg\")] instead.");
                     res = Some(litstr.value());
                     continue;
                 }

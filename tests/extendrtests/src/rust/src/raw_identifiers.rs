@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 /// @param type : i32 or `NULL`
 /// @export
-#[extendr(use_try_from = true)]
+#[extendr]
 fn raw_identifier_in_fn_args(#[default = "NULL"] r#type: Nullable<i32>) -> Nullable<i32> {
     r#type
 }
@@ -12,7 +12,7 @@ fn raw_identifier_in_fn_args(#[default = "NULL"] r#type: Nullable<i32>) -> Nulla
 /// Test raw identifiers (`r#`) as function names are parsed correctly.
 /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 /// @export
-#[extendr(use_try_from = true)]
+#[extendr]
 fn r#true() -> bool {
     true
 }
@@ -21,7 +21,7 @@ fn r#true() -> bool {
 /// See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
 /// @param type : i32 or `NULL`
 /// @export
-#[extendr(use_try_from = true)]
+#[extendr]
 fn r#false(r#type: bool) -> bool {
     !r#type
 }

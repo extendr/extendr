@@ -1,13 +1,69 @@
-//! A singleton instance of the R interpreter.
+//! Embeds a a single R process
 //!
-//! Only call this from `main()` if you want to run stand-alone.
+//! Using R's C-API requires the embedding of the R runtime.
+//! Thus, when using bindings provided by `extendr-ffi`, it is necessary that
+//! either an R process is the caller, or that the process instantiates
+//! an accompanying R process. Otherwise, a run-time error occurs e.g.
+//! `(signal: 11, SIGSEGV: invalid memory reference)` or
 //!
-//! Its principal use is for testing.
+//! ```text
+//! Caused by:
+//! process didn't exit successfully: `/extendr/tests/extendrtest/target/debug/deps/extendrtest-59155c3c146ae614` (signal: 11, SIGSEGV: invalid memory reference)
+//! ```
 //!
-//! See [Rembedded.c](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c).
+//! ## Testing
 //!
+//! Within tests, one must use [`test!`] or [`with_r`] as a wrapper around
+//! code that uses the R runtime, e.g.
+//!
+//! ```no_run
+//! #[test]
+//! fn testing_r_code() {
+//!     with_r(|| {
+//!
+//!     });
+//! }
+//! ```
+//!
+//! Similarly with `test!` that is available in `extendr_api`, one may
+//!
+//! ```no_run
+//! #[test]
+//! fn testing_r_code() {
+//!     test! {
+//!
+//!     };
+//! }
+//! ```
+//!
+//! The advantage of `test!` is that it allows the use of `?` in test code, while
+//! `with_r` is not macro-based, thus code formatter `rustfmt` and rust LSPs (Rust Analyzer, Rust Rover, etc.)
+//! works within `with_r` without any problems.
+//!
+//!
+//! ## Binaries
+//!
+//! In a binary program, one may use [`start_r`] directly in the `main`-function.
+//!
+//! There is no `end_r`, as we terminate the R process setup, when the parent
+//! process terminates.
+//!
+//! [`test!`]: https://docs.rs/extendr-api/latest/extendr_api/macro.test.html
+//!
+// # Internal documentation
+//
+// ## Background
+//
+//
+// See [Rembedded.c](https://github.com/wch/r-source/blob/trunk/src/unix/Rembedded.c).
+//
+// [Rinside](https://github.com/eddelbuettel/rinside)
+//
+//
 
-use libR_sys::*;
+use extendr_ffi::{
+    setup_Rmainloop, R_CStackLimit, R_CleanTempDir, R_RunExitFinalizers, Rf_initialize_R,
+};
 use std::os::raw;
 use std::sync::Once;
 
@@ -26,7 +82,7 @@ pub fn start_r() {
     START_R.call_once(|| {
         unsafe {
             if std::env::var("R_HOME").is_err() {
-                // env! gets the build-time R_HOME stored by libR-sys
+                // env! gets the build-time R_HOME stored by extendr-ffi
                 std::env::set_var("R_HOME", env!("R_HOME"));
             }
 

@@ -6,7 +6,7 @@
 \alias{$.MySubmoduleClass}
 \title{Class for testing (exported)}
 \format{
-An object of class \code{environment} of length 4.
+An object of class \code{environment} of length 3.
 }
 \usage{
 MySubmoduleClass
@@ -14,6 +14,25 @@ MySubmoduleClass
 \description{
 Class for testing (exported)
 }
+\section{Methods}{
+
+\subsection{Method \code{new}}{
+Method for making a new object.
+}
+
+\subsection{Method \code{set_a}}{
+Method for setting stuff.
+\subsection{Arguments}{
+\describe{
+\item{\code{x}}{a number}
+}}
+}
+
+\subsection{Method \code{a}}{
+Method for getting stuff.
+}
+}
+
 \examples{
 x <- MySubmoduleClass$new()
 x$a()

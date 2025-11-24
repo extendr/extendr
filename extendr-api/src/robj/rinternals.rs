@@ -1,63 +1,73 @@
 use crate::*;
-use std::os::raw;
-
+use extendr_ffi::{
+    get_var, R_CFinalizer_t, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
+    R_GetCurrentSrcref, R_GetSrcFilename, R_IsNamespaceEnv, R_IsPackageEnv, R_MakeExternalPtr,
+    R_MissingArg, R_NamespaceEnvSpec, R_PackageEnvName, R_RegisterCFinalizerEx, R_UnboundValue,
+    R_xlen_t, Rboolean, Rf_PairToVectorList, Rf_VectorToPairList, Rf_allocMatrix, Rf_allocVector,
+    Rf_asChar, Rf_asCharacterFactor, Rf_coerceVector, Rf_conformable, Rf_duplicate, Rf_findFun,
+    Rf_isArray, Rf_isComplex, Rf_isEnvironment, Rf_isExpression, Rf_isFactor, Rf_isFrame,
+    Rf_isFunction, Rf_isInteger, Rf_isLanguage, Rf_isList, Rf_isLogical, Rf_isMatrix, Rf_isNewList,
+    Rf_isNull, Rf_isNumber, Rf_isObject, Rf_isPrimitive, Rf_isReal, Rf_isS4, Rf_isString,
+    Rf_isSymbol, Rf_isTs, Rf_isUserBinop, Rf_isVector, Rf_isVectorAtomic, Rf_isVectorList,
+    Rf_isVectorizable, Rf_ncols, Rf_nrows, Rf_xlengthgets, ALTREP, TYPEOF,
+};
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
 pub trait Rinternals: Types + Conversions {
     /// Return true if this is the null object.
     fn is_null(&self) -> bool {
-        unsafe { Rf_isNull(self.get()) != 0 }
+        unsafe { Rf_isNull(self.get()).into() }
     }
 
     /// Return true if this is a symbol.
     fn is_symbol(&self) -> bool {
-        unsafe { Rf_isSymbol(self.get()) != 0 }
+        unsafe { Rf_isSymbol(self.get()).into() }
     }
 
     /// Return true if this is a boolean (logical) vector
     fn is_logical(&self) -> bool {
-        unsafe { Rf_isLogical(self.get()) != 0 }
+        unsafe { Rf_isLogical(self.get()).into() }
     }
 
     /// Return true if this is a real (f64) vector.
     fn is_real(&self) -> bool {
-        unsafe { Rf_isReal(self.get()) != 0 }
+        unsafe { Rf_isReal(self.get()).into() }
     }
 
     /// Return true if this is a complex vector.
     fn is_complex(&self) -> bool {
-        unsafe { Rf_isComplex(self.get()) != 0 }
+        unsafe { Rf_isComplex(self.get()).into() }
     }
 
     /// Return true if this is an expression.
     fn is_expressions(&self) -> bool {
-        unsafe { Rf_isExpression(self.get()) != 0 }
+        unsafe { Rf_isExpression(self.get()).into() }
     }
 
     /// Return true if this is an environment.
     fn is_environment(&self) -> bool {
-        unsafe { Rf_isEnvironment(self.get()) != 0 }
+        unsafe { Rf_isEnvironment(self.get()).into() }
     }
 
     /// Return true if this is an environment.
     fn is_promise(&self) -> bool {
-        self.sexptype() == PROMSXP
+        self.sexptype() == SEXPTYPE::PROMSXP
     }
 
     /// Return true if this is a string.
     fn is_string(&self) -> bool {
-        unsafe { Rf_isString(self.get()) != 0 }
+        unsafe { Rf_isString(self.get()).into() }
     }
 
     /// Return true if this is an object (ie. has a class attribute).
     fn is_object(&self) -> bool {
-        unsafe { Rf_isObject(self.get()) != 0 }
+        unsafe { Rf_isObject(self.get()).into() }
     }
 
     /// Return true if this is a S4 object.
     fn is_s4(&self) -> bool {
-        unsafe { Rf_isS4(self.get()) != 0 }
+        unsafe { Rf_isS4(self.get()).into() }
     }
 
     /// Return true if this is an expression.
@@ -67,7 +77,7 @@ pub trait Rinternals: Types + Conversions {
 
     /// Get the source ref.
     fn get_current_srcref(val: i32) -> Robj {
-        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as raw::c_int)) }
+        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as std::ffi::c_int)) }
     }
 
     /// Get the source filename.
@@ -81,10 +91,8 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Convert to vectors of many kinds.
-    fn coerce_vector(&self, sexptype: u32) -> Robj {
-        single_threaded(|| unsafe {
-            Robj::from_sexp(Rf_coerceVector(self.get(), sexptype as SEXPTYPE))
-        })
+    fn coerce_vector(&self, sexptype: SEXPTYPE) -> Robj {
+        single_threaded(|| unsafe { Robj::from_sexp(Rf_coerceVector(self.get(), sexptype)) })
     }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
@@ -161,28 +169,18 @@ pub trait Rinternals: Types + Conversions {
 
     /// Find a variable in an environment.
     ///
-    /// See also [global_var()].
+    // //TODO: fix me, as this variable is hidden behind non-api as of this writing
+    // See also [global_var()].
     ///
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let iris_dataframe = global_env()
-    ///        .find_var(sym!(iris)).unwrap().eval_promise().unwrap();
-    ///    assert_eq!(iris_dataframe.is_frame(), true);
-    ///    assert_eq!(iris_dataframe.len(), 5);
     ///
-    ///    // Note: this may crash on some versions of windows which don't support unwinding.
-    ///    //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
-    /// }
-    /// ```
     fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
         let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
-        // Alterative:
+        // Alternative:
         // let mut env: Robj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
@@ -200,7 +198,7 @@ pub trait Rinternals: Types + Conversions {
         // }
         unsafe {
             let sexp = self.get();
-            if let Ok(var) = catch_r_error(|| Rf_findVar(key.get(), sexp)) {
+            if let Ok(var) = catch_r_error(|| get_var(key.get(), sexp)) {
                 if var != R_UnboundValue {
                     Ok(Robj::from_sexp(var))
                 } else {
@@ -212,6 +210,7 @@ pub trait Rinternals: Types + Conversions {
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// If this object is a promise, evaluate it, otherwise return the object.
     /// ```
     /// use extendr_api::prelude::*;
@@ -255,7 +254,7 @@ pub trait Rinternals: Types + Conversions {
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
     unsafe fn external_ptr_addr<T>(&self) -> *mut T {
-        R_ExternalPtrAddr(self.get()) as *mut T
+        R_ExternalPtrAddr(self.get()).cast()
     }
 
     /// Internal function used to implement `#[extendr]` impl
@@ -274,7 +273,7 @@ pub trait Rinternals: Types + Conversions {
     unsafe fn register_c_finalizer(&self, func: R_CFinalizer_t) {
         // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke the
         // finalizer on a shutdown of the R session as well.
-        single_threaded(|| R_RegisterCFinalizerEx(self.get(), func, 1));
+        single_threaded(|| R_RegisterCFinalizerEx(self.get(), func, Rboolean::TRUE));
     }
 
     /// Copy a vector and resize it.
@@ -292,108 +291,110 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Allocated an owned object of a certain type.
-    fn alloc_vector(sexptype: u32, len: usize) -> Robj {
+    fn alloc_vector(sexptype: SEXPTYPE, len: usize) -> Robj {
         single_threaded(|| unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
     }
 
     /// Return true if two arrays have identical dims.
     fn conformable(a: &Robj, b: &Robj) -> bool {
-        single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()) != 0 })
+        single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()).into() })
     }
 
     /// Return true if this is an array.
     fn is_array(&self) -> bool {
-        unsafe { Rf_isArray(self.get()) != 0 }
+        unsafe { Rf_isArray(self.get()).into() }
     }
 
     /// Return true if this is factor.
     fn is_factor(&self) -> bool {
-        unsafe { Rf_isFactor(self.get()) != 0 }
+        unsafe { Rf_isFactor(self.get()).into() }
     }
 
     /// Return true if this is a data frame.
     fn is_frame(&self) -> bool {
-        unsafe { Rf_isFrame(self.get()) != 0 }
+        unsafe { Rf_isFrame(self.get()).into() }
     }
 
     /// Return true if this is a function or a primitive (CLOSXP, BUILTINSXP or SPECIALSXP)
     fn is_function(&self) -> bool {
-        unsafe { Rf_isFunction(self.get()) != 0 }
+        unsafe { Rf_isFunction(self.get()).into() }
     }
 
     /// Return true if this is an integer vector (INTSXP) but not a factor.
     fn is_integer(&self) -> bool {
-        unsafe { Rf_isInteger(self.get()) != 0 }
+        unsafe { Rf_isInteger(self.get()).into() }
     }
 
     /// Return true if this is a language object (LANGSXP).
     fn is_language(&self) -> bool {
-        unsafe { Rf_isLanguage(self.get()) != 0 }
+        unsafe { Rf_isLanguage(self.get()).into() }
     }
 
     /// Return true if this is NILSXP or LISTSXP.
     fn is_pairlist(&self) -> bool {
-        unsafe { Rf_isList(self.get()) != 0 }
+        unsafe { Rf_isList(self.get()).into() }
     }
 
     /// Return true if this is a matrix.
     fn is_matrix(&self) -> bool {
-        unsafe { Rf_isMatrix(self.get()) != 0 }
+        unsafe { Rf_isMatrix(self.get()).into() }
     }
 
     /// Return true if this is NILSXP or VECSXP.
     fn is_list(&self) -> bool {
-        unsafe { Rf_isNewList(self.get()) != 0 }
+        unsafe { Rf_isNewList(self.get()).into() }
     }
 
     /// Return true if this is INTSXP, LGLSXP or REALSXP but not a factor.
     fn is_number(&self) -> bool {
-        unsafe { Rf_isNumber(self.get()) != 0 }
+        unsafe { Rf_isNumber(self.get()).into() }
     }
 
     /// Return true if this is a primitive function BUILTINSXP, SPECIALSXP.
     fn is_primitive(&self) -> bool {
-        unsafe { Rf_isPrimitive(self.get()) != 0 }
+        unsafe { Rf_isPrimitive(self.get()).into() }
     }
 
     /// Return true if this is a time series vector (see tsp).
     fn is_ts(&self) -> bool {
-        unsafe { Rf_isTs(self.get()) != 0 }
+        unsafe { Rf_isTs(self.get()).into() }
     }
 
     /// Return true if this is a user defined binop.
     fn is_user_binop(&self) -> bool {
-        unsafe { Rf_isUserBinop(self.get()) != 0 }
+        unsafe { Rf_isUserBinop(self.get()).into() }
     }
 
+    #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string(&self) -> bool {
-        unsafe { Rf_isValidString(self.get()) != 0 }
+        unsafe { extendr_ffi::Rf_isValidString(self.get()).into() }
     }
 
+    #[cfg(feature = "non-api")]
     /// Return true if this is a valid string.
     fn is_valid_string_f(&self) -> bool {
-        unsafe { Rf_isValidStringF(self.get()) != 0 }
+        unsafe { extendr_ffi::Rf_isValidStringF(self.get()).into() }
     }
 
     /// Return true if this is a vector.
     fn is_vector(&self) -> bool {
-        unsafe { Rf_isVector(self.get()) != 0 }
+        unsafe { Rf_isVector(self.get()).into() }
     }
 
     /// Return true if this is an atomic vector.
     fn is_vector_atomic(&self) -> bool {
-        unsafe { Rf_isVectorAtomic(self.get()) != 0 }
+        unsafe { Rf_isVectorAtomic(self.get()).into() }
     }
 
     /// Return true if this is a vector list.
     fn is_vector_list(&self) -> bool {
-        unsafe { Rf_isVectorList(self.get()) != 0 }
+        unsafe { Rf_isVectorList(self.get()).into() }
     }
 
     /// Return true if this is can be made into a vector.
     fn is_vectorizable(&self) -> bool {
-        unsafe { Rf_isVectorizable(self.get()) != 0 }
+        unsafe { Rf_isVectorizable(self.get()).into() }
     }
 
     /// Return true if this is RAWSXP.
@@ -410,7 +411,7 @@ pub trait Rinternals: Types + Conversions {
     /// This is used to wrap R objects.
     #[doc(hidden)]
     fn check_external_ptr_type<T>(&self) -> bool {
-        if self.sexptype() == libR_sys::EXTPTRSXP {
+        if self.sexptype() == SEXPTYPE::EXTPTRSXP {
             let tag = unsafe { self.external_ptr_tag() };
             if tag.as_str() == Some(std::any::type_name::<T>()) {
                 return true;
@@ -428,7 +429,7 @@ pub trait Rinternals: Types + Conversions {
     }
 
     fn is_package_env(&self) -> bool {
-        unsafe { R_IsPackageEnv(self.get()) != 0 }
+        unsafe { R_IsPackageEnv(self.get()).into() }
     }
 
     fn package_env_name(&self) -> Robj {
@@ -436,7 +437,7 @@ pub trait Rinternals: Types + Conversions {
     }
 
     fn is_namespace_env(&self) -> bool {
-        unsafe { R_IsNamespaceEnv(self.get()) != 0 }
+        unsafe { R_IsNamespaceEnv(self.get()).into() }
     }
 
     fn namespace_env_spec(&self) -> Robj {
@@ -450,33 +451,33 @@ pub trait Rinternals: Types + Conversions {
 
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altinteger(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == INTSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::INTSXP }
     }
 
     /// Returns `true` if this is an real ALTREP object.
     fn is_altreal(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == REALSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::REALSXP }
     }
 
     /// Returns `true` if this is an logical ALTREP object.
     fn is_altlogical(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == LGLSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::LGLSXP }
     }
 
     /// Returns `true` if this is a raw ALTREP object.
     fn is_altraw(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == RAWSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::RAWSXP }
     }
 
     /// Returns `true` if this is an integer ALTREP object.
     fn is_altstring(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == STRSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::STRSXP }
     }
 
     /// Returns `true` if this is an integer ALTREP object.
     #[cfg(use_r_altlist)]
     fn is_altlist(&self) -> bool {
-        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == VECSXP as i32 }
+        unsafe { ALTREP(self.get()) != 0 && TYPEOF(self.get()) == SEXPTYPE::VECSXP }
     }
 
     /// Generate a text representation of this object.
@@ -484,11 +485,11 @@ pub trait Rinternals: Types + Conversions {
         use crate as extendr_api;
         let strings: Strings = call!("deparse", self.as_robj())?.try_into()?;
         if strings.len() == 1 {
-            Ok(String::from(strings.elt(0).as_str()))
+            Ok(String::from(strings.elt(0).as_ref()))
         } else {
             Ok(strings
                 .iter()
-                .map(|s| s.as_str())
+                .map(|s| s.as_ref())
                 .collect::<Vec<_>>()
                 .join(""))
         }

@@ -1,5 +1,14 @@
 use super::*;
-
+// NOTE all of these symbol constants should be in their own module
+use extendr_ffi::{
+    R_BaseSymbol, R_BraceSymbol, R_Bracket2Symbol, R_BracketSymbol, R_ClassSymbol, R_DeviceSymbol,
+    R_DimNamesSymbol, R_DimSymbol, R_DollarSymbol, R_DotsSymbol, R_DoubleColonSymbol,
+    R_LastvalueSymbol, R_LevelsSymbol, R_MissingArg, R_ModeSymbol, R_NaRmSymbol, R_NameSymbol,
+    R_NamesSymbol, R_NamespaceEnvSymbol, R_PackageSymbol, R_PreviousSymbol, R_QuoteSymbol,
+    R_RowNamesSymbol, R_SeedsSymbol, R_SortListSymbol, R_SourceSymbol, R_SpecSymbol,
+    R_TripleColonSymbol, R_TspSymbol, R_UnboundValue, R_dot_Method, R_dot_defined,
+    R_dot_packageName, R_dot_target, PRINTNAME, TYPEOF,
+};
 /// Wrapper for creating symbol objects.
 ///
 /// ```
@@ -28,17 +37,17 @@ impl Symbol {
     pub fn from_string<S: AsRef<str>>(val: S) -> Self {
         let val = val.as_ref();
         Symbol {
-            robj: Robj::from_sexp(make_symbol(val)),
+            robj: unsafe { Robj::from_sexp(make_symbol(val)) },
         }
     }
 
     // Internal conversion for constant symbols.
-    fn from_sexp(sexp: SEXP) -> Symbol {
+    pub(crate) fn from_sexp(sexp: SEXP) -> Symbol {
         unsafe {
-            assert!(TYPEOF(sexp) == SYMSXP as i32);
+            assert!(TYPEOF(sexp) == SEXPTYPE::SYMSXP);
         }
         Symbol {
-            robj: Robj::from_sexp(sexp),
+            robj: unsafe { Robj::from_sexp(sexp) },
         }
     }
 
@@ -53,8 +62,7 @@ impl Symbol {
         unsafe {
             let sexp = self.robj.get();
             let printname = PRINTNAME(sexp);
-            assert!(TYPEOF(printname) as u32 == CHARSXP);
-            to_str(R_CHAR(printname) as *const u8)
+            rstr::charsxp_to_str(printname).unwrap()
         }
     }
 }
@@ -221,6 +229,7 @@ pub fn dot_target() -> Symbol {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate as extendr_api;
 
     #[test]
     fn test_constant_symbols() {

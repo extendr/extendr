@@ -6,7 +6,7 @@ struct Success {}
 impl TryFrom<&Robj> for Success {
     type Error = Error;
 
-    fn try_from(_: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(_: &Robj) -> Result<Self> {
         Ok(Success {})
     }
 }
@@ -17,7 +17,7 @@ struct Failure {}
 impl TryFrom<&Robj> for Failure {
     type Error = Error;
 
-    fn try_from(_: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(_: &Robj) -> Result<Self> {
         Err(Error::Other(String::new()))
     }
 }

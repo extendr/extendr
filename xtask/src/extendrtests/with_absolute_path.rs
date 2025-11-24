@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::path::Path;
 
-use toml_edit::{Document, InlineTable, Value};
+use toml_edit::{DocumentMut, InlineTable, Value};
 use xshell::Shell;
 
 use crate::extendrtests::path_helper::RCompatiblePath;
@@ -12,12 +12,12 @@ const RUST_FOLDER_PATH: &str = "tests/extendrtests/src/rust";
 const CARGO_TOML: &str = "Cargo.toml";
 
 #[derive(Debug)]
-pub(crate) struct DocumentHandle<'a> {
+pub(crate) struct DocumentMutHandle<'a> {
     document: Vec<u8>,
     shell: &'a Shell,
 }
 
-impl<'a> Drop for DocumentHandle<'a> {
+impl Drop for DocumentMutHandle<'_> {
     fn drop(&mut self) {
         let _rust_folder = self.shell.push_dir(RUST_FOLDER_PATH);
         self.shell
@@ -26,13 +26,16 @@ impl<'a> Drop for DocumentHandle<'a> {
     }
 }
 
-pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box<dyn Error>> {
+pub(crate) fn swap_extendr_api_path(
+    shell: &Shell,
+) -> Result<DocumentMutHandle<'_>, Box<dyn Error>> {
     let current_path = shell.current_dir();
     let _rust_folder = shell.push_dir(RUST_FOLDER_PATH);
 
     let original_cargo_toml_bytes = read_file_with_line_ending(shell, CARGO_TOML)?;
 
-    let original_cargo_toml: Document = std::str::from_utf8(&original_cargo_toml_bytes)?.parse()?;
+    let original_cargo_toml: DocumentMut =
+        std::str::from_utf8(&original_cargo_toml_bytes)?.parse()?;
 
     let mut cargo_toml = original_cargo_toml.clone();
 
@@ -41,24 +44,25 @@ pub(crate) fn swap_extendr_api_path(shell: &Shell) -> Result<DocumentHandle, Box
 
     let mut replacement = InlineTable::new();
 
-    let item = Value::from(get_replacement_path(&current_path));
+    let item = Value::from(get_replacement_path_extendr_api(&current_path));
     replacement.entry("path").or_insert(item);
     *extendr_api_entry = Value::InlineTable(replacement);
 
+    // save altered paths
     shell.write_file(CARGO_TOML, cargo_toml.to_string())?;
-    Ok(DocumentHandle {
+    Ok(DocumentMutHandle {
         document: original_cargo_toml_bytes,
         shell,
     })
 }
 
-fn get_replacement_path(path: &Path) -> String {
+fn get_replacement_path_extendr_api(path: &Path) -> String {
     let path = path.adjust_for_r();
 
     format!("{path}/extendr-api")
 }
 
-fn get_extendr_api_entry(document: &mut Document) -> Option<&mut Value> {
+fn get_extendr_api_entry(document: &mut DocumentMut) -> Option<&mut Value> {
     document
         .get_mut("patch")?
         .get_mut("crates-io")?

@@ -4,15 +4,16 @@ description = "Safe and user friendly bindings to the R programming language."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 
 [dependencies]
-libR-sys = { workspace = true }
-ctor = "0.2.4"
+extendr-ffi = { workspace = true }
+ctor = "0.6.0"
 
 [features]
 default = []
 
 # All features to test
-tests-all = ["libR-sys/use-bindgen"]
+tests-all = []

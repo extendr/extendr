@@ -1,18 +1,25 @@
 use extendr_api::{graphics::*, prelude::*};
 
-mod submodule;
-
-mod optional_ndarray;
-
-mod graphic_device;
-
-mod optional_either;
-
-mod raw_identifiers;
-
-mod memory_leaks;
-
 mod altrep;
+mod attributes;
+mod custom_errors;
+mod dataframe;
+mod errors;
+mod externalptr;
+mod graphic_device;
+mod hashmap;
+mod into_list_derive;
+mod leak;
+mod matrix;
+mod memory_leaks;
+mod optional_either;
+mod optional_faer;
+mod optional_ndarray;
+mod raw_identifiers;
+mod submodule;
+mod to_unique_character;
+mod tuple_conversions;
+mod typedsliceargs;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -24,7 +31,19 @@ fn hello_world() -> &'static str {
 #[extendr]
 fn do_nothing() {}
 
-// From: input/output conversion
+/// This is invisible by default
+#[extendr]
+fn result_unit() -> Result<()> {
+    Ok(())
+}
+
+/// Return a string but invisibly
+#[extendr(invisible)]
+fn invisible_string() -> &'static str {
+    "This should be invisible"
+}
+
+// TryFrom: conversions
 
 // Atomic types
 
@@ -71,60 +90,50 @@ fn double_vec(x: Vec<f64>) -> Vec<f64> {
 }
 
 // NA-related tests
-#[extendr(use_try_from = true)]
+#[extendr]
 fn try_rfloat_na() -> Rfloat {
     Rfloat::na()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn try_rint_na() -> Rint {
     Rint::na()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn check_rfloat_na(x: Rfloat) -> bool {
     x.is_na()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn check_rint_na(x: Rint) -> bool {
     x.is_na()
 }
 
 // Non-atomic types
-// TODO
-
-// TryFrom: conversions
-
+// TOD
 // Atomic types
-
-// Convert a vector of doubles to itself
-// x a vector of doubles
-#[extendr(use_try_from = true)]
-fn try_double_vec(x: Vec<f64>) -> Vec<f64> {
-    x
-}
 
 // Non-atomic types
 // TODO
 
 // Vector wrappers
-#[extendr(use_try_from = true)]
+#[extendr]
 fn get_doubles_element(x: Doubles, i: i32) -> Rfloat {
     x.elt(i as usize)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn get_integers_element(x: Integers, i: i32) -> Rint {
     x.elt(i as usize)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn get_logicals_element(x: Logicals, i: i32) -> Rbool {
     x.elt(i as usize)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn doubles_square(input: Doubles) -> Doubles {
     let mut result = Doubles::new(input.len());
 
@@ -135,18 +144,18 @@ fn doubles_square(input: Doubles) -> Doubles {
     result
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::from((y.re() * y.re(), 0.0.into()));
+        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0.into());
     }
 
     result
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn integers_square(input: Integers) -> Integers {
     let mut result = Integers::new(input.len());
 
@@ -157,7 +166,7 @@ fn integers_square(input: Integers) -> Integers {
     result
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn logicals_not(input: Logicals) -> Logicals {
     let mut result = Logicals::new(input.len());
 
@@ -170,8 +179,15 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Parsing
 
-#[extendr(use_try_from = true)]
-fn check_default(#[default = "NULL"] x: Robj) -> bool {
+// Deprecated default syntax
+//#[extendr]
+//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//    x.is_null()
+//}
+
+// New default syntax
+#[extendr]
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
     x.is_null()
 }
 
@@ -194,11 +210,7 @@ fn special_param_names(_x: i32, _y: i32) -> i32 {
 #[allow(non_snake_case)]
 fn __00__special_function_name() {}
 
-#[extendr(
-    use_try_from = true,
-    r_name = "test.rename.rlike",
-    mod_name = "test_rename_mymod"
-)]
+#[extendr(r_name = "test.rename.rlike", mod_name = "test_rename_mymod")]
 fn test_rename() -> i32 {
     1
 }
@@ -208,13 +220,14 @@ fn get_default_value(#[default = "42"] x: i32) -> i32 {
     x
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
     x.map(|y| y + 5)
 }
 
 // Class for testing
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClass {
     a: i32,
 }
@@ -263,6 +276,7 @@ impl MyClass {
 
 // Class for testing special names
 #[derive(Default, Debug)]
+#[extendr]
 struct __MyClass {}
 
 // Class for testing special names
@@ -279,6 +293,7 @@ impl __MyClass {
 
 // Class for testing (unexported)
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClassUnexported {
     a: i32,
 }
@@ -316,6 +331,8 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
+    fn result_unit;
+    fn invisible_string;
 
     fn double_scalar;
     fn int_scalar;
@@ -324,8 +341,6 @@ extendr_module! {
 
     fn char_vec;
     fn double_vec;
-
-    fn try_double_vec;
 
     fn get_doubles_element;
     fn get_integers_element;
@@ -360,10 +375,23 @@ extendr_module! {
 
     fn my_device;
 
-    use submodule;
-    use optional_ndarray;
-    use optional_either;
-    use raw_identifiers;
-    use memory_leaks;
     use altrep;
+    use attributes;
+    use dataframe;
+    use errors;
+    use hashmap;
+    use into_list_derive;
+    use memory_leaks;
+    use optional_either;
+    use optional_ndarray;
+    use optional_faer;
+    use raw_identifiers;
+    use submodule;
+    use tuple_conversions;
+    use typedsliceargs;
+    use externalptr;
+    use matrix;
+    use to_unique_character;
+    use custom_errors;
+    use leak;
 }

@@ -3,7 +3,7 @@ name: Documents
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   docs:
@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
@@ -20,7 +23,7 @@ jobs:
         env:
           RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/doc

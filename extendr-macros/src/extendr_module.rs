@@ -11,7 +11,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         implnames,
         usenames,
     } = module;
-    let modname = modname.unwrap();
+    let modname = modname.expect("cannot include unnamed modules");
     let modname_string = modname.to_string();
     let module_init_name = format_ident!("R_init_{}_extendr", modname);
 
@@ -61,7 +61,12 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 return_type: "Metadata",
                 func_ptr: #wrap_module_metadata_name as * const u8,
                 hidden: true,
+                invisible: None,
             });
+            let mut args = Vec::with_capacity(2usize);
+            args.push(extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None });
+            args.push(extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None });
+            let args = args;
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -69,13 +74,11 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 rust_name: #make_module_wrappers_name_string,
                 mod_name: #make_module_wrappers_name_string,
                 r_name: #make_module_wrappers_name_string,
-                args: vec![
-                    extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
-                    extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None },
-                    ],
+                args,
                 return_type: "String",
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
+                invisible: None,
             });
 
             extendr_api::metadata::Metadata {
@@ -102,10 +105,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 use extendr_api::robj::*;
                 use extendr_api::GetSexp;
                 let robj = Robj::from_sexp(use_symbols_sexp);
-                let use_symbols: bool = <bool>::from_robj(&robj).unwrap();
+                let use_symbols: bool = <bool>::try_from(&robj).unwrap();
 
                 let robj = Robj::from_sexp(package_name_sexp);
-                let package_name: &str = <&str>::from_robj(&robj).unwrap();
+                let package_name: &str = <&str>::try_from(&robj).unwrap();
 
                 extendr_api::Robj::from(
                     #module_metadata_name()

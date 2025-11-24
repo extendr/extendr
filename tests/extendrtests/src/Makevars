@@ -3,15 +3,16 @@ LIBDIR = $(TARGET_DIR)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 
-all: C_clean
+all: $(SHLIB) rust_clean
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=always
+	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=auto
 
-C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
+
+rust_clean:
+	rm -Rf $(CARGOTMP) $(TARGET_DIR)
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)

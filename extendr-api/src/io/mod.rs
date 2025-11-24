@@ -1,10 +1,4 @@
-pub enum PstreamFormat {
-    AnyFormat = 0,
-    AsciiFormat = 1,
-    BinaryFormat = 2,
-    XdrFormat = 3,
-    AsciihexFormat = 4,
-}
+pub type PstreamFormat = extendr_ffi::R_pstream_format_t;
 
 mod load;
 mod save;

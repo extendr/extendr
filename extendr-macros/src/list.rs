@@ -10,7 +10,7 @@ pub fn list(item: TokenStream) -> TokenStream {
     let nv = list.names_and_values();
 
     if nv.is_empty() {
-        TokenStream::from(quote!(List::default()))
+        TokenStream::from(quote!(extendr_api::wrapper::List::default()))
     } else {
         let values: Vec<proc_macro2::TokenStream> = nv
             .iter()

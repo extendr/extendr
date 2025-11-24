@@ -4,7 +4,7 @@
 #[test]
 fn test_try_from() {
     use extendr_api::scalar::{Rbool, Rcplx, Rfloat, Rint};
-    use extendr_api::{r, test, Result, Robj, TryFrom};
+    use extendr_api::{r, test, Robj, TryFrom};
     // use extendr_api::wrapper::{Integers, Doubles, Strings};
 
     macro_rules! test_matrix {

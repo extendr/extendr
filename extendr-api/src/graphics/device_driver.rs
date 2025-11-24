@@ -1,10 +1,11 @@
-use core::slice;
-
-use crate::*;
-use libR_sys::*;
-
 use super::{device_descriptor::*, Device, Raster, TextMetric};
-
+use crate::*;
+use core::slice;
+use extendr_ffi::{
+    pDevDesc, pGEcontext, DevDesc, GEaddDevice2, GEcreateDevDesc, GEinitDisplayList,
+    R_CheckDeviceAvailable, R_GE_checkVersionOrDie, R_GE_definitions, R_GE_gcontext, R_GE_version,
+    R_NilValue, Rboolean,
+};
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
 /// - `canClip`
@@ -396,7 +397,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // we just use `c.abs()`.
             //
             // [^1]: https://github.com/wch/r-source/blob/9bb47ca929c41a133786fa8fff7c70162bb75e50/src/include/R_ext/GraphicsDevice.h#L615-L617
-            if let Some(c) = std::char::from_u32(c.abs() as _) {
+            if let Some(c) = std::char::from_u32(c.unsigned_abs()) {
                 let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
                 let metric_info = data.char_metric(c, *gc, *dd);
                 *ascent = metric_info.ascent;
@@ -488,7 +489,7 @@ pub trait DeviceDriver: std::marker::Sized {
 
             // It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
             // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4235
-            let winding = winding != 0;
+            let winding = winding != Rboolean::FALSE;
 
             data.path(coords, winding, *gc, *dd);
         }
@@ -519,7 +520,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 rot,
                 // It seems `NA` is just treated as `true`. Probably it doesn't matter much here.
                 // c.f. https://github.com/wch/r-source/blob/6b22b60126646714e0f25143ac679240be251dbe/src/library/grDevices/src/devPS.c#L4062
-                interpolate != 0,
+                interpolate != Rboolean::FALSE,
                 *gc,
                 *dd,
             );
@@ -589,11 +590,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) -> Rboolean {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            if let Ok(confirm) = data.new_frame_confirm(*dd).try_into() {
-                confirm
-            } else {
-                false.into()
-            }
+            data.new_frame_confirm(*dd).into()
         }
 
         unsafe extern "C" fn device_driver_holdflush<T: DeviceDriver>(
@@ -610,11 +607,7 @@ pub trait DeviceDriver: std::marker::Sized {
             dd: pDevDesc,
         ) -> Rboolean {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
-            if let Ok(success) = data.locator(x, y, *dd).try_into() {
-                success
-            } else {
-                false.into()
-            }
+            data.locator(x, y, *dd).into()
         }
 
         unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(dd: pDevDesc, code: c_int) {
@@ -622,7 +615,6 @@ pub trait DeviceDriver: std::marker::Sized {
             data.eventHelper(*dd, code);
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setPattern<T: DeviceDriver>(
             pattern: SEXP,
             dd: pDevDesc,
@@ -633,7 +625,6 @@ pub trait DeviceDriver: std::marker::Sized {
             R_NilValue
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_releasePattern<T: DeviceDriver>(
             ref_: SEXP,
             dd: pDevDesc,
@@ -643,7 +634,6 @@ pub trait DeviceDriver: std::marker::Sized {
             // data.reelasePattern(ref_, *dd);
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setClipPath<T: DeviceDriver>(
             path: SEXP,
             ref_: SEXP,
@@ -655,7 +645,6 @@ pub trait DeviceDriver: std::marker::Sized {
             R_NilValue
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_releaseClipPath<T: DeviceDriver>(
             ref_: SEXP,
             dd: pDevDesc,
@@ -665,7 +654,6 @@ pub trait DeviceDriver: std::marker::Sized {
             // data.releaseClipPath(ref_, *dd);
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_setMask<T: DeviceDriver>(
             path: SEXP,
             ref_: SEXP,
@@ -677,7 +665,6 @@ pub trait DeviceDriver: std::marker::Sized {
             R_NilValue
         }
 
-        #[cfg(use_r_ge_version_14)]
         unsafe extern "C" fn device_driver_releaseMask<T: DeviceDriver>(ref_: SEXP, dd: pDevDesc) {
             let data = ((*dd).deviceSpecific as *mut T).as_mut().unwrap();
             // TODO
@@ -753,12 +740,12 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).gamma = 1.0;
 
             (*p_dev_desc).canClip = match <T>::CLIPPING_STRATEGY {
-                ClippingStrategy::Engine => 0,
-                _ => 1,
+                ClippingStrategy::Engine => Rboolean::FALSE,
+                _ => Rboolean::TRUE,
             };
 
             // As described above, gamma is not supported.
-            (*p_dev_desc).canChangeGamma = 0;
+            (*p_dev_desc).canChangeGamma = Rboolean::FALSE;
 
             (*p_dev_desc).canHAdj = CanHAdjOption::VariableAdjustment as _;
 
@@ -773,14 +760,14 @@ pub trait DeviceDriver: std::marker::Sized {
             // A raw pointer to the data specific to the device.
             (*p_dev_desc).deviceSpecific = deviceSpecific;
 
-            (*p_dev_desc).displayListOn = if <T>::USE_PLOT_HISTORY { 1 } else { 0 };
+            (*p_dev_desc).displayListOn = <T>::USE_PLOT_HISTORY.into();
 
             // These are currently not used, so just set FALSE.
-            (*p_dev_desc).canGenMouseDown = 0;
-            (*p_dev_desc).canGenMouseMove = 0;
-            (*p_dev_desc).canGenMouseUp = 0;
-            (*p_dev_desc).canGenKeybd = 0;
-            (*p_dev_desc).canGenIdle = 0;
+            (*p_dev_desc).canGenMouseDown = Rboolean::FALSE;
+            (*p_dev_desc).canGenMouseMove = Rboolean::FALSE;
+            (*p_dev_desc).canGenMouseUp = Rboolean::FALSE;
+            (*p_dev_desc).canGenKeybd = Rboolean::FALSE;
+            (*p_dev_desc).canGenIdle = Rboolean::FALSE;
 
             // The header file says:
             //
@@ -788,7 +775,7 @@ pub trait DeviceDriver: std::marker::Sized {
             //
             // It seems no implementation sets this, so this is probably what is
             // modified on the engine's side.
-            (*p_dev_desc).gettingEvent = 0;
+            (*p_dev_desc).gettingEvent = Rboolean::FALSE;
 
             (*p_dev_desc).activate = Some(device_driver_activate::<T>);
             (*p_dev_desc).circle = Some(device_driver_circle::<T>);
@@ -829,7 +816,7 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).newFrameConfirm = Some(device_driver_new_frame_confirm::<T>);
 
             // UTF-8 support
-            (*p_dev_desc).hasTextUTF8 = if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 };
+            (*p_dev_desc).hasTextUTF8 = <T>::ACCEPT_UTF8_TEXT.into();
             (*p_dev_desc).textUTF8 = if <T>::ACCEPT_UTF8_TEXT {
                 Some(device_driver_text::<T>)
             } else {
@@ -840,7 +827,7 @@ pub trait DeviceDriver: std::marker::Sized {
             } else {
                 None
             };
-            (*p_dev_desc).wantSymbolUTF8 = if <T>::ACCEPT_UTF8_TEXT { 1 } else { 0 };
+            (*p_dev_desc).wantSymbolUTF8 = <T>::ACCEPT_UTF8_TEXT.into();
 
             // R internals says:
             //
@@ -850,7 +837,7 @@ pub trait DeviceDriver: std::marker::Sized {
             //
             // It seems this is used only by plot3d, so FALSE should be appropriate in
             // most of the cases.
-            (*p_dev_desc).useRotatedTextInContour = 0;
+            (*p_dev_desc).useRotatedTextInContour = Rboolean::FALSE;
 
             (*p_dev_desc).eventEnv = empty_env().get();
             (*p_dev_desc).eventHelper = Some(device_driver_eventHelper::<T>);
@@ -886,24 +873,21 @@ pub trait DeviceDriver: std::marker::Sized {
             // version 15 (i.e. R 4.2), the features in API v13 & v14 (i.e. R
             // 4.1) are not optional. We need to provide the placeholder
             // functions for it.
-            #[cfg(use_r_ge_version_14)]
-            {
-                (*p_dev_desc).setPattern = Some(device_driver_setPattern::<T>);
-                (*p_dev_desc).releasePattern = Some(device_driver_releasePattern::<T>);
+            (*p_dev_desc).setPattern = Some(device_driver_setPattern::<T>);
+            (*p_dev_desc).releasePattern = Some(device_driver_releasePattern::<T>);
 
-                (*p_dev_desc).setClipPath = Some(device_driver_setClipPath::<T>);
-                (*p_dev_desc).releaseClipPath = Some(device_driver_releaseClipPath::<T>);
+            (*p_dev_desc).setClipPath = Some(device_driver_setClipPath::<T>);
+            (*p_dev_desc).releaseClipPath = Some(device_driver_releaseClipPath::<T>);
 
-                (*p_dev_desc).setMask = Some(device_driver_setMask::<T>);
-                (*p_dev_desc).releaseMask = Some(device_driver_releaseMask::<T>);
+            (*p_dev_desc).setMask = Some(device_driver_setMask::<T>);
+            (*p_dev_desc).releaseMask = Some(device_driver_releaseMask::<T>);
 
-                (*p_dev_desc).deviceVersion = R_GE_definitions as _;
+            (*p_dev_desc).deviceVersion = R_GE_definitions as _;
 
-                (*p_dev_desc).deviceClip = match <T>::CLIPPING_STRATEGY {
-                    ClippingStrategy::Device => 1,
-                    _ => 0,
-                };
-            }
+            (*p_dev_desc).deviceClip = match <T>::CLIPPING_STRATEGY {
+                ClippingStrategy::Device => Rboolean::TRUE,
+                _ => Rboolean::FALSE,
+            };
 
             #[cfg(use_r_ge_version_15)]
             {
@@ -916,9 +900,8 @@ pub trait DeviceDriver: std::marker::Sized {
                 (*p_dev_desc).fillStroke = None;
 
                 (*p_dev_desc).capabilities = None;
-            }
-        } // unsafe ends here
-
+            } // unsafe ends here
+        }
         let device_name = CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {

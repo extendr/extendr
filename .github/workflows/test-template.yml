@@ -1,0 +1,199 @@
+name: Test Template (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      test-matrix:
+        description: 'JSON string defining the test matrix'
+        required: true
+        type: string
+
+# cargo error handling is wrapped by ci-cargo, for simplicity and better logging.
+# To use ci-cargo in a step, source ci-cargo.ps1 (using `. ./ci-cargo.ps`, note the extra dot in front).
+# ci-cargo does not handle correctly -- separator, so wrap it in quotes ('--')
+# A special named parameter called `ActionName` can be used to set the name of current ci-cargo action,
+# used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
+jobs:
+  tests:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ${{ fromJSON(inputs.test-matrix) }}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      REXTENDR_SKIP_DEV_TESTS: TRUE
+
+      # This environment variable enables support for pseudo multi-target cargo builds.
+      # Current stable Rust does not support multi-targeting,
+      # see https://github.com/rust-lang/cargo/issues/8176
+      # The variable is treated as a comma-separated list of valid Rust targets.
+      # 'default' value emits no '--target' flag.
+      # E.g.: BUILD_TARGETS=i686-pc-windows-gnu,x86_64-pc-windows-gnu builds two times,
+      # each time providing '--target=*-pc-windows-gnu' flag to cargo.
+      BUILD_TARGETS: default
+
+    # PowerShell core is available on all platforms and can be used to unify scripts
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          components: rustfmt, clippy
+
+      # Add rust-cache for faster builds
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ matrix.config.os }}-${{ matrix.config.rust-version }}
+          cache-on-failure: true
+
+      # Add sccache for compilation caching
+      - name: Setup sccache
+        uses: mozilla-actions/sccache-action@v0.0.9
+
+      - name: Configure sccache
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "RUSTC_WRAPPER=sccache" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          rtools-version: ${{ matrix.config.rtools-version }}
+          use-public-rspm: true
+
+      - name: Configure Windows
+        if: startsWith(runner.os, 'Windows')
+        run: |
+          $rtools_home = "C:\rtools${{ matrix.config.rtools-version }}"
+
+          # c.f. https://github.com/wch/r-source/blob/f1501504df8df1668a57d3a1b6f80167f24441d3/src/library/profile/Rprofile.windows#L70-L71
+          echo "${rtools_home}\x86_64-w64-mingw32.static.posix\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "${rtools_home}\usr\bin"                                  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+          echo "$(Rscript.exe -e 'cat(normalizePath(R.home()))')\bin\x64"  | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append ;
+
+          # Add target
+          rustup target add x86_64-pc-windows-gnu
+          echo "BUILD_TARGETS=x86_64-pc-windows-gnu" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append ;
+
+          # The following lines add two tweaks:
+          #
+          #  1. Change the linker name to "x86_64-w64-mingw32.static.posix-gcc.exe".
+          #  2. Add empty libgcc_s.a and libgcc_eh.a, and add them to the compiler's
+          #     library search paths via `LIBRARY_PATH` envvar.
+          #
+          # The first tweak is needed because Rtools42 doesn't contain
+          # "x86_64-w64-mingw32-gcc," which `rustc` uses as the default linker
+          # for the `x86_64-pc-windows-gnu` target.
+          #
+          # If we use the Rtools' toolchain, the second tweak is also required.
+          # `rustc` adds `-lgcc_eh` and `-lgcc_s` flags to the compiler, but
+          # Rtools' GCC doesn't have `libgcc_eh` or `libgcc_s` due to the
+          # compilation settings. So, in order to please the compiler, we need
+          # to add empty `libgcc_eh` or `libgcc_s` to the library search paths.
+          #
+          # For more details, please refer to https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
+
+          New-Item -Path libgcc_mock -Type Directory
+          New-Item -Path libgcc_mock\libgcc_eh.a -Type File
+          New-Item -Path libgcc_mock\libgcc_s.a -Type File
+
+          New-Item -Path .cargo -ItemType Directory -Force
+          $pwd_slash = echo "${PWD}" | % {$_ -replace '\\','/'}
+          @"
+          [target.x86_64-pc-windows-gnu]
+          linker = "x86_64-w64-mingw32.static.posix-gcc.exe"
+
+          [env]
+          LIBRARY_PATH = "${pwd_slash}/libgcc_mock"
+          "@ | Out-File -FilePath .cargo/config.toml -Encoding utf8 -Append ;
+        env:
+          RUST_TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+      # This is required for ubuntu r-devel
+      # 'Del alias:R' removes 'R' alias which prevents running R
+      - name: Configure Linux
+        if: startsWith(runner.os, 'linux')
+        run: |
+          Del alias:R
+          echo "LD_LIBRARY_PATH=$(R -s -e 'cat(normalizePath(R.home()))')/lib" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
+      - name: Check code formatting
+        if: matrix.config.check_fmt
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr check-fmt
+
+      # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
+      # Required by Windows builds, does not affect other platforms
+      - name: Build
+        run: |
+          . ./ci-cargo.ps1
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            ci-cargo build $(if($target -ne 'default') {"--target=$target"} ) -ActionName "Building for $target target"
+          }
+
+      # For each target in the BUILD_TARGETS comma-separated list, run cargo test with appropriate target
+      # Required by Windows builds, does not affect other platforms
+      # ! ci-cargo requires '--' to be wrapped in quotes (passed as an explicit string)
+      - name: Run tests
+        run: |
+          . ./ci-cargo.ps1
+          foreach($target in ($env:BUILD_TARGETS).Split(',')) {
+            $features = "${{ matrix.config.features }}"
+            if ($features -eq "full-functionality") {
+               $testArgs += "--test-threads=1"
+            }
+            # Note: no feature is specified, which means such features like graphics, serde, ndarray, and num-complex are not tested here.
+            ci-cargo test --features ${{ matrix.config.features }} $(if($target -ne 'default') {"--target=$target"} ) '--' --nocapture @( $testArgs ) -ActionName "Testing for $target target"
+          }
+
+      - name: Install dependencies for extendrtests and rcmdcheck
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          install-pandoc: false
+          install-quarto: false
+          cache-version: 4
+          working-directory: tests/extendrtests
+          extra-packages: |
+            any::rcmdcheck
+            github::extendr/rextendr
+
+      # TODO: allow warnings on oldrel (cf., https://stat.ethz.ch/pipermail/r-package-devel/2023q2/009229.html)
+      - name: Check R version
+        id: error-on
+        run: |
+          output <- Sys.getenv("GITHUB_OUTPUT")
+          if (.Platform$OS.type == "windows" && getRversion() < "4.3.0") {
+            cat('level=error', file = output, append = TRUE)
+          } else {
+            cat('level=warning', file = output, append = TRUE)
+          }
+        shell: Rscript {0}
+
+      - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
+
+      - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ format('{0}-{1}-r{2}-rust-version{3}-{4}-results', runner.os, runner.arch, matrix.config.r, matrix.config.rust-version, matrix.config.id || strategy.job-index) }}
+          path: extendrtests_check
+
+      # Print sccache stats at the end
+      - name: Print sccache stats
+        run: sccache --show-stats

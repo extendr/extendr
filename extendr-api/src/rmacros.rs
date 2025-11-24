@@ -4,7 +4,7 @@
 
 /// Convert a rust expression to an R object.
 ///
-/// Shorthand for Robj::from(x).
+/// Shorthand for `Robj::from(x)`.
 ///
 /// Example:
 /// ```
@@ -29,7 +29,7 @@
 #[macro_export]
 macro_rules! r {
     ($e: expr) => {
-        Robj::from($e)
+        extendr_api::Robj::from($e)
     };
 }
 
@@ -37,18 +37,6 @@ macro_rules! r {
 /// or a global variable if no such variable exists.
 ///
 /// Variables with embedded "." may not work.
-/*
-TODO: As of R 4.1.0, base env cannot be modifed, which makes it difficult to
-      test outside of R process, so this doc test is disabled for now. See #211
-      for the details.
-*/
-/// ```no_run
-/// use extendr_api::prelude::*;
-/// test! {
-///     current_env().set_local(sym!(myvar), 1.0);
-///     assert_eq!(var!(myvar), Ok(r!(1.0)));
-/// }
-/// ```
 #[macro_export]
 macro_rules! var {
     ($($tokens: tt)*) => {{
@@ -59,13 +47,6 @@ macro_rules! var {
 /// Get a global variable.
 ///
 /// Variables with embedded "." may not work.
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///      // The "iris" dataset is a dataframe.
-///      assert_eq!(global!(iris)?.is_frame(), true);
-/// }
-/// ```
 #[macro_export]
 macro_rules! global {
     ($($tokens: tt)*) => {{
@@ -194,6 +175,8 @@ macro_rules! reprintln {
 /// `#[cfg(test)]`) or in doc strings. If it is used in library code that
 /// gets incorporated into an R package, R CMD check will complain about
 /// non-API calls.
+///
+/// [`extendr_engine`]: https://extendr.github.io/extendr/extendr_engine/
 #[macro_export]
 macro_rules! test {
     () => {
@@ -205,7 +188,7 @@ macro_rules! test {
 
             // this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
-            fn test<F: FnOnce() -> Result<()>>(f: F) {
+            fn test<F: FnOnce() -> extendr_api::Result<()>>(f: F) {
                 extendr_engine::start_r();
                 f().unwrap();
             }

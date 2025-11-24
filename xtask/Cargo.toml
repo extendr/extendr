@@ -2,7 +2,6 @@
 name = "xtask"
 description = "Facilitates extendr-developer tasks through `cargo`"
 license.workspace = true
-rust-version.workspace = true
 repository.workspace = true
 version.workspace = true
 edition.workspace = true
@@ -10,6 +9,6 @@ authors.workspace = true
 publish = false
 
 [dependencies]
-clap = { version = "4.4.6", features = ["derive"] }
-toml_edit = "0.20.2"
-xshell = "0.2.5"
+clap = { version = "4.4", features = ["derive"] }
+toml_edit = "0.22"
+xshell = "0.2"

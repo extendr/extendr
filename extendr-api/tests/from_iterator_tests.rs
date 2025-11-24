@@ -6,6 +6,7 @@ use extendr_api::prelude::*;
 // #[extendr]
 fn protect_lim2(n: i32) -> List {
     #[derive(Debug)]
+    #[allow(dead_code)]
     struct PlzBreak(i32);
 
     let n = n as usize;
@@ -18,9 +19,7 @@ fn protect_lim2(n: i32) -> List {
 // #[extendr]
 fn prot_strs(n: i32) -> Strings {
     let n = n as usize;
-    (0..n)
-        .map(|_| Rstr::from_string("val"))
-        .collect::<Strings>()
+    (0..n).map(|_| Rstr::from("val")).collect::<Strings>()
 }
 
 #[test]
@@ -46,7 +45,7 @@ fn test_with_gc_torture_small() {
 #[test]
 fn test_with_gc_torture_large() {
     test!(
-        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {libR_sys::Rf_runif(0., 100.)}));
+        let x = [0_f64; 150].map(|_|single_threaded(||unsafe {extendr_ffi::Rf_runif(0., 100.)}));
         R!("gctorture(on = TRUE)")?;
         let list: List = x.into_iter().collect();
         R!("gctorture(on = FALSE)")?;
@@ -62,7 +61,7 @@ fn test_with_gc_torture_strings() {
         let qq_r_character_vec: Strings = question_quote.into_iter().collect();
         R!("gctorture(on = FALSE)")?;
         // Strings::from_values is the same as `.collect`.
-        let qq_directly = Strings::from_robj(&Robj::from(question_quote)).unwrap();
+        let qq_directly = Strings::try_from(&Robj::from(question_quote)).unwrap();
         assert_eq!(qq_r_character_vec, qq_directly);
     );
 }

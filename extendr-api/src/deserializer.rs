@@ -22,7 +22,7 @@ where
     Ok(t)
 }
 
-// Allow errors to popagate to extendr errors.
+// Allow errors to propagate to extendr errors.
 impl serde::de::Error for Error {
     fn custom<T>(msg: T) -> Self
     where
@@ -161,18 +161,22 @@ impl<'de> Deserializer<'de> for Rbool {
 impl<'de> Deserializer<'de> for &'de Rstr {
     type Error = Error;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        unimplemented!()
+        if self.is_na() {
+            Err(Error::MustNotBeNA(self.robj.clone()))
+        } else {
+            visitor.visit_borrowed_str(self)
+        }
     }
 
     fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_borrowed_str(self.as_str())
+        visitor.visit_borrowed_str(self)
     }
 
     forward_to_deserialize_any! {
@@ -420,7 +424,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
         let s = <&str>::try_from(self.clone())?;
         let mut c = s.chars();
         if let Some(ch) = c.next() {
-            if c.next() == None {
+            if c.next().is_none() {
                 return visitor.visit_char(ch);
             }
         }
@@ -467,7 +471,6 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        #![allow(clippy::if_same_then_else)]
         if let Rany::Null(_) = self.as_any() {
             visitor.visit_none()
         } else if self.is_na() {
@@ -522,15 +525,15 @@ impl<'de> Deserializer<'de> for &'de Robj {
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Integers(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Doubles(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Logicals(val) => {
-                let lg = SliceGetter { list: &*val };
+                let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
             Rany::Strings(_val) => {
@@ -802,8 +805,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
             keys.push(key);
             values.push(value);
         }
-
-        Ok(List::from_values(values).set_names(keys).unwrap())
+        let mut result = List::from_values(values);
+        result.set_names(keys).unwrap();
+        Ok(result.into())
     }
 
     fn visit_unit<E>(self) -> std::result::Result<Self::Value, E>
@@ -1121,7 +1125,7 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::from_string(<&str>::na()))
+        Ok(Rstr::na())
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -1135,7 +1139,7 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::from_string(<&str>::na()))
+        Ok(Rstr::na())
     }
 }
 

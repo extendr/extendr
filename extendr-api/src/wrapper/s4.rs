@@ -1,6 +1,34 @@
 //! S4 class support.
+//!
+//! It is not possible to create an S4 class from R's C-API, and thus it is
+//! not possible to do so in Rust. But an S4 class can be instantiated.
+//!
+//! Thus, the S4 class definition must be evaluated prior to using [`S4::new`].
+//! Conveniently, to inline the defintion of an S4 class with R, one can
+//! use [`S4::set_class`].
+//!
+//! Ideally, in an R-package setting, there will be no calls to `set_class`,
+//! and the definition of an S4-class will be present in the `/R` folder.
+//!
+//! ```r
+//! person_class <- setClass(
+//!   "person",
+//!   slots = c(name = "character", age = "integer")
+//! )
+//!
+//! person_class(name = "Lubo", age = 74L)
+//! #> An object of class "person"
+//! #> Slot "name":
+//! #> [1] "Lubo"
+//! #>
+//! #> Slot "age":
+//! #> [1] 74
+//! ```
+//! Now, `person` can be instantiated from Rust.
+//!
 
 use super::*;
+use extendr_ffi::{R_do_slot, R_do_slot_assign, R_has_slot};
 
 #[derive(PartialEq, Clone)]
 pub struct S4 {
@@ -10,7 +38,10 @@ pub struct S4 {
 impl S4 {
     /// Create a S4 class.
     ///
+    /// Equivalent to R's `setClass`.
+    ///
     /// Example:
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     ///
@@ -158,5 +189,14 @@ impl S4 {
 impl std::fmt::Debug for S4 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("S4").finish()
+    }
+}
+
+impl From<Option<S4>> for Robj {
+    fn from(value: Option<S4>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
     }
 }

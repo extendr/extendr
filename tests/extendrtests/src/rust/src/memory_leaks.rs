@@ -1,21 +1,11 @@
 use extendr_api::prelude::*;
 
 #[extendr]
-fn leak_implicit_strings(x: Strings) -> String {
-    x.len().to_string()
-}
-
-#[extendr]
-fn leak_implicit_doubles(x: Doubles) -> String {
-    x.len().to_string()
-}
-
-#[extendr(use_try_from = true)]
 fn leak_arg2_try_implicit_strings(_y: Doubles, x: Strings) -> String {
     x.len().to_string()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn leak_arg2_try_implicit_doubles(_y: Doubles, x: Doubles) -> String {
     x.len().to_string()
 }
@@ -47,8 +37,6 @@ fn leak_negative_control(x: Robj) {
 extendr_module! {
     mod memory_leaks;
 
-    fn leak_implicit_strings;
-    fn leak_implicit_doubles;
     fn leak_arg2_try_implicit_strings;
     fn leak_arg2_try_implicit_doubles;
     fn leak_unwrap_strings;

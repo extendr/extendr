@@ -1,0 +1,29 @@
+error: expected &self or &mut self
+  --> tests/extendr_impl/extendr_impl_fail.rs:10:23
+   |
+10 |     fn take_ownership(self) {}
+   |                       ^^^^
+
+error: expected &self or &mut self
+  --> tests/extendr_impl/extendr_impl_fail.rs:17:23
+   |
+17 |     fn take_ownership(self: Self) {}
+   |                       ^^^^^^^^^^
+
+error: expected &self or &mut self
+  --> tests/extendr_impl/extendr_impl_fail.rs:24:23
+   |
+24 |     fn take_ownership(self: Foo3) {}
+   |                       ^^^^^^^^^^
+
+error: expected &self or &mut self
+  --> tests/extendr_impl/extendr_impl_fail.rs:30:25
+   |
+30 |     fn return_ownership(self) -> Self {}
+   |                         ^^^^
+
+error: expected &self or &mut self
+  --> tests/extendr_impl/extendr_impl_fail.rs:37:23
+   |
+37 |     fn take_ownership(self: Self) -> Foo5 {}
+   |                       ^^^^^^^^^^

@@ -1,7 +1,28 @@
+//! `ExternalPtr` is a way to leak Rust allocated data to R, forego deallocation
+//! to R and its GC strategy.
+//!
+//! An `ExternalPtr` encompasses three values, an owned pointer to the Rust
+//! type, a `tag` and a `prot`. Tag is a helpful naming of the type, but
+//! it doesn't offer any solid type-checking capability. And `prot` is meant
+//! to be R values, that are supposed to be kept together with the `ExternalPtr`.
+//!
+//! Neither `tag` nor `prot` are attributes, therefore to use `ExternalPtr` as
+//! a class in R, you must decorate it with a class-attribute manually.
+//!
+//! **Beware**: Equality (by way of `PartialEq`) does not imply equality of value,
+//! but equality of pointer. Two objects stored as `ExternalPtr` may be equal
+//! in value, but be two distinct entities, with distinct pointers.
+//!
+//! Instead, rely on `AsRef` to make _by value_ comparison, e.g. to compare
+//! for equality of
+//! two instances of `ExternalPtr<T>` by value, `a.as_ref() == b.as_ref()`.
+//!
 use super::*;
-use std::any::Any;
-use std::fmt::Debug;
-
+use extendr_ffi::{
+    R_ClearExternalPtr, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
+    R_MakeExternalPtr, R_NilValue, R_SetExternalPtrTag,
+};
+use std::{any::Any, fmt::Debug};
 /// Wrapper for creating R objects containing any Rust object.
 ///
 /// ```
@@ -14,17 +35,34 @@ use std::fmt::Debug;
 ///     assert_eq!(*extptr2, 1);
 /// }
 /// ```
-///
-#[derive(PartialEq, Clone)]
-pub struct ExternalPtr<T: Debug + 'static> {
+#[repr(transparent)]
+pub struct ExternalPtr<T> {
     /// This is the contained Robj.
     pub(crate) robj: Robj,
 
     /// This is a zero-length object that holds the type of the object.
-    marker: std::marker::PhantomData<T>,
+    _marker: std::marker::PhantomData<T>,
 }
 
-impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
+/// Manual implementation of `PartialEq`, because the constraint `T: PartialEq`
+/// is not necessary.
+impl<T> PartialEq for ExternalPtr<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.robj == other.robj && self._marker == other._marker
+    }
+}
+
+/// Manual implementation of `Clone` trait, because the assumed constraint `T: Clone` is not necessary.
+impl<T> Clone for ExternalPtr<T> {
+    fn clone(&self) -> Self {
+        Self {
+            robj: self.robj.clone(),
+            _marker: self._marker,
+        }
+    }
+}
+
+impl<T> robj::GetSexp for ExternalPtr<T> {
     unsafe fn get(&self) -> SEXP {
         self.robj.get()
     }
@@ -45,24 +83,27 @@ impl<T: Debug + 'static> robj::GetSexp for ExternalPtr<T> {
 }
 
 /// len() and is_empty()
-impl<T: Debug + 'static> Length for ExternalPtr<T> {}
+impl<T> Length for ExternalPtr<T> {}
 
 /// rtype() and rany()
-impl<T: Debug + 'static> Types for ExternalPtr<T> {}
+impl<T> Types for ExternalPtr<T> {}
+
+/// `set_attrib`
+impl<T> Attributes for ExternalPtr<T> {}
 
 /// as_*()
-impl<T: Debug + 'static> Conversions for ExternalPtr<T> {}
+impl<T> Conversions for ExternalPtr<T> {}
 
 /// find_var() etc.
-impl<T: Debug + 'static> Rinternals for ExternalPtr<T> {}
+impl<T> Rinternals for ExternalPtr<T> {}
 
 /// as_typed_slice_raw() etc.
-impl<T: Debug + 'static> Slices for ExternalPtr<T> {}
+impl<T> Slices for ExternalPtr<T> {}
 
 /// dollar() etc.
-impl<T: Debug + 'static> Operators for ExternalPtr<T> {}
+impl<T> Operators for ExternalPtr<T> {}
 
-impl<T: Debug + 'static> Deref for ExternalPtr<T> {
+impl<T: 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
@@ -71,14 +112,14 @@ impl<T: Debug + 'static> Deref for ExternalPtr<T> {
     }
 }
 
-impl<T: Debug + 'static> DerefMut for ExternalPtr<T> {
+impl<T: 'static> DerefMut for ExternalPtr<T> {
     /// This allows us to treat the Robj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
     }
 }
 
-impl<T: Any + Debug> ExternalPtr<T> {
+impl<T: 'static> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -88,15 +129,24 @@ impl<T: Any + Debug> ExternalPtr<T> {
     pub fn new(val: T) -> Self {
         single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.
-            let boxed = Box::new(val);
+            let boxed: Box<dyn Any> = Box::new(val);
+            let boxed: Box<Box<dyn Any>> = Box::new(boxed);
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
+            let robj = {
+                let boxed_ptr = Box::into_raw(boxed);
+                let prot = Robj::from(());
+                let type_name: Robj = std::any::type_name::<T>().into();
 
-            extern "C" fn finalizer<T>(x: SEXP) {
+                Robj::from_sexp(single_threaded(|| {
+                    R_MakeExternalPtr(boxed_ptr.cast(), type_name.get(), prot.get())
+                }))
+            };
+
+            extern "C" fn finalizer(x: SEXP) {
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(x) as *mut T;
+                    let ptr = R_ExternalPtrAddr(x).cast::<Box<dyn Any>>();
 
                     // Free the `tag`, which is the type-name
                     R_SetExternalPtrTag(x, R_NilValue);
@@ -111,12 +161,12 @@ impl<T: Any + Debug> ExternalPtr<T> {
             }
 
             // Tell R about our finalizer
-            robj.register_c_finalizer(Some(finalizer::<T>));
+            robj.register_c_finalizer(Some(finalizer));
 
             // Return an object in a wrapper.
             Self {
                 robj,
-                marker: std::marker::PhantomData,
+                _marker: std::marker::PhantomData,
             }
         })
     }
@@ -135,46 +185,139 @@ impl<T: Any + Debug> ExternalPtr<T> {
 
     /// Get the "address" field of an external pointer.
     /// Normally, we will use Deref to do this.
-    pub fn addr<'a>(&self) -> &'a T {
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn addr(&self) -> &T {
+        self.try_addr().unwrap()
+    }
+
+    /// Get the "address" field of an external pointer as a mutable reference.
+    /// Normally, we will use DerefMut to do this.
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn addr_mut(&mut self) -> &mut T {
+        self.try_addr_mut().unwrap()
+    }
+
+    /// Get the "address" field of an external pointer.
+    /// Normally, we will use Deref to do this.
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn try_addr(&self) -> Result<&T> {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *const T;
-            &*ptr as &'a T
+            R_ExternalPtrAddr(self.robj.get())
+                .cast::<Box<dyn Any>>()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
+                .map(|x| x.downcast_ref::<T>().unwrap())
         }
     }
 
     /// Get the "address" field of an external pointer as a mutable reference.
     /// Normally, we will use DerefMut to do this.
-    pub fn addr_mut(&mut self) -> &mut T {
+    ///
+    /// ## Panics
+    ///
+    /// When the underlying pointer is C `NULL`.
+    pub fn try_addr_mut(&mut self) -> Result<&mut T> {
         unsafe {
-            let ptr = R_ExternalPtrAddr(self.robj.get()) as *mut T;
-            &mut *ptr as &mut T
+            R_ExternalPtrAddr(self.robj.get_mut())
+                .cast::<Box<dyn Any>>()
+                .as_mut()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
+                .map(|x| x.downcast_mut::<T>().unwrap())
         }
     }
 }
 
-impl<T: Any + Debug> TryFrom<&Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if !value.is_external_pointer() {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
+
+        // check type by downcasting
+        let boxed_ptr = unsafe {
+            value
+                .external_ptr_addr::<Box<dyn Any>>()
+                .cast_const()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
+        };
+
+        if boxed_ptr.downcast_ref::<T>().is_none() {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
+        unsafe { Ok(std::mem::transmute::<&Robj, &ExternalPtr<T>>(value)) }
+    }
+}
+
+impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: &mut Robj) -> Result<Self> {
+        if !value.is_external_pointer() {
+            return Err(Error::ExpectedExternalPtr(value.clone()));
+        }
+
+        // check type by downcasting
+        let boxed_ptr = unsafe {
+            value
+                .external_ptr_addr::<Box<dyn Any>>()
+                .cast_const()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
+        };
+
+        if boxed_ptr.downcast_ref::<T>().is_none() {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
+        unsafe { Ok(std::mem::transmute::<&mut Robj, &mut ExternalPtr<T>>(value)) }
+    }
+}
+
+impl<T: 'static> TryFrom<Robj> for &ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl<T: 'static> TryFrom<Robj> for &mut ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(mut value: Robj) -> Result<Self> {
+        (&mut value).try_into()
+    }
+}
+
+impl<T: 'static> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        let clone = robj.clone();
-        if clone.rtype() != Rtype::ExternalPtr {
-            Err(Error::ExpectedExternalPtr(clone))
-        } else if clone.check_external_ptr_type::<T>() {
-            let res = ExternalPtr::<T> {
-                robj: clone,
-                marker: std::marker::PhantomData,
-            };
-            Ok(res)
-        } else {
-            Err(Error::ExpectedExternalPtrType(
-                clone,
-                std::any::type_name::<T>().into(),
-            ))
-        }
+        let result: &Self = robj.try_into()?;
+        Ok(result.clone())
     }
 }
 
-impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
@@ -182,14 +325,96 @@ impl<T: Any + Debug> TryFrom<Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T: Any + Debug> From<ExternalPtr<T>> for Robj {
+impl<T> From<ExternalPtr<T>> for Robj {
     fn from(val: ExternalPtr<T>) -> Self {
         val.robj
+    }
+}
+
+impl<T> From<Option<ExternalPtr<T>>> for Robj {
+    fn from(value: Option<ExternalPtr<T>>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
     }
 }
 
 impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
+    }
+}
+
+impl<T: 'static> AsRef<T> for ExternalPtr<T> {
+    fn as_ref(&self) -> &T {
+        self.addr()
+    }
+}
+
+impl<T: 'static> AsMut<T> for ExternalPtr<T> {
+    fn as_mut(&mut self) -> &mut T {
+        self.addr_mut()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use extendr_engine::with_r;
+
+    #[derive(Debug)]
+    struct BareWrapper(i32);
+
+    #[test]
+    fn externalptr_is_ptr() {
+        with_r(|| {
+            let a = BareWrapper(42);
+            let b = BareWrapper(42);
+            assert_eq!(a.0, b.0);
+
+            let a_ptr = std::ptr::addr_of!(a);
+            let b_ptr = std::ptr::addr_of!(b);
+            let a_externalptr = ExternalPtr::new(a);
+            let b_externalptr = ExternalPtr::new(b);
+
+            assert_ne!(
+                a_ptr, b_ptr,
+                "pointers has to be equal by address, not value"
+            );
+
+            assert_ne!(
+                a_externalptr.robj, b_externalptr.robj,
+                "R only knows about the pointer, and not the pointee"
+            );
+            assert_ne!(
+                a_externalptr, b_externalptr,
+                "ExternalPtr acts exactly like a pointer"
+            );
+            assert_ne!(&a_externalptr, &b_externalptr,);
+        });
+    }
+
+    #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+    struct Wrapper(i32);
+
+    #[test]
+    fn compare_externalptr_pointee() {
+        with_r(|| {
+            let a = Wrapper(42);
+            let b = Wrapper(42);
+            let a_externalptr = ExternalPtr::new(a);
+            let b_externalptr = ExternalPtr::new(b);
+            assert_eq!(a_externalptr.as_ref(), b_externalptr.as_ref());
+
+            // let's test more use of `PartialOrd` on `T`
+            let a_externalptr = ExternalPtr::new(Wrapper(50));
+            let b_externalptr = ExternalPtr::new(Wrapper(60));
+            assert!(a_externalptr.as_ref() <= b_externalptr.as_ref());
+            assert_eq!(
+                a_externalptr.as_ref().max(b_externalptr.as_ref()),
+                &Wrapper(60)
+            )
+        });
     }
 }

@@ -183,30 +183,13 @@ impl TryFrom<&Robj> for Rfloat {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
-        // Check if the value is a scalar
-        match robj.len() {
-            0 => return Err(Error::ExpectedNonZeroLength(robj.clone())),
-            1 => {}
-            _ => return Err(Error::ExpectedScalar(robj.clone())),
-        };
-
-        // Check if the value is not a missing value.
-        if robj.is_na() {
-            return Ok(Rfloat::na());
+        let f64_val: Result<f64> = robj.try_into();
+        match f64_val {
+            Ok(val) => Ok(Rfloat::from(val)),
+            // TODO: Currently this results in an extra protection of robj
+            Err(Error::MustNotBeNA(_)) => Ok(Rfloat::na()),
+            Err(e) => Err(e),
         }
-
-        // This should always work, NA is handled above.
-        if let Some(v) = robj.as_real() {
-            return Ok(Rfloat::from(v));
-        }
-
-        // Any integer (32 bit) can be represented as f64,
-        // this always works.
-        if let Some(v) = robj.as_integer() {
-            return Ok(Rfloat::from(v as f64));
-        }
-
-        Err(Error::ExpectedNumeric(robj.clone()))
     }
 }
 

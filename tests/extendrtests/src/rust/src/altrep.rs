@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 // struct contains an inner vector of Option<usize>
 #[derive(Debug, Clone)]
+#[extendr]
 pub struct VecUsize(pub Vec<Option<usize>>);
 
 impl AltrepImpl for VecUsize {
@@ -19,7 +20,11 @@ impl VecUsize {}
 #[cfg(use_r_altlist)]
 impl AltListImpl for VecUsize {
     fn elt(&self, index: usize) -> Robj {
-        self.into_robj()
+        let mut v = Vec::with_capacity(1usize);
+        v.push(self.0[index]);
+        let v = v;
+
+        Self(v).into_robj()
     }
 }
 
@@ -47,7 +52,7 @@ fn new_usize(robj: Integers) -> Altrep {
 
 #[cfg(not(use_r_altlist))]
 #[extendr]
-fn new_usize(robj: Integers) -> Robj {
+fn new_usize(_robj: Integers) -> Robj {
     extendr_api::nil_value()
 }
 
@@ -94,7 +99,7 @@ impl AltIntegerImpl for MyCompactIntRange {
         if index == self.missing_index {
             Rint::na()
         } else {
-            Rint::new(self.start + self.step * index as i32)
+            Rint::from(self.start + self.step * index as i32)
         }
     }
 }

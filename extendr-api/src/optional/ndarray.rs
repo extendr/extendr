@@ -4,13 +4,14 @@ Defines conversions between R objects and the [`ndarray`](https://docs.rs/ndarra
 To enable these conversions, you must first enable the `ndarray` feature for extendr:
 ```toml
 [dependencies]
-extendr-api = { version = "0.4", features = ["ndarray"] }
+extendr-api = { version = "0.8.0", features = ["ndarray"] }
 ```
 
 Specifically, extendr supports the following conversions:
 * [`Robj` → `ArrayView1`](FromRobj#impl-FromRobj<%27a>-for-ArrayView1<%27a%2C%20T>), for when you have an R vector that you want to analyse in Rust:
     ```rust
     use extendr_api::prelude::*;
+    use ndarray::ArrayView1;
 
     #[extendr]
     fn describe_vector(vector: ArrayView1<f64>){
@@ -20,6 +21,7 @@ Specifically, extendr supports the following conversions:
 * [`Robj` → `ArrayView2`](FromRobj#impl-FromRobj<%27a>-for-ArrayView2<%27a%2C%20f64>), for when you have an R matrix that you want to analyse in Rust.
     ```rust
     use extendr_api::prelude::*;
+    use ndarray::ArrayView2;
 
     #[extendr]
     fn describe_matrix(matrix: ArrayView2<f64>){
@@ -29,6 +31,7 @@ Specifically, extendr supports the following conversions:
 * [`ArrayBase` → `Robj`](Robj#impl-TryFrom<ArrayBase<S%2C%20D>>-for-Robj), for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
     ```rust
     use extendr_api::prelude::*;
+    use ndarray::Array2;
 
     #[extendr]
     fn return_matrix() -> Robj {
@@ -45,6 +48,7 @@ It will then be copied into a new block of memory managed by R.
 This is made easier by the fact that [ndarray allocates a new array automatically when performing operations on array references](ArrayBase#binary-operators-with-array-and-scalar):
 ```rust
 use extendr_api::prelude::*;
+use ndarray::ArrayView2;
 
 #[extendr]
 fn scalar_multiplication(matrix: ArrayView2<f64>, scalar: f64) -> Robj {
@@ -60,20 +64,6 @@ use ndarray::{Data, ShapeBuilder};
 
 use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
 use crate::*;
-
-impl<'a, T> FromRobj<'a> for ArrayView1<'a, T>
-where
-    Robj: AsTypedSlice<'a, T>,
-{
-    /// Convert an R object to a `ndarray` ArrayView1.
-    fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-        if let Some(v) = robj.as_typed_slice() {
-            Ok(ArrayView1::<'a, T>::from(v))
-        } else {
-            Err("Not a vector of the correct type.")
-        }
-    }
-}
 
 macro_rules! make_array_view_1 {
     ($type: ty, $error_fn: expr) => {
@@ -101,13 +91,6 @@ macro_rules! make_array_view_1 {
 
 macro_rules! make_array_view_2 {
     ($type: ty, $error_str: expr, $error_fn: expr) => {
-        impl<'a> FromRobj<'a> for ArrayView2<'a, $type> {
-            /// Convert an R object to a `ndarray` ArrayView2.
-            fn from_robj(robj: &'a Robj) -> std::result::Result<Self, &'static str> {
-                <ArrayView2<'a, $type>>::try_from(robj).map_err(|_| $error_str)
-            }
-        }
-
         impl<'a> TryFrom<&'_ Robj> for ArrayView2<'a, $type> {
             type Error = crate::Error;
             fn try_from(robj: &Robj) -> Result<Self> {
@@ -116,7 +99,7 @@ macro_rules! make_array_view_2 {
                     let ncols = robj.ncols();
                     if let Some(v) = robj.as_typed_slice() {
                         // use fortran order.
-                        let shape = (nrows, ncols).into_shape().f();
+                        let shape = (nrows, ncols).into_shape_with_order().f();
                         return ArrayView2::from_shape(shape, v)
                             .map_err(|err| Error::NDArrayShapeError(err));
                     } else {
@@ -138,7 +121,6 @@ macro_rules! make_array_view_2 {
 make_array_view_1!(Rbool, Error::ExpectedLogical);
 make_array_view_1!(Rint, Error::ExpectedInteger);
 make_array_view_1!(i32, Error::ExpectedInteger);
-make_array_view_1!(u32, Error::ExpectedInteger);
 make_array_view_1!(Rfloat, Error::ExpectedReal);
 make_array_view_1!(f64, Error::ExpectedReal);
 make_array_view_1!(Rcplx, Error::ExpectedComplex);
@@ -148,7 +130,6 @@ make_array_view_1!(Rstr, Error::ExpectedString);
 make_array_view_2!(Rbool, "Not a logical matrix.", Error::ExpectedLogical);
 make_array_view_2!(Rint, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(i32, "Not an integer matrix.", Error::ExpectedInteger);
-make_array_view_2!(u32, "Not an integer matrix.", Error::ExpectedInteger);
 make_array_view_2!(Rfloat, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(f64, "Not a floating point matrix.", Error::ExpectedReal);
 make_array_view_2!(
@@ -176,25 +157,26 @@ where
 
         // In general, transposing and then iterating an ndarray in C-order (`iter()`) is exactly
         // equivalent to iterating that same array in Fortan-order (which `ndarray` doesn't currently support)
-        value
+        let mut result = value
             .t()
             .iter()
             // Since we only have a reference, we have to copy all elements so that we can own the entire R array
             .copied()
-            .collect_robj()
-            .set_attrib(
-                dim_symbol(),
-                value
-                    .shape()
-                    .iter()
-                    .map(|x| i32::try_from(*x))
-                    .collect::<std::result::Result<Vec<i32>, <i32 as TryFrom<usize>>::Error>>()
-                    .map_err(|_err| {
-                        Error::Other(String::from(
-                            "One or more array dimensions were too large to be handled by R.",
-                        ))
-                    })?,
-            )
+            .collect_robj();
+        result.set_attrib(
+            dim_symbol(),
+            value
+                .shape()
+                .iter()
+                .map(|x| i32::try_from(*x))
+                .collect::<std::result::Result<Vec<i32>, <i32 as TryFrom<usize>>::Error>>()
+                .map_err(|_err| {
+                    Error::Other(String::from(
+                        "One or more array dimensions were too large to be handled by R.",
+                    ))
+                })?,
+        )?;
+        Ok(result)
     }
 }
 
@@ -216,7 +198,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::FromRobj;
+    use crate as extendr_api;
     use ndarray::array;
     use rstest::rstest;
 
@@ -252,19 +234,22 @@ mod test {
         "matrix(c(T, T, T, T, F, F, F, F), ncol=2, nrow=4)",
         <Array2<Rbool>>::from_shape_vec((4, 2).f(), vec![true.into(), true.into(), true.into(), true.into(), false.into(), false.into(), false.into(), false.into()]).unwrap()
     )]
-    fn test_from_robj<DataType, DimType>(
+    fn test_from_robj<DataType, DimType, Error>(
         #[case] left: &'static str,
         #[case] right: ArrayBase<DataType, DimType>,
     ) where
         DataType: Data,
-        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>: FromRobj<'a>,
+        Error: std::fmt::Debug,
+        for<'a> ArrayView<'a, <DataType as ndarray::RawData>::Elem, DimType>:
+            TryFrom<&'a Robj, Error = Error>,
         DimType: Dimension,
         <DataType as ndarray::RawData>::Elem: PartialEq + std::fmt::Debug,
+        Error: std::fmt::Debug,
     {
         // Tests for the R → Rust conversion
         test! {
             let left_robj = eval_string(left).unwrap();
-            let left_array = <ArrayView<DataType::Elem, DimType>>::from_robj(&left_robj).unwrap();
+            let left_array = <ArrayView<DataType::Elem, DimType>>::try_from(&left_robj).unwrap();
             assert_eq!( left_array, right );
         }
     }
@@ -337,7 +322,7 @@ mod test {
             ];
             for rval in rvals {
                 let rval = rval.unwrap();
-                let rust_arr= <ArrayView2<i32>>::from_robj(&rval).unwrap();
+                let rust_arr= <ArrayView2<i32>>::try_from(&rval).unwrap();
                 let r_arr: Robj = (&rust_arr).try_into().unwrap();
                 assert_eq!(
                     rval,

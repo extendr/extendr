@@ -1,57 +1,48 @@
-use extendr_api::prelude::*;
+use extendr_api::call;
+use extendr_api::extendr;
+use extendr_api::extendr_module;
+use extendr_api::Rinternals;
+use extendr_api::Robj;
+use extendr_api::NA_INTEGER;
+use extendr_api::NA_REAL;
+use extendr_api::{prelude::Rint, r, test, GetSexp, Integers};
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_i32(val: i32) -> i32 {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_i16(val: i16) -> i16 {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_i32(val: Option<i32>) -> i32 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_f64(val: Option<f64>) -> f64 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1.0
-    }
+    val.unwrap_or(-1f64)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_option_i16(val: Option<i16>) -> i16 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1i16)
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_rint(val: Rint) -> Rint {
     val
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers(val: Integers) -> Integers {
     val
 }
 
-#[extendr(
-    use_try_from = true,
-    r_name = "test.rename.rlike",
-    mod_name = "test_rename_mymod"
-)]
+#[extendr(r_name = "test.rename.rlike", mod_name = "test_rename_mymod")]
 fn test_rename() {}
 
 extendr_module! {
@@ -59,12 +50,12 @@ extendr_module! {
     fn test_rename_mymod;
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers2(val: Integers) -> Integers {
     val.iter().map(|i| i + 1).collect()
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_integers3(val: Integers) -> Rint {
     val.iter().sum()
 }
@@ -131,12 +122,19 @@ fn tests_with_successful_outcomes() {
     }
 }
 
+// This behavior is now handled in Rust nightly 1.81 making catch_r_error() unusable.
+// For previous versions this is useful.
+// See related: https://rust-lang.zulipchat.com/#narrow/stream/122651-general/topic/default.20PR.20description.20feedback
+// TODO: revisit when formalized
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
+#[ignore = "panicking in FFI is now automatically abort instead of undefined behavior"]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
-    single_threaded(|| unsafe {
+
+    use extendr_api::{catch_r_error, list, pairlist};
+    extendr_api::single_threaded(|| unsafe {
         test! {
             let old_hook = std::panic::take_hook();
 
@@ -161,6 +159,8 @@ fn tests_with_unsuccessful_outcomes() {
 
 #[test]
 fn test_call_macro() {
+    use extendr_api::Length;
+    use extendr_api::Operators;
     test! {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
@@ -173,7 +173,7 @@ fn test_call_macro() {
     }
 }
 
-#[extendr(use_try_from = true)]
+#[extendr]
 fn test_metadata_1(#[default = "NULL"] val: Robj) -> i32 {
     if val.is_null() {
         1
@@ -206,6 +206,7 @@ fn test_metadata() {
             return_type: "i32",
             func_ptr: wrap__test_metadata_1 as *const u8,
             hidden: false,
+            invisible: None,
         }
     );
 }

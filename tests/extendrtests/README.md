@@ -1,7 +1,7 @@
 # Integration Tests for Calling Extendr from an R Package
 
 [![R build status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 
 This package serves as a test to see whether an R package using extendr can successfully build, run, and pass `R CMD check` on all major platforms.
 
@@ -11,6 +11,24 @@ The wrapper scripts calling the Rust functions are located here:
 <https://github.com/extendr/extendr/blob/master/tests/extendrtests/R/make-wrappers.R>
 
 The test functions that verify that the wrapper and Rust functions work correctly are located here: <https://github.com/extendr/extendr/blob/master/tests/extendrtests/tests/testthat/test-wrappers.R>
+
+## Using local extendr packages
+
+While testing new features, you may want to explore these features using
+`rextendr::rust_function` / `rextendr::rust_source`, you may run this
+
+```r
+options(
+    rextendr.patch.crates_io =
+        list(
+            `extendr-api` = list(path = "extendr-api" |> normalizePath()),
+            `extendr-macros` = list(path = "extendr-macros" |> normalizePath()),
+            `extendr-engine` = list(path = "extendr-engine" |> normalizePath())
+        )
+)
+```
+
+to ensure that the R-session knows about local extendr.
 
 ## Running tests locally
 

@@ -1,8 +1,7 @@
-use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
-use libR_sys::*;
-use std::io::Read;
-
 use super::PstreamFormat;
+use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
+use extendr_ffi::{R_NilValue, R_Unserialize, R_inpstream_st, R_inpstream_t, SEXP};
+use std::io::Read;
 
 pub struct ReadHook {
     func: Option<unsafe extern "C" fn(arg1: SEXP, arg2: SEXP) -> SEXP>,
@@ -46,7 +45,7 @@ pub trait Load {
         }
 
         let read_ptr: *mut R = reader as &mut R;
-        let data = unsafe { std::mem::transmute(read_ptr) };
+        let data = read_ptr.cast::<std::ffi::c_void>();
 
         let (hook_func, hook_data) = if let Some(hook) = hook {
             (hook.func, hook.data)
@@ -58,7 +57,7 @@ pub trait Load {
         // pub type R_inpstream_t = *mut R_inpstream_st;
         let mut state = R_inpstream_st {
             data,
-            type_: format as R_pstream_format_t,
+            type_: format,
             InChar: Some(inchar::<R>),
             InBytes: Some(inbytes::<R>),
             InPersistHookFunc: hook_func,
@@ -68,9 +67,11 @@ pub trait Load {
             nat2utf8_obj: std::ptr::null_mut(),
         };
 
-        Ok(Robj::from_sexp(catch_r_error(move || unsafe {
-            R_Unserialize(&mut state as R_inpstream_t)
-        })?))
+        Ok(unsafe {
+            Robj::from_sexp(catch_r_error(move || {
+                R_Unserialize(&mut state as R_inpstream_t)
+            })?)
+        })
     }
 }
 

@@ -1,6 +1,11 @@
 use crate as extendr_api;
 use crate::*;
+use extendr_ffi::{
+    R_BaseEnv, R_BaseNamespace, R_BlankScalarString, R_BlankString, R_EmptyEnv, R_GetCurrentEnv,
+    R_GlobalEnv, R_NaString, R_NamespaceRegistry, R_NilValue, R_Srcref, R_dot_Generic,
+};
 
+#[cfg(feature = "non-api")]
 /// Get a global variable from global_env() and ancestors.
 /// If the result is a promise, evaulate the promise.
 ///
@@ -17,6 +22,7 @@ pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
     global_env().find_var(key)?.eval_promise()
 }
 
+#[cfg(feature = "non-api")]
 /// Get a local variable from current_env() and ancestors.
 ///
 /// If the result is a promise, evaulate the promise.
@@ -56,7 +62,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 
 /// Find a namespace by name.
 ///
-/// See also [Robj::double_colon].
+/// See also [`Robj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -64,6 +70,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 ///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
+/// [`Robj::double_colon`]: Operators::double_colon
 pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
     let key = key.into();
     let res = single_threaded(|| call!(".getNamespace", key.clone()));
@@ -79,7 +86,7 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(current_env(), base_env());
+///    assert!(current_env().is_environment());
 /// }
 /// ```
 pub fn current_env() -> Environment {
@@ -116,6 +123,7 @@ pub fn empty_env() -> Environment {
 /// ```
 #[cfg(use_r_newenv)]
 pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
+    use extendr_ffi::R_NewEnv;
     single_threaded(|| unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
         Robj::from_sexp(env).try_into().unwrap()
@@ -131,15 +139,7 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
         .unwrap()
 }
 
-/// The base environment; formerly R_NilValue
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(base_env().local(sym!(+)), Ok(r!(Primitive::from_string("+"))));
-/// }
-/// ```
+/// The base environment; formerly `R_NilValue`
 pub fn base_env() -> Environment {
     unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
 }
@@ -208,13 +208,13 @@ pub fn blank_scalar_string() -> Robj {
 /// ```
 pub fn parse(code: &str) -> Result<Expressions> {
     single_threaded(|| unsafe {
-        use libR_sys::*;
-        let mut status = 0_u32;
-        let status_ptr = &mut status as _;
+        use extendr_ffi::{ParseStatus, R_NilValue, R_ParseVector};
+        let mut status = ParseStatus::PARSE_NULL;
+        let status_ptr = &mut status as *mut _;
         let codeobj: Robj = code.into();
         let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
         match status {
-            1 => parsed.try_into(),
+            ParseStatus::PARSE_OK => parsed.try_into(),
             _ => Err(Error::ParseError(code.into())),
         }
     })

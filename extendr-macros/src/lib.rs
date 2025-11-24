@@ -51,16 +51,18 @@
 // * Wrappers and init functions for all methods.
 // * A single init function that calls the other init functions for the methods.
 // * An input conversion from an external pointer to a reference and a move of that type.
-// * An output converstion from that type to an owned external pointer object.
+// * An output conversion from that type to an owned external pointer object.
 // * A finalizer for that type to free memory allocated.
 
 #[allow(non_snake_case)]
 mod R;
 mod call;
 mod dataframe;
+mod extendr_conversion;
 mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
+mod extendr_options;
 mod list;
 mod list_struct;
 mod pairlist;
@@ -71,23 +73,44 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Item};
 
+/// The `#[extendr]`-macro may be placed on three items
+///
+/// - `fn` for wrapped rust-functions, see [`extendr-fn`]
+/// - `impl`-blocks, see [`extendr-impl`]
+///
+/// [`extendr-fn`]: ./extendr_function/fn.extendr_function.html
+/// [`extendr-impl`]: ./extendr_impl/fn.extendr_impl.html
+///
+/// There is also [`macro@extendr_module`], which is used for defining what rust
+/// wrapped items should be visible to the surrounding R-package.
+///
 #[proc_macro_attribute]
 pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
-    let mut opts = wrappers::ExtendrOptions::default();
+    let mut opts = extendr_options::ExtendrOptions::default();
 
     let extendr_opts_parser = syn::meta::parser(|meta| opts.parse(meta));
     parse_macro_input!(attr with extendr_opts_parser);
 
     match parse_macro_input!(item as Item) {
+        Item::Struct(str) => {
+            let struct_name = str.ident.to_string();
+            let struct_doc = crate::wrappers::get_doc_string(&str.attrs);
+            crate::wrappers::register_struct_doc(&struct_name, &struct_doc);
+            extendr_conversion::extendr_type_conversion(Item::Struct(str), &opts)
+        }
+        Item::Enum(enm) => extendr_conversion::extendr_type_conversion(Item::Enum(enm), &opts),
         Item::Fn(func) => extendr_function::extendr_function(func, &opts),
-        Item::Impl(item_impl) => extendr_impl::extendr_impl(item_impl),
+        Item::Impl(item_impl) => match extendr_impl::extendr_impl(item_impl, &opts) {
+            Ok(result) => result,
+            Err(e) => e.into_compile_error().into(),
+        },
         other_item => TokenStream::from(quote! {#other_item}),
     }
 }
 
 /// Define a module and export symbols to R
 /// Example:
-///```ignore
+///```dont_run
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
@@ -97,7 +120,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// Outputs:
 ///
-/// ```ignore
+/// ```dont_run
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
@@ -131,7 +154,7 @@ pub fn list(item: TokenStream) -> TokenStream {
 
 /// Call a function or primitive defined by a text expression with arbitrary parameters.
 /// This currently works by parsing and evaluating the string in R, but will probably acquire
-/// some shortcuts for simple expessions, for example by caching symbols and constant values.
+/// some shortcuts for simple expressions, for example by caching symbols and constant values.
 ///
 /// ```ignore
 ///     assert_eq!(call!("`+`", 1, 2), r!(3));
@@ -201,9 +224,16 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
+///
+/// See [`IntoRobj`] for converting arbitrary Rust types into R type by using
+/// R's list / `List`.
+///
 #[proc_macro_derive(TryFromRobj)]
 pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
-    list_struct::derive_try_from_robj(item)
+    match list_struct::derive_try_from_robj(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
 }
 
 /// Derives an implementation of `From<Struct> for Robj` and `From<&Struct> for Robj` on this struct.
@@ -216,11 +246,11 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// `Foo` struct.
 /// ```ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::IntoRobj;
+/// use extendr_macros::IntoList;
 ///
 /// # use extendr_api::test;
 /// # test!{
-/// #[derive(IntoRobj)]
+/// #[derive(IntoList)]
 /// struct Foo {
 ///     a: u32,
 ///     b: String
@@ -233,15 +263,44 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # }
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
+///
+/// See [`TryFromRobj`] for a `derive`-macro in the other direction, i.e.
+/// instantiation of a rust type, by an R list with fields corresponding to
+/// said type.
+///
+/// Supported field attributes
+///
+/// - `#[into_list(ignore)]` omits the field from being added to the R `list()`
+///
 /// # Details
+///
 /// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
-/// Rust functions on that pointer. The implementation from `#[derive(IntoRobj)]` actually converts the Rust structure
+/// Rust functions on that pointer. The implementation from `#[derive(IntoList)]` actually converts the Rust structure
 /// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
 /// and converting it back to Rust will produce a copy of the original struct.
+#[proc_macro_derive(IntoList, attributes(into_list))]
+pub fn derive_into_list(item: TokenStream) -> TokenStream {
+    match list_struct::derive_into_list(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
+}
+
+/// Deprecated: Use [`IntoList`] instead.
+///
+/// This is an alias for `IntoList` maintained for backward compatibility.
+/// `IntoRobj` is too generic - this macro specifically creates a named list from a struct.
+#[deprecated(
+    since = "0.8.1",
+    note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
+)]
 #[proc_macro_derive(IntoRobj)]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
-    list_struct::derive_into_robj(item)
+    match list_struct::derive_into_list(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
 }
 
 /// Enable the construction of dataframes from arrays of structures.
@@ -264,8 +323,98 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 /// assert_eq!(df[0], r!([0, 1]));
 /// assert_eq!(df[1], r!(["abc", "xyz"]));
 /// ```
-
 #[proc_macro_derive(IntoDataFrameRow)]
 pub fn derive_into_dataframe(item: TokenStream) -> TokenStream {
     dataframe::derive_into_dataframe(item)
+}
+
+#[proc_macro]
+pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
+    let range = parse_macro_input!(input as syn::ExprTuple);
+    let start = match &range.elems[0] {
+        syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Int(lit),
+            ..
+        }) => lit.base10_parse::<usize>().unwrap(),
+        _ => {
+            return TokenStream::from(quote!(compile_error!(
+                "Expected integer literal for `start`"
+            )))
+        }
+    };
+    let end = match &range.elems[1] {
+        syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Int(lit),
+            ..
+        }) => lit.base10_parse::<usize>().unwrap(),
+        _ => {
+            return TokenStream::from(quote!(compile_error!("Expected integer literal for `end`")))
+        }
+    };
+
+    TokenStream::from_iter((start..=end).map(|n| {
+        let types: Vec<_> = (0..n).map(|i| quote::format_ident!("T{}", i)).collect();
+        let indices = 0..n;
+        let element_extraction = indices.map(|idx| {
+            quote! {
+                (&list.elt(#idx)?).try_into()?
+            }
+        });
+
+        TokenStream::from(quote! {
+            impl<#(#types),*> TryFrom<&Robj> for (#(#types,)*)
+            where
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*
+            {
+                type Error = Error;
+
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                    let list: List = robj.try_into()?;
+                    if list.len() != #n {
+                        return Err(Error::ExpectedLength(#n));
+                    }
+                    Ok((
+                        #(#element_extraction),*
+                    ))
+                }
+            }
+
+            // TODO: the following impls are borrowed from `impl_try_from_robj`
+            // find a way to reuse that code, possibly
+
+            impl<#(#types),*> TryFrom<Robj> for (#(#types,)*)
+            where
+                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),* {
+                type Error = Error;
+
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                    Self::try_from(&robj)
+                }
+            }
+
+            impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
+            where
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
+                type Error = Error;
+
+                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                    if robj.is_null() || robj.is_na() {
+                        Ok(None)
+                    } else {
+                        <(#(#types,)*)>::try_from(robj).map(Some)
+                    }
+                }
+            }
+
+            impl<#(#types),*> TryFrom<Robj> for Option<(#(#types,)*)>
+            where
+            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
+                type Error = Error;
+
+                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
+                    Self::try_from(&robj)
+                }
+            }
+        })
+    }))
 }

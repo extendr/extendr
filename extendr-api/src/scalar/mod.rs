@@ -23,5 +23,7 @@ where
     T: PartialEq + Copy,
 {
     fn inner(&self) -> T;
+
+    #[deprecated(since = "0.8.1", note = "Use `From::from()` or `Into::into()` instead")]
     fn new(val: T) -> Self;
 }

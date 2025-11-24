@@ -19,7 +19,9 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "base_env()");
         let r = Environment::new_with_parent(global_env());
         assert_eq!(format!("{:?}", r), "<environment>");
+        #[cfg(feature = "non-api")]
         let r = Promise::from_parts(r!(1), global_env())?;
+        #[cfg(feature = "non-api")]
         assert_eq!(format!("{:?}", r), "Promise { code: 1, environment: global_env() }");
         let r : Language = lang!("x").try_into()?;
         assert_eq!(format!("{:?}", r), "lang!(sym!(x))");
@@ -29,7 +31,7 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"+\\\")\"");
         let r : Primitive  = R!("`if`")?.try_into()?;
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"if\\\")\"");
-        let r : Rstr = Rstr::from_string("xyz");
+        let r = Rstr::from("xyz");
         assert_eq!(format!("{:?}", r), "\"xyz\"");
         let r : Logicals = Logicals::from_values([TRUE]);
         assert_eq!(format!("{:?}", r), "TRUE");
@@ -85,8 +87,8 @@ fn test_debug_scalar() {
             f64::INFINITY,
             f64::NEG_INFINITY,
             f64::NAN,
-            3.141592653589793,
-            -3.141592653589793,
+            4.141592653589793,
+            -4.141592653589793,
         ];
         for val in test_data {
             assert_eq!(format!("{:?}", Rfloat::from(val)), format!("{:?}", val));
