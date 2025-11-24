@@ -25,7 +25,7 @@ jobs:
         shell: pwsh
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: baptiste0928/cargo-install@v3
         with:
@@ -53,4 +53,9 @@ jobs:
       - name: Verify minimum rust version
         run: |
           . ./ci-cargo.ps1
-          ci-cargo msrv --path extendr-api/ verify -ActionName "Verify Rust MSRV"
+          ci-cargo extendr msrv -ActionName "Verify Rust MSRV"
+      - name: Verify minimum rust version of extendr-api with full functionality
+        continue-on-error: true
+        run: |
+          . ./ci-cargo.ps1
+          ci-cargo extendr msrv --features=full-functionality -ActionName "Verify Rust MSRV for extendr-api"

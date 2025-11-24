@@ -599,10 +599,6 @@ impl TryFrom<Robj> for Option<()> {
     }
 }
 
-// NOTE: this is included for compatibility with previously defined `FromRobj`
-// One should prefer `List::from_hashmap` instead,
-// and this `impl` should be deprecated next.
-
 impl<T> TryFrom<&Robj> for HashMap<&str, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
@@ -750,7 +746,6 @@ impl_try_from_robj_tuples!((2, 12));
 
 // The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
 // it requires returning a reference to a owned (moved) value
-
 impl TryFrom<&Robj> for HashMap<&str, Robj> {
     type Error = Error;
 
