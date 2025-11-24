@@ -61,7 +61,12 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 return_type: "Metadata",
                 func_ptr: #wrap_module_metadata_name as * const u8,
                 hidden: true,
+                invisible: None,
             });
+            let mut args = Vec::with_capacity(2usize);
+            args.push(extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None });
+            args.push(extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None });
+            let args = args;
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -69,13 +74,11 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 rust_name: #make_module_wrappers_name_string,
                 mod_name: #make_module_wrappers_name_string,
                 r_name: #make_module_wrappers_name_string,
-                args: vec![
-                    extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
-                    extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None },
-                    ],
+                args,
                 return_type: "String",
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
+                invisible: None,
             });
 
             extendr_api::metadata::Metadata {

@@ -1,5 +1,8 @@
 use super::scalar::{Rint, Scalar};
 use super::*;
+use extendr_ffi::{
+    dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
+};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's integer vectors.
@@ -8,20 +11,20 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| i.into()).collect::<Integers>();
+///     let mut vec = (0..5).collect::<Integers>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10);
 ///     assert_eq!(vec.elt(0), 10);
 ///     let sum = vec.iter().sum::<Rint>();
 ///     assert_eq!(sum, 60);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Integers {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::INTSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+use extendr_ffi::SEXPTYPE::INTSXP;
+macros::gen_vector_wrapper_impl!(
     vector_type: Integers, // Implements for
     scalar_type: Rint,     // Element type
     primitive_type: i32,   // Raw element type
@@ -29,6 +32,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: INTSXP,          // `SEXP`
     doc_name: integer,     // Singular type name used in docs
     altrep_constructor: make_altinteger_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Integers,
+    collect_from_type: i32,
+    underlying_type: i32,
+    SEXP: INTSXP,
+    assignment: |dest: &mut i32, val: i32| *dest = val
 );
 
 impl Integers {
@@ -66,7 +77,7 @@ impl Deref for Integers {
     /// Treat Integers as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rint;
+            let ptr = dataptr(self.get()) as *const Rint;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -76,7 +87,7 @@ impl DerefMut for Integers {
     /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rint;
+            let ptr = dataptr(self.get_mut()) as *mut Rint;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -95,7 +106,7 @@ impl std::fmt::Debug for Integers {
 impl TryFrom<Vec<i32>> for Integers {
     type Error = Error;
 
-    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<i32>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
@@ -108,7 +119,7 @@ mod tests {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Integers = (0..3).map(|i| i.into()).collect();
+            let vec : Integers = (0..3).collect();
             assert_eq!(vec, Integers::from_values([0, 1, 2]));
         }
     }
@@ -166,11 +177,20 @@ mod tests {
     }
 
     #[test]
+    fn new_with_na() {
+        test! {
+            let vec = Integers::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rint::na()).collect::<Integers>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
     fn test_vec_i32_integers_conversion() {
         test! {
             let int_vec = vec![3,4,0,-2];
-            let int_vec_robj: Robj = int_vec.clone().try_into().unwrap();
-            // unsafe { libR_sys::Rf_PrintValue(rint_vec_robj.get())}
+            let int_vec_robj: Robj = int_vec.clone().into();
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

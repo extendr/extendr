@@ -3,7 +3,7 @@ resolver = "2"
 
 [package]
 name = "extendrtests"
-version = "0.7.0"
+version = "0.7.1"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
@@ -15,9 +15,20 @@ publish = false
 [lib]
 crate-type = ["staticlib"]
 
+[features]
+full-functionality = []
+serde = ["extendr-api/serde"]
+faer = []
+graphics = []
+ndarray = []
+
 [dependencies]
-extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
-faer = "0.19"
+extendr-api = { version = "*", features = [
+    "graphics",
+    "ndarray",
+    "faer",
+    "either",
+] }
 
 [features]
 # dummy feature for compatibility with extendr-api's feature
@@ -29,10 +40,9 @@ full-functionality = []
 ## CI overrides this path.
 extendr-api = { path = "../../../../extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
-# extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
+# extendr-api = { path = "../../../../../../../../../extendr/extendr-api" }
 
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
-

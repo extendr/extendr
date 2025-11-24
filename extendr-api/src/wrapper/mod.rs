@@ -3,7 +3,6 @@
 
 use crate::robj::{GetSexp, Rinternals};
 use crate::*;
-use libR_sys::*;
 
 pub mod altrep;
 pub mod complexes;
@@ -48,7 +47,7 @@ pub use integers::Integers;
 pub use lang::Language;
 pub use list::{FromList, List, ListIter};
 pub use logicals::Logicals;
-pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D};
+pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D};
 pub use nullable::Nullable;
 pub use pairlist::{Pairlist, PairlistIter};
 pub use primitive::Primitive;

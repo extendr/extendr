@@ -681,7 +681,7 @@ impl ser::Serialize for Rstr {
         if self.is_na() {
             serializer.serialize_unit()
         } else {
-            serializer.serialize_str(self.as_str())
+            serializer.serialize_str(self)
         }
     }
 }

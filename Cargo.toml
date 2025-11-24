@@ -1,28 +1,31 @@
 [workspace]
 resolver = "2"
-
-members = ["extendr-api", "extendr-engine", "extendr-macros", "xtask"]
+members = [
+  "extendr-api",
+  "extendr-engine",
+  "extendr-ffi",
+  "extendr-macros",
+  "xtask",
+]
 
 [workspace.package]
-version = "0.7.0"
+version = "0.8.1"
 authors = [
-    "andy-thomason <andy@andythomason.com>",
-    "Thomas Down",
-    "Mossa Merhi Reimert <mossa@sund.ku.dk>",
-    "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Hiroaki Yutani",
-    "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
-    "Michael Milton <michael.r.milton@gmail.com>",
+  "andy-thomason <andy@andythomason.com>",
+  "Thomas Down",
+  "Mossa Merhi Reimert <mossa@sund.ku.dk>",
+  "Josiah Parry <josiah.parry@gmail.com>",
+  "Claus O. Wilke <wilke@austin.utexas.edu>",
+  "Hiroaki Yutani",
+  "Ilia A. Kosenkov <ilia.kosenkov@outlook.com>",
+  "Michael Milton <michael.r.milton@gmail.com>",
 ]
 edition = "2021"
-license = "MIT"
+rust-version = "1.68"
 repository = "https://github.com/extendr/extendr"
+license = "MIT"
 
 [workspace.dependencies]
+extendr-ffi = { path = "./extendr-ffi", version = "0.8.1" }
 # When updating extendr's version, this version also needs to be updated
-extendr-macros = { path = "./extendr-macros", version = "0.7.0" }
-
-# When uncommenting this, do not forget to uncomment the same line in
-# ./tests/extendrtests/src/rust/Cargo.toml, and "Run R integration tests using
-# {rextendr}" on .github/workflows/test.yml !
-libR-sys = { version = "0.7" }
+extendr-macros = { path = "./extendr-macros", version = "0.8.1" }

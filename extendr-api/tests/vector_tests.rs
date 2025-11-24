@@ -15,14 +15,14 @@ fn test_strings() {
         assert_eq!(s.elt(2), "z");
         assert_eq!(s.elt(3), <&str>::na());
 
-        let v = s.as_slice().iter().map(|c| c.as_str()).collect::<String>();
+        let v = s.as_slice().iter().map(|c| c.as_ref()).collect::<String>();
         assert_eq!(v, "xyz");
 
         s.set_elt(1, Rstr::from("q"));
         assert_eq!(s.elt(1), "q");
 
         let s : Strings = ["x", "y", "z"].iter().collect();
-        let v = s.iter().map(|c| c.as_str()).collect::<String>();
+        let v = s.iter().map(|c| c.as_ref()).collect::<String>();
         assert_eq!(v, "xyz");
         assert_eq!(&*s, &["x", "y", "z"]);
 
@@ -231,7 +231,7 @@ fn test_integers() {
 #[test]
 fn test_rstr() {
     test! {
-        let x = Rstr::from_string("xyz");
+        let x = Rstr::from("xyz");
         // All methods of &str are usable on Rstr.
         assert_eq!(x.contains('y'), true);
         assert_eq!(x.starts_with("xy"), true);
@@ -245,7 +245,7 @@ fn test_rstr() {
 #[test]
 fn test_doubles_from_iterator() {
     test! {
-        let vec : Doubles = (0..3).map(|i| (i as f64).into()).collect();
+        let vec : Doubles = (0..3).map(|x| x as f64).collect();
         assert_eq!(vec, Doubles::from_values([0.0, 1.0, 2.0]));
     }
 }
@@ -306,7 +306,7 @@ mod num_complex {
     #[test]
     fn from_iterator() {
         test! {
-            let vec : Complexes = (0..3).map(|i| (i as f64).into()).collect();
+            let vec : Complexes = (0..3).map(|i| c64::from(i as f64)).collect();
             assert_eq!(vec, Complexes::from_values([0.0, 1.0, 2.0]));
         }
     }
@@ -314,7 +314,7 @@ mod num_complex {
     fn iter_mut() {
         test! {
             let mut vec = Complexes::from_values([0.0, 1.0, 2.0, 3.0]);
-            vec.iter_mut().for_each(|v| *v = *v + Rcplx::from(1.0));
+            vec.iter_mut().for_each(|v| *v += Rcplx::from(1.0));
             assert_eq!(vec, Complexes::from_values([1.0, 2.0, 3.0, 4.0]));
         }
     }

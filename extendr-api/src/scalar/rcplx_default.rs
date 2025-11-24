@@ -1,6 +1,7 @@
 use crate::scalar::Rfloat;
 use crate::scalar::Scalar;
 use crate::*;
+use extendr_ffi::{R_IsNA, R_NaReal, Rcomplex};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]

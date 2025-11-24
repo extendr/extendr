@@ -1,5 +1,8 @@
 use super::scalar::{Rfloat, Scalar};
 use super::*;
+use extendr_ffi::{
+    dataptr, R_xlen_t, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
+};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's double vectors.
@@ -8,20 +11,19 @@ use std::iter::FromIterator;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let mut vec = (0..5).map(|i| (i as f64).into()).collect::<Doubles>();
+///     let mut vec = (0..5).map(|i| (i as f64)).collect::<Doubles>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10.0);
 ///     assert_eq!(vec.elt(0), 10.0);
 ///     let sum = vec.iter().sum::<Rfloat>();
 ///     assert_eq!(sum, 60.0);
 /// }
-/// ```  
+/// ```
 #[derive(PartialEq, Clone)]
 pub struct Doubles {
     pub(crate) robj: Robj,
 }
 
-use libR_sys::SEXPTYPE::REALSXP;
-crate::wrapper::macros::gen_vector_wrapper_impl!(
+macros::gen_vector_wrapper_impl!(
     vector_type: Doubles,
     scalar_type: Rfloat,
     primitive_type: f64,
@@ -29,6 +31,14 @@ crate::wrapper::macros::gen_vector_wrapper_impl!(
     SEXP: REALSXP,
     doc_name: double,
     altrep_constructor: make_altreal_from_iterator,
+);
+
+macros::gen_from_iterator_impl!(
+    vector_type: Doubles,
+    collect_from_type: f64,
+    underlying_type: f64,
+    SEXP: REALSXP,
+    assignment: |dest: &mut f64, val: f64| *dest = val
 );
 
 impl Doubles {
@@ -66,7 +76,7 @@ impl Deref for Doubles {
     /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = DATAPTR_RO(self.get()) as *const Rfloat;
+            let ptr = dataptr(self.get()) as *const Rfloat;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -76,7 +86,7 @@ impl DerefMut for Doubles {
     /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = DATAPTR(self.get_mut()) as *mut Rfloat;
+            let ptr = dataptr(self.get_mut()) as *mut Rfloat;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -95,7 +105,7 @@ impl std::fmt::Debug for Doubles {
 impl TryFrom<Vec<f64>> for Doubles {
     type Error = Error;
 
-    fn try_from(value: Vec<f64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<f64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
@@ -104,6 +114,26 @@ impl TryFrom<Vec<f64>> for Doubles {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Doubles::new(10);
+            assert_eq!(vec.is_number(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Doubles::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rfloat::na()).collect::<Doubles>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
 
     #[test]
     fn test_vec_f64_doubles_conversion() {

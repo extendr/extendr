@@ -65,6 +65,8 @@ pub enum Error {
     ExpectedVector(Robj),
     ExpectedMatrix(Robj),
     ExpectedMatrix3D(Robj),
+    ExpectedMatrix4D(Robj),
+    ExpectedMatrix5D(Robj),
     ExpectedNumeric(Robj),
     ExpectedAltrep(Robj),
     ExpectedDataframe(Robj),
@@ -73,6 +75,7 @@ pub enum Error {
     MustNotBeNA(Robj),
     ExpectedWholeNumber(Robj, ConversionError),
     ExpectedNonZeroLength(Robj),
+    ExpectedLength(usize),
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
@@ -88,6 +91,8 @@ pub enum Error {
 
     #[cfg(feature = "either")]
     EitherError(Box<Error>, Box<Error>),
+    /// See [`std::array::TryFromSliceError`]
+    TryFromSliceError(String),
 }
 
 impl std::fmt::Display for Error {
@@ -141,6 +146,8 @@ impl std::fmt::Display for Error {
             Error::ExpectedVector(robj) => write!(f, "Expected Vector, got {:?}", robj.rtype()),
             Error::ExpectedMatrix(robj) => write!(f, "Expected Matrix, got {:?}", robj.rtype()),
             Error::ExpectedMatrix3D(robj) => write!(f, "Expected Matrix3D, got {:?}", robj.rtype()),
+            Error::ExpectedMatrix4D(robj) => write!(f, "Expected Matrix4D, got {:?}", robj.rtype()),
+            Error::ExpectedMatrix5D(robj) => write!(f, "Expected Matrix5D, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
             Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),
             Error::ExpectedDataframe(robj) => {
@@ -150,6 +157,7 @@ impl std::fmt::Display for Error {
             Error::OutOfRange(_robj) => write!(f, "Out of range."),
             Error::MustNotBeNA(_robj) => write!(f, "Must not be NA."),
             Error::ExpectedNonZeroLength(_robj) => write!(f, "Expected non zero length"),
+            Error::ExpectedLength(len) => write!(f, "Expected length: {len}"),
             Error::OutOfLimits(robj) => write!(f, "The value is too big: {:?}", robj),
             Error::TypeMismatch(_robj) => write!(f, "Type mismatch"),
 
@@ -168,6 +176,8 @@ impl std::fmt::Display for Error {
                 write!(f, "It is only possible to return a reference to self.")
             }
             Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
+            // this is very unlikely to occur, and it would just say: Rust error: could not convert slice to array
+            Error::TryFromSliceError(std_error) => write!(f, "Rust error: {}", std_error),
             Error::Other(str) => write!(f, "{}", str),
 
             Error::ExpectedWholeNumber(robj, conversion_error) => {
