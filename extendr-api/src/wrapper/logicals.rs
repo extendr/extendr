@@ -95,8 +95,25 @@ impl std::fmt::Debug for Logicals {
 impl TryFrom<Vec<bool>> for Logicals {
     type Error = Error;
 
-    fn try_from(value: Vec<bool>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<bool>) -> Result<Self> {
         Ok(Self { robj: value.into() })
+    }
+}
+
+impl TryFrom<Robj> for Vec<bool> {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        let bools = Logicals::try_from(&value)?;
+        let mut res_vec = Vec::with_capacity(bools.len());
+        for logi in bools.iter() {
+            if logi.is_na() {
+                return Err(Error::MustNotBeNA(value.clone()));
+            }
+
+            res_vec.push(logi.to_bool())
+        }
+        Ok(res_vec)
     }
 }
 
@@ -176,6 +193,17 @@ mod tests {
             let vec = Logicals::new(10);
             assert_eq!(vec.is_logical(), true);
             assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Logicals::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rbool::na()).collect::<Logicals>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
         }
     }
 

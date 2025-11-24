@@ -38,8 +38,6 @@ impl From<()> for Robj {
 
 /// Convert a [`Result`] to an [`Robj`].
 ///
-/// Panics if there is an error.
-///
 /// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
@@ -51,7 +49,7 @@ impl From<()> for Robj {
 /// * `result_list`: `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`.
 /// * `result_condition'`: `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
 /// * More than one enabled feature: Only one feature gate will take effect, the current order of precedence is [`result_list`, `result_condition`, ... ].
-/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()`, which is discouraged.
+/// * Neither of the above (default): `Ok(T)` is encoded as `x_ok` and `Err(E)` will trigger `throw_r_error()` with the error message.
 /// ```
 /// use extendr_api::prelude::*;
 /// fn my_func() -> Result<f64> {
@@ -68,7 +66,7 @@ impl From<()> for Robj {
 impl<T, E> From<std::result::Result<T, E>> for Robj
 where
     T: Into<Robj>,
-    E: std::fmt::Debug,
+    E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         res.unwrap().into()
@@ -196,14 +194,14 @@ pub trait ToVectorValue {
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_logical(&self) -> i32
     where
         Self: Sized,
     {
-        std::i32::MIN
+        i32::MIN
     }
 
     fn to_raw(&self) -> u8
@@ -409,6 +407,103 @@ macro_rules! impl_str_tvv {
 
 impl_str_tvv! {&str}
 impl_str_tvv! {String}
+
+impl ToVectorValue for Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.get() }
+    }
+}
+
+impl ToVectorValue for &Rstr {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { self.get() }
+    }
+}
+
+impl ToVectorValue for Option<Rstr> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        if let Some(s) = self {
+            unsafe { s.get() }
+        } else {
+            unsafe { R_NaString }
+        }
+    }
+}
+
+impl TryFrom<&Robj> for Rstr {
+    type Error = crate::Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        let sexptype = robj.sexptype();
+        if let SEXPTYPE::STRSXP = sexptype {
+            if robj.len() == 1 {
+                let strs = Strings::try_from(robj)?;
+                Ok(strs.elt(0))
+            } else {
+                Err(Error::ExpectedRstr(robj.clone()))
+            }
+        } else if let SEXPTYPE::CHARSXP = sexptype {
+            Ok(Rstr { robj: robj.clone() })
+        } else {
+            Err(Error::ExpectedRstr(robj.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Rstr {
+    type Error = crate::Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        Self::try_from(&value)
+    }
+}
+
+impl GetSexp for Rstr {
+    unsafe fn get(&self) -> SEXP {
+        self.robj.get()
+    }
+
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.robj.get_mut()
+    }
+
+    fn as_robj(&self) -> &Robj {
+        &self.robj
+    }
+
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        &mut self.robj
+    }
+}
+
+// These traits all derive from GetSexp with default implementations
+impl Length for Rstr {}
+impl Types for Rstr {}
+impl Conversions for Rstr {}
+impl Rinternals for Rstr {}
+impl Slices for Rstr {}
+impl Operators for Rstr {}
 
 impl ToVectorValue for bool {
     fn sexptype() -> SEXPTYPE {
@@ -646,9 +741,8 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-impl<'a, T, const N: usize> From<[T; N]> for Robj
+impl<T, const N: usize> From<[T; N]> for Robj
 where
-    Self: 'a,
     T: ToVectorValue,
 {
     fn from(val: [T; N]) -> Self {
@@ -707,14 +801,13 @@ impl_from_as_iterator! {RangeInclusive<T>}
 impl From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.
     fn from(val: Vec<Robj>) -> Self {
-        List::from_values(val.iter()).into()
+        Self::from(&val)
     }
 }
 
-impl From<Vec<Rstr>> for Robj {
-    /// Convert a vector of Rstr into strings.
-    fn from(val: Vec<Rstr>) -> Self {
-        Strings::from_values(val).into()
+impl From<&Vec<Robj>> for Robj {
+    fn from(val: &Vec<Robj>) -> Self {
+        List::from_values(val.iter()).into()
     }
 }
 
@@ -731,7 +824,7 @@ mod test {
             // unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
 
-            let rint_vec = vec![Rint::new(3), Rint::new(4), Rint::new(0), Rint::new(-2)];
+            let rint_vec = vec![Rint::from(3), Rint::from(4), Rint::from(0), Rint::from(-2)];
             let rint_vec_robj: Robj = rint_vec.into();
             // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
             assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);

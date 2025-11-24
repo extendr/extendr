@@ -25,12 +25,35 @@
 
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
+use std::{collections::HashMap, sync::Mutex};
 use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
 
 use crate::extendr_options::ExtendrOptions;
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
+
+lazy_static::lazy_static! {
+    static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+}
+
+/// Called by the struct‐level #[extendr] macro to register docstrings.
+pub fn register_struct_doc(name: &str, doc: &str) {
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .insert(name.to_string(), doc.to_string());
+}
+
+/// Retrieve the struct‐level docs (or empty if none).
+pub fn get_struct_doc(name: &str) -> String {
+    STRUCT_DOCS
+        .lock()
+        .unwrap()
+        .get(name)
+        .cloned()
+        .unwrap_or_default()
+}
 
 // Generate wrappers for a specific function.
 pub(crate) fn make_function_wrappers(
@@ -63,6 +86,11 @@ pub(crate) fn make_function_wrappers(
     let c_name_str = format!("{}", mod_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
+    let opts_invisible = match opts.invisible {
+        Some(true) => quote!(Some(true)),
+        Some(false) => quote!(Some(false)),
+        None => quote!(None),
+    };
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -138,22 +166,24 @@ pub(crate) fn make_function_wrappers(
     //     }
     // }
     // ```
-    let rng_start = opts
-        .use_rng
-        .then(|| {
+    let rng_start = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
                 extendr_api::GetRNGstate();
             });)
-        })
-        .unwrap_or_default();
-    let rng_end = opts
-        .use_rng
-        .then(|| {
+        }
+    } else {
+        Default::default()
+    };
+    let rng_end = if opts.use_rng {
+        {
             quote!(single_threaded(|| unsafe {
                 extendr_api::PutRNGstate();
             });)
-        })
-        .unwrap_or_default();
+        }
+    } else {
+        Default::default()
+    };
 
     // figure out if
     // -> &Self
@@ -202,7 +232,7 @@ pub(crate) fn make_function_wrappers(
                     return Ok(extendr_api::Robj::from_sexp(#sexp_args))
                 }
             )*
-            Err(Error::ExpectedExternalPtrReference)
+            Err(Error::ExpectedExternalPtrReference.into())
         )
     } else {
         quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
@@ -219,14 +249,14 @@ pub(crate) fn make_function_wrappers(
             #rng_start
 
             let wrap_result_state: std::result::Result<
-                std::result::Result<extendr_api::Robj, extendr_api::Error>,
+                std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, extendr_api::Error> {
-                    #(#convert_args)*
-                    #return_type_conversion
-                }))
-            };
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>> {
+                        #(#convert_args)*
+                        #return_type_conversion
+                    }))
+                };
 
             // return RNG state back to r after evaluation
             #rng_end
@@ -244,18 +274,17 @@ pub(crate) fn make_function_wrappers(
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)
                 Err(unwind_err) => {
-                    drop(unwind_err); //did not notice any difference if dropped or not.
-                    // It should be possible to downcast the unwind_err Any type to the error
-                    // included in panic. The advantage would be the panic cause could be included
-                    // in the R terminal error message and not only via std-err.
-                    // but it should be handled in a separate function and not in-lined here.
-                    let err_string = format!("User function panicked: {}", #r_name_str);
-                    // cannot use throw_r_error here for some reason.
-                    // handle_panic() exports err string differently than throw_r_error.
-                    extendr_api::handle_panic(err_string.as_str(), || panic!());
+                    let panic_msg = if let Some(s) = unwind_err.downcast_ref::<&str>() {
+                        (*s).to_string()
+                    } else if let Some(s) = unwind_err.downcast_ref::<String>() {
+                        s.clone()
+                    } else {
+                        format!("User function panicked: {}", #r_name_str)
+                    };
+
+                    extendr_api::throw_r_error(&panic_msg);
                 }
             }
-            unreachable!("internal extendr error, this should never happen.")
         }
     ));
 
@@ -278,6 +307,7 @@ pub(crate) fn make_function_wrappers(
                 return_type: #return_type_string,
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
+                invisible: #opts_invisible,
             })
         }
     ));
@@ -416,7 +446,9 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
-            let default = if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
+            let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
+                quote!(Some(#default))
+            } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
             } else {
                 quote!(None)
@@ -454,6 +486,43 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             })
         }
     }
+}
+
+// Get defaults from #[extendr(default = "value")] attribute.
+fn get_defaults(attrs: &mut Vec<syn::Attribute>) -> Option<String> {
+    use syn::Lit;
+
+    let mut new_attrs = Vec::new();
+    let mut res = None;
+
+    for i in attrs.drain(0..) {
+        if let syn::Meta::List(ref meta_list) = i.meta {
+            if meta_list.path.is_ident("extendr") {
+                let mut default_value = None;
+                let mut theres_default = false;
+
+                let parse_result = meta_list.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("default") {
+                        theres_default = true;
+                        let value = meta.value()?;
+                        if let Ok(Lit::Str(litstr)) = value.parse() {
+                            default_value = Some(litstr.value());
+                        }
+                    }
+                    Ok(())
+                });
+
+                if parse_result.is_ok() && theres_default {
+                    res = default_value;
+                    continue;
+                }
+            }
+        }
+
+        new_attrs.push(i);
+    }
+    *attrs = new_attrs;
+    res
 }
 
 /// Convert `SEXP` arguments into `Robj`.
@@ -518,6 +587,7 @@ fn get_named_lit(attrs: &mut Vec<syn::Attribute>, name: &str) -> Option<String> 
                     ..
                 }) = nv.value
                 {
+                    eprintln!("#[default = \"arg\"] is deprecated. Use #[extendr(default = \"arg\")] instead.");
                     res = Some(litstr.value());
                     continue;
                 }

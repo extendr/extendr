@@ -94,7 +94,7 @@ impl std::fmt::Debug for Promise {
         #[cfg(feature = "non-api")]
         {
             let result = result.field("code", &self.code());
-            let result = result.field("environment", &self.environment());
+            let _result = result.field("environment", &self.environment());
         }
         result.finish()
     }

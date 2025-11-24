@@ -105,7 +105,7 @@ impl std::fmt::Debug for Doubles {
 impl TryFrom<Vec<f64>> for Doubles {
     type Error = Error;
 
-    fn try_from(value: Vec<f64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<f64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
@@ -114,6 +114,26 @@ impl TryFrom<Vec<f64>> for Doubles {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Doubles::new(10);
+            assert_eq!(vec.is_number(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Doubles::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rfloat::na()).collect::<Doubles>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
 
     #[test]
     fn test_vec_f64_doubles_conversion() {

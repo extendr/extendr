@@ -99,7 +99,7 @@ impl AltIntegerImpl for MyCompactIntRange {
         if index == self.missing_index {
             Rint::na()
         } else {
-            Rint::new(self.start + self.step * index as i32)
+            Rint::from(self.start + self.step * index as i32)
         }
     }
 }

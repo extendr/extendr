@@ -106,7 +106,7 @@ impl std::fmt::Debug for Integers {
 impl TryFrom<Vec<i32>> for Integers {
     type Error = Error;
 
-    fn try_from(value: Vec<i32>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<i32>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
@@ -177,11 +177,20 @@ mod tests {
     }
 
     #[test]
+    fn new_with_na() {
+        test! {
+            let vec = Integers::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rint::na()).collect::<Integers>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
     fn test_vec_i32_integers_conversion() {
         test! {
             let int_vec = vec![3,4,0,-2];
-            let int_vec_robj: Robj = int_vec.clone().try_into().unwrap();
-            // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
+            let int_vec_robj: Robj = int_vec.clone().into();
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

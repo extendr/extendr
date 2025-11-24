@@ -187,6 +187,9 @@ pub trait GetSexp {
     /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get(&self) -> SEXP;
 
+    /// # Safety
+    ///
+    /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get_mut(&mut self) -> SEXP;
 
     /// Get a reference to a Robj for this type.
@@ -274,22 +277,15 @@ pub trait Length: GetSexp {
 impl Length for Robj {}
 
 impl Robj {
-    pub fn from_sexp(sexp: SEXP) -> Self {
+    /// # Safety
+    ///
+    /// This function dereferences a raw SEXP pointer.
+    /// The caller must ensure that `sexp` is a valid SEXP pointer.
+    pub unsafe fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
             Robj { inner: sexp }
         })
-    }
-
-    /// A reference of an [`Robj`] can be constructed from a reference to a [`SEXP`]
-    /// as they have the same layout.
-    ///
-    /// # SAFETY
-    ///
-    /// Unlike [`from_sexp`], this does not protect the converted [`SEXP`]. Therefore, one
-    /// must invoke [`ownership::protect`] manually, if necessary.
-    pub(crate) unsafe fn from_sexp_ref(sexp: &SEXP) -> &Self {
-        unsafe { std::mem::transmute(sexp) }
     }
 }
 
@@ -310,7 +306,7 @@ pub trait Types: GetSexp {
     ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
     ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
-    ///     assert_eq!(r!(Rstr::from_string("hello")).rtype(), Rtype::Rstr);
+    ///     assert_eq!(Rstr::from_string("hello").rtype(), Rtype::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
     ///     assert_eq!(r!(1).rtype(), Rtype::Integers);
     ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
@@ -354,38 +350,48 @@ pub trait Types: GetSexp {
         }
     }
 
-    fn as_any(&self) -> Rany {
+    fn as_any(&self) -> Rany<'_> {
         use SEXPTYPE::*;
         unsafe {
             match self.sexptype() {
-                NILSXP => Rany::Null(std::mem::transmute(self.as_robj())),
-                SYMSXP => Rany::Symbol(std::mem::transmute(self.as_robj())),
-                LISTSXP => Rany::Pairlist(std::mem::transmute(self.as_robj())),
-                CLOSXP => Rany::Function(std::mem::transmute(self.as_robj())),
-                ENVSXP => Rany::Environment(std::mem::transmute(self.as_robj())),
-                PROMSXP => Rany::Promise(std::mem::transmute(self.as_robj())),
-                LANGSXP => Rany::Language(std::mem::transmute(self.as_robj())),
-                SPECIALSXP => Rany::Special(std::mem::transmute(self.as_robj())),
-                BUILTINSXP => Rany::Builtin(std::mem::transmute(self.as_robj())),
-                CHARSXP => Rany::Rstr(std::mem::transmute(self.as_robj())),
-                LGLSXP => Rany::Logicals(std::mem::transmute(self.as_robj())),
-                INTSXP => Rany::Integers(std::mem::transmute(self.as_robj())),
-                REALSXP => Rany::Doubles(std::mem::transmute(self.as_robj())),
-                CPLXSXP => Rany::Complexes(std::mem::transmute(self.as_robj())),
-                STRSXP => Rany::Strings(std::mem::transmute(self.as_robj())),
-                DOTSXP => Rany::Dot(std::mem::transmute(self.as_robj())),
-                ANYSXP => Rany::Any(std::mem::transmute(self.as_robj())),
-                VECSXP => Rany::List(std::mem::transmute(self.as_robj())),
-                EXPRSXP => Rany::Expressions(std::mem::transmute(self.as_robj())),
-                BCODESXP => Rany::Bytecode(std::mem::transmute(self.as_robj())),
-                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute(self.as_robj())),
-                WEAKREFSXP => Rany::WeakRef(std::mem::transmute(self.as_robj())),
-                RAWSXP => Rany::Raw(std::mem::transmute(self.as_robj())),
+                NILSXP => Rany::Null(self.as_robj()),
+                SYMSXP => Rany::Symbol(std::mem::transmute::<&Robj, &Symbol>(self.as_robj())),
+                LISTSXP => Rany::Pairlist(std::mem::transmute::<&Robj, &Pairlist>(self.as_robj())),
+                CLOSXP => Rany::Function(std::mem::transmute::<&Robj, &Function>(self.as_robj())),
+                ENVSXP => {
+                    Rany::Environment(std::mem::transmute::<&Robj, &Environment>(self.as_robj()))
+                }
+                PROMSXP => Rany::Promise(std::mem::transmute::<&Robj, &Promise>(self.as_robj())),
+                LANGSXP => Rany::Language(std::mem::transmute::<&Robj, &Language>(self.as_robj())),
+                SPECIALSXP => {
+                    Rany::Special(std::mem::transmute::<&Robj, &Primitive>(self.as_robj()))
+                }
+                BUILTINSXP => {
+                    Rany::Builtin(std::mem::transmute::<&Robj, &Primitive>(self.as_robj()))
+                }
+                CHARSXP => Rany::Rstr(std::mem::transmute::<&Robj, &Rstr>(self.as_robj())),
+                LGLSXP => Rany::Logicals(std::mem::transmute::<&Robj, &Logicals>(self.as_robj())),
+                INTSXP => Rany::Integers(std::mem::transmute::<&Robj, &Integers>(self.as_robj())),
+                REALSXP => Rany::Doubles(std::mem::transmute::<&Robj, &Doubles>(self.as_robj())),
+                CPLXSXP => {
+                    Rany::Complexes(std::mem::transmute::<&Robj, &Complexes>(self.as_robj()))
+                }
+                STRSXP => Rany::Strings(std::mem::transmute::<&Robj, &Strings>(self.as_robj())),
+                DOTSXP => Rany::Dot(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                ANYSXP => Rany::Any(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                VECSXP => Rany::List(std::mem::transmute::<&Robj, &List>(self.as_robj())),
+                EXPRSXP => {
+                    Rany::Expressions(std::mem::transmute::<&Robj, &Expressions>(self.as_robj()))
+                }
+                BCODESXP => Rany::Bytecode(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                WEAKREFSXP => Rany::WeakRef(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                RAWSXP => Rany::Raw(std::mem::transmute::<&Robj, &Raw>(self.as_robj())),
                 #[cfg(not(use_objsxp))]
                 S4SXP => Rany::S4(std::mem::transmute(self.as_robj())),
                 #[cfg(use_objsxp)]
-                OBJSXP => Rany::S4(std::mem::transmute(self.as_robj())),
-                _ => Rany::Unknown(std::mem::transmute(self.as_robj())),
+                OBJSXP => Rany::S4(std::mem::transmute::<&Robj, &S4>(self.as_robj())),
+                _ => Rany::Unknown(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
             }
         }
     }
