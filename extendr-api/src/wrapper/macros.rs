@@ -18,6 +18,15 @@ macro_rules! gen_vector_wrapper_impl {
             }
         }
 
+        impl From<Option<$type>> for Robj {
+            fn from(value: Option<$type>) -> Self {
+                match value {
+                    None => nil_value(),
+                    Some(value) => value.into(),
+                }
+            }
+        }
+
         impl $type {
             paste::paste!{
                 #[doc = "Create a new vector of " $type:lower "."]
@@ -29,9 +38,16 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "   assert_eq!(vec.len(), 10);"]
                 #[doc = "}"]
                 #[doc = "```"]
+                /// Constructs an empty vector of size `len` with default values
                 pub fn new(len: usize) -> $type {
                     // TODO: Check if impacts performance.
                     let iter = (0..len).map(|_| <$primitive_type>::default());
+                    <$type>::from_values(iter)
+                }
+
+                /// Constructs a new vector of size `len` with `NA` values
+                pub fn new_with_na(len: usize) -> $type {
+                    let iter = (0..len).map(|_| <$primitive_type>::na());
                     <$type>::from_values(iter)
                 }
             }
@@ -94,12 +110,13 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "}"]
                 #[doc = "```"]
                 pub fn elt(&self, index: usize) -> $scalar_type {
+                    use extendr_ffi::{R_xlen_t};
                     // Defensive check for oob
                     // This check will not be needed in later releases of R
                     if(index >= self.len()) {
                         <$scalar_type>::na()
                     } else {
-                        unsafe { [<$r_prefix _ELT>](self.get(), index as R_xlen_t).into() }
+                        unsafe { extendr_ffi::[<$r_prefix _ELT>](self.get(), index as R_xlen_t).into() }
                     }
                 }
             }
@@ -142,4 +159,53 @@ macro_rules! gen_vector_wrapper_impl {
     }
 }
 
+macro_rules! gen_from_iterator_impl {
+    (
+        vector_type: $type : ident,
+        collect_from_type: $collect_from_type : ty,
+        underlying_type: $underlying_type : ty,
+        SEXP: $sexp : ident,
+        assignment: $assignment : expr
+    ) => {
+        impl FromIterator<$collect_from_type> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = $collect_from_type>>(iter: T) -> Self {
+                // Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                let values: Vec<$collect_from_type> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    $assignment(d, v)
+                }
+
+                $type { robj }
+            }
+        }
+
+        impl<'a> FromIterator<&'a $collect_from_type> for $type {
+            /// A more generalised iterator collector for small vectors.
+            /// Generates a non-ALTREP vector.
+            fn from_iter<T: IntoIterator<Item = &'a $collect_from_type>>(iter: T) -> Self {
+                // Collect into a vector first.
+                // TODO: specialise for ExactSizeIterator.
+                let values: Vec<&'a $collect_from_type> = iter.into_iter().collect();
+
+                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
+
+                for (d, v) in dest.iter_mut().zip(values) {
+                    $assignment(d, *v)
+                }
+
+                $type { robj }
+            }
+        }
+    };
+}
+
+pub(in crate::wrapper) use gen_from_iterator_impl;
 pub(in crate::wrapper) use gen_vector_wrapper_impl;

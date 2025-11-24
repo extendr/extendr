@@ -4,27 +4,26 @@ description = "Safe and user friendly bindings to the R programming language."
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 
-# Note: it seems cargo-msrv doesn't support rust-version.workspace = true.
-rust-version = "1.70"
-
 [dependencies]
-libR-sys = { workspace = true }
+extendr-ffi = { workspace = true }
 extendr-macros = { workspace = true }
-once_cell = "1"
-paste = "1.0.5"
+once_cell = "1.21.3"
+paste = "1.0.15"
 either = { version = "1.8.1", optional = true }
 libc = { version = "0.2", optional = true }
-ndarray = { version = "0.15.3", optional = true }
-num-complex = { version = "0.4", optional = true }
-serde = { version = "1.0", features = ["derive"], optional = true }
-faer = { version = "0.18.0", optional = true }
+ndarray = { version = "0.16.1", optional = true }
+num-complex = { version = "0.4.6", optional = true }
+serde = { version = "1.0.219", features = ["derive"], optional = true }
+faer = { version = "0.20", optional = true }
 
 [dev-dependencies]
 extendr-engine = { path = "../extendr-engine" }
-rstest = "0.19.0"
+rstest = "0.22.0"
+
 
 [features]
 
@@ -36,19 +35,26 @@ result_condition = []
 
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
-# but do not add functionality (such as `libR-sys/use-bindgen`) are excluded
-full-functionality = ["graphics", "either", "ndarray", "faer", "num-complex", "serde"]
+full-functionality = [
+    "graphics",
+    "either",
+    "ndarray",
+    "faer",
+    "num-complex",
+    "serde",
+]
 
 # Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
 # of non-API items in packages. You may enable this feature, to generate
 # bindings to these non-API items, and their usage in extendr
-non-api = ["libR-sys/non-api"]
+# BEWARE: this feature does not work, as `bindgen` use in extendr is deprecated
+non-api = ["extendr-ffi/non-api"]
 
 # libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
 graphics = ["libc"]
 
 # The minimal set of features without all optional ones
-tests-minimal = ["libR-sys/use-bindgen"]
+tests-minimal = []
 
 # All features to test except for graphics; graphics tests are currently unstable
 # and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
@@ -59,5 +65,6 @@ tests-graphics = ["tests-minimal", "graphics"]
 # Literally all features to test
 tests-all = ["tests", "graphics"]
 
+
 [package.metadata.docs.rs]
-features = ["full-functionality", "libR-sys/use-bindgen"]
+features = ["full-functionality"]

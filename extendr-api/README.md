@@ -1,18 +1,33 @@
-# extendr-api
+# `extendr-api`
 
+`extendr-api` is an opinionated, ergonomic, and safe interface to R API.
 
-A safe and user friendly R extension interface.
+## Installation
 
-* Build rust extensions to R.
-* Convert R packages to Rust crates.
+Simply add this line to the `[dependencies]` section of your `Cargo.toml`.
+You will then be able to call R code from Rust.
 
-This library aims to provide an interface that will be familiar to
-first-time users of Rust or indeed any compiled language.
+```toml
+[dependencies]
+extendr-api = "0.8.0"
+```
 
-See [Robj] for much of the content of this crate.
-[Robj] provides a safe wrapper for the R object type.
+## About
+
+On the [extendr homepage](https://extendr.github.io/) there is a [comprehensive user-guide](https://extendr.github.io/user-guide/).
+
+The [API documentation on doc.rs](https://docs.rs/extendr-api/latest/extendr_api/), and for
+[development API documentation](https://extendr.github.io/extendr/extendr_api/).
+
+## Overview
+
+See `Robj` for much of the content of this crate.
+`Robj` provides a safe wrapper for the R object type.
 
 Use attributes and macros to export to R.
+
+For a module named `mymodule` (typically in a file named `mymodule.rs`)
+
 ```rust
 use extendr_api::prelude::*;
 // Export a function or impl to R.
@@ -26,7 +41,6 @@ extendr_module! {
    mod mymodule;
    fn fred;
 }
-
 ```
 
 In R:
@@ -35,9 +49,10 @@ In R:
 result <- fred(1)
 ```
 
-[Robj] is a wrapper for R objects.
-The r!() and R!() macros let you build R objects
+`Robj` is a wrapper for R objects.
+The `r!()` and `R!()` macros let you build R objects
 using Rust and R syntax respectively.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -100,6 +115,7 @@ test! {
 To index a vector, first convert it to a slice and then
 remember to use 0-based indexing. In Rust, going out of bounds
 will cause and error (a panic) unlike C++ which may crash.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -114,6 +130,7 @@ test! {
 ```
 
 Much slower, but more general are these methods:
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -131,10 +148,11 @@ test! {
 }
 ```
 
-The [R!] macro lets you embed R code in Rust
-and takes Rust expressions in {{ }} pairs.
+The `R!` macro lets you embed R code in Rust
+and takes Rust expressions in `{{ }}` pairs.
 
-The [Rraw!] macro will not expand the {{ }} pairs.
+The `Rraw!` macro will not expand the `{{ }}` pairs.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -163,8 +181,9 @@ test! {
 }
 ```
 
-The [r!] macro converts a rust object to an R object
+The `r!` macro converts a rust object to an R object
 and takes parameters.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -174,7 +193,8 @@ test! {
 }
 ```
 
-You can call R functions and primitives using the [call!] macro.
+You can call R functions and primitives using the `call!` macro.
+
 ```rust
 use extendr_api::prelude::*;
 test! {
@@ -194,11 +214,11 @@ test! {
 
 Rust has a concept of "Owned" and "Borrowed" objects.
 
-Owned objects, such as [Vec] and [String] allocate memory
+Owned objects, such as `Vec` and `String` allocate memory
 which is released when the object lifetime ends.
 
-Borrowed objects such as &[i32] and &str are just pointers
-to annother object's memory and can't live longer than the
+Borrowed objects such as `&[i32]` and `&str` are fat pointers
+to another object's memory and can't live longer than the
 object they reference.
 
 Borrowed objects are much faster than owned objects and use less
@@ -239,12 +259,10 @@ extendr-api
 * `result_list'` `Ok(T)` is encoded as `list(ok = x_ok, err = NULL)` and `Err` as `list(ok = NULL, err = e_err)`
 * `result_condition'` `Ok(T)` is encoded as `x_ok` and `Err(E)` as `condition(msg="extendr_error", value = x_err, class=c("extendr_error", "error", "condition"))`
 * Multiple of above result feature gates. Only one result feature gate will take effect, the precedence is currently [`result_list`, `result_condition`, ... ].
-* Neither of above (default) `Ok(T)` is encoded as `x_ok`and `Err(E)` will trigger `throw_r_error()` which is discouraged.
 
 Finally, there are parts of R's API that are deemed non-API, in that R packages
 on CRAN are recommended not to have these available in packages. If you want
-to have access to them, you may use `non-api` to expose them. However, it requires
-setting up `bindgen`, and specifically following setup instructions for [`libR-sys`](https://github.com/extendr/libR-sys/?tab=readme-ov-file#building-bindings-from-source-advanced).
+to have access to them, you may use the `non-api` feature to expose them.
 
 ## License
 

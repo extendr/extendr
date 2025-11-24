@@ -3,7 +3,7 @@ resolver = "2"
 
 [package]
 name = "extendrtests"
-version = "0.6.0"
+version = "0.7.1"
 authors = [
     "andy-thomason <andy@andythomason.com>",
     "Claus O. Wilke <wilke@austin.utexas.edu>",
@@ -15,26 +15,30 @@ publish = false
 [lib]
 crate-type = ["staticlib"]
 
-[dependencies]
-extendr-api = { version = "*", features = ["graphics", "ndarray", "faer", "either"] }
-faer = "0.18.0"
+[features]
+full-functionality = []
+serde = ["extendr-api/serde"]
+faer = []
+graphics = []
+ndarray = []
 
-# TODO: I couldn't find any nice way to add the condition based on the R version
-# except for using libR-sys just for "DEP_R_*" envvars.
-libR-sys = "*"
+[dependencies]
+extendr-api = { version = "*", features = [
+    "graphics",
+    "ndarray",
+    "faer",
+    "either",
+] }
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
 ## Replace by absolute path to simplify testing.
 ## CI overrides this path.
-extendr-api = { path = "../../../../../../../extendr/extendr-api" }
+extendr-api = { path = "../../../../extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
-# extendr-api = { path = "../../../../../../../../../extendr/extendr-api"}
+# extendr-api = { path = "../../../../../../../../../extendr/extendr-api" }
 
 
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 #extendr-api = { git = "https://github.com/extendr/extendr"}
-
-# Build against current libR-sys version on github
-libR-sys = { git = "https://github.com/extendr/libR-sys", rev = "09d76ada0cd54aa4481d9f06bbdfa50bcca2814a" }

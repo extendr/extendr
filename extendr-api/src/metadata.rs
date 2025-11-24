@@ -24,6 +24,7 @@ pub struct Func {
     pub return_type: &'static str,
     pub func_ptr: *const u8,
     pub hidden: bool,
+    pub invisible: Option<bool>,
 }
 
 /// Metadata Impl.
@@ -75,6 +76,7 @@ impl From<&Arg> for RArg {
 
 impl From<Arg> for Robj {
     fn from(val: Arg) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[r!(val.name), r!(val.arg_type)]);
         result
             .set_names(&["name", "arg_type"])
@@ -85,6 +87,7 @@ impl From<Arg> for Robj {
 
 impl From<Func> for Robj {
     fn from(val: Func) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.doc),
             r!(val.rust_name),
@@ -93,6 +96,7 @@ impl From<Func> for Robj {
             r!(List::from_values(val.args)),
             r!(val.return_type),
             r!(val.hidden),
+            r!(val.invisible.unwrap_or(false)),
         ]);
         result
             .set_names(&[
@@ -103,6 +107,7 @@ impl From<Func> for Robj {
                 "args",
                 "return.type",
                 "hidden",
+                "invisible",
             ])
             .expect("From<Func> failed");
         result.into()
@@ -111,6 +116,7 @@ impl From<Func> for Robj {
 
 impl From<Impl> for Robj {
     fn from(val: Impl) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.doc),
             r!(val.name),
@@ -125,6 +131,7 @@ impl From<Impl> for Robj {
 
 impl From<Metadata> for Robj {
     fn from(val: Metadata) -> Self {
+        use crate as extendr_api;
         let mut result = List::from_values(&[
             r!(val.name),
             r!(List::from_values(val.functions)),
@@ -185,7 +192,16 @@ fn write_function_wrapper(
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
     let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
-    if func.return_type == "()" {
+    let should_be_invisible = match func.invisible {
+        Some(true) => true,
+        Some(false) => false,
+        None => {
+            // previous logic that guarantees invisible for () and Result types
+            func.return_type == "()" || func.return_type == "Result"
+        }
+    };
+
+    if should_be_invisible {
         write!(
             w,
             "{} <- function({}) invisible(.Call(",
@@ -215,7 +231,7 @@ fn write_function_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" {
+    if should_be_invisible {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;
@@ -248,7 +264,13 @@ fn write_method_wrapper(
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R
-    if func.return_type == "()" {
+    let should_be_invisible = match func.invisible {
+        Some(true) => true,
+        Some(false) => false,
+        None => func.return_type == "()" || func.return_type == "Result",
+    };
+
+    if should_be_invisible {
         write!(
             w,
             "{}${} <- function({}) invisible(.Call(",
@@ -281,7 +303,7 @@ fn write_method_wrapper(
         write!(w, ", PACKAGE = \"{}\"", package_name)?;
     }
 
-    if func.return_type == "()" {
+    if should_be_invisible {
         writeln!(w, "))\n")?;
     } else {
         writeln!(w, ")\n")?;
@@ -293,27 +315,36 @@ fn write_method_wrapper(
 /// Generate a wrapper for an implementation block.
 fn write_impl_wrapper(
     w: &mut Vec<u8>,
-    imp: &Impl,
+    name: &str,
+    impls: &[Impl],
     package_name: &str,
     use_symbols: bool,
 ) -> std::io::Result<()> {
-    let exported = imp.doc.contains("@export");
+    let mut exported = false;
+    {
+        for imp in impls.iter().filter(|imp| imp.name == name) {
+            if !exported {
+                exported = imp.doc.contains("@export");
+            }
+            write_doc(w, imp.doc)?;
+        }
+    }
 
-    write_doc(w, imp.doc)?;
-
-    let imp_name_fixed = sanitize_identifier(imp.name);
+    let imp_name_fixed = sanitize_identifier(name);
 
     // Using fixed name because it is exposed to R
     writeln!(w, "{} <- new.env(parent = emptyenv())\n", imp_name_fixed)?;
 
-    for func in &imp.methods {
-        // write_doc(& mut w, func.doc)?;
-        // `imp.name` is passed as is and sanitized within the function
-        write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
+    for imp in impls.iter().filter(|imp| imp.name == name) {
+        for func in &imp.methods {
+            // write_doc(& mut w, func.doc)?;
+            // `imp.name` is passed as is and sanitized within the function
+            write_method_wrapper(w, func, package_name, use_symbols, imp.name)?;
+        }
     }
 
     if exported {
-        writeln!(w, "#' @rdname {}", imp.name)?;
+        writeln!(w, "#' @rdname {}", name)?;
         writeln!(w, "#' @usage NULL")?;
     }
 
@@ -326,10 +357,10 @@ fn write_impl_wrapper(
     // LHS with dollar operator is wrapped in ``, so pass name as is,
     // but in the body `imp_name_fixed` is called as valid R function,
     // so we pass preprocessed value
-    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", imp.name, imp_name_fixed)?;
+    writeln!(w, "`$.{}` <- function (self, name) {{ func <- {}[[name]]; environment(func) <- environment(); func }}\n", name, imp_name_fixed)?;
 
     writeln!(w, "#' @export")?;
-    writeln!(w, "`[[.{}` <- `$.{}`\n", imp.name, imp.name)?;
+    writeln!(w, "`[[.{}` <- `$.{}`\n", name, name)?;
 
     Ok(())
 }
@@ -365,9 +396,20 @@ impl Metadata {
             write_function_wrapper(&mut w, func, package_name, use_symbols)?;
         }
 
-        for imp in &self.impls {
-            write_impl_wrapper(&mut w, imp, package_name, use_symbols)?;
+        for name in self.impl_names() {
+            write_impl_wrapper(&mut w, name, &self.impls, package_name, use_symbols)?;
         }
+
         unsafe { Ok(String::from_utf8_unchecked(w)) }
+    }
+
+    fn impl_names(&self) -> Vec<&str> {
+        let mut vec: Vec<&str> = vec![];
+        for impls in &self.impls {
+            if !vec.contains(&impls.name) {
+                vec.push(impls.name)
+            }
+        }
+        vec
     }
 }

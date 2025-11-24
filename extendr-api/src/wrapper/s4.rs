@@ -28,6 +28,7 @@
 //!
 
 use super::*;
+use extendr_ffi::{R_do_slot, R_do_slot_assign, R_has_slot};
 
 #[derive(PartialEq, Clone)]
 pub struct S4 {
@@ -188,5 +189,14 @@ impl S4 {
 impl std::fmt::Debug for S4 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("S4").finish()
+    }
+}
+
+impl From<Option<S4>> for Robj {
+    fn from(value: Option<S4>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
     }
 }

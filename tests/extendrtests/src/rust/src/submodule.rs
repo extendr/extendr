@@ -9,6 +9,7 @@ fn hello_submodule() -> &'static str {
 
 // Class for testing
 #[derive(Default, Debug, Clone, Copy)]
+#[extendr]
 struct MySubmoduleClass {
     a: i32,
 }

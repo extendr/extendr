@@ -20,47 +20,54 @@ impl Promise {
     #[cfg(feature = "non-api")]
     pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
-            let sexp = Rf_allocSExp(SEXPTYPE::PROMSXP);
+            let sexp = extendr_ffi::Rf_allocSExp(SEXPTYPE::PROMSXP);
             let robj = Robj::from_sexp(sexp);
-            SET_PRCODE(sexp, code.get());
-            SET_PRENV(sexp, environment.robj.get());
-            SET_PRVALUE(sexp, R_UnboundValue);
+            extendr_ffi::SET_PRCODE(sexp, code.get());
+            extendr_ffi::SET_PRENV(sexp, environment.robj.get());
+            extendr_ffi::SET_PRVALUE(sexp, extendr_ffi::R_UnboundValue);
             Ok(Promise { robj })
         })
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the code to be executed from the promise.
     pub fn code(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(PRCODE(sexp))
+            Robj::from_sexp(extendr_ffi::PRCODE(sexp))
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the environment for the execution from the promise.
     pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(PRENV(sexp)).try_into().unwrap()
+            Robj::from_sexp(extendr_ffi::PRENV(sexp))
+                .try_into()
+                .unwrap()
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the value of the promise, once executed.
     pub fn value(&self) -> Robj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(PRVALUE(sexp))
+            Robj::from_sexp(extendr_ffi::PRVALUE(sexp))
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// Get the seen flag (avoids recursion).
     pub fn seen(&self) -> i32 {
         unsafe {
             let sexp = self.robj.get();
-            PRSEEN(sexp)
+            extendr_ffi::PRSEEN(sexp)
         }
     }
 
+    #[cfg(feature = "non-api")]
     /// If this promise has not been evaluated, evaluate it, otherwise return the value.
     /// ```
     /// use extendr_api::prelude::*;
@@ -82,9 +89,13 @@ impl Promise {
 
 impl std::fmt::Debug for Promise {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Promise")
-            .field("code", &self.code())
-            .field("environment", &self.environment())
-            .finish()
+        let mut result = f.debug_struct("Promise");
+
+        #[cfg(feature = "non-api")]
+        {
+            let result = result.field("code", &self.code());
+            let _result = result.field("environment", &self.environment());
+        }
+        result.finish()
     }
 }

@@ -6,7 +6,7 @@
 \alias{$.Wrapper}
 \title{Class for testing (exported)}
 \format{
-An object of class \code{environment} of length 11.
+An object of class \code{environment} of length 12.
 }
 \usage{
 Wrapper
@@ -14,6 +14,49 @@ Wrapper
 \description{
 Class for testing (exported)
 }
+\section{Methods}{
+
+\subsection{Method \code{new}}{
+Method for making a new object.
+}
+
+\subsection{Method \code{set_a}}{
+Method for setting stuff.
+\subsection{Arguments}{
+\describe{
+\item{\code{x}}{a number}
+}}
+}
+
+\subsection{Method \code{a}}{
+Method for getting stuff.
+}
+
+\subsection{Method \code{me_owned}}{
+Method for getting one's (by way of a copy) self.
+}
+
+\subsection{Method \code{me_ref}}{
+Method for getting one's (ref) self.
+}
+
+\subsection{Method \code{me_mut}}{
+Method for getting one's (ref mut) self.
+}
+
+\subsection{Method \code{me_explicit_ref}}{
+Method for getting one's ref (explicit) self.
+}
+
+\subsection{Method \code{me_explicit_mut}}{
+Method for getting one's ref mut (explicit) self.
+}
+
+\subsection{Method \code{max_ref_offset}}{
+\code{offset} does nothing.
+}
+}
+
 \examples{
 x <- Wrapper$new()
 x$a()

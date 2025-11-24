@@ -4,8 +4,7 @@
 use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
-use libR_sys::*;
-
+use extendr_ffi::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
 /// Convert a list of tokens to an array of tuples.
 #[doc(hidden)]
 #[macro_export]
@@ -85,7 +84,7 @@ macro_rules! append_lang {
     };
 }
 
-/// A macro for constructing R langage objects.
+/// A macro for constructing R language objects.
 ///
 /// Example:
 /// ```

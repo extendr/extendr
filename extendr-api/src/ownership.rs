@@ -12,7 +12,7 @@ use once_cell::sync::Lazy;
 use std::collections::hash_map::{Entry, HashMap};
 use std::sync::Mutex;
 
-use libR_sys::{
+use extendr_ffi::{
     R_NilValue, R_PreserveObject, R_ReleaseObject, R_xlen_t, Rf_allocVector, Rf_protect,
     Rf_unprotect, LENGTH, SET_VECTOR_ELT, SEXP, SEXPTYPE, VECTOR_ELT,
 };
@@ -23,7 +23,7 @@ mod send_sexp {
     //! This can lead to soundness issues, therefore accessing the `SEXP` has
     //! to happen through the unsafe method [`SendSEXP::inner`].
     //!
-    use libR_sys::SEXP;
+    use extendr_ffi::SEXP;
 
     /// A wrapper around R's pointer type `SEXP` that is `Send`.
     #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -270,8 +270,9 @@ impl Ownership {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate as extendr_api;
     use crate::*;
-    use libR_sys::{Rf_ScalarInteger, Rf_protect};
+    use extendr_ffi::{Rf_ScalarInteger, Rf_protect};
 
     #[test]
     fn basic_test() {

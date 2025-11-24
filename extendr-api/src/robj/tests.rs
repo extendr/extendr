@@ -1,3 +1,4 @@
+use crate as extendr_api;
 use crate::conversions::try_into_int::ConversionError;
 use crate::scalar::*;
 use crate::*;
@@ -82,7 +83,7 @@ fn test_try_from_robj() {
 
         assert_eq!(hmap_borrowed["a"], Robj::from(1));
         assert_eq!(hmap_borrowed["b"], Robj::from(2));
-        let hmap_borrowed = list.as_list().unwrap().into_hashmap();
+        let hmap_borrowed: HashMap<&str, Robj> = list.as_list().unwrap().try_into().unwrap();
         assert_eq!(hmap_borrowed, hmap2);
 
         let na_integer = eval_string("NA_integer_").unwrap();
@@ -287,5 +288,13 @@ fn input_iterator_test() {
         let iter = <Logical>::try_from(&robj).unwrap();
         assert_eq!(iter.collect::<Vec<_>>(), src);
         */
+    }
+}
+
+#[test]
+fn test_rstr_rtype() {
+    test! {
+    let robj = r!(Rstr::from("hello"));
+    assert_eq!(Rstr::try_from(robj).unwrap().rtype(), Rtype::Rstr);
     }
 }

@@ -1,7 +1,8 @@
 # `extendr` developer tools
 
-In order to perform integration test (with R), generate documentation, etc.,
-one can use this tool. In the future, `xtask` will be renamed `ci`, when it can
+`cargo extendr` cli is used to perform integration tests with R,
+generate documentation, and other tasks related to maintaining the
+extendr crates. In the future, `xtask` will be renamed `ci`, when it can
 perform all the tasks, that our custom CI scripts can do at the moment.
 
 ```shell
@@ -30,8 +31,6 @@ Options:
   -V, --version  Print version
 ```
 
-Let's describe some of the features listed above.
-
 ## `check-fmt`
 
 This checks if the rust code follows the specified `rustfmt`. It does not
@@ -47,7 +46,7 @@ Runs `R CMD check` tests in `tests/extendrtests`.
 
 ## `doc`
 
-Generates documentation as seen on [/extendr.github.io](https://extendr.github.io/extendr/extendr_api/), meaning it will enable feature `full-functionality`,
+Generates documentation as seen on [extendr.github.io](https://extendr.github.io/extendr/extendr_api/), meaning it will enable feature `full-functionality`,
 which includes all the optional dependencies, plus all the additive features.
 
 ## `msrv`
@@ -66,11 +65,6 @@ Use `cargo extendr document` to regenerate the wrappers for the integration-test
 ## TODO
 
 In the following are features that could be added to `xtask`.
-
-### Embed local `libR-sys`
-
-Clone `libR-sys` into `extendr/libR-sys`. Change the `extendr/Cargo.toml` to
-use the embedded `extendr/libR-sys`.
 
 ### Copy R-headers
 

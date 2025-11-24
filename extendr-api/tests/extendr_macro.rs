@@ -1,4 +1,11 @@
-use extendr_api::prelude::*;
+use extendr_api::call;
+use extendr_api::extendr;
+use extendr_api::extendr_module;
+use extendr_api::Rinternals;
+use extendr_api::Robj;
+use extendr_api::NA_INTEGER;
+use extendr_api::NA_REAL;
+use extendr_api::{prelude::Rint, r, test, GetSexp, Integers};
 
 #[extendr]
 fn test_i32(val: i32) -> i32 {
@@ -12,29 +19,17 @@ fn test_i16(val: i16) -> i16 {
 
 #[extendr]
 fn test_option_i32(val: Option<i32>) -> i32 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1)
 }
 
 #[extendr]
 fn test_option_f64(val: Option<f64>) -> f64 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1.0
-    }
+    val.unwrap_or(-1f64)
 }
 
 #[extendr]
 fn test_option_i16(val: Option<i16>) -> i16 {
-    if let Some(i) = val {
-        i
-    } else {
-        -1
-    }
+    val.unwrap_or(-1i16)
 }
 
 #[extendr]
@@ -127,12 +122,19 @@ fn tests_with_successful_outcomes() {
     }
 }
 
+// This behavior is now handled in Rust nightly 1.81 making catch_r_error() unusable.
+// For previous versions this is useful.
+// See related: https://rust-lang.zulipchat.com/#narrow/stream/122651-general/topic/default.20PR.20description.20feedback
+// TODO: revisit when formalized
 // Win32 does not support catch_unwind.
 #[cfg(not(target_arch = "x86"))]
 #[test]
+#[ignore = "panicking in FFI is now automatically abort instead of undefined behavior"]
 fn tests_with_unsuccessful_outcomes() {
     // Using [single_threaded] here may help with sporadic test failures.
-    single_threaded(|| unsafe {
+
+    use extendr_api::{catch_r_error, list, pairlist};
+    extendr_api::single_threaded(|| unsafe {
         test! {
             let old_hook = std::panic::take_hook();
 
@@ -157,6 +159,8 @@ fn tests_with_unsuccessful_outcomes() {
 
 #[test]
 fn test_call_macro() {
+    use extendr_api::Length;
+    use extendr_api::Operators;
     test! {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
@@ -202,6 +206,7 @@ fn test_metadata() {
             return_type: "i32",
             func_ptr: wrap__test_metadata_1 as *const u8,
             hidden: false,
+            invisible: None,
         }
     );
 }

@@ -18,8 +18,11 @@
 //! two instances of `ExternalPtr<T>` by value, `a.as_ref() == b.as_ref()`.
 //!
 use super::*;
-use std::fmt::Debug;
-
+use extendr_ffi::{
+    R_ClearExternalPtr, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
+    R_MakeExternalPtr, R_NilValue, R_SetExternalPtrTag,
+};
+use std::{any::Any, fmt::Debug};
 /// Wrapper for creating R objects containing any Rust object.
 ///
 /// ```
@@ -100,7 +103,7 @@ impl<T> Slices for ExternalPtr<T> {}
 /// dollar() etc.
 impl<T> Operators for ExternalPtr<T> {}
 
-impl<T> Deref for ExternalPtr<T> {
+impl<T: 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
     /// This allows us to treat the Robj as if it is the type T.
@@ -109,14 +112,14 @@ impl<T> Deref for ExternalPtr<T> {
     }
 }
 
-impl<T> DerefMut for ExternalPtr<T> {
+impl<T: 'static> DerefMut for ExternalPtr<T> {
     /// This allows us to treat the Robj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
     }
 }
 
-impl<T> ExternalPtr<T> {
+impl<T: 'static> ExternalPtr<T> {
     /// Construct an external pointer object from any type T.
     /// In this case, the R object owns the data and will drop the Rust object
     /// when the last reference is removed via register_c_finalizer.
@@ -126,15 +129,24 @@ impl<T> ExternalPtr<T> {
     pub fn new(val: T) -> Self {
         single_threaded(|| unsafe {
             // This allocates some memory for our object and moves the object into it.
-            let boxed = Box::new(val);
+            let boxed: Box<dyn Any> = Box::new(val);
+            let boxed: Box<Box<dyn Any>> = Box::new(boxed);
 
             // This constructs an external pointer to our boxed data.
             // into_raw() converts the box to a malloced pointer.
-            let robj = Robj::make_external_ptr(Box::into_raw(boxed), r!(()));
+            let robj = {
+                let boxed_ptr = Box::into_raw(boxed);
+                let prot = Robj::from(());
+                let type_name: Robj = std::any::type_name::<T>().into();
 
-            extern "C" fn finalizer<T>(x: SEXP) {
+                Robj::from_sexp(single_threaded(|| {
+                    R_MakeExternalPtr(boxed_ptr.cast(), type_name.get(), prot.get())
+                }))
+            };
+
+            extern "C" fn finalizer(x: SEXP) {
                 unsafe {
-                    let ptr = R_ExternalPtrAddr(x).cast::<T>();
+                    let ptr = R_ExternalPtrAddr(x).cast::<Box<dyn Any>>();
 
                     // Free the `tag`, which is the type-name
                     R_SetExternalPtrTag(x, R_NilValue);
@@ -149,7 +161,7 @@ impl<T> ExternalPtr<T> {
             }
 
             // Tell R about our finalizer
-            robj.register_c_finalizer(Some(finalizer::<T>));
+            robj.register_c_finalizer(Some(finalizer));
 
             // Return an object in a wrapper.
             Self {
@@ -190,6 +202,7 @@ impl<T> ExternalPtr<T> {
     pub fn addr_mut(&mut self) -> &mut T {
         self.try_addr_mut().unwrap()
     }
+
     /// Get the "address" field of an external pointer.
     /// Normally, we will use Deref to do this.
     ///
@@ -199,10 +212,10 @@ impl<T> ExternalPtr<T> {
     pub fn try_addr(&self) -> Result<&T> {
         unsafe {
             R_ExternalPtrAddr(self.robj.get())
-                .cast::<T>()
-                .cast_const()
+                .cast::<Box<dyn Any>>()
                 .as_ref()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
+                .map(|x| x.downcast_ref::<T>().unwrap())
         }
     }
 
@@ -215,36 +228,87 @@ impl<T> ExternalPtr<T> {
     pub fn try_addr_mut(&mut self) -> Result<&mut T> {
         unsafe {
             R_ExternalPtrAddr(self.robj.get_mut())
-                .cast::<T>()
+                .cast::<Box<dyn Any>>()
                 .as_mut()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
+                .map(|x| x.downcast_mut::<T>().unwrap())
         }
     }
 }
 
-impl<T> TryFrom<&Robj> for &ExternalPtr<T> {
+impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(value: &Robj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
-        unsafe { Ok(std::mem::transmute(value)) }
+
+        // check type by downcasting
+        let boxed_ptr = unsafe {
+            value
+                .external_ptr_addr::<Box<dyn Any>>()
+                .cast_const()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
+        };
+
+        if boxed_ptr.downcast_ref::<T>().is_none() {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
+        unsafe { Ok(std::mem::transmute::<&Robj, &ExternalPtr<T>>(value)) }
     }
 }
 
-impl<T> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
+impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(value: &mut Robj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
-        unsafe { Ok(std::mem::transmute(value)) }
+
+        // check type by downcasting
+        let boxed_ptr = unsafe {
+            value
+                .external_ptr_addr::<Box<dyn Any>>()
+                .cast_const()
+                .as_ref()
+                .ok_or_else(|| Error::ExpectedExternalNonNullPtr(value.clone()))?
+        };
+
+        if boxed_ptr.downcast_ref::<T>().is_none() {
+            return Err(Error::ExpectedExternalPtrType(
+                value.clone(),
+                std::any::type_name::<T>().to_string(),
+            ));
+        }
+
+        unsafe { Ok(std::mem::transmute::<&mut Robj, &mut ExternalPtr<T>>(value)) }
     }
 }
 
-impl<T> TryFrom<&Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<Robj> for &ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> Result<Self> {
+        (&value).try_into()
+    }
+}
+
+impl<T: 'static> TryFrom<Robj> for &mut ExternalPtr<T> {
+    type Error = Error;
+
+    fn try_from(mut value: Robj) -> Result<Self> {
+        (&mut value).try_into()
+    }
+}
+
+impl<T: 'static> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: &Robj) -> Result<Self> {
@@ -253,7 +317,7 @@ impl<T> TryFrom<&Robj> for ExternalPtr<T> {
     }
 }
 
-impl<T> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<Robj> for ExternalPtr<T> {
     type Error = Error;
 
     fn try_from(robj: Robj) -> Result<Self> {
@@ -267,19 +331,28 @@ impl<T> From<ExternalPtr<T>> for Robj {
     }
 }
 
-impl<T: Debug> std::fmt::Debug for ExternalPtr<T> {
+impl<T> From<Option<ExternalPtr<T>>> for Robj {
+    fn from(value: Option<ExternalPtr<T>>) -> Self {
+        match value {
+            None => nil_value(),
+            Some(value) => value.into(),
+        }
+    }
+}
+
+impl<T: Debug + 'static> std::fmt::Debug for ExternalPtr<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (&**self as &T).fmt(f)
     }
 }
 
-impl<T> AsRef<T> for ExternalPtr<T> {
+impl<T: 'static> AsRef<T> for ExternalPtr<T> {
     fn as_ref(&self) -> &T {
         self.addr()
     }
 }
 
-impl<T> AsMut<T> for ExternalPtr<T> {
+impl<T: 'static> AsMut<T> for ExternalPtr<T> {
     fn as_mut(&mut self) -> &mut T {
         self.addr_mut()
     }

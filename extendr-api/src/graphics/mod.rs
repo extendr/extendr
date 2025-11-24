@@ -63,7 +63,7 @@
 //!     let device_driver = MyDevice {
 //!         welcome_message: welcome_message.as_str(),
 //!     };
-//!     
+//!
 //!     let device_descriptor = DeviceDescriptor::new();
 //!     let device = device_driver.create_device::<MyDevice>(device_descriptor, "my device");
 //! }
@@ -77,10 +77,9 @@
 //! ```
 
 use crate::*;
-use libR_sys::*;
 
 // These are used in the callback functions.
-pub use libR_sys::{DevDesc, R_GE_gcontext};
+pub use extendr_ffi::{cetype_t, graphics::*, R_NilValue, Rf_NoDevices, Rf_NumDevices};
 
 pub mod color;
 pub mod device_descriptor;
@@ -263,8 +262,6 @@ impl Context {
                 lineheight: 1.0,
                 fontface: 1,
                 fontfamily: [0; 201],
-
-                #[cfg(use_r_ge_version_14)]
                 patternFill: R_NilValue,
             };
 
@@ -326,7 +323,7 @@ impl Context {
     /// Set the line end type.
     /// ```ignore
     ///   LineEnd::RoundCap
-    ///   LineEnd::ButtCap  
+    ///   LineEnd::ButtCap
     ///   LineEnd::SquareCap
     /// ```
     pub fn line_end(&mut self, lend: LineEnd) -> &mut Self {
@@ -408,7 +405,7 @@ impl Context {
     }
 
     pub(crate) fn context(&self) -> pGEcontext {
-        unsafe { std::mem::transmute(&self.context) }
+        &self.context as *const extendr_ffi::R_GE_gcontext as *mut extendr_ffi::R_GE_gcontext
     }
 
     // Affine transform.
@@ -463,7 +460,7 @@ impl Device {
     pub fn mode_on(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(r!(())))
+                Err(Error::NoGraphicsDevices(Robj::from(())))
             } else {
                 GEMode(1, self.inner());
                 Ok(())
@@ -475,7 +472,7 @@ impl Device {
     pub fn mode_off(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(r!(())))
+                Err(Error::NoGraphicsDevices(Robj::from(())))
             } else {
                 GEMode(0, self.inner());
                 Ok(())
@@ -492,7 +489,7 @@ impl Device {
     pub fn get_device(number: i32) -> Result<Device> {
         unsafe {
             if number < 0 || number >= Rf_NumDevices() {
-                Err(Error::NoGraphicsDevices(r!(())))
+                Err(Error::NoGraphicsDevices(Robj::from(())))
             } else {
                 Ok(Device {
                     inner: GEgetDevice(number),

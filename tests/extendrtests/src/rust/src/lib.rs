@@ -2,15 +2,24 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod custom_errors;
 mod dataframe;
+mod errors;
 mod externalptr;
 mod graphic_device;
+mod hashmap;
+mod into_list_derive;
+mod leak;
+mod matrix;
 mod memory_leaks;
 mod optional_either;
 mod optional_faer;
 mod optional_ndarray;
 mod raw_identifiers;
 mod submodule;
+mod to_unique_character;
+mod tuple_conversions;
+mod typedsliceargs;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -21,6 +30,18 @@ fn hello_world() -> &'static str {
 // Do nothing.
 #[extendr]
 fn do_nothing() {}
+
+/// This is invisible by default
+#[extendr]
+fn result_unit() -> Result<()> {
+    Ok(())
+}
+
+/// Return a string but invisibly
+#[extendr(invisible)]
+fn invisible_string() -> &'static str {
+    "This should be invisible"
+}
 
 // TryFrom: conversions
 
@@ -128,7 +149,7 @@ fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::from((y.re() * y.re(), 0.0.into()));
+        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0.into());
     }
 
     result
@@ -158,8 +179,15 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Parsing
 
+// Deprecated default syntax
+//#[extendr]
+//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//    x.is_null()
+//}
+
+// New default syntax
 #[extendr]
-fn check_default(#[default = "NULL"] x: Robj) -> bool {
+fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
     x.is_null()
 }
 
@@ -199,6 +227,7 @@ fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
 
 // Class for testing
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClass {
     a: i32,
 }
@@ -247,6 +276,7 @@ impl MyClass {
 
 // Class for testing special names
 #[derive(Default, Debug)]
+#[extendr]
 struct __MyClass {}
 
 // Class for testing special names
@@ -263,6 +293,7 @@ impl __MyClass {
 
 // Class for testing (unexported)
 #[derive(Default, Debug)]
+#[extendr]
 struct MyClassUnexported {
     a: i32,
 }
@@ -300,6 +331,8 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
+    fn result_unit;
+    fn invisible_string;
 
     fn double_scalar;
     fn int_scalar;
@@ -345,11 +378,20 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use errors;
+    use hashmap;
+    use into_list_derive;
     use memory_leaks;
     use optional_either;
     use optional_ndarray;
     use optional_faer;
     use raw_identifiers;
     use submodule;
+    use tuple_conversions;
+    use typedsliceargs;
     use externalptr;
+    use matrix;
+    use to_unique_character;
+    use custom_errors;
+    use leak;
 }

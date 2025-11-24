@@ -13,9 +13,11 @@ pub use super::error::{Error, Result};
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
     eval_string, eval_string_with_params, find_namespace, find_namespaced_function, global_env,
-    global_function, global_var, local_var, na_string, namespace_registry, new_env, nil_value,
-    parse, srcref,
+    global_function, na_string, namespace_registry, new_env, nil_value, parse, srcref,
 };
+
+#[cfg(feature = "non-api")]
+pub use super::functions::{global_var, local_var};
 
 pub use super::wrapper::symbol::{
     base_symbol, brace_symbol, bracket_2_symbol, bracket_symbol, class_symbol, device_symbol,
@@ -36,7 +38,7 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D,
+    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D,
 };
 
 #[cfg(use_r_altlist)]
@@ -51,7 +53,7 @@ pub use super::robj::{
     RobjItertools, Slices, Types,
 };
 
-pub use super::thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
+pub use super::thread_safety::{catch_r_error, single_threaded, throw_r_error};
 
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
@@ -59,7 +61,9 @@ pub use super::wrapper::{
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
-pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
+pub use extendr_macros::{
+    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromRobj, R,
+};
 
 pub use super::iter::StrIter;
 
@@ -70,10 +74,10 @@ pub use super::scalar::*;
 pub use super::Nullable::*;
 
 #[cfg(feature = "ndarray")]
-pub use ::ndarray::*;
+pub use ::ndarray;
 
 #[cfg(feature = "either")]
 pub use ::either::*;
 
 #[cfg(feature = "faer")]
-pub use ::faer::*;
+pub use ::faer;
