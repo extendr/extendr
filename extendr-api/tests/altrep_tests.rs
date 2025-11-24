@@ -23,7 +23,7 @@ fn test_altinteger() {
                 if index == self.missing_index {
                     Rint::na()
                 } else {
-                    Rint::new(self.start + self.step * index as i32)
+                    Rint::from(self.start + self.step * index as i32)
                 }
             }
         }
@@ -77,7 +77,7 @@ fn test_altreal() {
                 if index == self.missing_index {
                     Rfloat::na()
                 } else {
-                    Rfloat::new(self.start + self.step * index as f64)
+                    Rfloat::from(self.start + self.step * index as f64)
                 }
             }
         }
@@ -259,10 +259,7 @@ fn test_altlist() {
 
         impl AltListImpl for VecUsize {
             fn elt(&self, index: usize) -> Robj {
-                let mut v = Vec::with_capacity(1usize);
-                v.push(self.0[index]);
-                let v = v;
-
+                let v = vec![self.0[index]];
                 Self(v).into_robj()
             }
         }

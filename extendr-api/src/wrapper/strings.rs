@@ -31,6 +31,11 @@ impl Strings {
         Self { robj }
     }
 
+    /// Constructs a new vector of size `len` with `NA` values
+    pub fn new_with_na(len: usize) -> Strings {
+        let iter = (0..len).map(|_| Rstr::na());
+        Strings::from_values(iter)
+    }
     /// Wrapper for creating string vector (STRSXP) objects.
     /// ```
     /// use extendr_api::prelude::*;
@@ -74,9 +79,11 @@ impl Strings {
         if i >= self.len() {
             Rstr::na()
         } else {
-            Robj::from_sexp(unsafe { STRING_ELT(self.get(), i as R_xlen_t) })
-                .try_into()
-                .unwrap()
+            unsafe {
+                Robj::from_sexp(STRING_ELT(self.get(), i as R_xlen_t))
+                    .try_into()
+                    .unwrap()
+            }
         }
     }
 
@@ -156,6 +163,32 @@ impl From<Option<Strings>> for Robj {
         match value {
             Some(value_strings) => value_strings.into(),
             None => nil_value(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Strings::new(10);
+            assert_eq!(vec.is_string(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Strings::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rstr::na()).collect::<Strings>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
         }
     }
 }

@@ -91,7 +91,7 @@ impl std::fmt::Debug for Complexes {
 impl TryFrom<Vec<c64>> for Complexes {
     type Error = Error;
 
-    fn try_from(value: Vec<c64>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: Vec<c64>) -> Result<Self> {
         Ok(Self { robj: value.into() })
     }
 }
@@ -100,6 +100,26 @@ impl TryFrom<Vec<c64>> for Complexes {
 mod tests {
     use super::*;
     use crate as extendr_api;
+
+    #[test]
+    fn new() {
+        test! {
+            let vec = Complexes::new(10);
+            assert_eq!(vec.is_complex(), true);
+            assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn new_with_na() {
+        use crate::na::CanBeNA;
+        test! {
+            let vec = Complexes::new_with_na(10);
+            let manual_vec = (0..10).into_iter().map(|_| Rcplx::na()).collect::<Complexes>();
+            assert_eq!(vec, manual_vec);
+            assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
 
     #[test]
     fn test_try_from_vec_c64_conversion() {

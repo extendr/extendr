@@ -53,7 +53,7 @@ pub use super::robj::{
     RobjItertools, Slices, Types,
 };
 
-pub use super::thread_safety::{catch_r_error, handle_panic, single_threaded, throw_r_error};
+pub use super::thread_safety::{catch_r_error, single_threaded, throw_r_error};
 
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
@@ -61,7 +61,9 @@ pub use super::wrapper::{
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
 
-pub use extendr_macros::{call, extendr, extendr_module, pairlist, IntoDataFrameRow, Rraw, R};
+pub use extendr_macros::{
+    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromRobj, R,
+};
 
 pub use super::iter::StrIter;
 

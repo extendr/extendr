@@ -1,5 +1,5 @@
 use extendr_macros::extendr;
-use extendr_macros::{IntoRobj, TryFromRobj};
+use extendr_macros::{IntoList, TryFromRobj};
 
 #[extendr(foo = true)]
 fn foo() {}
@@ -28,12 +28,6 @@ impl FooStruct {
 }
 
 #[extendr]
-default impl FooStruct {}
-
-#[extendr]
-unsafe impl FooStruct {}
-
-#[extendr]
 impl<const N: usize> FooStruct {}
 
 struct FooStructWithParam<A> {
@@ -55,7 +49,7 @@ enum FooEnum1 {
     C,
 }
 
-#[derive(IntoRobj)]
+#[derive(IntoList)]
 enum FooEnum2 {
     A,
     B,

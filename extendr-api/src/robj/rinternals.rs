@@ -485,11 +485,11 @@ pub trait Rinternals: Types + Conversions {
         use crate as extendr_api;
         let strings: Strings = call!("deparse", self.as_robj())?.try_into()?;
         if strings.len() == 1 {
-            Ok(String::from(strings.elt(0).as_str()))
+            Ok(String::from(strings.elt(0).as_ref()))
         } else {
             Ok(strings
                 .iter()
-                .map(|s| s.as_str())
+                .map(|s| s.as_ref())
                 .collect::<Vec<_>>()
                 .join(""))
         }

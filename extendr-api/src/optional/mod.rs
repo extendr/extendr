@@ -4,6 +4,6 @@ A set of optional features and third-party crate integrations, usually hidden be
 #[cfg(feature = "either")]
 pub mod either;
 #[cfg(feature = "faer")]
-mod faer;
+pub mod faer;
 #[cfg(feature = "ndarray")]
 pub mod ndarray;

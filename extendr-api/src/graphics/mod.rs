@@ -262,8 +262,6 @@ impl Context {
                 lineheight: 1.0,
                 fontface: 1,
                 fontfamily: [0; 201],
-
-                #[cfg(use_r_ge_version_14)]
                 patternFill: R_NilValue,
             };
 
@@ -407,7 +405,7 @@ impl Context {
     }
 
     pub(crate) fn context(&self) -> pGEcontext {
-        unsafe { std::mem::transmute(&self.context) }
+        &self.context as *const extendr_ffi::R_GE_gcontext as *mut extendr_ffi::R_GE_gcontext
     }
 
     // Affine transform.

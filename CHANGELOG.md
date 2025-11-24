@@ -4,7 +4,23 @@
 
 ### Added
 
+- Support for tuple-structs in `IntoList` and `TryFromRobj` [[#985]](https://github.com/extendr/extendr/pull/871)
+- `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
+- It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
+`TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
+- Implements ToVectorValue for `Rstr` enabling the creating of character matrices
+- Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
+- An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
+- Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present [[#864]](https://github.com/extendr/extendr/pull/864)
+- Added `impl From<&Vec<Robj>> for Robj` [[#864]](https://github.com/extendr/extendr/pull/864)
+
 ### Changed
+
+- **Deprecates** `List::from_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::from_hashmap()` with `List::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
+- **Deprecates** `List::into_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::into_hashmap()` with `HashMap::<String, Robj>::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
+- **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
+- **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]` [[#952]](https://github.com/extendr/extendr/pull/952)
+- **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
 
 ### Fixed
 
@@ -12,8 +28,8 @@
 
 ### Added
 
-- Added `ndim()` method for `RArray` to get the number of dimension [[#898]](https://github.com/extendr/extendr/pull/898). 
-- Added `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Added `ndim()` method for `RArray` to get the number of dimension [[#898]](https://github.com/extendr/extendr/pull/898).
+- Added `get_dim()` method for `RArray` to get the dimension vector [[#898]](https://github.com/extendr/extendr/pull/898).
 - Added implementations for `Index<[usize; 3]>` and `IndexMut<[usize; 3]>` traits in `RMatrix3D` [[#897]](https://github.com/extendr/extendr/pull/897)
 - Type aliases `RMatrix4D` and `RMatrix5D` have been added [[#875]](https://github.com/extendr/extendr/pull/875)
 - `ExternalPtr<T>` and `&ExternalPtr<T>` can now be used as function arguments with appropriate type checking [[#853]](https://github.com/extendr/extendr/pull/853)
@@ -28,9 +44,9 @@
 
 ### Changed
 
-- Breaking change: Replace parameter `dim` with type `[usize; n]` with constant generic parameter `const NDIM: usize` in `RArray`. Now, use `RArray<T, n>` instead of `RArray<T, [usize; n]>`to define a new n dim `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
-- Breaking change: Remove parameter `dim` from `RArray::from_parts()` [[#898]](https://github.com/extendr/extendr/pull/898). 
-- Enhancement: Replace `panic!()` with `throw_r_error()` in the `offset()` method of `RArray` [[#898]](https://github.com/extendr/extendr/pull/898). 
+- Breaking change: Replace parameter `dim` with type `[usize; n]` with constant generic parameter `const NDIM: usize` in `RArray`. Now, use `RArray<T, n>` instead of `RArray<T, [usize; n]>`to define a new n dim `RArray` [[#898]](https://github.com/extendr/extendr/pull/898).
+- Breaking change: Remove parameter `dim` from `RArray::from_parts()` [[#898]](https://github.com/extendr/extendr/pull/898).
+- Enhancement: Replace `panic!()` with `throw_r_error()` in the `offset()` method of `RArray` [[#898]](https://github.com/extendr/extendr/pull/898).
 - `extendr-api` and `extendr-engine` its dependency on `libR-sys` instead using the new `extendr-ffi` which is smaller and provides backports. [[#888]](https://github.com/extendr/extendr/pull/888)
 - Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. [[#882]](https://github.com/extendr/extendr/pull/882)
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
