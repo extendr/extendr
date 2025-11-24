@@ -28,9 +28,6 @@
 # CLion support files
 **/.idea
 
-# Misc RStudio & VS Code.
-.vscode/tasks.json
-
 # Rstudio temps.
 .RData
 .Rhistory
