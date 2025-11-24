@@ -245,11 +245,11 @@ fn test_rfloat() {
 #[cfg(feature = "num-complex")]
 fn test_rcplx() {
     test! {
-        let a = Rcplx::from((20., 300.));
-        let b = Rcplx::from((10., 400.));
-        assert_eq!(a + b, Rcplx::from((30., 700.)));
-        assert_eq!(a - b, Rcplx::from((10., -100.)));
-        assert_eq!(a * b, Rcplx::from((-119800.0, 11000.0)));
+        let a = Rcplx::new(20., 300.);
+        let b = Rcplx::new(10., 400.);
+        assert_eq!(a + b, Rcplx::new(30., 700.));
+        assert_eq!(a - b, Rcplx::new(10., -100.));
+        assert_eq!(a * b, Rcplx::new(-119800.0, 11000.0));
 
         let a = Rcplx::from(20.);
         let b = Rcplx::from(10.);

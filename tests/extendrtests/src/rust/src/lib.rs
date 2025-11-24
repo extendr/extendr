@@ -2,11 +2,14 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod custom_errors;
 mod dataframe;
+mod errors;
 mod externalptr;
 mod graphic_device;
 mod hashmap;
 mod into_list_derive;
+mod leak;
 mod matrix;
 mod memory_leaks;
 mod optional_either;
@@ -146,7 +149,7 @@ fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::from((y.re() * y.re(), 0.0.into()));
+        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0.into());
     }
 
     result
@@ -375,6 +378,7 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use errors;
     use hashmap;
     use into_list_derive;
     use memory_leaks;
@@ -388,4 +392,6 @@ extendr_module! {
     use externalptr;
     use matrix;
     use to_unique_character;
+    use custom_errors;
+    use leak;
 }
