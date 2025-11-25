@@ -112,7 +112,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// Example:
 /// ```rust,ignore
 /// use extendr_api::extendr_module;
-/// 
+///
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
