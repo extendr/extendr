@@ -111,6 +111,8 @@ test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
 
+test_try_from_hm <- function(x) invisible(.Call(wrap__test_try_from_hm, x))
+
 test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
 
 make_basic_struct <- function() .Call(wrap__make_basic_struct)
