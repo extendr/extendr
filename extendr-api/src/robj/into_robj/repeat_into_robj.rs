@@ -20,7 +20,7 @@ use extendr_ffi::Rcomplex;
 ///
 /// Example usage:
 ///
-/// ```ignore
+/// ```rust,ignore
 /// impl_synonym_type(Rint, i32);
 /// ```
 ///

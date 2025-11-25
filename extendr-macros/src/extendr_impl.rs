@@ -2,6 +2,8 @@ use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
 
+#[allow(unused_imports)]
+use crate::extendr;
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
@@ -346,7 +348,7 @@ pub(crate) fn extendr_impl(
 
     // Generate wrappers for methods.
     // eg.
-    // ```
+    // ```rust,ignore
     // #[no_mangle]
     // #[allow(non_snake_case)]
     // pub extern "C" fn wrap__Person__new() -> extendr_api::SEXP {

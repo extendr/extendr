@@ -2,8 +2,13 @@ use syn::{meta::ParseNestedMeta, Lit, LitBool};
 
 #[derive(Debug, Default)]
 pub(crate) struct ExtendrOptions {
+    /// Name of the corresponding R object
     pub r_name: Option<String>,
+    /// `mod_name` is the name of the exported C symbol for `#[extendr]`-`fn`,
+    /// and a post-fix on exported methods for `#[extendr]`-`impl`.
     pub mod_name: Option<String>,
+    /// Flag ensuring that R's Random Number Generator state is acquired and returned to
+    /// R. See [WRE, Section 6.3 number generation](https://cran.r-project.org/doc/manuals/R-exts.html#Random-numbers)
     pub use_rng: bool,
     pub invisible: Option<bool>,
 }
