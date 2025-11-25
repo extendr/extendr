@@ -106,9 +106,9 @@ pub enum SEXPTYPE {
     WEAKREFSXP = 23,
     #[doc = "raw bytes"]
     RAWSXP = 24,
-    #[cfg(not(r_4_4))]
+    #[cfg(not(use_objsxp))]
     S4SXP = 25,
-    #[cfg(r_4_4)]
+    #[cfg(use_objsxp)]
     #[doc = "S4 non-vector"]
     OBJSXP = 25,
     #[doc = "fresh node created in new page"]
