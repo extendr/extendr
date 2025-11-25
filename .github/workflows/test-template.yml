@@ -8,11 +8,10 @@ on:
         required: true
         type: string
 
-# cargo error handling is wrapped by ci-cargo, for simplicity and better logging.
-# To use ci-cargo in a step, source ci-cargo.ps1 (using `. ./ci-cargo.ps`, note the extra dot in front).
-# ci-cargo does not handle correctly -- separator, so wrap it in quotes ('--')
-# A special named parameter called `ActionName` can be used to set the name of current ci-cargo action,
-# used as `ci-cargo .... -ActionName "Called for documentation purposes"`.
+# cargo error handling for direct cargo calls is wrapped by ci-cargo.
+# To use ci-cargo in a step, source ci-cargo.ps1 (using `. ./ci-cargo.ps1`, note the extra dot in front).
+# ci-cargo does not handle correctly -- separator, so wrap it in quotes ('--').
+# Targets previously reached through `cargo extendr` are now driven by `just`.
 jobs:
   tests:
     runs-on: ${{ matrix.config.os }}
@@ -42,6 +41,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+
+      - name: Install just
+        uses: extractions/setup-just@v2
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
@@ -131,9 +133,8 @@ jobs:
       # Check code formatting. As this doesn't depend on the platform, do this only on one platform.
       - name: Check code formatting
         if: matrix.config.check_fmt
-        run: |
-          . ./ci-cargo.ps1
-          ci-cargo extendr check-fmt
+        shell: bash
+        run: just fmt-check
 
       # For each target in the BUILD_TARGETS comma-separated list, run cargo build with appropriate target
       # Required by Windows builds, does not affect other platforms
@@ -182,10 +183,9 @@ jobs:
           }
         shell: Rscript {0}
 
-      - name: Run R integration tests using {extendrtests} and `cargo extendr r-cmd-check`
-        run: |
-          . ./ci-cargo.ps1
-          ci-cargo extendr r-cmd-check --error-on ${{ steps.error-on.outputs.level }} --check-dir extendrtests_check
+      - name: Run R integration tests using {extendrtests} via `just r-cmd-check`
+        shell: bash
+        run: just r-cmd-check ERROR_ON=${{ steps.error-on.outputs.level }} CHECK_DIR=extendrtests_check
 
       - name: Upload `check-dir` if r-cmd-check failed on `{extendrtests}`
         if: ${{ failure() }}
