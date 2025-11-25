@@ -41,12 +41,3 @@ rcmdcheck::rcmdcheck(check_dir = "../../../")
 This is necessary so the relative paths in `Cargo.toml` points to the correct location.
 
 Clicking "Check" in RStudio will not work because it runs `devtools::check()` (that resolves to `rcmdcheck::rcmdcheck()`) with no arguments and the checks are then run in a temporary directory that doesn't have the same relative path.
-
-## Running tests via `cargo`
-
-It is also possible to run `R CMD check` in the root directory of `extendr`,
-by invoking `cargo extendr`:
-
-```shell
-cargo extendr r-cmd-check
-```
