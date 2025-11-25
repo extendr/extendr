@@ -6,7 +6,7 @@
 //
 // eg.
 //
-// ```ignore
+// ```rust,ignore
 // #[extendr]
 // fn hello() -> &'static str {
 //     "hello"
@@ -22,7 +22,7 @@
 // registration from C to Rust, and the C function will be called
 // `R_init_hello()`.
 //
-// ```ignore
+// ```rust,ignore
 // #[no_mangle]
 // #[allow(non_snake_case)]
 // pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
@@ -35,7 +35,7 @@
 // The module also generates the `init__` functions that provide metadata
 // to R to register the wrappers.
 //
-// ```ignore
+// ```rust,ignore
 // #[allow(non_snake_case)]
 // fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
 //     call_methods.push(extendr_api::CallMethod {
@@ -110,7 +110,9 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Define a module and export symbols to R
 /// Example:
-///```dont_run
+/// ```rust,ignore
+/// use extendr_api::extendr_module;
+///
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
@@ -120,7 +122,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// Outputs:
 ///
-/// ```dont_run
+/// ```rust,ignore
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
@@ -135,7 +137,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 }
 
 /// Create a Pairlist R object from a list of name-value pairs.
-/// ```ignore
+/// ```rust,ignore
 ///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
 /// ```
 #[proc_macro]
@@ -144,7 +146,7 @@ pub fn pairlist(item: TokenStream) -> TokenStream {
 }
 
 /// Create a List R object from a list of name-value pairs.
-/// ```ignore
+/// ```rust,ignore
 ///     assert_eq!(list!(a=1, 2, 3), List::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
 /// ```
 #[proc_macro]
@@ -156,7 +158,7 @@ pub fn list(item: TokenStream) -> TokenStream {
 /// This currently works by parsing and evaluating the string in R, but will probably acquire
 /// some shortcuts for simple expressions, for example by caching symbols and constant values.
 ///
-/// ```ignore
+/// ```rust,ignore
 ///     assert_eq!(call!("`+`", 1, 2), r!(3));
 ///     assert_eq!(call!("list", 1, 2), r!([r!(1), r!(2)]));
 /// ```
@@ -167,7 +169,7 @@ pub fn call(item: TokenStream) -> TokenStream {
 
 /// Execute R code by parsing and evaluating tokens.
 ///
-/// ```ignore
+/// ```rust,ignore
 ///     R!("c(1, 2, 3)");
 ///     R!("{{(0..3).collect_robj()}} + 1");
 ///     R!(r#"
@@ -183,7 +185,7 @@ pub fn R(item: TokenStream) -> TokenStream {
 /// Execute R code by parsing and evaluating tokens
 /// but without expanding parameters.
 ///
-/// ```ignore
+/// ```rust,ignore
 /// // c.f. https://dplyr.tidyverse.org/articles/programming.html
 /// Rraw!(r#"
 /// var_summary <- function(data, var) {
@@ -207,7 +209,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # Examples
 /// In the below example, `foo_from_list` is an instance of the `Foo` struct, that has been converted
 /// from an R list:
-/// ```ignore
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::TryFromRobj;
 /// # use extendr_api::test;
@@ -244,7 +246,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # Examples
 /// In the below example, `converted` contains an R list object with the same fields as the
 /// `Foo` struct.
-/// ```ignore
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 /// use extendr_macros::IntoList;
 ///
@@ -295,7 +297,7 @@ pub fn derive_into_list(item: TokenStream) -> TokenStream {
     since = "0.8.1",
     note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
 )]
-#[proc_macro_derive(IntoRobj)]
+#[proc_macro_derive(IntoRobj, attributes(into_robj))]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     match list_struct::derive_into_list(item) {
         Ok(result) => result,
@@ -307,7 +309,7 @@ pub fn derive_into_robj(item: TokenStream) -> TokenStream {
 ///
 /// # Example
 ///
-/// ```ignore
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 ///
 /// #[derive(Debug, IntoDataFrameRow)]

@@ -19,11 +19,13 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module_metadata_name_string = module_metadata_name.to_string();
     let wrap_module_metadata_name =
         format_ident!("{}get_{}_metadata", wrappers::WRAP_PREFIX, modname);
+    let wrap_module_metadata_name_str = wrap_module_metadata_name.to_string();
 
     let make_module_wrappers_name = format_ident!("make_{}_wrappers", modname);
     let make_module_wrappers_name_string = make_module_wrappers_name.to_string();
     let wrap_make_module_wrappers =
         format_ident!("{}make_{}_wrappers", wrappers::WRAP_PREFIX, modname);
+    let wrap_make_module_wrappers_string = wrap_make_module_wrappers.to_string();
 
     let fnmetanames = fnnames
         .iter()
@@ -57,6 +59,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 rust_name: #module_metadata_name_string,
                 mod_name: #module_metadata_name_string,
                 r_name: #module_metadata_name_string,
+                c_name: #wrap_module_metadata_name_str,
                 args: Vec::new(),
                 return_type: "Metadata",
                 func_ptr: #wrap_module_metadata_name as * const u8,
@@ -74,6 +77,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 rust_name: #make_module_wrappers_name_string,
                 mod_name: #make_module_wrappers_name_string,
                 r_name: #make_module_wrappers_name_string,
+                c_name: #wrap_make_module_wrappers_string,
                 args,
                 return_type: "String",
                 func_ptr: #wrap_make_module_wrappers as * const u8,

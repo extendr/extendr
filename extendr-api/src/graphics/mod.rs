@@ -306,7 +306,7 @@ impl Context {
     }
 
     /// Set the type of the line.
-    /// ```ignore
+    /// ```rust,ignore
     /// Blank    => <invisible>
     /// Solid    => ------
     /// Dashed   => - - - -
@@ -321,7 +321,7 @@ impl Context {
     }
 
     /// Set the line end type.
-    /// ```ignore
+    /// ```rust,ignore
     ///   LineEnd::RoundCap
     ///   LineEnd::ButtCap
     ///   LineEnd::SquareCap
@@ -332,7 +332,7 @@ impl Context {
     }
 
     /// Set the line join type.
-    /// ```ignore
+    /// ```rust,ignore
     ///   LineJoin::RoundJoin
     ///   LineJoin::MitreJoin
     ///   LineJoin::BevelJoin
@@ -365,7 +365,7 @@ impl Context {
     // }
 
     /// Set the font face.
-    /// ```ignore
+    /// ```rust,ignore
     ///   FontFace::PlainFont
     ///   FontFace::BoldFont
     ///   FontFace::ItalicFont

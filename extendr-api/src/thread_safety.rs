@@ -58,7 +58,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
 }
 
 /// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
-/// ```ignore
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 /// test! {
 ///    let res = catch_r_error(|| unsafe {

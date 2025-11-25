@@ -69,7 +69,7 @@ struct SerializeStructVariant<'a> {
 ///
 /// Example:
 ///
-/// ```rust
+/// ```
 /// use extendr_api::prelude::*;
 /// use extendr_api::serializer::to_robj;
 /// use serde::Serialize;

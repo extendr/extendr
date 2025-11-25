@@ -2,6 +2,8 @@ use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{ItemFn, ItemImpl};
 
+#[allow(unused_imports)]
+use crate::extendr;
 use crate::extendr_options::ExtendrOptions;
 use crate::wrappers;
 
@@ -167,7 +169,7 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> (String, Vec<St
 /// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
-/// ```dont_run
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 ///
 /// // a struct that will be used internal the People struct
@@ -346,7 +348,7 @@ pub(crate) fn extendr_impl(
 
     // Generate wrappers for methods.
     // eg.
-    // ```
+    // ```rust,ignore
     // #[no_mangle]
     // #[allow(non_snake_case)]
     // pub extern "C" fn wrap__Person__new() -> extendr_api::SEXP {

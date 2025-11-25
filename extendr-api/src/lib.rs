@@ -10,7 +10,7 @@
 //!
 //! Use attributes and macros to export to R.
 //!
-//! ```ignore
+//! ```rust,ignore
 //! use extendr_api::prelude::*;
 //! // Export a function or impl to R.
 //! #[extendr]
@@ -23,17 +23,16 @@
 //!    mod mymodule;
 //!    fn fred;
 //! }
-//!
 //! ```
 //!
 //! In R:
 //!
-//! ```ignore
+//! ```r
 //! result <- fred(1)
 //! ```
 //!
-//! [Robj] is a wrapper for R objects.
-//! The r!() and R!() macros let you build R objects
+//! [`Robj`] is a wrapper for R objects.
+//! The [`r!`] and `R!` macros let you build R objects
 //! using Rust and R syntax respectively.
 //! ```
 //! use extendr_api::prelude::*;
@@ -128,10 +127,10 @@
 //! }
 //! ```
 //!
-//! The [R!] macro lets you embed R code in Rust
-//! and takes Rust expressions in {{ }} pairs.
+//! The [`R!`] macro lets you embed R code in Rust
+//! and takes Rust expressions in `{{ }}` pairs.
 //!
-//! The [Rraw!] macro will not expand the {{ }} pairs.
+//! The [`Rraw!`] macro will not expand the `{{ }}` pairs.
 //! ```
 //! use extendr_api::prelude::*;
 //! test! {
@@ -160,7 +159,7 @@
 //! }
 //! ```
 //!
-//! The [r!] macro converts a rust object to an R object
+//! The [`r!`] macro converts a rust object to an R object
 //! and takes parameters.
 //! ```
 //! use extendr_api::prelude::*;
@@ -173,10 +172,10 @@
 //!
 //! Rust has a concept of "Owned" and "Borrowed" objects.
 //!
-//! Owned objects, such as [Vec] and [String] allocate memory
+//! Owned objects, such as [`Vec`] and [`String`] allocate memory
 //! which is released when the object lifetime ends.
 //!
-//! Borrowed objects such as &[i32] and &str are just pointers
+//! Borrowed objects such as `&[i32]` and `&str` are just pointers
 //! to annother object's memory and can't live longer than the
 //! object they reference.
 //!
@@ -204,7 +203,7 @@
 //! To test the functions exposed to R, wrap your code in the [`test!`] macro.
 //! This macro starts up the necessary R machinery for tests to work.
 //!
-//! ```no_run
+//! ```rust,no_run
 //! use extendr_api::prelude::*;
 //!
 //! #[extendr]
@@ -242,7 +241,7 @@
 //!
 //! There is an added overhead of wrapping Rust results in an R `list` object.
 //!
-//! ```ignore
+//! ```rust,ignore
 //! use extendr_api::prelude::*;
 //! // simple function always returning an Err string
 //! #[extendr]
@@ -260,7 +259,7 @@
 //!
 //! In R:
 //!
-//! ```ignore
+//! ```rust,ignore
 //! # default result_panic feature
 //! oups(1)
 //! > ... long panic traceback from rust printed to stderr
@@ -441,14 +440,12 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
     for func in metadata.functions {
-        let wrapped_name = format!("wrap__{}", func.mod_name);
-        make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+        make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
     }
 
     for imp in metadata.impls {
         for func in imp.methods {
-            let wrapped_name = format!("wrap__{}__{}", imp.name, func.mod_name);
-            make_method_def(&mut cstrings, &mut rmethods, &func, wrapped_name.as_str());
+            make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
         }
     }
 
