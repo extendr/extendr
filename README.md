@@ -122,8 +122,7 @@ The documentation for the latest development version of `extendr-api` is availab
 
 ### Developer tools
 
-The old `cargo extendr`/`xtask` helper is now replaced by a `justfile` so the same
-maintenance tasks can be run via `just <recipe>`. Install `just` from
+Install `just` from
 <https://github.com/casey/just> (or `cargo install just`) and run `just --list`
 to see all available recipes. Key ones:
 
