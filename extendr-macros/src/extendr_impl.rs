@@ -167,7 +167,7 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> (String, Vec<St
 /// be returned must _also_ have an `#[extendr]` annotated impl block.
 ///
 /// Example:
-/// ```dont_run
+/// ```rust,ignore
 /// use extendr_api::prelude::*;
 ///
 /// // a struct that will be used internal the People struct
