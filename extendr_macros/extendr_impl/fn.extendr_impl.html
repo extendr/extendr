@@ -14,69 +14,70 @@ for an impl block to be compatible with extendr (and thus R), its return
 type must be able to be returned to R. For example, any struct that might
 be returned must <em>also</em> have an <code>#[extendr]</code> annotated impl block.</p>
 <p>Example:</p>
-<div class="example-wrap"><pre class="language-dont_run"><code>use extendr_api::prelude::*;
 
-// a struct that will be used internal the People struct
-#[derive(Clone, Debug, IntoDataFrameRow)]
-struct Person {
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
+
+<span class="comment">// a struct that will be used internal the People struct
+</span><span class="attr">#[derive(Clone, Debug, IntoDataFrameRow)]
+</span><span class="kw">struct </span>Person {
     name: String,
     age: i32,
 }
 
-// This will collect people in the struct
-#[extendr]
+<span class="comment">// This will collect people in the struct
+</span><span class="attr">#[extendr]
 #[derive(Clone, Debug)]
-struct People(Vec&lt;Person&gt;);
+</span><span class="kw">struct </span>People(Vec&lt;Person&gt;);
 
-#[extendr]
-/// @export
-impl People {
-    // instantiate a new struct with an empty vector
-    fn new() -&gt; Self {
-        let vec: Vec&lt;Person&gt; = Vec::new();
-        Self(vec)
+<span class="attr">#[extendr]
+</span><span class="doccomment">/// @export
+</span><span class="kw">impl </span>People {
+    <span class="comment">// instantiate a new struct with an empty vector
+    </span><span class="kw">fn </span>new() -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>vec: Vec&lt;Person&gt; = Vec::new();
+        <span class="self">Self</span>(vec)
     }
 
-    // add a person to the internal vector
-    fn add_person(&amp;mut self, name: &amp;str, age: i32) -&gt; &amp;mut Self {
-        let person = Person {
+    <span class="comment">// add a person to the internal vector
+    </span><span class="kw">fn </span>add_person(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str, age: i32) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="kw">let </span>person = Person {
             name: String::from(name),
             age: age,
         };
 
-        self.0.push(person);
+        <span class="self">self</span>.<span class="number">0</span>.push(person);
 
-        // return self
-        self
-    }
+        <span class="comment">// return self
+        </span><span class="self">self
+    </span>}
 
-    // Convert the struct into a data.frame
-    fn into_df(&amp;self) -&gt; Robj {
-        let df = self.0.clone().into_dataframe();
+    <span class="comment">// Convert the struct into a data.frame
+    </span><span class="kw">fn </span>into_df(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Robj {
+        <span class="kw">let </span>df = <span class="self">self</span>.<span class="number">0</span>.clone().into_dataframe();
 
-        match df {
-            Ok(df) =&gt; df.as_robj().clone(),
-            Err(_) =&gt; data_frame!(),
+        <span class="kw">match </span>df {
+            <span class="prelude-val">Ok</span>(df) =&gt; df.as_robj().clone(),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="macro">data_frame!</span>(),
         }
     }
 
-    // add another `People` struct to self
-    fn add_people(&amp;mut self, others: &amp;People) -&gt; &amp;mut Self {
-        self.0.extend(others.0.clone().into_iter());
-        self
-    }
+    <span class="comment">// add another `People` struct to self
+    </span><span class="kw">fn </span>add_people(<span class="kw-2">&amp;mut </span><span class="self">self</span>, others: <span class="kw-2">&amp;</span>People) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.<span class="number">0</span>.extend(others.<span class="number">0</span>.clone().into_iter());
+        <span class="self">self
+    </span>}
 
-    // create a function to print the self which can be called
+    <span class="comment">// create a function to print the self which can be called
     // from an R print method
-    fn print_self(&amp;self) -&gt; String {
-        format!(&quot;{:?}&quot;, self.0)
+    </span><span class="kw">fn </span>print_self(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="macro">format!</span>(<span class="string">"{:?}"</span>, <span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-// Macro to generate exports.
+<span class="comment">// Macro to generate exports.
 // This ensures exported functions are registered with R.
 // See corresponding C code in `entrypoint.c`.
-extendr_module! {
-    mod testself;
-    impl People;
+</span><span class="macro">extendr_module!</span> {
+    <span class="kw">mod </span>testself;
+    <span class="kw">impl </span>People;
 }</code></pre></div></div></details></section></div></main></body></html>

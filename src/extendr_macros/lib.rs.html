@@ -110,7 +110,7 @@
 <a href=#110 id=110 data-nosnippet>110</a>
 <a href=#111 id=111 data-nosnippet>111</a><span class="doccomment">/// Define a module and export symbols to R
 <a href=#112 id=112 data-nosnippet>112</a>/// Example:
-<a href=#113 id=113 data-nosnippet>113</a>///```dont_run
+<a href=#113 id=113 data-nosnippet>113</a>/// ```rust,ignore
 <a href=#114 id=114 data-nosnippet>114</a>/// extendr_module! {
 <a href=#115 id=115 data-nosnippet>115</a>///     mod name;
 <a href=#116 id=116 data-nosnippet>116</a>///     fn my_func1;
@@ -120,7 +120,7 @@
 <a href=#120 id=120 data-nosnippet>120</a>/// ```
 <a href=#121 id=121 data-nosnippet>121</a>/// Outputs:
 <a href=#122 id=122 data-nosnippet>122</a>///
-<a href=#123 id=123 data-nosnippet>123</a>/// ```dont_run
+<a href=#123 id=123 data-nosnippet>123</a>/// ```rust,ignore
 <a href=#124 id=124 data-nosnippet>124</a>/// #[no_mangle]
 <a href=#125 id=125 data-nosnippet>125</a>/// #[allow(non_snake_case)]
 <a href=#126 id=126 data-nosnippet>126</a>/// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
@@ -295,7 +295,7 @@
 <a href=#295 id=295 data-nosnippet>295</a>    since = <span class="string">"0.8.1"</span>,
 <a href=#296 id=296 data-nosnippet>296</a>    note = <span class="string">"Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
 <a href=#297 id=297 data-nosnippet>297</a></span>)]
-<a href=#298 id=298 data-nosnippet>298</a>#[proc_macro_derive(IntoRobj)]
+<a href=#298 id=298 data-nosnippet>298</a>#[proc_macro_derive(IntoRobj, attributes(into_robj))]
 <a href=#299 id=299 data-nosnippet>299</a></span><span class="kw">pub fn </span>derive_into_robj(item: TokenStream) -&gt; TokenStream {
 <a href=#300 id=300 data-nosnippet>300</a>    <span class="kw">match </span>list_struct::derive_into_list(item) {
 <a href=#301 id=301 data-nosnippet>301</a>        <span class="prelude-val">Ok</span>(result) =&gt; result,
