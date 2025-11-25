@@ -33,8 +33,8 @@ fmt *cargo_flags:
     cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 test *cargo_flags:
-    cargo test --workspace --no-fail-fast --features=full-functionality -- --no-capture --test-threads=1 {{cargo_flags}}
-    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast -- --no-capture --test-threads=1 {{cargo_flags}}
+    cargo test --workspace --no-fail-fast --features=full-functionality {{cargo_flags}} -- --no-capture --test-threads=1
+    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast {{cargo_flags}} -- --no-capture --test-threads=1
 
 tree *cargo_flags:
   cargo tree --workspace {{cargo_flags}}

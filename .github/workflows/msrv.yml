@@ -27,6 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Install `just`
+        uses: extractions/setup-just@v3
+
       - uses: baptiste0928/cargo-install@v3
         with:
           crate: cargo-msrv
@@ -51,11 +54,9 @@ jobs:
           echo "RUSTC_WRAPPER=sccache" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Verify minimum rust version
-        run: |
-          . ./ci-cargo.ps1
-          ci-cargo extendr msrv -ActionName "Verify Rust MSRV"
+        shell: bash
+        run: just msrv
       - name: Verify minimum rust version of extendr-api with full functionality
         continue-on-error: true
-        run: |
-          . ./ci-cargo.ps1
-          ci-cargo extendr msrv --features=full-functionality -ActionName "Verify Rust MSRV for extendr-api"
+        shell: bash
+        run: just msrv FEATURES=full-functionality
