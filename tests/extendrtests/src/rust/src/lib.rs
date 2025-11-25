@@ -31,12 +31,6 @@ fn hello_world() -> &'static str {
 #[extendr]
 fn do_nothing() {}
 
-/// This is invisible by default
-#[extendr]
-fn result_unit() -> Result<()> {
-    Ok(())
-}
-
 /// Return a string but invisibly
 #[extendr(invisible)]
 fn invisible_string() -> &'static str {
@@ -331,7 +325,6 @@ extendr_module! {
     mod extendrtests;
     fn hello_world;
     fn do_nothing;
-    fn result_unit;
     fn invisible_string;
 
     fn double_scalar;

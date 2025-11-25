@@ -25,7 +25,7 @@ struct B(f64);
 
 #[extendr]
 #[allow(non_snake_case)]
-fn take_and_return_B(mut b:B) -> B {
+fn take_and_return_B(mut b: B) -> B {
     b.0 += 1.;
     b
 }
