@@ -45,12 +45,12 @@ test_that("Wrapper code is up-to-date", {
 })
 
 test_that("Rust function prefixed with `_` can be called", {
-  expect_invisible(`__00__special_function_name`())
+  expect_visible(`__00__special_function_name`())
 })
 
 test_that("Rust classes and methods prefixed with `_` can be invoked", {
   x <- `__MyClass`$new()
-  expect_invisible(x$`__name_test`())
+  expect_visible(x$`__name_test`())
 })
 
 test_that("Rust `_arg` is correctly wrapped in R", {

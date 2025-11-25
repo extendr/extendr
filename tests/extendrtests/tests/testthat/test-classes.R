@@ -7,7 +7,7 @@ test_that("Exported class works", {
   expect_equal(x[["a"]](), 10L)
 
   expect_visible(x$a())
-  expect_invisible(x$set_a(5L))
+  expect_visible(x$set_a(5L))
 })
 
 test_that("Exported class self ptr works", {
