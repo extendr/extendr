@@ -11,7 +11,7 @@ Specifically, extendr supports the following conversions:
 
 * [`Robj` → `ArrayView1`], for when you have an R vector that you want to analyse in Rust:
 
-```rust,dont_run
+    ```rust,dont_run
     use extendr_api::prelude::*;
     use ndarray::ArrayView1;
 
@@ -21,6 +21,7 @@ Specifically, extendr supports the following conversions:
     }
     ```
 * [`Robj` → `ArrayView2`], for when you have an R matrix that you want to analyse in Rust.
+    
     ```rust,dont_run
     use extendr_api::prelude::*;
     use ndarray::ArrayView2;
@@ -31,6 +32,7 @@ Specifically, extendr supports the following conversions:
     }
     ```
 * [`ArrayBase` → `Robj`], for when you want to return a reference to an [`ndarray`] Array from Rust back to R.
+    
     ```rust,dont_run
     use extendr_api::prelude::*;
     use ndarray::Array2;
