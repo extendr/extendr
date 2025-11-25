@@ -3,13 +3,14 @@
 default:
     echo 'Hello, world!'
 
-build *cargo_flags:
-    cargo build --workspace {{cargo_flags}}
-    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
-
 check *cargo_flags:
     cargo check --workspace {{cargo_flags}}
     cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+
+
+build *cargo_flags:
+    cargo build --workspace {{cargo_flags}}
+    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 clippy *cargo_flags:
     cargo clippy --workspace {{cargo_flags}}
@@ -23,17 +24,17 @@ doc *cargo_flags:
     cargo +nightly doc --document-private-items --features full-functionality --workspace {{cargo_flags}}
     cargo +nightly doc --document-private-items --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml --open {{cargo_flags}}
 
-fmt *cargo_flags:
-    cargo fmt --all {{cargo_flags}}
-    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
-
 fmt-check *cargo_flags:
     cargo fmt --all {{cargo_flags}} -- --check
     cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}} -- --check
 
+fmt *cargo_flags:
+    cargo fmt --all {{cargo_flags}}
+    cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+
 test *cargo_flags:
-    cargo test --workspace --features=full-functionality -j1 {{cargo_flags}}
-    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml -j1 {{cargo_flags}}
+    cargo test --workspace --no-fail-fast --features=full-functionality -- --no-capture --test-threads=1 {{cargo_flags}}
+    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast -- --no-capture --test-threads=1 {{cargo_flags}}
 
 tree *cargo_flags:
   cargo tree --workspace {{cargo_flags}}
