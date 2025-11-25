@@ -84,6 +84,7 @@ pub(crate) fn make_function_wrappers(
 
     let rust_name_str = format!("{}", rust_name);
     let c_name_str = format!("{}", mod_name);
+    let wrap_name_str = format!("{}", wrap_name);
     let doc_string = get_doc_string(attrs);
     let return_type_string = get_return_type(sig);
     let opts_invisible = match opts.invisible {
@@ -302,6 +303,7 @@ pub(crate) fn make_function_wrappers(
                 doc: #doc_string,
                 rust_name: #rust_name_str,
                 r_name: #r_name_str,
+                c_name: #wrap_name_str,
                 mod_name: #c_name_str,
                 args: args,
                 return_type: #return_type_string,

@@ -571,6 +571,15 @@ impl ToVectorValue for Option<bool> {
     }
 }
 
+impl<T> From<&Option<T>> for Robj
+where
+    Option<T>: ToVectorValue,
+{
+    fn from(value: &Option<T>) -> Self {
+        value.into()
+    }
+}
+
 // Not thread safe.
 fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
 where
