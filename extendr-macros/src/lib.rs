@@ -297,7 +297,7 @@ pub fn derive_into_list(item: TokenStream) -> TokenStream {
     since = "0.8.1",
     note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
 )]
-#[proc_macro_derive(IntoRobj)]
+#[proc_macro_derive(IntoRobj, attributes(into_robj))]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     match list_struct::derive_into_list(item) {
         Ok(result) => result,

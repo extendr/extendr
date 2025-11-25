@@ -5,7 +5,6 @@ members = [
   "extendr-engine",
   "extendr-ffi",
   "extendr-macros",
-  "xtask",
 ]
 
 [workspace.package]

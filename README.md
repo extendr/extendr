@@ -119,3 +119,16 @@ You can also get in contact via our [Discord server](https://discord.gg/7hmApuc)
 
 The documentation for the latest development version of `extendr-api` is available here:
 <https://extendr.github.io/extendr/extendr_api/>
+
+### Developer tools
+
+Install `just` from
+<https://github.com/casey/just> (or `cargo install just`) and run `just --list`
+to see all available recipes. Key ones:
+
+- `just fmt-check` / `just fmt`: check or apply Rust formatting across the workspace and `tests/extendrtests/src/rust`.
+- `just r-cmd-check [ERROR_ON=warning|error] [CHECK_DIR=…]`: run R CMD check for `{extendrtests}`.
+- `just doc` / `just doc-check`: build docs (full-functionality, nightly) with or without dependencies.
+- `just msrv [FEATURES=…]`: verify the Minimum Supported Rust Version.
+- `just devtools-test [FILTER=…] [SNAPSHOT=1]`: run `devtools::test()` for `{extendrtests}` and optionally accept snapshots.
+- `just document`: regenerate wrappers for `{extendrtests}` via `rextendr::document()`.
