@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["cargo_fmt","cargo_fmt_check","cargo_msrv","devtools_test","generate_docs","r_cmd_check","rextendr_document"]};
