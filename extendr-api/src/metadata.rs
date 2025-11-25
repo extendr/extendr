@@ -195,7 +195,7 @@ fn write_function_wrapper(
     let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
-        None => false
+        None => false,
     };
 
     if should_be_invisible {
