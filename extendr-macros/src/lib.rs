@@ -110,7 +110,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 
 /// Define a module and export symbols to R
 /// Example:
-///```dont_run
+/// ```rust,dont_run
 /// extendr_module! {
 ///     mod name;
 ///     fn my_func1;
@@ -120,7 +120,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// Outputs:
 ///
-/// ```dont_run
+/// ```rust,dont_run
 /// #[no_mangle]
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
