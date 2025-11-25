@@ -91,6 +91,8 @@ r-cmd-check *args:
     NO_VIGNETTES="0" \
     ERROR_ON="warning" \
     CHECK_DIR="" \
+    ROOT_DIR="$(pwd)" \
+    CARGO_TOML="$(pwd)/tests/extendrtests/src/rust/Cargo.toml" \
     && for arg in {{args}}; do \
       case "$arg" in \
         NO_VIGNETTES=*) NO_VIGNETTES="${arg#NO_VIGNETTES=}" ;; \
@@ -106,6 +108,22 @@ r-cmd-check *args:
         *)  CHECK_DIR_ARG="'$(pwd)/$CHECK_DIR'" ;; \
       esac; \
     fi \
+    && TMP_CARGO_TOML="$(mktemp)" \
+    && cp "$CARGO_TOML" "$TMP_CARGO_TOML" \
+    && cleanup() { mv "$TMP_CARGO_TOML" "$CARGO_TOML"; } \
+    && trap cleanup EXIT \
+    && TMP_EDIT="$(mktemp)" \
+    && awk -v root="$ROOT_DIR" ' \
+      /^[[:space:]]*#/ {print; next} \
+      /^\[patch\.crates-io\]/ {in_patch=1; print; next} \
+      in_patch && done==0 && /^[[:space:]]*extendr-api[[:space:]]*=/ { \
+        gsub(/path[[:space:]]*=[[:space:]]*\"[^\"]+\"/, "path = \"" root "/extendr-api\""); \
+        done=1; \
+      } \
+      {print} \
+      END { if (done==0) exit 1 } \
+    ' "$CARGO_TOML" > "$TMP_EDIT" \
+    && mv "$TMP_EDIT" "$CARGO_TOML" \
     && cd tests/extendrtests \
     && ARGS="'--as-cran','--no-manual'" \
     && if [ "$NO_VIGNETTES" = "1" ]; then ARGS="${ARGS},'--no-build-vignettes'"; fi \
