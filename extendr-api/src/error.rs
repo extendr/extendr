@@ -5,6 +5,7 @@ use std::convert::Infallible;
 use crate::conversions::try_into_int::ConversionError;
 use crate::robj::Types;
 use crate::{throw_r_error, Robj};
+use extendr_ffi::ParseStatus;
 
 /// Throw an R error if a result is an error.
 #[doc(hidden)]
@@ -32,7 +33,10 @@ pub enum Error {
     Panic(Robj),
     NotFound(Robj),
     EvalError(Robj),
-    ParseError(Robj),
+    ParseError {
+        status: ParseStatus,
+        code: Robj,
+    },
     NamesLengthMismatch(Robj),
 
     ExpectedNull(Robj),
@@ -101,7 +105,16 @@ impl std::fmt::Display for Error {
             Error::Panic(robj) => write!(f, "Panic detected {:?}.", robj),
             Error::NotFound(robj) => write!(f, "Not found. {:?}", robj),
             Error::EvalError(robj) => write!(f, "Evaluation error in {:?}.", robj),
-            Error::ParseError(code) => write!(f, "Parse error in {:?}.", code),
+            Error::ParseError { status, code } => {
+                let reason = match status {
+                    ParseStatus::PARSE_NULL => "no statement to parse",
+                    ParseStatus::PARSE_OK => "no parse error",
+                    ParseStatus::PARSE_INCOMPLETE => "incomplete statement",
+                    ParseStatus::PARSE_ERROR => "syntax error",
+                    ParseStatus::PARSE_EOF => "unexpected end of file",
+                };
+                write!(f, "Parse error ({reason}) in {:?}.", code)
+            }
             Error::NamesLengthMismatch(robj) => {
                 write!(f, "Length of names does not match vector. {:?}", robj)
             }

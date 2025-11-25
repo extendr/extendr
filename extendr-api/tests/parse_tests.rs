@@ -1,21 +1,40 @@
-use extendr_engine::with_r;
-use libR_sys::*;
+use extendr_api::prelude::*;
+use extendr_ffi::ParseStatus;
 
-macro_rules! cstr {
-    ($s: expr) => {
-        std::ffi::CString::new(concat!($s)).unwrap()
-    };
+#[test]
+fn parse_reports_error_for_invalid_syntax() {
+    test! {
+        let err = parse("c(10,,42,20)").unwrap_err();
+        let msg = err.to_string();
+        match err {
+            Error::ParseError {
+                status: ParseStatus::PARSE_ERROR,
+                ..
+            } => assert!(msg.contains("syntax error")),
+            other => panic!("Unexpected error variant: {other:?}"),
+        }
+    }
 }
 
 #[test]
-fn test_parse_eval_string() {
-    with_r(|| unsafe {
-        // let bad_code = cstr!("c(10,42,20)");
-        let bad_code = cstr!("c(10,,42,20)");
-        // let bad = Rf_protect(R_ParseEvalString(bad_code.as_ptr(), R_GlobalEnv));
-        let bad = Rf_protect(R_ParseEvalString(bad_code.as_ptr(), R_NilValue));
-        Rf_PrintValue(bad);
-        // println!("Did we get here?");
-        Rf_unprotect(1);
-    });
+fn parse_reports_error_for_incomplete_input() {
+    test! {
+        let err = parse("c(10").unwrap_err();
+        let msg = err.to_string();
+        match err {
+            Error::ParseError {
+                status: ParseStatus::PARSE_INCOMPLETE,
+                ..
+            } => assert!(msg.contains("incomplete statement")),
+            other => panic!("Unexpected error variant: {other:?}"),
+        }
+    }
+}
+
+#[test]
+fn eval_string_returns_eval_error_for_missing_argument() {
+    test! {
+        let result = eval_string("c(10,,42,20)");
+        assert!(matches!(result, Err(Error::EvalError(_))));
+    }
 }
