@@ -326,23 +326,23 @@ fn hash_complex_slice<H: Hasher>(values: &[Rcomplex], state: &mut H) {
 }
 
 fn hash_f64_value<H: Hasher>(value: f64, state: &mut H) {
-    use crate::na::CanBeNA;
+    let canonical_bits = {
+        use crate::na::CanBeNA;
 
-    if value.is_nan() {
-        if value.is_na() {
-            f64::na().to_bits().hash(state);
+        if value.is_nan() {
+            if value.is_na() {
+                f64::na().to_bits()
+            } else {
+                f64::NAN.to_bits()
+            }
+        } else if value == 0.0 {
+            // catches both +0.0 and -0.0
+            0u64
         } else {
-            f64::NAN.to_bits().hash(state);
+            value.to_bits()
         }
-        return;
-    }
-
-    if value == 0.0 || value == -0.0 {
-        0u64.hash(state);
-        return;
-    }
-
-    value.to_bits().hash(state);
+    };
+    canonical_bits.hash(state);
 }
 
 impl Clone for Robj {
