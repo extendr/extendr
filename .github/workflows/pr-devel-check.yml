@@ -3,8 +3,7 @@ name: PR Devel Tests
 on:
   pull_request:
     types: [labeled, synchronize, reopened]
-    branches:
-      - main
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
