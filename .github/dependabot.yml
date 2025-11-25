@@ -1,7 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: cargo
-    directory: "/"
+    directories: 
+      - "/"
+      - "tests/extendrtests/src/rust/"
     schedule:
       interval: daily
 
