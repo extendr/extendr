@@ -195,10 +195,7 @@ fn write_function_wrapper(
     let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
-        None => {
-            // previous logic that guarantees invisible for null return
-            func.return_type == "()"
-        }
+        None => false
     };
 
     if should_be_invisible {
@@ -267,7 +264,7 @@ fn write_method_wrapper(
     let should_be_invisible = match func.invisible {
         Some(true) => true,
         Some(false) => false,
-        None => func.return_type == "()",
+        None => false,
     };
 
     if should_be_invisible {

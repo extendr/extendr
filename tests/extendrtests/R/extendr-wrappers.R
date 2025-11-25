@@ -12,7 +12,7 @@ NULL
 
 hello_world <- function() .Call(wrap__hello_world)
 
-do_nothing <- function() invisible(.Call(wrap__do_nothing))
+do_nothing <- function() .Call(wrap__do_nothing)
 
 #' Return a string but invisibly
 invisible_string <- function() invisible(.Call(wrap__invisible_string))
@@ -63,7 +63,7 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 #' Test wrapping of special function name
 #' @name f__00__special_function_name
 #' @export
-`__00__special_function_name` <- function() invisible(.Call(wrap____00__special_function_name))
+`__00__special_function_name` <- function() .Call(wrap____00__special_function_name)
 
 test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
@@ -75,7 +75,7 @@ add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 #'
 #' @param welcome_message A warm message to welcome you.
 #' @export
-my_device <- function(welcome_message) invisible(.Call(wrap__my_device, welcome_message))
+my_device <- function(welcome_message) .Call(wrap__my_device, welcome_message)
 
 new_usize <- function(robj) .Call(wrap__new_usize, robj)
 
@@ -93,19 +93,19 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
-error_simple <- function() invisible(.Call(wrap__error_simple))
+error_simple <- function() .Call(wrap__error_simple)
 
-error_parse_int <- function(s) invisible(.Call(wrap__error_parse_int, s))
+error_parse_int <- function(s) .Call(wrap__error_parse_int, s)
 
-error_success <- function() invisible(.Call(wrap__error_success))
+error_success <- function() .Call(wrap__error_success)
 
-error_division <- function(numerator, denominator) invisible(.Call(wrap__error_division, numerator, denominator))
+error_division <- function(numerator, denominator) .Call(wrap__error_division, numerator, denominator)
 
-error_chain <- function(s) invisible(.Call(wrap__error_chain, s))
+error_chain <- function(s) .Call(wrap__error_chain, s)
 
-error_long_message <- function() invisible(.Call(wrap__error_long_message))
+error_long_message <- function() .Call(wrap__error_long_message)
 
-error_on_panic <- function() invisible(.Call(wrap__error_on_panic))
+error_on_panic <- function() .Call(wrap__error_on_panic)
 
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
@@ -145,9 +145,9 @@ leak_unwrap_strings <- function(x) .Call(wrap__leak_unwrap_strings, x)
 
 leak_unwrap_doubles <- function(x) .Call(wrap__leak_unwrap_doubles, x)
 
-leak_positive_control <- function(x) invisible(.Call(wrap__leak_positive_control, x))
+leak_positive_control <- function(x) .Call(wrap__leak_positive_control, x)
 
-leak_negative_control <- function(x) invisible(.Call(wrap__leak_negative_control, x))
+leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
@@ -210,7 +210,7 @@ round_trip_array_rint <- function(x) .Call(wrap__round_trip_array_rint, x)
 
 round_trip_array_u8 <- function(x) .Call(wrap__round_trip_array_u8, x)
 
-middle_zero <- function(integers) invisible(.Call(wrap__middle_zero, integers))
+middle_zero <- function(integers) .Call(wrap__middle_zero, integers)
 
 logicals_sum <- function(logicals) .Call(wrap__logicals_sum, logicals)
 
@@ -244,13 +244,13 @@ custom_error_conversion <- function(`_val`) .Call(wrap__custom_error_conversion,
 
 take_and_return_B <- function(b) .Call(wrap__take_and_return_B, b)
 
-must_see_drop_msg_r_error <- function() invisible(.Call(wrap__must_see_drop_msg_r_error))
+must_see_drop_msg_r_error <- function() .Call(wrap__must_see_drop_msg_r_error)
 
-must_see_drop_msg_panic <- function() invisible(.Call(wrap__must_see_drop_msg_panic))
+must_see_drop_msg_panic <- function() .Call(wrap__must_see_drop_msg_panic)
 
-must_see_drop_msg_r_error_heap <- function() invisible(.Call(wrap__must_see_drop_msg_r_error_heap))
+must_see_drop_msg_r_error_heap <- function() .Call(wrap__must_see_drop_msg_r_error_heap)
 
-must_see_drop_msg_panic_heap <- function() invisible(.Call(wrap__must_see_drop_msg_panic_heap))
+must_see_drop_msg_panic_heap <- function() .Call(wrap__must_see_drop_msg_panic_heap)
 
 #' Class for testing (exported)
 #' @examples
@@ -284,7 +284,7 @@ MyClass <- new.env(parent = emptyenv())
 
 MyClass$new <- function() .Call(wrap__MyClass__new)
 
-MyClass$set_a <- function(x) invisible(.Call(wrap__MyClass__set_a, self, x))
+MyClass$set_a <- function(x) .Call(wrap__MyClass__set_a, self, x)
 
 MyClass$a <- function() .Call(wrap__MyClass__a, self)
 
@@ -316,7 +316,7 @@ MyClass$get_default_value <- function(x = 42) .Call(wrap__MyClass__get_default_v
 
 `__MyClass`$new <- function() .Call(wrap____MyClass__new)
 
-`__MyClass`$`__name_test` <- function() invisible(.Call(wrap____MyClass____name_test, self))
+`__MyClass`$`__name_test` <- function() .Call(wrap____MyClass____name_test, self)
 
 #' @export
 `$.__MyClass` <- function (self, name) { func <- `__MyClass`[[name]]; environment(func) <- environment(); func }
@@ -374,7 +374,7 @@ MySubmoduleClass <- new.env(parent = emptyenv())
 
 MySubmoduleClass$new <- function() .Call(wrap__MySubmoduleClass__new)
 
-MySubmoduleClass$set_a <- function(x) invisible(.Call(wrap__MySubmoduleClass__set_a, self, x))
+MySubmoduleClass$set_a <- function(x) .Call(wrap__MySubmoduleClass__set_a, self, x)
 
 MySubmoduleClass$a <- function() .Call(wrap__MySubmoduleClass__a, self)
 
@@ -438,7 +438,7 @@ Wrapper <- new.env(parent = emptyenv())
 
 Wrapper$new <- function() .Call(wrap__Wrapper__new)
 
-Wrapper$set_a <- function(x) invisible(.Call(wrap__Wrapper__set_a, self, x))
+Wrapper$set_a <- function(x) .Call(wrap__Wrapper__set_a, self, x)
 
 Wrapper$a <- function() .Call(wrap__Wrapper__a, self)
 
