@@ -91,7 +91,6 @@ r-cmd-check *args:
     NO_VIGNETTES="0" \
     ERROR_ON="warning" \
     CHECK_DIR="" \
-    ROOT_DIR="$(pwd)" \
     PATCH_ROOT="$(pwd)" \
     CARGO_TOML="$(pwd)/tests/extendrtests/src/rust/Cargo.toml" \
     && for arg in {{args}}; do \
@@ -110,7 +109,7 @@ r-cmd-check *args:
       esac; \
     fi \
     && case "$(uname -s)" in \
-      MINGW*|MSYS*|CYGWIN*) PATCH_ROOT="$(cygpath -m "$PATCH_ROOT" 2>/dev/null || pwd -W 2>/dev/null || echo "$PATCH_ROOT")" ;; \
+      MINGW*|MSYS*|CYGWIN*) PATCH_ROOT="$(cygpath -m "$PATCH_ROOT")" ;; \
     esac \
     && TMP_CARGO_TOML="$(mktemp)" \
     && cp "$CARGO_TOML" "$TMP_CARGO_TOML" \
