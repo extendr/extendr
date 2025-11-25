@@ -92,6 +92,7 @@ r-cmd-check *args:
     ERROR_ON="warning" \
     CHECK_DIR="" \
     ROOT_DIR="$(pwd)" \
+    PATCH_ROOT="$(pwd)" \
     CARGO_TOML="$(pwd)/tests/extendrtests/src/rust/Cargo.toml" \
     && for arg in {{args}}; do \
       case "$arg" in \
@@ -108,16 +109,19 @@ r-cmd-check *args:
         *)  CHECK_DIR_ARG="'$(pwd)/$CHECK_DIR'" ;; \
       esac; \
     fi \
+    && case "$(uname -s)" in \
+      MINGW*|MSYS*|CYGWIN*) PATCH_ROOT="$(cygpath -m "$PATCH_ROOT" 2>/dev/null || pwd -W 2>/dev/null || echo "$PATCH_ROOT")" ;; \
+    esac \
     && TMP_CARGO_TOML="$(mktemp)" \
     && cp "$CARGO_TOML" "$TMP_CARGO_TOML" \
     && cleanup() { mv "$TMP_CARGO_TOML" "$CARGO_TOML"; } \
     && trap cleanup EXIT \
     && TMP_EDIT="$(mktemp)" \
-    && awk -v root="$ROOT_DIR" ' \
+    && awk -v root="$PATCH_ROOT" ' \
       /^[[:space:]]*#/ {print; next} \
       /^\[patch\.crates-io\]/ {in_patch=1; print; next} \
       in_patch && done==0 && /^[[:space:]]*extendr-api[[:space:]]*=/ { \
-        gsub(/path[[:space:]]*=[[:space:]]*\"[^\"]+\"/, "path = \"" root "/extendr-api\""); \
+        gsub(/path[[:space:]]*=[[:space:]]*"[^"]+"/, "path = \"" root "/extendr-api\""); \
         done=1; \
       } \
       {print} \
