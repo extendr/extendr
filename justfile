@@ -32,9 +32,16 @@ fmt *cargo_flags:
     cargo fmt --all {{cargo_flags}}
     cargo fmt --all --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
-test *cargo_flags:
-    cargo test --workspace --no-fail-fast --features=full-functionality {{cargo_flags}} -- --no-capture --test-threads=1
-    cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast {{cargo_flags}} -- --no-capture --test-threads=1
+test *args:
+    cargo_flags="" \
+    && test_args="" \
+    && sep=0 \
+    && for arg in {{args}}; do \
+      if [ "$arg" = "--" ]; then sep=1; continue; fi; \
+      if [ "$sep" = "0" ]; then cargo_flags="$cargo_flags $arg"; else test_args="$test_args $arg"; fi; \
+    done \
+    && cargo test --workspace --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture --test-threads=1 $test_args \
+    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast $cargo_flags -- --no-capture --test-threads=1 $test_args
 
 tree *cargo_flags:
   cargo tree --workspace {{cargo_flags}}
@@ -79,17 +86,27 @@ devtools-test FILTER="" SNAPSHOT="0":
       Rscript -e 'devtools::test(filter = "{{FILTER}}")'; \
     fi
 
-# Run R CMD check on extendrtests; set NO_VIGNETTES=1 or ERROR_ON=warning|error; optional CHECK_DIR
-r-cmd-check NO_VIGNETTES="0" ERROR_ON="warning" CHECK_DIR="":
-    CHECK_DIR_ARG="NULL" && \
-    if [ -n "{{CHECK_DIR}}" ]; then \
-      if [ "{{CHECK_DIR}}" = /* ]; then \
-        CHECK_DIR_ARG="'{{CHECK_DIR}}'"; \
-      else \
-        CHECK_DIR_ARG="'$$(cd '{{CHECK_DIR}}' 2>/dev/null && pwd || realpath '{{CHECK_DIR}}')'"; \
-      fi; \
-    fi && \
-    cd tests/extendrtests && \
-    ARGS="'--as-cran','--no-manual'" && \
-    if [ "{{NO_VIGNETTES}}" = "1" ]; then ARGS="$${ARGS},'--no-build-vignettes'"; fi; \
-    Rscript -e "rcmdcheck::rcmdcheck(args = c($${ARGS}), error_on = '{{ERROR_ON}}', check_dir = $${CHECK_DIR_ARG})"
+# Run R CMD check on extendrtests; accepts NO_VIGNETTES=1, ERROR_ON=warning|error, CHECK_DIR=path
+r-cmd-check *args:
+    NO_VIGNETTES="0" \
+    ERROR_ON="warning" \
+    CHECK_DIR="" \
+    && for arg in {{args}}; do \
+      case "$arg" in \
+        NO_VIGNETTES=*) NO_VIGNETTES="${arg#NO_VIGNETTES=}" ;; \
+        ERROR_ON=*) ERROR_ON="${arg#ERROR_ON=}" ;; \
+        CHECK_DIR=*) CHECK_DIR="${arg#CHECK_DIR=}" ;; \
+        *) echo "Ignoring unknown arg '$arg'" ;; \
+      esac; \
+    done \
+    && CHECK_DIR_ARG="NULL" \
+    && if [ -n "$CHECK_DIR" ]; then \
+      case "$CHECK_DIR" in \
+        /*) CHECK_DIR_ARG="'$CHECK_DIR'" ;; \
+        *)  CHECK_DIR_ARG="'$(pwd)/$CHECK_DIR'" ;; \
+      esac; \
+    fi \
+    && cd tests/extendrtests \
+    && ARGS="'--as-cran','--no-manual'" \
+    && if [ "$NO_VIGNETTES" = "1" ]; then ARGS="${ARGS},'--no-build-vignettes'"; fi \
+    && Rscript -e "rcmdcheck::rcmdcheck(args = c(${ARGS}), error_on = '${ERROR_ON}', check_dir = ${CHECK_DIR_ARG})"
