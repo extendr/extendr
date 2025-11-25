@@ -573,10 +573,10 @@ impl ToVectorValue for Option<bool> {
 
 impl<T> From<&Option<T>> for Robj
 where
-    Option<T>: ToVectorValue,
+    Option<T>: ToVectorValue + Clone,
 {
     fn from(value: &Option<T>) -> Self {
-        value.into()
+        value.clone().into()
     }
 }
 
