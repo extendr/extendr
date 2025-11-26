@@ -18,9 +18,9 @@ use std::os::raw;
 const HASH_CYCLE_MARKER: u8 = 0xFF;
 
 use extendr_ffi::{
-    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
-    Rf_isObject, Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL,
-    SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, R_ExternalPtrAddr, Rboolean,
+    Rcomplex, Rf_getAttrib, Rf_isObject, Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER,
+    LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
 use crate::scalar::{Rbool, Rfloat, Rint};
@@ -131,7 +131,11 @@ fn hash_robj<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     }
 
     stack.insert(sexp);
-    robj.sexptype().hash(state);
+    // seed similar to R's vhash_one: OBJECT flag + 2*TYPEOF + 100*LENGTH
+    let obj_flag: usize = unsafe { Rf_isObject(sexp).into() };
+    let len = robj.len().unwrap_or(0);
+    let seed = obj_flag + 2 * (robj.sexptype() as usize) + 100 * len;
+    seed.hash(state);
     hash_robj_body(robj, state, stack);
     // at the end of the (potential) cycle, we no longer have to track this
     // item in the stack
@@ -140,31 +144,10 @@ fn hash_robj<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
 
 fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     use SEXPTYPE::*;
+    let sexp = unsafe { robj.get() };
     match robj.sexptype() {
         // NILSXP: R NULL (skip; pointer changes across GC)
         NILSXP => {}
-        // PROMSXP: promises (lazy eval)
-        PROMSXP => unsafe { robj.get().hash(state) },
-        // ANYSXP: marker for “any”
-        ANYSXP => unsafe { robj.get().hash(state) },
-        // SYMSXP: symbols/names (immortal strings)
-        SYMSXP => {
-            if let Some(text) = robj.as_str() {
-                hash_str_value(text, state);
-            }
-        }
-        // LISTSXP: pairlist (CONS cells with optional tags)
-        LISTSXP => hash_pairlist(robj, state, stack),
-        // CLOSXP: closure (formals/body/env)
-        CLOSXP => hash_closure(robj, state, stack),
-        // ENVSXP: environment (variables + parent)
-        ENVSXP => hash_environment(robj, state, stack),
-        // LANGSXP: language objects (calls, etc.)
-        LANGSXP => hash_language(robj, state, stack),
-        // SPECIALSXP/BUILTINSXP/FUNSXP: primitive/builtin functions
-        SPECIALSXP | BUILTINSXP | FUNSXP => unsafe { robj.get().hash(state) },
-        // CHARSXP/STRSXP: string elements and vectors
-        CHARSXP | STRSXP => hash_strings(robj, state),
         // LGLSXP: logical vector
         LGLSXP => {
             if let Some(values) = robj.as_logical_slice() {
@@ -189,178 +172,108 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
                 hash_complex_slice(values, state);
             }
         }
-        // DOTSXP: ... argument list
-        DOTSXP => hash_pairlist(robj, state, stack),
         // RAWSXP: raw byte vector
         RAWSXP => {
             if let Some(values) = robj.as_raw_slice() {
                 values.hash(state);
             }
         }
-        // VECSXP: generic list
-        VECSXP => hash_list(robj, state, stack),
-        // EXTPTRSXP: external pointer wrapper
-        EXTPTRSXP => hash_external_ptr(robj, state, stack),
-        // EXPRSXP: expression vector, typically elements of `LANGSXP` calls or symbols
+        // STRSXP: string vector (hash bytes)
+        STRSXP => hash_string_vector(robj, state),
+        // CHARSXP/SYMSXP/ENVSXP: pointer identity only
+        CHARSXP | SYMSXP | ENVSXP => pointer_hash(sexp, state),
+        // VECSXP: hash elements in order, ignore names/attributes
+        VECSXP => hash_vector(robj, state, stack),
+        // EXPRSXP: expression vector, order matters, names ignored
         EXPRSXP => hash_expressions(robj, state, stack),
-        // WEAKREFSXP: weak references (hash key and value if present)
-        WEAKREFSXP => unsafe {
-            let weak = robj.get();
-            // key can be ENVSXP or EXTPTRSXP.
-            let key = extendr_ffi::R_WeakRefKey(weak);
-            if key != R_NilValue {
-                match extendr_ffi::TYPEOF(key) {
-                    SEXPTYPE::ENVSXP => {
-                        let key_env = Robj::from_sexp(key);
-                        hash_environment(&key_env, state, stack);
-                    }
-                    SEXPTYPE::EXTPTRSXP => {
-                        let key_ptr = Robj::from_sexp(key);
-                        hash_external_ptr(&key_ptr, state, stack);
-                    }
-                    _ => {
-                        let key_robj = Robj::from_sexp(key);
-                        hash_robj(&key_robj, state, stack);
-                    }
-                }
-            }
-            let value = extendr_ffi::R_WeakRefValue(weak);
-            if value != R_NilValue {
-                let value_robj = Robj::from_sexp(value);
-                hash_robj(&value_robj, state, stack);
-            }
-        },
-        // BCODESXP/NEWSXP/FREESXP: bytecode/new/freed objects
-        BCODESXP | NEWSXP | FREESXP => unsafe { robj.get().hash(state) },
+        // LISTSXP/LANGSXP/DOTSXP: walk CONS cells, ignore tags
+        LISTSXP | LANGSXP | DOTSXP => hash_pairlist_no_tags(sexp, state, stack),
+        // CLOSXP: hash body and environment pointer
+        CLOSXP => hash_closure(robj, state, stack),
+        // EXTPTRSXP: external pointer wrapper
+        EXTPTRSXP => hash_external_ptr(robj, state),
+        // Pointer hash only for remaining code-like types
+        PROMSXP | ANYSXP | SPECIALSXP | BUILTINSXP | FUNSXP | BCODESXP | NEWSXP | FREESXP
+        | WEAKREFSXP => pointer_hash(sexp, state),
         #[cfg(not(use_objsxp))]
         // S4SXP: formal S4 objects
-        S4SXP => hash_s4(robj, state, stack),
+        S4SXP => hash_s4_by_slots(robj, state, stack),
         #[cfg(use_objsxp)]
         // OBJSXP: formal S4 objects (4.4+)
-        OBJSXP => hash_s4(robj, state, stack),
+        OBJSXP => hash_s4_by_slots(robj, state, stack),
+        _ => pointer_hash(sexp, state),
     }
 }
 
-fn hash_pairlist<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    if let Some(pairlist) = robj.as_pairlist() {
-        for (name, value) in pairlist.iter() {
-            hash_str_value(name, state);
+fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
+    if let Some(function) = robj.as_function() {
+        if let Some(body) = function.body() {
+            hash_robj(&body, state, stack);
+        }
+        if let Some(env) = function.environment() {
+            pointer_hash(unsafe { env.get() }, state);
+        }
+    }
+}
+
+fn hash_string_vector<H: Hasher>(robj: &Robj, state: &mut H) {
+    if let Some(iter) = robj.as_str_iter() {
+        for value in iter {
+            value.hash(state);
+        }
+    }
+}
+
+fn hash_vector<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
+    if let Some(list) = robj.as_list() {
+        for value in list.values() {
             hash_robj(&value, state, stack);
         }
     }
 }
 
-fn hash_language<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    // LANGSXP is internally a pairlist: hash it like one (tags + values in order).
-    hash_pairlist(robj, state, stack);
-}
-
-fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    if let Some(function) = robj.as_function() {
-        if let Some(formals) = function.formals() {
-            for (name, value) in formals.iter() {
-                hash_str_value(name, state);
-                hash_robj(&value, state, stack);
-            }
-        }
-        if let Some(body) = function.body() {
-            hash_robj(&body, state, stack);
-        }
-        if let Some(env) = function.environment() {
-            unsafe { env.get().hash(state) };
-        }
-    }
-}
-
-fn hash_environment<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    // Use R's conversion to list so we can reuse list hashing (names + values).
-    use crate as extendr_api;
-    let list = call!("as.list.environment", robj.clone()).unwrap();
-    hash_list(&list, state, stack);
-}
-
-fn hash_strings<H: Hasher>(robj: &Robj, state: &mut H) {
-    if let Some(iter) = robj.as_str_iter() {
-        for value in iter {
-            hash_str_value(value, state);
-        }
-    }
-}
-
-fn hash_list<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    if let Some(list) = robj.as_list() {
-        if let Some(names) = list.names() {
-            if names.len() == list.len() {
-                for (name, value) in names.into_iter().zip(list.values()) {
-                    hash_str_value(name, state);
-                    hash_robj(&value, state, stack);
-                }
-                return;
-            }
-        } else {
-            for value in list.values() {
-                hash_robj(&value, state, stack);
-            }
+fn hash_pairlist_no_tags<H: Hasher>(mut sexp: SEXP, state: &mut H, stack: &mut HashSet<SEXP>) {
+    unsafe {
+        while sexp != R_NilValue {
+            let car = Robj::from_sexp(CAR(sexp));
+            hash_robj(&car, state, stack);
+            sexp = CDR(sexp);
         }
     }
 }
 
 fn hash_expressions<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(exprs) = robj.as_expressions() {
-        exprs.len().hash(state);
         for value in exprs.values() {
             hash_robj(&value, state, stack);
         }
     }
 }
 
-fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
+fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H) {
     unsafe {
         let sexp = robj.get();
-        let addr = extendr_ffi::R_ExternalPtrAddr(sexp);
-        // Hash the pointer value; hash 0 explicitly for NULL to record absence.
+        let addr = extendr_ffi::R_ExternalPtrAddr(sexp) as usize;
         addr.hash(state);
-
-        let tag = extendr_ffi::R_ExternalPtrTag(sexp);
-        if tag != R_NilValue {
-            let tag_robj = Robj::from_sexp(tag);
-            hash_robj(&tag_robj, state, stack);
-        }
-
-        let protected = extendr_ffi::R_ExternalPtrProtected(sexp);
-        if protected != R_NilValue {
-            let prot_robj = Robj::from_sexp(protected);
-            hash_robj(&prot_robj, state, stack);
-        }
     }
 }
 
-fn hash_s4<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
+fn hash_s4_by_slots<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(classes) = robj.class() {
         for class in classes {
-            hash_str_value(class, state);
+            class.hash(state);
         }
     }
 
     if let Some(list) = robj.as_list() {
-        if let Some(names) = robj.names().map(|iter| iter.collect::<Vec<_>>()) {
-            if names.len() == list.len() {
-                for (name, value) in names.into_iter().zip(list.values()) {
-                    hash_str_value(name, state);
-                    hash_robj(&value, state, stack);
-                }
-                return;
-            }
-        } else {
-            for value in list.values() {
-                hash_robj(&value, state, stack);
-            }
+        for value in list.values() {
+            hash_robj(&value, state, stack);
         }
     }
 }
 
-fn hash_str_value<H: Hasher>(value: &str, state: &mut H) {
-    value.hash(state);
+fn pointer_hash<H: Hasher>(sexp: SEXP, state: &mut H) {
+    (sexp as usize).hash(state);
 }
 
 fn hash_real_slice<H: Hasher>(values: &[f64], state: &mut H) {
