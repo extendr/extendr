@@ -193,12 +193,55 @@ impl GetSexp for UnsafeSendRobj {
 
 impl Length for UnsafeSendRobj {}
 impl Types for UnsafeSendRobj {}
+impl wrapper_macros::Conversions for UnsafeSendRobj {}
 impl Attributes for UnsafeSendRobj {}
 impl Rinternals for UnsafeSendRobj {}
 impl Slices for UnsafeSendRobj {}
 impl Operators for UnsafeSendRobj {}
 impl Eval for UnsafeSendRobj {}
 impl AsStrIter for UnsafeSendRobj {}
+
+impl Default for UnsafeSendRobj {
+    fn default() -> Self {
+        UnsafeSendRobj(Robj::default())
+    }
+}
+
+impl PartialEq<[i32]> for UnsafeSendRobj {
+    fn eq(&self, rhs: &[i32]) -> bool {
+        self.as_integer_slice() == Some(rhs)
+    }
+}
+
+impl PartialEq<[f64]> for UnsafeSendRobj {
+    fn eq(&self, rhs: &[f64]) -> bool {
+        self.as_real_slice() == Some(rhs)
+    }
+}
+
+impl PartialEq<str> for UnsafeSendRobj {
+    fn eq(&self, rhs: &str) -> bool {
+        self.as_str() == Some(rhs)
+    }
+}
+
+impl PartialEq<Robj> for UnsafeSendRobj {
+    fn eq(&self, rhs: &Robj) -> bool {
+        self.0 == *rhs
+    }
+}
+
+impl PartialEq<UnsafeSendRobj> for Robj {
+    fn eq(&self, rhs: &UnsafeSendRobj) -> bool {
+        *self == rhs.0
+    }
+}
+
+impl PartialEq<UnsafeSendRobj> for UnsafeSendRobj {
+    fn eq(&self, rhs: &UnsafeSendRobj) -> bool {
+        self.0 == rhs.0
+    }
+}
 
 impl Clone for Robj {
     fn clone(&self) -> Self {
