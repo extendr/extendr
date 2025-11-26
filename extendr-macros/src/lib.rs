@@ -358,8 +358,15 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         let types: Vec<_> = (0..n).map(|i| quote::format_ident!("T{}", i)).collect();
         let indices = 0..n;
         let element_extraction = indices.map(|idx| {
+            
             quote! {
-                (&list.elt(#idx)?).try_into()?
+                (&list.elt(#idx)?)
+                    .try_into()
+                    .map_err(|error| extendr_api::error::Error::Other(format!(
+                        "failed to convert tuple element {}: {}",
+                        #idx,
+                        error
+                    )))?
             }
         });
 
