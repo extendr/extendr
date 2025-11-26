@@ -18,9 +18,10 @@ use std::os::raw;
 const HASH_CYCLE_MARKER: u8 = 0xFF;
 
 use extendr_ffi::{
-    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
-    Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER, LOGICAL, OBJECT, PRINTNAME, RAW, REAL,
-    SEXPTYPE, STRING_ELT, STRING_PTR_RO, TAG, TYPEOF, XLENGTH,
+    dataptr, R_IsNA, R_NilValue, R_WeakRefKey, R_WeakRefValue, R_compute_identical, R_tryEval,
+    Rboolean, Rcomplex, Rf_getAttrib, Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER,
+    LOGICAL, OBJECT, PRINTNAME, RAW, REAL, SEXPTYPE, STRING_ELT, STRING_PTR_RO, TAG, TYPEOF,
+    XLENGTH,
 };
 
 use crate::scalar::{Rbool, Rfloat, Rint};
@@ -203,10 +204,13 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
         // CLOSXP: hash body and environment pointer
         CLOSXP => hash_closure(robj, state, stack),
         // EXTPTRSXP: external pointer wrapper
-        EXTPTRSXP => hash_external_ptr(robj, state),
+        EXTPTRSXP => hash_external_ptr(robj, state, stack),
         // Pointer hash only for remaining code-like types
-        PROMSXP | ANYSXP | SPECIALSXP | BUILTINSXP | FUNSXP | BCODESXP | NEWSXP | FREESXP
-        | WEAKREFSXP => sexp.hash(state),
+        PROMSXP | ANYSXP | SPECIALSXP | BUILTINSXP | FUNSXP | BCODESXP | NEWSXP | FREESXP => {
+            sexp.hash(state)
+        }
+        // weak references, where key is usually ENVSXP or EXTPTRSXP
+        WEAKREFSXP => hash_weakref(robj, state, stack),
         #[cfg(not(use_objsxp))]
         // S4SXP: formal S4 objects
         S4SXP => hash_s4_by_slots(robj, state, stack),
@@ -216,6 +220,7 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
     }
 }
 
+/// This function requires that `robj` is [`SEXPTYPE::CLOSXP`].
 fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     unsafe {
         let sexp = robj.get();
@@ -231,6 +236,7 @@ fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>
     }
 }
 
+/// This function requires that `robj` is of type [`SEXPTYPE::STRSXP`] or [`SEXPTYPE::CHARSXP`]
 fn hash_string_vector<H: Hasher>(robj: &Robj, state: &mut H) {
     if let Some(iter) = robj.as_str_iter() {
         for value in iter {
@@ -239,6 +245,7 @@ fn hash_string_vector<H: Hasher>(robj: &Robj, state: &mut H) {
     }
 }
 
+/// This function requires that `robj` is of type [`SEXPTYPE::ENVSXP`]
 fn hash_environment<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     // Bring macro into scope for this call.
     use crate as extendr_api;
@@ -248,6 +255,7 @@ fn hash_environment<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<S
     hash_vector(&list, state, stack);
 }
 
+/// This function requires that `robj` is of type [`SEXPTYPE::VECSXP`]
 fn hash_vector<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(list) = robj.as_list() {
         for value in list.values() {
@@ -256,6 +264,10 @@ fn hash_vector<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>)
     }
 }
 
+/// This function requires that `robj` is of type
+/// [`SEXPTYPE::LISTSXP`],
+/// [`SEXPTYPE::LANGSXP`], or
+/// [`SEXPTYPE::DOTSXP`].
 fn hash_pairlist_with_tags<H: Hasher>(mut sexp: SEXP, state: &mut H, stack: &mut HashSet<SEXP>) {
     unsafe {
         while sexp != R_NilValue {
@@ -271,6 +283,7 @@ fn hash_pairlist_with_tags<H: Hasher>(mut sexp: SEXP, state: &mut H, stack: &mut
     }
 }
 
+/// This function requires that `robj` is of type [`SEXPTYPE::EXPRSXP`]
 fn hash_expressions<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(exprs) = robj.as_expressions() {
         for value in exprs.values() {
@@ -279,14 +292,43 @@ fn hash_expressions<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<S
     }
 }
 
-fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H) {
+/// This function requires that `robj` is of [`SEXPTYPE::EXTPTRSXP`]
+fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     unsafe {
         let sexp = robj.get();
         let addr = extendr_ffi::R_ExternalPtrAddr(sexp);
         addr.hash(state);
+        let tag = extendr_ffi::R_ExternalPtrTag(sexp);
+        if tag != R_NilValue {
+            hash_robj(&Robj::from_sexp(tag), state, stack);
+        }
+        let prot = extendr_ffi::R_ExternalPtrProtected(sexp);
+        if prot != R_NilValue {
+            hash_robj(&Robj::from_sexp(prot), state, stack);
+        }
     }
 }
 
+/// This function requires that `robj` is of [`SEXPTYPE::WEAKREFSXP`]
+/// Also, it requires that [`hash_robj`] can handle [`SEXPTYPE::ENVSXP`] and [`SEXPTYPE::EXTPTRSXP`]
+fn hash_weakref<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
+    unsafe {
+        let sexp = robj.get();
+        let key = R_WeakRefKey(sexp);
+        if key != R_NilValue {
+            let key_robj = Robj::from_sexp(key);
+            // this _should_ only be ENVSXP or EXTPTRSXP...
+            hash_robj(&key_robj, state, stack);
+        }
+        let value = R_WeakRefValue(sexp);
+        if value != R_NilValue {
+            let value_robj = Robj::from_sexp(value);
+            hash_robj(&value_robj, state, stack);
+        }
+    }
+}
+
+/// This requires that `robj` is [`SEXPTYPE::OBJSXP`] or [`SEXPTYPE::S4SXP`].
 fn hash_s4_by_slots<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(classes) = robj.class() {
         for class in classes {
