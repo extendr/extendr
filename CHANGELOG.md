@@ -27,7 +27,7 @@
 - **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
 - **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types.
   [[#1020]](https://github.com/extendr/extendr/pull/1020)
-- Internally, we no longer permit `TryFrom<Robj> for &T/&mut T` as this violates
+- **Breaking** we no longer permit `TryFrom<Robj> for &T/&mut T` as this violates
   Rust's memory model. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 
 ### Fixed
