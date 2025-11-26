@@ -603,8 +603,7 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                let needs_mut = type_needs_mut_robj(&pattype.ty);
-                if needs_mut {
+                if type_needs_mut_robj(&pattype.ty) {
                     Some(parse_quote! { (&mut #varname).try_into()? })
                 } else {
                     Some(parse_quote! { (&#varname).try_into()? })
