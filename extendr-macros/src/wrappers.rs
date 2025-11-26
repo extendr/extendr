@@ -557,8 +557,7 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 let arg_name = ident.ident.to_string();
-                Some(                
-                parse_quote! {
+                Some(parse_quote! {
                     #varname
                         .try_into()
                         .map_err(|error| extendr_api::error::Error::Other(format!(
