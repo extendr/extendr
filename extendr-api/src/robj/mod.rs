@@ -295,6 +295,11 @@ fn hash_s4_by_slots<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<S
     }
 
     if let Some(list) = robj.as_list() {
+        if let Some(names) = list.names() {
+            for name in names {
+                name.hash(state);
+            }
+        }
         for value in list.values() {
             hash_robj(&value, state, stack);
         }
