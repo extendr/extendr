@@ -19,8 +19,8 @@ const HASH_CYCLE_MARKER: u8 = 0xFF;
 
 use extendr_ffi::{
     dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
-    Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
-    STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+    Rf_isObject, Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL,
+    SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
 use crate::scalar::{Rbool, Rfloat, Rint};
@@ -322,7 +322,7 @@ fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<
         addr.hash(state);
 
         let tag = extendr_ffi::R_ExternalPtrTag(sexp);
-        if tag != R_NilValue{
+        if tag != R_NilValue {
             let tag_robj = Robj::from_sexp(tag);
             hash_robj(&tag_robj, state, stack);
         }
