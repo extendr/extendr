@@ -203,8 +203,20 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
         EXTPTRSXP => hash_external_ptr(robj, state),
         // EXPRSXP: expression vector
         EXPRSXP => hash_expressions(robj, state, stack),
-        // WEAKREFSXP: weak references
-        WEAKREFSXP => unsafe { robj.get().hash(state) },
+        // WEAKREFSXP: weak references (hash key and value if present)
+        WEAKREFSXP => unsafe {
+            let weak = robj.get();
+            let key = extendr_ffi::R_WeakRefKey(weak);
+            if key != R_NilValue {
+                let key_robj = Robj::from_sexp(key);
+                hash_robj(&key_robj, state, stack);
+            }
+            let value = extendr_ffi::R_WeakRefValue(weak);
+            if value != R_NilValue {
+                let value_robj = Robj::from_sexp(value);
+                hash_robj(&value_robj, state, stack);
+            }
+        },
         // BCODESXP/NEWSXP/FREESXP: bytecode/new/freed objects
         BCODESXP | NEWSXP | FREESXP => unsafe { robj.get().hash(state) },
         #[cfg(not(use_objsxp))]
