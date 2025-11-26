@@ -1107,8 +1107,8 @@ impl PartialEq<Robj> for Robj {
 /// Release any owned objects.
 impl Drop for Robj {
     fn drop(&mut self) {
-        unsafe {
+        single_threaded(|| unsafe {
             ownership::unprotect(self.inner);
-        }
+        });
     }
 }

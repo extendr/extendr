@@ -24,26 +24,40 @@ pub fn single_threaded<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
 {
+    struct RApiGuard<'a> {
+        _guard: Option<std::sync::MutexGuard<'a, ()>>,
+        acquired: bool,
+    }
+
+    impl<'a> Drop for RApiGuard<'a> {
+        fn drop(&mut self) {
+            if self.acquired {
+                THREAD_HAS_LOCK.with(|x| x.set(false));
+            }
+            // dropping `guard` releases the global R API mutex
+        }
+    }
+
     let has_lock = THREAD_HAS_LOCK.with(|x| x.get());
 
     // acquire R-API lock
-    let _guard = if !has_lock {
+    let guard = if !has_lock {
         Some(R_API_LOCK.lock().unwrap())
     } else {
         None
     };
 
     // this thread now has the lock
-    THREAD_HAS_LOCK.with(|x| x.set(true));
-
-    let result = f();
-
-    // release the R-API lock
-    if _guard.is_some() {
-        THREAD_HAS_LOCK.with(|x| x.set(false));
+    if !has_lock {
+        THREAD_HAS_LOCK.with(|x| x.set(true));
     }
 
-    result
+    let _guard = RApiGuard {
+        _guard: guard,
+        acquired: !has_lock,
+    };
+
+    f()
 }
 
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
