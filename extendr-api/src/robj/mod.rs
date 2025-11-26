@@ -200,16 +200,29 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
         // VECSXP: generic list
         VECSXP => hash_list(robj, state, stack),
         // EXTPTRSXP: external pointer wrapper
-        EXTPTRSXP => hash_external_ptr(robj, state),
-        // EXPRSXP: expression vector
+        EXTPTRSXP => hash_external_ptr(robj, state, stack),
+        // EXPRSXP: expression vector, typically elements of `LANGSXP` calls or symbols
         EXPRSXP => hash_expressions(robj, state, stack),
         // WEAKREFSXP: weak references (hash key and value if present)
         WEAKREFSXP => unsafe {
             let weak = robj.get();
+            // key can be ENVSXP or EXTPTRSXP.
             let key = extendr_ffi::R_WeakRefKey(weak);
             if key != R_NilValue {
-                let key_robj = Robj::from_sexp(key);
-                hash_robj(&key_robj, state, stack);
+                match extendr_ffi::TYPEOF(key) {
+                    SEXPTYPE::ENVSXP => {
+                        let key_env = Robj::from_sexp(key);
+                        hash_environment(&key_env, state, stack);
+                    }
+                    SEXPTYPE::EXTPTRSXP => {
+                        let key_ptr = Robj::from_sexp(key);
+                        hash_external_ptr(&key_ptr, state, stack);
+                    }
+                    _ => {
+                        let key_robj = Robj::from_sexp(key);
+                        hash_robj(&key_robj, state, stack);
+                    }
+                }
             }
             let value = extendr_ffi::R_WeakRefValue(weak);
             if value != R_NilValue {
@@ -238,12 +251,8 @@ fn hash_pairlist<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP
 }
 
 fn hash_language<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    if let Some(lang) = robj.as_language() {
-        for (name, value) in lang.iter() {
-            hash_str_value(name, state);
-            hash_robj(&value, state, stack);
-        }
-    }
+    // LANGSXP is internally a pairlist: hash it like one (tags + values in order).
+    hash_pairlist(robj, state, stack);
 }
 
 fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
@@ -298,17 +307,31 @@ fn hash_list<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
 
 fn hash_expressions<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     if let Some(exprs) = robj.as_expressions() {
+        exprs.len().hash(state);
         for value in exprs.values() {
             hash_robj(&value, state, stack);
         }
     }
 }
 
-fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H) {
+fn hash_external_ptr<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
     unsafe {
-        extendr_ffi::R_ExternalPtrAddr(robj.get()).hash(state);
-        extendr_ffi::R_ExternalPtrTag(robj.get()).hash(state);
-        extendr_ffi::R_ExternalPtrProtected(robj.get()).hash(state);
+        let sexp = robj.get();
+        let addr = extendr_ffi::R_ExternalPtrAddr(sexp);
+        // Hash the pointer value; hash 0 explicitly for NULL to record absence.
+        addr.hash(state);
+
+        let tag = extendr_ffi::R_ExternalPtrTag(sexp);
+        if tag != R_NilValue{
+            let tag_robj = Robj::from_sexp(tag);
+            hash_robj(&tag_robj, state, stack);
+        }
+
+        let protected = extendr_ffi::R_ExternalPtrProtected(sexp);
+        if protected != R_NilValue {
+            let prot_robj = Robj::from_sexp(protected);
+            hash_robj(&prot_robj, state, stack);
+        }
     }
 }
 
