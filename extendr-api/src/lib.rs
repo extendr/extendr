@@ -323,7 +323,7 @@ pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
-pub use robj::Robj;
+pub use robj::{Robj, UnsafeSendRobj};
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
 pub use std::ops::DerefMut;

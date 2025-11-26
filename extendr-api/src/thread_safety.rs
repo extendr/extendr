@@ -42,7 +42,12 @@ where
 
     // acquire R-API lock
     let guard = if !has_lock {
-        Some(R_API_LOCK.lock().unwrap())
+        Some(
+            R_API_LOCK
+                .lock()
+                // If a previous caller panicked while holding the lock, keep using it.
+                .unwrap_or_else(|poisoned| poisoned.into_inner()),
+        )
     } else {
         None
     };
@@ -131,6 +136,25 @@ where
         Rf_unprotect(1);
         res
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+
+    #[test]
+    fn single_threaded_resets_after_panic() {
+        extendr_engine::with_r(|| {
+            let res = catch_unwind(AssertUnwindSafe(|| {
+                single_threaded(|| panic!("boom"));
+            }));
+            assert!(res.is_err());
+
+            // This would deadlock or panic if the thread-local lock state was left set.
+            single_threaded(|| {});
+        });
+    }
 }
 
 /// This function registers a configurable print panic hook, for use in extendr-based R-packages.

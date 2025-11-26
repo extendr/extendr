@@ -111,6 +111,95 @@ pub struct Robj {
     inner: SEXP,
 }
 
+/// Explicit wrapper to opt into sending an `Robj` across threads.
+///
+/// The R API is not thread-safe; use this only when you can guarantee that all
+/// R interactions (including `Drop`) happen under the global R lock
+/// (`single_threaded`).
+#[derive(Debug, Clone)]
+pub struct UnsafeSendRobj(pub Robj);
+
+unsafe impl Send for UnsafeSendRobj {}
+
+impl UnsafeSendRobj {
+    pub fn into_inner(self) -> Robj {
+        self.0
+    }
+
+    pub fn as_inner(&self) -> &Robj {
+        &self.0
+    }
+
+    pub fn as_inner_mut(&mut self) -> &mut Robj {
+        &mut self.0
+    }
+}
+
+impl From<Robj> for UnsafeSendRobj {
+    fn from(value: Robj) -> Self {
+        Self(value)
+    }
+}
+
+impl From<UnsafeSendRobj> for Robj {
+    fn from(value: UnsafeSendRobj) -> Self {
+        value.0
+    }
+}
+
+impl std::ops::Deref for UnsafeSendRobj {
+    type Target = Robj;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl std::ops::DerefMut for UnsafeSendRobj {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl AsRef<Robj> for UnsafeSendRobj {
+    fn as_ref(&self) -> &Robj {
+        &self.0
+    }
+}
+
+impl AsMut<Robj> for UnsafeSendRobj {
+    fn as_mut(&mut self) -> &mut Robj {
+        &mut self.0
+    }
+}
+
+impl GetSexp for UnsafeSendRobj {
+    unsafe fn get(&self) -> SEXP {
+        self.0.get()
+    }
+
+    unsafe fn get_mut(&mut self) -> SEXP {
+        self.0.get_mut()
+    }
+
+    fn as_robj(&self) -> &Robj {
+        &self.0
+    }
+
+    fn as_robj_mut(&mut self) -> &mut Robj {
+        &mut self.0
+    }
+}
+
+impl Length for UnsafeSendRobj {}
+impl Types for UnsafeSendRobj {}
+impl Attributes for UnsafeSendRobj {}
+impl Rinternals for UnsafeSendRobj {}
+impl Slices for UnsafeSendRobj {}
+impl Operators for UnsafeSendRobj {}
+impl Eval for UnsafeSendRobj {}
+impl AsStrIter for UnsafeSendRobj {}
+
 impl Clone for Robj {
     fn clone(&self) -> Self {
         unsafe { Robj::from_sexp(self.get()) }
