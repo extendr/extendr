@@ -15,7 +15,7 @@ use std::ops::{Index, IndexMut};
 /// test! {
 ///     let matrix = RMatrix::new_matrix(3, 2, |r, c| [
 ///         [1., 2., 3.],
-///          [4., 5., 6.]][c][r]);
+///         [4., 5., 6.]][c][r]);
 ///     let robj = r!(matrix);
 ///     assert_eq!(robj.is_matrix(), true);
 ///     assert_eq!(robj.nrows(), 3);
@@ -131,6 +131,8 @@ where
     ///
     /// Note that since [`Raw`] does not have an NA representation in R,
     /// this method is not implemented for [`Rbyte`].
+    /// 
+    /// [`Rbyte`]: extendr_ffi::Rbyte
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
