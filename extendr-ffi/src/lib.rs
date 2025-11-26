@@ -306,6 +306,7 @@ extern "C" {
     pub fn R_ClosureFormals(arg1: SEXP) -> SEXP;
     pub fn R_ClosureBody(arg1: SEXP) -> SEXP;
     pub fn R_ClosureEnv(arg1: SEXP) -> SEXP;
+    pub fn R_ClosureExpr(arg1: SEXP) -> SEXP;
     pub fn ATTRIB(x: SEXP) -> SEXP;
     pub fn OBJECT(x: SEXP) -> ::std::os::raw::c_int;
     pub fn R_compute_identical(arg1: SEXP, arg2: SEXP, arg3: ::std::os::raw::c_int) -> Rboolean;
