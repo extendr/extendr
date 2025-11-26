@@ -161,6 +161,7 @@ jobs:
       - name: Install dependencies for extendrtests and rcmdcheck
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache: always
           install-pandoc: false
           install-quarto: false
           working-directory: tests/extendrtests
