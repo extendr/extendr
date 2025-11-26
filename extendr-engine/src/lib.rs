@@ -128,7 +128,9 @@ pub fn with_r(f: impl FnOnce()) {
 }
 /// Ensures that an embedded R instance is present when evaluating
 /// `f`.
-pub fn with_r_result<T,E>(f: impl FnOnce() -> std::result::Result<T, E>) -> std::result::Result<T, E>{
+pub fn with_r_result<T, E>(
+    f: impl FnOnce() -> std::result::Result<T, E>,
+) -> std::result::Result<T, E> {
     start_r();
     f()
     // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
