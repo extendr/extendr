@@ -11,7 +11,6 @@ use std::convert::TryFrom;
 ///
 /// `Rbool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-#[derive(Hash)]
 pub struct Rbool(i32);
 
 impl Scalar<i32> for Rbool {
@@ -64,6 +63,12 @@ impl Rbool {
 gen_trait_impl!(Rbool, bool, |x: &Rbool| x.inner() == i32::MIN, i32::MIN);
 gen_from_primitive!(Rbool, i32);
 gen_partial_ord!(Rbool, bool);
+
+impl std::hash::Hash for Rbool {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.inner().hash(state);
+    }
+}
 
 impl From<bool> for Rbool {
     fn from(v: bool) -> Self {

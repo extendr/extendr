@@ -303,6 +303,11 @@ extern "C" {
     pub fn R_SetExternalPtrProtected(s: SEXP, p: SEXP);
     pub fn R_WeakRefKey(w: SEXP) -> SEXP;
     pub fn R_WeakRefValue(w: SEXP) -> SEXP;
+    pub fn R_ClosureFormals(arg1: SEXP) -> SEXP;
+    pub fn R_ClosureBody(arg1: SEXP) -> SEXP;
+    pub fn R_ClosureEnv(arg1: SEXP) -> SEXP;
+    pub fn ATTRIB(x: SEXP) -> SEXP;
+    pub fn OBJECT(x: SEXP) -> ::std::os::raw::c_int;
     pub fn R_compute_identical(arg1: SEXP, arg2: SEXP, arg3: ::std::os::raw::c_int) -> Rboolean;
     #[doc = "C stack limit"]
     pub static mut R_CStackLimit: usize;

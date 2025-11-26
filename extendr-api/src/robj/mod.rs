@@ -18,9 +18,9 @@ use std::os::raw;
 const HASH_CYCLE_MARKER: u8 = 0xFF;
 
 use extendr_ffi::{
-    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, R_ExternalPtrAddr, Rboolean,
-    Rcomplex, Rf_getAttrib, Rf_isObject, Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER,
-    LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+    dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
+    Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER, LOGICAL, OBJECT, PRINTNAME, RAW, REAL,
+    SEXPTYPE, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
 use crate::scalar::{Rbool, Rfloat, Rint};
@@ -132,8 +132,8 @@ fn hash_robj<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
 
     stack.insert(sexp);
     // seed similar to R's vhash_one: OBJECT flag + 2*TYPEOF + 100*LENGTH
-    let obj_flag: usize = unsafe { Rf_isObject(sexp).into() };
-    let len = robj.len().unwrap_or(0);
+    let obj_flag: usize = unsafe { OBJECT(sexp) as usize };
+    let len = robj.len();
     let seed = obj_flag + 2 * (robj.sexptype() as usize) + 100 * len;
     seed.hash(state);
     hash_robj_body(robj, state, stack);
@@ -181,7 +181,7 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
         // STRSXP: string vector (hash bytes)
         STRSXP => hash_string_vector(robj, state),
         // CHARSXP/SYMSXP/ENVSXP: pointer identity only
-        CHARSXP | SYMSXP | ENVSXP => pointer_hash(sexp, state),
+        CHARSXP | SYMSXP | ENVSXP => sexp.hash(state),
         // VECSXP: hash elements in order, ignore names/attributes
         VECSXP => hash_vector(robj, state, stack),
         // EXPRSXP: expression vector, order matters, names ignored
@@ -194,25 +194,25 @@ fn hash_robj_body<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEX
         EXTPTRSXP => hash_external_ptr(robj, state),
         // Pointer hash only for remaining code-like types
         PROMSXP | ANYSXP | SPECIALSXP | BUILTINSXP | FUNSXP | BCODESXP | NEWSXP | FREESXP
-        | WEAKREFSXP => pointer_hash(sexp, state),
+        | WEAKREFSXP => sexp.hash(state),
         #[cfg(not(use_objsxp))]
         // S4SXP: formal S4 objects
         S4SXP => hash_s4_by_slots(robj, state, stack),
         #[cfg(use_objsxp)]
         // OBJSXP: formal S4 objects (4.4+)
         OBJSXP => hash_s4_by_slots(robj, state, stack),
-        _ => pointer_hash(sexp, state),
     }
 }
 
 fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
-    if let Some(function) = robj.as_function() {
-        if let Some(body) = function.body() {
-            hash_robj(&body, state, stack);
-        }
-        if let Some(env) = function.environment() {
-            pointer_hash(unsafe { env.get() }, state);
-        }
+    unsafe {
+        let sexp = robj.get();
+        // Hash body
+        let body = Robj::from_sexp(extendr_ffi::R_ClosureBody(sexp));
+        hash_robj(&body, state, stack);
+        // Hash environment pointer
+        let env = extendr_ffi::R_ClosureEnv(sexp);
+        env.hash(state);
     }
 }
 
@@ -270,10 +270,6 @@ fn hash_s4_by_slots<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<S
             hash_robj(&value, state, stack);
         }
     }
-}
-
-fn pointer_hash<H: Hasher>(sexp: SEXP, state: &mut H) {
-    (sexp as usize).hash(state);
 }
 
 fn hash_real_slice<H: Hasher>(values: &[f64], state: &mut H) {
