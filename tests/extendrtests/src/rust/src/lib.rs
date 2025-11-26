@@ -6,6 +6,7 @@ mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
+mod field_errors;
 mod graphic_device;
 mod hashmap;
 mod into_list_derive;
@@ -20,7 +21,6 @@ mod submodule;
 mod to_unique_character;
 mod tuple_conversions;
 mod typedsliceargs;
-mod field_errors;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
