@@ -143,9 +143,9 @@ macro_rules! impl_typed_slice_conversions {
                 let Some(value) = slice.get(0) else {
                     unreachable!()
                 };
-                // if value.is_na() {
-                //     return Err(Error::MustNotBeNA(robj.clone()));
-                // }
+                if value.is_na() {
+                    return Err(Error::MustNotBeNA(robj.clone()));
+                }
                 Ok(value)
             }
         }
@@ -166,9 +166,9 @@ macro_rules! impl_typed_slice_conversions {
                 let Some(value) = slice.get_mut(0) else {
                     unreachable!()
                 };
-                // if value.is_na() {
-                //     return Err(Error::MustNotBeNA(robj.clone()));
-                // }
+                if value.is_na() {
+                    return Err(Error::MustNotBeNA(robj.clone()));
+                }
                 Ok(value)
             }
         }
