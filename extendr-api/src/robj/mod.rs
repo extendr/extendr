@@ -132,11 +132,13 @@ fn hash_robj<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
 
     stack.insert(sexp);
     // seed similar to R's vhash_one: OBJECT flag + 2*TYPEOF + 100*LENGTH
-    let obj_flag: usize = unsafe { OBJECT(sexp) as usize };
-    let len = robj.len();
-    let seed = obj_flag + 2 * (robj.sexptype() as usize) + 100 * len;
-    seed.hash(state);
-    hash_robj_body(robj, state, stack);
+    let obj_flag = unsafe { OBJECT(sexp) };
+    obj_flag.hash(state);
+    robj.sexptype().hash(state);
+    robj.len().hash(state);
+    if robj.len() != 0 {
+        hash_robj_body(robj, state, stack);
+    }
     // at the end of the (potential) cycle, we no longer have to track this
     // item in the stack
     stack.remove(&sexp);
