@@ -131,7 +131,7 @@ where
     ///
     /// Note that since [`Raw`] does not have an NA representation in R,
     /// this method is not implemented for [`Rbyte`].
-    /// 
+    ///
     /// [`Rbyte`]: extendr_ffi::Rbyte
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
