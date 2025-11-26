@@ -210,7 +210,7 @@ fn test_rename() -> i32 {
 }
 
 #[extendr]
-fn get_default_value(#[default = "42"] x: i32) -> i32 {
+fn get_default_value(#[extendr(default = "42")] x: i32) -> i32 {
     x
 }
 
@@ -263,7 +263,7 @@ impl MyClass {
     }
 
     // https://github.com/extendr/extendr/issues/435
-    fn get_default_value(#[default = "42"] x: i32) -> i32 {
+    fn get_default_value(#[extendr(default = "42")] x: i32) -> i32 {
         x
     }
 }
