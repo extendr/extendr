@@ -1,5 +1,7 @@
 use extendr_api::prelude::*;
+use extendr_engine::with_r_result;
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
 
 fn hash_obj(obj: &Robj) -> u64 {
@@ -103,4 +105,17 @@ fn closures_hash_formals_body_and_env_pointer() {
         // Different formals changes hash.
         assert_ne!(hash_obj(&clo1), hash_obj(&clo_formals_diff));
     }
+}
+
+#[test]
+fn use_robj_as_key() -> Result<()> {
+    with_r_result(|| {
+        let env1: Robj = R!("local({ e <- new.env(parent = emptyenv()); e$a <- 1L; e })")?;
+        let env2: Robj = R!("local({ e <- new.env(parent = emptyenv()); e$a <- 1L; e })")?;
+
+        let mut set = HashSet::new();
+        set.insert(env1);
+        assert!(!set.insert(env2));
+        Ok(())
+    })
 }

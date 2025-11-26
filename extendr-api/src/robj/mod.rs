@@ -111,6 +111,7 @@ mod tests;
 /// is true.
 ///
 #[repr(transparent)]
+#[derive(Eq)]
 pub struct Robj {
     inner: SEXP,
 }
