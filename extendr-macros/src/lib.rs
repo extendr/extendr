@@ -384,16 +384,6 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             // TODO: the following impls are borrowed from `impl_try_from_robj`
             // find a way to reuse that code, possibly
 
-            impl<#(#types),*> TryFrom<Robj> for (#(#types,)*)
-            where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),* {
-                type Error = Error;
-
-                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                    Self::try_from(&robj)
-                }
-            }
-
             impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
             where
             #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
@@ -408,15 +398,6 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
                 }
             }
 
-            impl<#(#types),*> TryFrom<Robj> for Option<(#(#types,)*)>
-            where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
-                type Error = Error;
-
-                fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                    Self::try_from(&robj)
-                }
-            }
         })
     }))
 }

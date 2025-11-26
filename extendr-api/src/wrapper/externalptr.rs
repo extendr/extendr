@@ -292,22 +292,6 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
     }
 }
 
-impl<T: 'static> TryFrom<Robj> for &ExternalPtr<T> {
-    type Error = Error;
-
-    fn try_from(value: Robj) -> Result<Self> {
-        (&value).try_into()
-    }
-}
-
-impl<T: 'static> TryFrom<Robj> for &mut ExternalPtr<T> {
-    type Error = Error;
-
-    fn try_from(mut value: Robj) -> Result<Self> {
-        (&mut value).try_into()
-    }
-}
-
 impl<T: 'static> TryFrom<&Robj> for ExternalPtr<T> {
     type Error = Error;
 

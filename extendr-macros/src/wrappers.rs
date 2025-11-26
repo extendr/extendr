@@ -527,14 +527,41 @@ fn get_defaults(attrs: &mut Vec<syn::Attribute>) -> Option<String> {
 ///
 /// These conversions are from R into Rust
 fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
+    fn type_needs_mut_robj(ty: &Type) -> bool {
+        match ty {
+            Type::Reference(reference) => reference.mutability.is_some() || type_needs_mut_robj(&reference.elem),
+            Type::Path(path) => path
+                .path
+                .segments
+                .iter()
+                .any(|seg| match &seg.arguments {
+                    syn::PathArguments::AngleBracketed(args) => args.args.iter().any(|arg| {
+                        if let syn::GenericArgument::Type(inner_ty) = arg {
+                            type_needs_mut_robj(inner_ty)
+                        } else {
+                            false
+                        }
+                    }),
+                    _ => false,
+                }),
+            Type::Tuple(tuple) => tuple.elems.iter().any(type_needs_mut_robj),
+            _ => false,
+        }
+    }
+
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 let ident = &ident.ident;
+                let mut_token = type_needs_mut_robj(&pattype.ty);
                 // TODO: these do not need protection, as they come from R
-                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
+                if mut_token {
+                    Ok(parse_quote! { let mut #varname = extendr_api::robj::Robj::from_sexp(#ident); })
+                } else {
+                    Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
+                }
             } else {
                 Err(syn::Error::new_spanned(
                     input,
@@ -551,14 +578,39 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
 
 // Generate actual argument list for the call (ie. a list of conversions).
 fn translate_actual(input: &FnArg) -> Option<Expr> {
+    fn type_needs_mut_robj(ty: &Type) -> bool {
+        match ty {
+            Type::Reference(reference) => reference.mutability.is_some() || type_needs_mut_robj(&reference.elem),
+            Type::Path(path) => path
+                .path
+                .segments
+                .iter()
+                .any(|seg| match &seg.arguments {
+                    syn::PathArguments::AngleBracketed(args) => args.args.iter().any(|arg| {
+                        if let syn::GenericArgument::Type(inner_ty) = arg {
+                            type_needs_mut_robj(inner_ty)
+                        } else {
+                            false
+                        }
+                    }),
+                    _ => false,
+                }),
+            Type::Tuple(tuple) => tuple.elems.iter().any(type_needs_mut_robj),
+            _ => false,
+        }
+    }
+
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
-                Some(parse_quote! {
-                    #varname.try_into()?
-                })
+                let needs_mut = type_needs_mut_robj(&pattype.ty);
+                if needs_mut {
+                    Some(parse_quote! { (&mut #varname).try_into()? })
+                } else {
+                    Some(parse_quote! { (&#varname).try_into()? })
+                }
             } else {
                 None
             }

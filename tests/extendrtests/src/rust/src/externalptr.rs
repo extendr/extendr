@@ -94,7 +94,7 @@ impl Wrapper {
 fn externalptr_use_ref_manually() -> ExternalPtr<i32> {
     let extptr = ExternalPtr::new(1);
     let robj: Robj = extptr.into();
-    let extptr2: &ExternalPtr<i32> = robj.try_into().unwrap();
+    let extptr2: &ExternalPtr<i32> = (&robj).try_into().unwrap();
     extptr2.clone()
 }
 

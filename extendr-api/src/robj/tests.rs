@@ -136,16 +136,23 @@ fn test_try_from_robj() {
         assert_eq!(<Logicals>::try_from(r!([true, false])).unwrap().iter().collect::<Vec<Rbool>>(), vec![TRUE, FALSE]);
         assert!(<Logicals>::try_from(r!([1])).is_err());
 
-        assert_eq!(<&[Rint]>::try_from(Robj::from(1)), Ok(&[Rint::from(1)][..]));
-        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1.)), Ok(&[Rfloat::from(1.)][..]));
-        assert_eq!(<&[Rbool]>::try_from(Robj::from(TRUE)), Ok(&[TRUE][..]));
-        assert_eq!(<&[u8]>::try_from(Robj::from(0_u8)), Ok(&[0_u8][..]));
+        let robj = Robj::from(1);
+        assert_eq!(<&[Rint]>::try_from(&robj), Ok(&[Rint::from(1)][..]));
+        let robj = Robj::from(1.);
+        assert_eq!(<&[Rfloat]>::try_from(&robj), Ok(&[Rfloat::from(1.)][..]));
+        let robj = Robj::from(TRUE);
+        assert_eq!(<&[Rbool]>::try_from(&robj), Ok(&[TRUE][..]));
+        let robj = Robj::from(0_u8);
+        assert_eq!(<&[u8]>::try_from(&robj), Ok(&[0_u8][..]));
 
         // Note the Vec<> cases use the same logic as the slices.
-        assert_eq!(<&[Rint]>::try_from(Robj::from(1.0)), Err(Error::ExpectedInteger(r!(1.0))));
-        assert_eq!(<&[Rfloat]>::try_from(Robj::from(1)), Err(Error::ExpectedReal(r!(1))));
-        assert_eq!(<&[Rbool]>::try_from(Robj::from(())), Err(Error::ExpectedLogical(r!(()))));
-        assert_eq!(<&[u8]>::try_from(Robj::from(())), Err(Error::ExpectedRaw(r!(()))));
+        let robj = Robj::from(1.0);
+        assert_eq!(<&[Rint]>::try_from(&robj), Err(Error::ExpectedInteger(r!(1.0))));
+        let robj = Robj::from(1);
+        assert_eq!(<&[Rfloat]>::try_from(&robj), Err(Error::ExpectedReal(r!(1))));
+        let robj = Robj::from(());
+        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(r!(()))));
+        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(r!(()))));
     }
 }
 
