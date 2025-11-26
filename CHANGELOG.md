@@ -4,6 +4,7 @@
 
 ### Added
 
+- Implements `CanBeNa` for `u8` and `Rcomplex` [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - Added type-strict conversions through `&/&mut T`, where `T` is a R native data type namely
   `i32`, `f64`, `Rint`, `Rfloat`, `Rcplx`, `Rbool`, and `u8`. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - Support for tuple-structs in `IntoList` and `TryFromList` [[#985]](https://github.com/extendr/extendr/pull/871)
