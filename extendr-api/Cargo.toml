@@ -56,8 +56,6 @@ graphics = ["libc"]
 # The minimal set of features without all optional ones
 tests-minimal = []
 
-# All features to test except for graphics; graphics tests are currently unstable
-# and require --test-threads=1, so we decided to exclude it from here (c.f. #378).
 tests = ["tests-minimal", "ndarray", "faer", "serde", "num-complex", "either"]
 
 tests-graphics = ["tests-minimal", "graphics"]
