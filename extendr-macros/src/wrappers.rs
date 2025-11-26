@@ -37,7 +37,10 @@ lazy_static::lazy_static! {
     static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
 }
 
-/// Called by the struct‐level #[extendr] macro to register docstrings.
+/// Called by the struct‐level [`extendr`]-macro to register docstrings.
+/// 
+/// 
+/// [`extendr`]: macro@crate::extendr
 pub fn register_struct_doc(name: &str, doc: &str) {
     STRUCT_DOCS
         .lock()
