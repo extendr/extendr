@@ -414,6 +414,22 @@ impl_try_from_robj!(&mut [u8]);
 impl_try_from_robj!(&mut [i32]);
 impl_try_from_robj!(&mut [f64]);
 
+impl_try_from_robj!(&Rint);
+impl_try_from_robj!(&Rfloat);
+impl_try_from_robj!(&Rbool);
+impl_try_from_robj!(&Rcplx);
+impl_try_from_robj!(&u8);
+impl_try_from_robj!(&i32);
+impl_try_from_robj!(&f64);
+
+// impl_try_from_robj!(&mut Rint);
+// impl_try_from_robj!(&mut Rfloat);
+// impl_try_from_robj!(&mut Rbool);
+// impl_try_from_robj!(&mut Rcplx);
+// impl_try_from_robj!(&mut u8);
+// impl_try_from_robj!(&mut i32);
+// impl_try_from_robj!(&mut f64);
+
 impl_try_from_robj!(&str);
 impl_try_from_robj!(String);
 
