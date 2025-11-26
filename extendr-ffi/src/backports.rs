@@ -10,7 +10,7 @@
 // https://web.archive.org/web/20250325171443/https://rstudio.github.io/r-manuals/r-exts/The-R-API.html#moving-into-c-api-compliance
 
 use crate::SEXP;
-// In your extern "C" block:
+
 extern "C" {
     #[cfg(not(r_4_5))]
     fn ENCLOS(x: SEXP) -> SEXP;
