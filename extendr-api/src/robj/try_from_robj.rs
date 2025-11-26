@@ -126,6 +126,32 @@ macro_rules! impl_typed_slice_conversions {
             }
         }
 
+        impl TryFrom<&Robj> for Option<&[$type]> {
+            type Error = Error;
+
+            #[doc = concat!("Convert ", $desc, " into `Option<&[", stringify!($type), "]>`.")]
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<&[$type]>::try_from(robj)?))
+                }
+            }
+        }
+
+        impl TryFrom<&mut Robj> for Option<&mut [$type]> {
+            type Error = Error;
+
+            #[doc = concat!("Convert ", $desc, " into `Option<&mut [", stringify!($type), "]>`.")]
+            fn try_from(robj: &mut Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<&mut [$type]>::try_from(robj)?))
+                }
+            }
+        }
+
         impl TryFrom<&Robj> for &$type {
             type Error = Error;
 
@@ -224,6 +250,18 @@ impl TryFrom<&Robj> for &str {
     }
 }
 
+impl TryFrom<&Robj> for Option<&str> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_null() || robj.is_na() {
+            Ok(None)
+        } else {
+            Ok(Some(<&str>::try_from(robj)?))
+        }
+    }
+}
+
 impl TryFrom<&Robj> for String {
     type Error = Error;
 
@@ -307,35 +345,6 @@ impl TryFrom<&Robj> for Rcplx {
 // Convert TryFrom<&Robj> into TryFrom<Robj>. Sadly, we are unable to make a blanket
 // conversion using GetSexp with the current version of Rust.
 macro_rules! impl_try_from_robj {
-    (&mut [$type:ty]) => {
-        impl TryFrom<Robj> for &mut [$type] {
-            type Error = Error;
-
-            fn try_from(mut robj: Robj) -> Result<Self> {
-                Self::try_from(&mut robj)
-            }
-        }
-
-        impl TryFrom<&mut Robj> for Option<&mut [$type]> {
-            type Error = Error;
-
-            fn try_from(robj: &mut Robj) -> Result<Self> {
-                if robj.is_null() || robj.is_na() {
-                    Ok(None)
-                } else {
-                    Ok(Some(<&mut [$type]>::try_from(robj)?))
-                }
-            }
-        }
-
-        impl TryFrom<Robj> for Option<&mut [$type]> {
-            type Error = Error;
-
-            fn try_from(mut robj: Robj) -> Result<Self> {
-                Self::try_from(&mut robj)
-            }
-        }
-    };
     ($(@generics<$generics:tt>)? $type:ty $(where $($where_clause:tt)*)?) => {
         impl$(<$generics>)? TryFrom<Robj> for $type $(where $($where_clause)*)? {
             type Error = Error;
@@ -398,39 +407,6 @@ impl_try_from_robj!(Vec::<u8>);
 impl_try_from_robj!(Vec::<i32>);
 impl_try_from_robj!(Vec::<f64>);
 
-impl_try_from_robj!(&[Rint]);
-impl_try_from_robj!(&[Rfloat]);
-impl_try_from_robj!(&[Rbool]);
-impl_try_from_robj!(&[Rcplx]);
-impl_try_from_robj!(&[u8]);
-impl_try_from_robj!(&[i32]);
-impl_try_from_robj!(&[f64]);
-
-impl_try_from_robj!(&mut [Rint]);
-impl_try_from_robj!(&mut [Rfloat]);
-impl_try_from_robj!(&mut [Rbool]);
-impl_try_from_robj!(&mut [Rcplx]);
-impl_try_from_robj!(&mut [u8]);
-impl_try_from_robj!(&mut [i32]);
-impl_try_from_robj!(&mut [f64]);
-
-impl_try_from_robj!(&Rint);
-impl_try_from_robj!(&Rfloat);
-impl_try_from_robj!(&Rbool);
-impl_try_from_robj!(&Rcplx);
-impl_try_from_robj!(&u8);
-impl_try_from_robj!(&i32);
-impl_try_from_robj!(&f64);
-
-// impl_try_from_robj!(&mut Rint);
-// impl_try_from_robj!(&mut Rfloat);
-// impl_try_from_robj!(&mut Rbool);
-// impl_try_from_robj!(&mut Rcplx);
-// impl_try_from_robj!(&mut u8);
-// impl_try_from_robj!(&mut i32);
-// impl_try_from_robj!(&mut f64);
-
-impl_try_from_robj!(&str);
 impl_try_from_robj!(String);
 
 impl_try_from_robj!(@generics<T> HashMap::<&str, T> where T: TryFrom<Robj, Error = error::Error>);
