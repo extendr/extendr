@@ -38,8 +38,8 @@ lazy_static::lazy_static! {
 }
 
 /// Called by the struct‐level [`extendr`]-macro to register docstrings.
-/// 
-/// 
+///
+///
 /// [`extendr`]: macro@crate::extendr
 pub fn register_struct_doc(name: &str, doc: &str) {
     STRUCT_DOCS
