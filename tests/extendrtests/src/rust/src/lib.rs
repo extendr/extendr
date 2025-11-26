@@ -21,6 +21,7 @@ mod submodule;
 mod to_unique_character;
 mod tuple_conversions;
 mod typedsliceargs;
+mod field_errors;
 
 // Return string `"Hello world!"` to R.
 #[extendr]
@@ -389,4 +390,5 @@ extendr_module! {
     use custom_errors;
     use leak;
     use conditions;
+    use field_errors;
 }
