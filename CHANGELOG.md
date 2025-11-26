@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added type-strict conversions through `&/&mut T`, where `T` is a R native data type namely
+  `i32`, `f64`, `Rint`, `Rfloat`, `Rcplx`, `Rbool`, and `u8`. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - Support for tuple-structs in `IntoList` and `TryFromRobj` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
@@ -21,6 +23,8 @@
 - **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]` [[#952]](https://github.com/extendr/extendr/pull/952)
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
+- Internally, we no longer permit `TryFrom<Robj> for &T/&mut T` as this violates
+  Rust's memory model. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 
 ### Fixed
 
