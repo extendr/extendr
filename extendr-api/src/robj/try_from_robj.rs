@@ -100,8 +100,7 @@ macro_rules! impl_typed_slice_conversions {
             #[doc = concat!("Convert ", $desc, " into `Vec<", stringify!($type), ">`.")]
             #[doc = "Note: Unless you plan to store the result, use a slice instead."]
             fn try_from(robj: &Robj) -> Result<Self> {
-                robj
-                    .as_typed_slice()
+                robj.as_typed_slice()
                     .map(<[_]>::to_vec)
                     .ok_or_else(|| Error::$vec_error(robj.clone()))
             }
@@ -154,7 +153,7 @@ macro_rules! impl_typed_slice_conversions {
             type Error = Error;
 
             #[doc = concat!("Convert ", $desc, " into `&mut ", stringify!($type), "`.")]
-            fn try_from(robj: &mut Robj) -> Result<Self> {                
+            fn try_from(robj: &mut Robj) -> Result<Self> {
                 let slice: &mut [$type] = robj.try_into()?;
 
                 if slice.is_empty() {
@@ -239,7 +238,13 @@ impl TryFrom<&Robj> for String {
 impl_typed_slice_conversions!(i32, ExpectedInteger, "an INTSXP object");
 impl_typed_slice_conversions!(Rint, ExpectedInteger, "an INTSXP object");
 impl_typed_slice_conversions!(Rfloat, ExpectedReal, "a REALSXP object");
-impl_typed_slice_conversions!(Rbool, ExpectedInteger, ExpectedLogical, ExpectedLogical, "a LGLSXP object");
+impl_typed_slice_conversions!(
+    Rbool,
+    ExpectedInteger,
+    ExpectedLogical,
+    ExpectedLogical,
+    "a LGLSXP object"
+);
 impl_typed_slice_conversions!(Rcplx, ExpectedComplex, "a complex object");
 impl_typed_slice_conversions!(u8, ExpectedRaw, "a RAWSXP object");
 impl_typed_slice_conversions!(f64, ExpectedReal, "a REALSXP object");
