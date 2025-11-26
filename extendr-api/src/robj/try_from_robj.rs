@@ -126,6 +126,52 @@ macro_rules! impl_typed_slice_conversions {
                     .ok_or_else(|| Error::$mut_error(robj.clone()))
             }
         }
+
+        impl TryFrom<&Robj> for &$type {
+            type Error = Error;
+
+            #[doc = concat!("Convert ", $desc, " into `&", stringify!($type), "`.")]
+            fn try_from(robj: &Robj) -> Result<Self> {
+                let slice: &[$type] = robj.try_into()?;
+
+                if slice.is_empty() {
+                    return Err(Error::ExpectedNonZeroLength(robj.clone()));
+                }
+                if slice.len() != 1 {
+                    return Err(Error::ExpectedScalar(robj.clone()));
+                }
+                let Some(value) = slice.get(0) else {
+                    unreachable!()
+                };
+                // if value.is_na() {
+                //     return Err(Error::MustNotBeNA(robj.clone()));
+                // }
+                Ok(value)
+            }
+        }
+
+        impl TryFrom<&mut Robj> for &mut $type {
+            type Error = Error;
+
+            #[doc = concat!("Convert ", $desc, " into `&mut ", stringify!($type), "`.")]
+            fn try_from(robj: &mut Robj) -> Result<Self> {                
+                let slice: &mut [$type] = robj.try_into()?;
+
+                if slice.is_empty() {
+                    return Err(Error::ExpectedNonZeroLength(robj.clone()));
+                }
+                if slice.len() != 1 {
+                    return Err(Error::ExpectedScalar(robj.clone()));
+                }
+                let Some(value) = slice.get_mut(0) else {
+                    unreachable!()
+                };
+                // if value.is_na() {
+                //     return Err(Error::MustNotBeNA(robj.clone()));
+                // }
+                Ok(value)
+            }
+        }
     };
 }
 
