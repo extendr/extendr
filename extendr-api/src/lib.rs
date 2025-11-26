@@ -338,6 +338,7 @@ pub mod deserializer;
 pub mod graphics;
 
 pub(crate) mod conversions;
+pub use conversions::coerce::Coerce;
 
 //////////////////////////////////////////////////
 // Note these pub use statements are deprecated

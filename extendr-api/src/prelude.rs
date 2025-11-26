@@ -8,6 +8,8 @@ pub use super::{
     NA_STRING, NULL, TRUE,
 };
 
+pub use super::Coerce;
+
 pub use super::error::{Error, Result};
 
 pub use super::functions::{
