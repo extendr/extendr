@@ -599,6 +599,25 @@ impl TryFrom<Robj> for Option<()> {
     }
 }
 
+impl TryFrom<&Robj> for Option<()> {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> Result<Self> {
+        if value.is_null() {
+            Ok(Some(()))
+        } else {
+            Err(Error::ExpectedNull(value.clone()))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Option<()> {
+    type Error = Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
 impl<T> TryFrom<&Robj> for HashMap<&str, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
