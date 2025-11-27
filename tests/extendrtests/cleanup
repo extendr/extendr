@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Remove static libraries and object files after linking to avoid R CMD check
+# warnings about symbols in intermediate build artifacts (abort, exit, etc from
+# Rust stdlib). The final shared library already contains everything needed.
+# We keep the wrappers shlib for development use.
+# Note: We preserve libgcc_mock/*.a which is needed for Rtools compatibility on Windows.
+
+TARGET_DIR="${1:-src/rust/target}"
+
+if [ -d "$TARGET_DIR" ]; then
+    find "$TARGET_DIR" -name '*.rlib' -delete 2>/dev/null || true
+    find "$TARGET_DIR" -name '*.a' ! -path '*/libgcc_mock/*' -delete 2>/dev/null || true
+    find "$TARGET_DIR" -name '*.o' -delete 2>/dev/null || true
+fi
