@@ -1,5 +1,8 @@
+# Map R_PLATFORM to Rust target (strip darwin version, fix linux vendor)
+RUST_TARGET = $(shell echo "$(R_PLATFORM)" | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/')
+
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/debug
+LIBDIR = $(TARGET_DIR)/$(RUST_TARGET)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 
@@ -12,7 +15,7 @@ all: $(SHLIB) wrappers
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=auto
+	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(RUST_TARGET) --color=auto
 
 # Build the wrappers shlib for development use (optional).
 # Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
