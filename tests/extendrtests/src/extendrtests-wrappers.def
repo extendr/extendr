@@ -1,0 +1,3 @@
+EXPORTS
+R_init_extendrtests_wrappers
+wrap__make_extendrtests_wrappers

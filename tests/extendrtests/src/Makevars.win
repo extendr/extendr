@@ -8,6 +8,7 @@ STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
 
 WRAPPERS_C = extendrtests-wrappers.c
+WRAPPERS_DEF = extendrtests-wrappers.def
 WRAPPERS_DIR = $(LIBDIR)/wrappers
 
 all: $(SHLIB) wrappers
@@ -26,15 +27,15 @@ $(STATLIB):
 		cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(RUST_TARGET) --color=always
 
 # Build the wrappers shlib for development use (optional).
-# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
-# invokes make with this Makevars.
-# On Windows, R CMD SHLIB runs make and having a path in -o causes issues,
-# so we build in the current directory and move the result.
+# Uses custom DEF file to ensure wrap__make_extendrtests_wrappers is exported.
+# R CMD SHLIB's auto-generated DEF doesn't include symbols from the staticlib,
+# so we compile and link directly with our DEF file.
 wrappers: $(STATLIB)
-	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
+	@if [ -f "$(WRAPPERS_C)" ] && [ -f "$(WRAPPERS_DEF)" ]; then \
 		mkdir -p $(WRAPPERS_DIR); \
-		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o extendrtests_wrappers.dll $(WRAPPERS_C) $(PKG_LIBS) && \
-		mv extendrtests_wrappers.dll $(WRAPPERS_DIR)/extendrtests.dll; \
+		$(CC) $(ALL_CPPFLAGS) $(ALL_CFLAGS) -c $(WRAPPERS_C) -o extendrtests-wrappers.o && \
+		$(CC) -shared -static-libgcc -o $(WRAPPERS_DIR)/extendrtests.dll \
+			$(WRAPPERS_DEF) extendrtests-wrappers.o $(PKG_LIBS) $(LDFLAGS); \
 		rm -f extendrtests-wrappers.o; \
 	fi
 
