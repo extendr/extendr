@@ -1,7 +1,7 @@
 #' Regenerate extendr wrappers
 #'
 #' Regenerates R wrappers from the Rust library by calling the
-#' `wrap__make_{package}_wrappers` function exported by the wrappers shlib.
+#' `exported_make_{package}_wrappers` function exported by the wrappers shlib.
 #'
 #' @param pkg Path to the package root. Defaults to current directory.
 #'
@@ -14,7 +14,7 @@
 #' When multiple candidates exist, the most recently modified one is used.
 #'
 #' The wrappers shlib is a C wrapper around the Rust staticlib that exports
-#' `wrap__make_{package}_wrappers`. This allows regenerating R wrappers without
+#' `exported_make_{package}_wrappers`. This allows regenerating R wrappers without
 #' requiring a cdylib crate type.
 #'
 #' @keywords internal
@@ -80,7 +80,7 @@ document <- function(pkg = ".") {
     # Get the symbol address from the dynamically loaded library.
     # Using do.call prevents R CMD check from trying to statically
     # analyze the .Call() arguments.
-    symbol_name <- sprintf("wrap__make_%s_wrappers", package_name)
+    symbol_name <- sprintf("exported_make_%s_wrappers", package_name)
     symbol_info <- getNativeSymbolInfo(symbol_name, PACKAGE = dll)
     do.call(.Call, list(symbol_info$address, TRUE, package_name))
   }, finally = {

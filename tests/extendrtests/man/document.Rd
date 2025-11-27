@@ -11,7 +11,7 @@ document(pkg = ".")
 }
 \description{
 Regenerates R wrappers from the Rust library by calling the
-\verb{wrap__make_\{package\}_wrappers} function exported by the wrappers shlib.
+\verb{exported_make_\{package\}_wrappers} function exported by the wrappers shlib.
 }
 \details{
 This function searches for the wrappers shlib in multiple locations:
@@ -24,7 +24,7 @@ This function searches for the wrappers shlib in multiple locations:
 When multiple candidates exist, the most recently modified one is used.
 
 The wrappers shlib is a C wrapper around the Rust staticlib that exports
-\verb{wrap__make_\{package\}_wrappers}. This allows regenerating R wrappers without
+\verb{exported_make_\{package\}_wrappers}. This allows regenerating R wrappers without
 requiring a cdylib crate type.
 }
 \keyword{internal}
