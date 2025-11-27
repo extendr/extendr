@@ -79,7 +79,7 @@ document:
 
 # Run devtools::test() for extendrtests; set FILTER or SNAPSHOT=1 to accept snapshots
 devtools-test FILTER="" SNAPSHOT="0":
-    cd tests/extendrtests && \
+    @cd tests/extendrtests && \
     if [ "{{SNAPSHOT}}" = "1" ]; then \
       Rscript -e 'testthat::snapshot_accept("macro-snapshot")'; \
     fi; \
@@ -92,7 +92,7 @@ devtools-test FILTER="" SNAPSHOT="0":
 alias rcmdcheck := r-cmd-check
 # Run R CMD check on extendrtests; accepts NO_VIGNETTES=1, ERROR_ON=warning|error, CHECK_DIR=path
 r-cmd-check *args:
-    NO_VIGNETTES="0" \
+    @NO_VIGNETTES="0" \
     ERROR_ON="warning" \
     CHECK_DIR="" \
     ROOT_DIR="$(pwd)" \
