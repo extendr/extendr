@@ -196,6 +196,7 @@ impl TryFrom<&Strings> for BTreeSet<&str> {
 mod tests {
     use super::*;
     use crate as extendr_api;
+    use std::collections::{BTreeSet, HashSet};
 
     #[test]
     fn new() {
@@ -214,6 +215,39 @@ mod tests {
             let manual_vec = (0..10).into_iter().map(|_| Rstr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_hashset() {
+        test! {
+            let strings = Strings::from_values(["alpha", "beta", "alpha"]);
+            let set = HashSet::<&str>::try_from(&strings).unwrap();
+
+            assert_eq!(set.len(), 2);
+            assert!(set.contains("alpha"));
+            assert!(set.contains("beta"));
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_btreeset() {
+        test! {
+            let strings = Strings::from_values(["charlie", "bravo", "alpha"]);
+            let set = BTreeSet::<&str>::try_from(&strings).unwrap();
+            let ordered: Vec<_> = set.into_iter().collect();
+
+            assert_eq!(ordered, vec!["alpha", "bravo", "charlie"]);
+        }
+    }
+
+    #[test]
+    fn try_from_strings_fails_on_non_strings() {
+        test! {
+            let not_strings = Strings { robj: r!(1) };
+            let result = HashSet::<&str>::try_from(&not_strings);
+
+            assert!(matches!(result, Err(Error::ExpectedString(robj)) if robj == r!(1)));
         }
     }
 }

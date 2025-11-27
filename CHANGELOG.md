@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added `TryFrom<&Strings>` for `HashSet<&str>` and `BTreeSet<&str>` [[#1006]](https://github.com/extendr/extendr/pull/1006)
 - Support for tuple-structs in `IntoList` and `TryFromRobj` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
