@@ -2,6 +2,7 @@ use super::*;
 use extendr_ffi::{
     R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
 };
+use std::collections::{BTreeSet, HashSet};
 use std::convert::From;
 use std::iter::FromIterator;
 
@@ -164,6 +165,30 @@ impl From<Option<Strings>> for Robj {
             Some(value_strings) => value_strings.into(),
             None => nil_value(),
         }
+    }
+}
+
+impl TryFrom<&Strings> for HashSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> std::result::Result<Self, Self::Error> {
+        value
+            .robj
+            .as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(value.robj.clone()))
+            .map(|x| HashSet::from_iter(x))
+    }
+}
+
+impl TryFrom<&Strings> for BTreeSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> std::result::Result<Self, Self::Error> {
+        value
+            .robj
+            .as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(value.robj.clone()))
+            .map(|x| BTreeSet::from_iter(x))
     }
 }
 
