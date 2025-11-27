@@ -1,7 +1,7 @@
 use super::*;
 use crate::robj::Attributes;
 use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
-use std::iter::FromIterator;
+use std::{collections::HashMap, iter::FromIterator};
 
 #[derive(PartialEq, Clone)]
 pub struct List {
@@ -96,7 +96,7 @@ impl List {
         since = "0.8.1",
         note = "Use `List::try_from(map)` or `map.try_into()` instead"
     )]
-    pub fn from_hashmap<K, V>(val: std::collections::HashMap<K, V>) -> Result<Self>
+    pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
         V: IntoRobj,
         K: Into<String>,
@@ -202,12 +202,12 @@ impl List {
         since = "0.8.1",
         note = "Use `HashMap::try_from(list)` or `list.try_into()` instead"
     )]
-    pub fn into_hashmap(self) -> std::collections::HashMap<&'static str, Robj> {
+    pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
         self.try_into().unwrap()
     }
 }
 
-impl<T> TryFrom<&List> for std::collections::HashMap<&str, T>
+impl<T> TryFrom<&List> for HashMap<&str, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
 {
@@ -217,19 +217,19 @@ where
         let value = value
             .iter()
             .map(|(name, value)| -> Result<(&str, T)> { value.try_into().map(|x| (name, x)) })
-            .collect::<Result<std::collections::HashMap<_, _>>>()?;
+            .collect::<Result<HashMap<_, _>>>()?;
 
         Ok(value)
     }
 }
 
-impl<T> TryFrom<&List> for std::collections::HashMap<String, T>
+impl<T> TryFrom<&List> for HashMap<String, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
 {
     type Error = Error;
     fn try_from(value: &List) -> Result<Self> {
-        let value: std::collections::HashMap<&str, _> = value.try_into()?;
+        let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
     }
 }
@@ -237,7 +237,7 @@ where
 // The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
 // it requires returning a reference to a owned (moved) value
 
-impl TryFrom<&List> for std::collections::HashMap<&str, Robj> {
+impl TryFrom<&List> for HashMap<&str, Robj> {
     type Error = Error;
 
     fn try_from(value: &List) -> Result<Self> {
@@ -245,15 +245,15 @@ impl TryFrom<&List> for std::collections::HashMap<&str, Robj> {
     }
 }
 
-impl TryFrom<&List> for std::collections::HashMap<String, Robj> {
+impl TryFrom<&List> for HashMap<String, Robj> {
     type Error = Error;
     fn try_from(value: &List) -> Result<Self> {
-        let value: std::collections::HashMap<&str, _> = value.try_into()?;
+        let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
     }
 }
 
-impl<T> TryFrom<List> for std::collections::HashMap<&str, T>
+impl<T> TryFrom<List> for HashMap<&str, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
 {
@@ -264,7 +264,7 @@ where
     }
 }
 
-impl<T> TryFrom<List> for std::collections::HashMap<String, T>
+impl<T> TryFrom<List> for HashMap<String, T>
 where
     T: TryFrom<Robj, Error = error::Error>,
 {
@@ -275,7 +275,7 @@ where
     }
 }
 
-impl TryFrom<List> for std::collections::HashMap<&str, Robj> {
+impl TryFrom<List> for HashMap<&str, Robj> {
     type Error = Error;
 
     fn try_from(value: List) -> Result<Self> {
@@ -283,7 +283,7 @@ impl TryFrom<List> for std::collections::HashMap<&str, Robj> {
     }
 }
 
-impl TryFrom<List> for std::collections::HashMap<String, Robj> {
+impl TryFrom<List> for HashMap<String, Robj> {
     type Error = Error;
 
     fn try_from(value: List) -> Result<Self> {
@@ -291,14 +291,14 @@ impl TryFrom<List> for std::collections::HashMap<String, Robj> {
     }
 }
 
-impl<K, V> TryFrom<std::collections::HashMap<K, V>> for List
+impl<K, V> TryFrom<HashMap<K, V>> for List
 where
     K: Into<String>,
     V: IntoRobj,
 {
     type Error = Error;
 
-    fn try_from(val: std::collections::HashMap<K, V>) -> Result<Self> {
+    fn try_from(val: HashMap<K, V>) -> Result<Self> {
         let (names, values): (Vec<_>, Vec<_>) = val
             .into_iter()
             .map(|(k, v)| (k.into(), v.into_robj()))
