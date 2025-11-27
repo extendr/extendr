@@ -463,7 +463,6 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
         std::ptr::null(),
     );
 
-    // This seems to allow both symbols and strings,
     extendr_ffi::R_useDynamicSymbols(info, extendr_ffi::Rboolean::FALSE);
     extendr_ffi::R_forceSymbols(info, extendr_ffi::Rboolean::TRUE);
 }
