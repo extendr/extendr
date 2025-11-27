@@ -4,3 +4,4 @@
 ^notebooks$
 ^src/\.cargo$
 ^src/rust/vendor$
+^src/extendrtests-wrappers\.

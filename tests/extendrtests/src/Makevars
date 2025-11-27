@@ -3,16 +3,25 @@ LIBDIR = $(TARGET_DIR)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 
-all: $(SHLIB) rust_clean
+# Wrappers shlib configuration
+WRAPPERS_DIR = $(LIBDIR)/wrappers
+WRAPPERS_C = extendrtests-wrappers.c
+
+all: $(SHLIB) wrappers
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
 	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=auto
 
-
-rust_clean:
-	rm -Rf $(CARGOTMP) $(TARGET_DIR)
+# Build the wrappers shlib for development use (optional).
+# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
+# invokes make with this Makevars.
+wrappers: $(STATLIB)
+	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
+		mkdir -p $(WRAPPERS_DIR); \
+		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/libextendrtests.so $(WRAPPERS_C) $(PKG_LIBS); \
+	fi
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)

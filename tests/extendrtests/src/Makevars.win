@@ -2,10 +2,14 @@ TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/debug
-STATLIB = $(LIBDIR)/lextendrtest.a
+STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
 
-all: C_clean
+# Wrappers shlib configuration
+WRAPPERS_DIR = $(LIBDIR)/wrappers
+WRAPPERS_C = extendrtests-wrappers.c
+
+all: C_clean wrappers
 
 $(SHLIB): $(STATLIB)
 
@@ -26,8 +30,17 @@ $(STATLIB):
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 		cargo build --quiet --target=$(TARGET) --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=always
 
+# Build the wrappers shlib for development use (optional).
+# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
+# invokes make with this Makevars.
+wrappers: $(STATLIB)
+	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
+		mkdir -p $(WRAPPERS_DIR); \
+		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/extendrtests.dll $(WRAPPERS_C) $(PKG_LIBS); \
+	fi
+
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) rust/target
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)

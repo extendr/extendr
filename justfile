@@ -60,19 +60,13 @@ msrv FEATURES="":
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
     fi
 
-# Generate documentation (R wrappers) via rextendr::document()
+# Generate R wrappers and documentation for extendrtests
+# Uses --no-test-load for bootstrapping (when extendr-wrappers.R doesn't exist yet)
 document:
     cd tests/extendrtests && \
-    if [ -d ../../rextendr ]; then \
-      echo "Loading vendored {rextendr}" && \
-      Rscript -e 'requireNamespace("devtools")' \
-              -e 'devtools::load_all("../../rextendr")' \
-              -e 'rextendr::document()'; \
-    else \
-      echo "Using installed {rextendr}" && \
-      Rscript -e 'requireNamespace("rextendr")' \
-              -e 'rextendr::document()'; \
-    fi
+    R CMD INSTALL --no-multiarch --with-keep.source --no-test-load . && \
+    Rscript -e 'source("R/document.R"); document()' && \
+    R CMD INSTALL --no-multiarch --with-keep.source .
 
 # Run devtools::test() for extendrtests; set FILTER or SNAPSHOT=1 to accept snapshots
 devtools-test FILTER="" SNAPSHOT="0":
