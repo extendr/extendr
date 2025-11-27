@@ -26,13 +26,18 @@ $(STATLIB):
 		cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(RUST_TARGET) --color=always
 
 # Build the wrappers shlib for development use (optional).
-# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
-# invokes make with this Makevars.
+# We cd to WRAPPERS_DIR and run R CMD SHLIB there to avoid picking up
+# extendrtests-win.def (which exports R_init_extendrtests for the main DLL).
+# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion.
+# Note: WRAPPERS_DIR is $(LIBDIR)/wrappers, so from there ".." points to LIBDIR.
 wrappers: $(STATLIB)
 	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
 		mkdir -p $(WRAPPERS_DIR); \
-		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/extendrtests.dll $(WRAPPERS_C) $(PKG_LIBS); \
-		rm -f extendrtests-wrappers.o; \
+		cp $(WRAPPERS_C) $(WRAPPERS_DIR)/; \
+		cd $(WRAPPERS_DIR) && \
+			EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o extendrtests.dll extendrtests-wrappers.c \
+				-L.. -lextendrtests -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll; \
+		rm -f $(WRAPPERS_DIR)/extendrtests-wrappers.c $(WRAPPERS_DIR)/extendrtests-wrappers.o; \
 	fi
 
 # Remove static libraries after linking to avoid R CMD check warnings about
