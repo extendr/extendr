@@ -40,7 +40,7 @@ jobs:
             "os": "ubuntu-latest",
             "r": "release",
             "rust-version": "nightly",
-            "features": "full-functionality",
+            "features": "tests",
             "extra-args": ["-Zdoctest-xcompile"]
           }
         ]
