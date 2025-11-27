@@ -24,6 +24,7 @@ wrappers: $(STATLIB)
 	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
 		mkdir -p $(WRAPPERS_DIR); \
 		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/libextendrtests.so $(WRAPPERS_C) $(PKG_LIBS); \
+		rm -f extendrtests-wrappers.o; \
 	fi
 
 clean:

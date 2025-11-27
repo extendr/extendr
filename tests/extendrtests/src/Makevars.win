@@ -1,34 +1,29 @@
-TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
+# Compute Rust target from WIN variable (32 or 64)
+# This mapping is needed because cargo builds to target-specific directories
+RUST_TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/$(TARGET)/debug
+LIBDIR = $(TARGET_DIR)/$(RUST_TARGET)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
 
-# Wrappers shlib configuration
-WRAPPERS_DIR = $(LIBDIR)/wrappers
 WRAPPERS_C = extendrtests-wrappers.c
+WRAPPERS_DIR = $(LIBDIR)/wrappers
 
-all: C_clean wrappers
+all: $(SHLIB) wrappers
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	# Note: on the GitHub Actions CI, the tests pass without this tweak because
-	#       the same setup is already done in the CI.
+	# Create empty libgcc_eh.a to satisfy rustc linker requirements.
+	# Rtools' GCC doesn't have libgcc_eh due to its compilation settings.
+	# See: https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 	mkdir -p $(TARGET_DIR)/libgcc_mock
-	# `rustc` adds `-lgcc_eh` flags to the compiler, but Rtools' GCC doesn't have
-	# `libgcc_eh` due to the compilation settings. So, in order to please the
-	# compiler, we need to add empty `libgcc_eh` to the library search paths.
-	#
-	# For more details, please refer to
-	# https://github.com/r-windows/rtools-packages/blob/2407b23f1e0925bbb20a4162c963600105236318/mingw-w64-gcc/PKGBUILD#L313-L316
 	touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
-
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo build --quiet --target=$(TARGET) --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=always
+		cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(RUST_TARGET) --color=always
 
 # Build the wrappers shlib for development use (optional).
 # Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
@@ -40,10 +35,8 @@ wrappers: $(STATLIB)
 		mkdir -p $(WRAPPERS_DIR); \
 		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o extendrtests_wrappers.dll $(WRAPPERS_C) $(PKG_LIBS) && \
 		mv extendrtests_wrappers.dll $(WRAPPERS_DIR)/extendrtests.dll; \
+		rm -f extendrtests-wrappers.o; \
 	fi
-
-C_clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) extendrtests_wrappers.*
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) extendrtests_wrappers.*
