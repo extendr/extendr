@@ -15,7 +15,7 @@ on:
 jobs:
   tests:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+    name: ${{ matrix.config.os }} / R-${{ matrix.config.r }} / rust-${{ matrix.config.rust-version }} / ${{ matrix.config.features || 'default' }}
     strategy:
       fail-fast: false
       matrix:
