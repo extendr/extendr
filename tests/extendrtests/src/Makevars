@@ -1,5 +1,5 @@
 # Map R_PLATFORM to Rust target (strip darwin version, fix linux vendor)
-RUST_TARGET = $(shell echo "$(R_PLATFORM)" | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/')
+RUST_TARGET = `echo "$(R_PLATFORM)" | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/')`
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(RUST_TARGET)/debug
