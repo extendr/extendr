@@ -340,7 +340,7 @@ impl Metadata {
             if use_symbols { "TRUE" } else { "FALSE" },
             package_name
         )?;
-        
+
         if use_symbols {
             writeln!(w, "#' @usage NULL")?;
             writeln!(w, "#' @useDynLib {}, .registration = TRUE", package_name)?;
