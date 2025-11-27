@@ -11,7 +11,7 @@ WRAPPERS_C = extendrtests-wrappers.c
 WRAPPERS_DEF = extendrtests-wrappers.def
 WRAPPERS_DIR = $(LIBDIR)/wrappers
 
-all: $(SHLIB) wrappers
+all: $(SHLIB) wrappers cleanup
 
 $(SHLIB): $(STATLIB)
 
@@ -38,6 +38,15 @@ wrappers: $(STATLIB)
 			$(WRAPPERS_DEF) extendrtests-wrappers.o $(PKG_LIBS) $(LDFLAGS); \
 		rm -f extendrtests-wrappers.o; \
 	fi
+
+# Remove static libraries and object files after linking to avoid R CMD check
+# warnings about symbols in intermediate build artifacts (abort, exit, etc from
+# Rust stdlib). The final .dll already contains everything needed.
+# Note: We preserve libgcc_mock/*.a which is needed for Rtools compatibility.
+cleanup: $(SHLIB) wrappers
+	find $(TARGET_DIR) -name '*.rlib' -delete 2>/dev/null || true
+	find $(TARGET_DIR) -name '*.a' ! -path '*/libgcc_mock/*' -delete 2>/dev/null || true
+	find $(TARGET_DIR) -name '*.o' -delete 2>/dev/null || true
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) extendrtests_wrappers.*

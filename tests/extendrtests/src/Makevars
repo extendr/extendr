@@ -10,7 +10,7 @@ PKG_LIBS = -L$(LIBDIR) -lextendrtests
 WRAPPERS_C = extendrtests-wrappers.c
 WRAPPERS_DIR = $(LIBDIR)/wrappers
 
-all: $(SHLIB) wrappers
+all: $(SHLIB) wrappers cleanup
 
 $(SHLIB): $(STATLIB)
 
@@ -26,6 +26,14 @@ wrappers: $(STATLIB)
 		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/libextendrtests.so $(WRAPPERS_C) $(PKG_LIBS); \
 		rm -f extendrtests-wrappers.o; \
 	fi
+
+# Remove static libraries and object files after linking to avoid R CMD check
+# warnings about symbols in intermediate build artifacts (abort, exit, etc from
+# Rust stdlib). The final .so already contains everything needed.
+cleanup: $(SHLIB) wrappers
+	find $(TARGET_DIR) -name '*.rlib' -delete 2>/dev/null || true
+	find $(TARGET_DIR) -name '*.a' -delete 2>/dev/null || true
+	find $(TARGET_DIR) -name '*.o' -delete 2>/dev/null || true
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)
