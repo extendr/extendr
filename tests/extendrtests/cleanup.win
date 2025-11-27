@@ -3,11 +3,21 @@
 # Remove static libraries after linking to avoid R CMD check warnings about
 # symbols in intermediate build artifacts (abort, exit, etc from Rust stdlib).
 # The final shared library already contains everything needed.
-# Note: We preserve libgcc_mock/*.a (needed for Rtools) and .o files (needed for incremental builds).
+# Note: We preserve libgcc_mock/*.a (needed for Rtools), .o files, and Cargo metadata.
+# We use -maxdepth 1 to only delete files in the immediate directory, not subdirectories.
 
 TARGET_DIR="${1:-src/rust/target}"
 
+# Find all platform-specific lib directories (e.g., aarch64-apple-darwin/debug)
 if [ -d "$TARGET_DIR" ]; then
-    find "$TARGET_DIR" -name '*.rlib' -delete 2>/dev/null || true
-    find "$TARGET_DIR" -name '*.a' ! -path '*/libgcc_mock/*' -delete 2>/dev/null || true
+    for libdir in "$TARGET_DIR"/*/debug "$TARGET_DIR"/*/release; do
+        if [ -d "$libdir" ]; then
+            find "$libdir" -maxdepth 1 -name '*.rlib' -delete 2>/dev/null || true
+            find "$libdir" -maxdepth 1 -name '*.a' -delete 2>/dev/null || true
+            if [ -d "$libdir/deps" ]; then
+                find "$libdir/deps" -maxdepth 1 -name '*.rlib' -delete 2>/dev/null || true
+                find "$libdir/deps" -maxdepth 1 -name '*.a' ! -name '*libgcc*' -delete 2>/dev/null || true
+            fi
+        fi
+    done
 fi

@@ -30,10 +30,12 @@ wrappers: $(STATLIB)
 # Remove static libraries after linking to avoid R CMD check warnings about
 # symbols in intermediate build artifacts (abort, exit, etc from Rust stdlib).
 # The final .so already contains everything needed.
-# Note: We only delete .a and .rlib files, not .o files (needed for incremental builds).
+# Note: We only delete .a and .rlib files, preserving .o files and Cargo metadata (rmeta).
 cleanup: $(SHLIB) wrappers
-	find $(TARGET_DIR) -name '*.rlib' -delete 2>/dev/null || true
-	find $(TARGET_DIR) -name '*.a' -delete 2>/dev/null || true
+	find $(LIBDIR) -maxdepth 1 -name '*.rlib' -delete 2>/dev/null || true
+	find $(LIBDIR) -maxdepth 1 -name '*.a' -delete 2>/dev/null || true
+	find $(LIBDIR)/deps -maxdepth 1 -name '*.rlib' -delete 2>/dev/null || true
+	find $(LIBDIR)/deps -maxdepth 1 -name '*.a' -delete 2>/dev/null || true
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)
