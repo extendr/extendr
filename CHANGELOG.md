@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added `impl Hash for Robj`, such that `Robj` can be used as keys in hashable
+  collections (e.g. `std::collection::{HashMap, HashSet, ...}`) [[#992]](https://github.com/extendr/extendr/pull/992)
 - Support for tuple-structs in `IntoList` and `TryFromRobj` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
