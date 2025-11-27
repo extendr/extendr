@@ -8,8 +8,6 @@ pub use super::{
     NA_STRING, NULL, TRUE,
 };
 
-pub use super::tracing::{init_tracing_to_r, init_tracing_to_r_with_filter, LevelFilter};
-
 pub use super::error::{Error, Result};
 
 pub use super::functions::{
