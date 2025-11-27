@@ -1,14 +1,14 @@
-# Map R_PLATFORM to Rust target (strip darwin version, fix linux vendor)
-RUST_TARGET = `echo "$(R_PLATFORM)" | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/')`
+# Compute Rust target from R_PLATFORM (strip darwin version, fix linux vendor)
+# This mapping is needed because cargo builds to target-specific directories
+RUST_TARGET = `echo $(R_PLATFORM) | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/'`
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(RUST_TARGET)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 
-# Wrappers shlib configuration
-WRAPPERS_DIR = $(LIBDIR)/wrappers
 WRAPPERS_C = extendrtests-wrappers.c
+WRAPPERS_DIR = $(LIBDIR)/wrappers
 
 all: $(SHLIB) wrappers
 
