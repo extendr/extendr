@@ -304,7 +304,7 @@
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 #![doc(
-    html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
+    html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/main/extendr-logo-256.png"
 )]
 
 pub mod error;
