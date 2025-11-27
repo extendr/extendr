@@ -20,7 +20,7 @@ authors = [
   "Michael Milton <michael.r.milton@gmail.com>",
 ]
 edition = "2021"
-rust-version = "1.68"
+rust-version = "1.76"
 repository = "https://github.com/extendr/extendr"
 license = "MIT"
 
