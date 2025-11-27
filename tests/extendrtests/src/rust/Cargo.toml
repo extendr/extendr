@@ -22,6 +22,16 @@ faer = []
 graphics = []
 ndarray = []
 
+# The minimal set of features without all optional ones
+tests-minimal = []
+
+tests = ["tests-minimal", "ndarray", "faer", "serde", "num-complex", "either"]
+
+tests-graphics = ["tests-minimal", "graphics"]
+
+# Literally all features to test
+tests-all = ["tests", "graphics"]
+
 [dependencies]
 extendr-api = { version = "*", features = [
     "graphics",
