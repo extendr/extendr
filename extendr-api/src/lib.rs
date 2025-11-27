@@ -317,6 +317,7 @@ pub mod na;
 pub mod optional;
 pub mod ownership;
 pub mod prelude;
+pub mod tracing;
 pub mod rmacros;
 pub mod robj;
 pub mod scalar;
