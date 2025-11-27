@@ -71,7 +71,10 @@ pub fn reset_r_api_for_thread() {
 
 // Per-thread storage for the last error message
 thread_local! {
-    static R_ERROR_BUF: std::cell::RefCell<Option<CString>> = const { std::cell::RefCell::new(None) };
+    // Mutable TLS buffer to keep the error message alive across the R longjmp.
+    // Using UnsafeCell avoids RefCell borrow bookkeeping, which would otherwise
+    // remain "borrowed" if Rf_error longjmps past the destructor.
+    static R_ERROR_BUF: std::cell::UnsafeCell<Option<CString>> = const { std::cell::UnsafeCell::new(None) };
 }
 
 static RF_ERROR_FORMAT: &std::ffi::CStr =
@@ -80,21 +83,18 @@ static RF_ERROR_FORMAT: &std::ffi::CStr =
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let msg = s.as_ref();
 
-    R_ERROR_BUF.with(|cell| {
-        let mut slot = cell.borrow_mut();
-
-        // Store the CString in thread-local storage so its buffer stays alive
-        *slot = Some(CString::new(msg).unwrap());
-        let cstr = slot.as_ref().unwrap();
-
-        unsafe {
-            // Rf_error never returns: it longjmps out through Rust.
-            // The CString is never dropped, so the pointer stays valid.
-            Rf_error(RF_ERROR_FORMAT.as_ptr(), cstr.as_ptr());
-        }
+    let mut cstr_ptr: *const std::os::raw::c_char = std::ptr::null();
+    R_ERROR_BUF.with(|slot| unsafe {
+        let buf = &mut *slot.get();
+        *buf = Some(CString::new(msg).unwrap());
+        cstr_ptr = buf.as_ref().unwrap().as_ptr();
     });
 
-    unreachable!("Rf_error should not return");
+    unsafe {
+        // Rf_error never returns: it longjmps out through Rust.
+        // The CString is never dropped, so the pointer stays valid.
+        Rf_error(RF_ERROR_FORMAT.as_ptr(), cstr_ptr)
+    }
 }
 
 /// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
