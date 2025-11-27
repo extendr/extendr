@@ -54,8 +54,8 @@ test *args:
       if [ "$arg" = "--" ]; then sep=1; continue; fi; \
       if [ "$sep" = "0" ]; then cargo_flags="$cargo_flags $arg"; else test_args="$test_args $arg"; fi; \
     done \
-    && cargo test --workspace --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture $test_args \
-    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast $cargo_flags -- --no-capture $test_args
+    && cargo test --workspace --no-fail-fast --features=tests $cargo_flags -- --no-capture $test_args \
+    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast --features=tests $cargo_flags -- --no-capture $test_args
 
 alias cargo-tree := tree
 tree *cargo_flags:
