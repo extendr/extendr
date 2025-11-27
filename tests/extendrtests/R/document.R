@@ -73,22 +73,19 @@ document <- function(pkg = ".") {
     )
   }
 
-  mod <- new.env(parent = emptyenv())
-  mod$dll <- dyn.load(library_path)
-  on.exit(dyn.unload(mod$dll[["path"]]), add = TRUE)
+  dll <- dyn.load(library_path)
 
-  mod$make_wrappers <- function(write_wrappers, pkgname) {
-    .Call(
-      getNativeSymbolInfo(
-        sprintf("wrap__make_%s_wrappers", package_name),
-        PACKAGE = mod$dll
-      )$address,
-      write_wrappers,
-      pkgname
-    )
-  }
-
-  wrapper_text <- mod$make_wrappers(TRUE, package_name)
+  # Use tryCatch to ensure unload happens even on error
+  wrapper_text <- tryCatch({
+    # Get the symbol address from the dynamically loaded library.
+    # Using do.call prevents R CMD check from trying to statically
+    # analyze the .Call() arguments.
+    symbol_name <- sprintf("wrap__make_%s_wrappers", package_name)
+    symbol_info <- getNativeSymbolInfo(symbol_name, PACKAGE = dll)
+    do.call(.Call, list(symbol_info$address, TRUE, package_name))
+  }, finally = {
+    dyn.unload(dll[["path"]])
+  })
 
   cat(
     "# nolint start\n\n",

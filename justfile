@@ -64,8 +64,10 @@ msrv FEATURES="":
 # Uses --no-test-load for bootstrapping (when extendr-wrappers.R doesn't exist yet)
 document:
     cd tests/extendrtests && \
+    Rscript -e "devtools::document()" && \
     R CMD INSTALL --no-multiarch --with-keep.source --no-test-load . && \
     Rscript -e 'source("R/document.R"); document()' && \
+    Rscript -e "devtools::document()" && \
     R CMD INSTALL --no-multiarch --with-keep.source .
 
 # Run devtools::test() for extendrtests; set FILTER or SNAPSHOT=1 to accept snapshots
@@ -80,6 +82,7 @@ devtools-test FILTER="" SNAPSHOT="0":
       Rscript -e 'devtools::test(filter = "{{FILTER}}")'; \
     fi
 
+alias rcmdcheck := r-cmd-check
 # Run R CMD check on extendrtests; accepts NO_VIGNETTES=1, ERROR_ON=warning|error, CHECK_DIR=path
 r-cmd-check *args:
     NO_VIGNETTES="0" \

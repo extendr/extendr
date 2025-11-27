@@ -2,35 +2,28 @@
 % Please edit documentation in R/document.R
 \name{document}
 \alias{document}
-\title{Developer configuration}
+\title{Regenerate extendr wrappers}
 \usage{
-document(
-  pkg = ".",
-  roclets = c("collate", "namespace", "rd"),
-  quiet = FALSE,
-  profile = "debug"
-)
+document(pkg = ".")
 }
 \arguments{
 \item{pkg}{Path to the package root. Defaults to current directory.}
-
-\item{roclets}{Character vector of roclets to run.}
-
-\item{quiet}{If TRUE, suppress output.}
-
-\item{profile}{Cargo build profile ("debug" or "release").}
 }
 \description{
-Regenerates extendr wrappers from the Rust library and updates documentation.
+Regenerates R wrappers from the Rust library by calling the
+\verb{wrap__make_\{package\}_wrappers} function exported by the wrappers shlib.
 }
 \details{
-This function looks for the development wrappers shlib in two locations:
-\enumerate{
-\item Source build: \verb{src/rust/target/\{profile\}/wrappers/}
+This function searches for the wrappers shlib in multiple locations:
+\itemize{
+\item Source builds: \verb{src/rust/target/\{debug,release\}/wrappers/}
+\item Cross-compilation: \verb{src/rust/target/\{target-triple\}/\{debug,release\}/wrappers/}
 \item Installed package: \verb{\{libpath\}/wrappers/}
 }
 
-The development shlib is a C wrapper around the Rust staticlib that exports
+When multiple candidates exist, the most recently modified one is used.
+
+The wrappers shlib is a C wrapper around the Rust staticlib that exports
 \verb{wrap__make_\{package\}_wrappers}. This allows regenerating R wrappers without
 requiring a cdylib crate type.
 }
