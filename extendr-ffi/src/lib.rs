@@ -512,7 +512,7 @@ mod tests {
     // Generates asciiz.
     macro_rules! cstr {
         ($s: expr) => {
-            concat!($s, "\0").as_ptr() as *const raw::c_char
+            concat!($s, "\0").as_ptr().cast()
         };
     }
 
@@ -521,7 +521,7 @@ mod tests {
     // Generates asciiz.
     macro_rules! cstr_mut {
         ($s: expr) => {
-            concat!($s, "\0").as_ptr() as *mut raw::c_char
+            std::ptr::from_mut(&mut concat!($s, "\0")).cast::<raw::c_char>()
         };
     }
 

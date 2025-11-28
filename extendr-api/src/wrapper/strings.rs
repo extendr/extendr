@@ -68,7 +68,7 @@ impl Strings {
     /// This is a relatively expensive operation, so use a variable if using this in a loop.
     pub fn as_slice<'a>(&self) -> &'a [Rstr] {
         unsafe {
-            let data = STRING_PTR_RO(self.robj.get()) as *const Rstr;
+            let data = STRING_PTR_RO(self.robj.get()).cast::<Rstr>();
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }

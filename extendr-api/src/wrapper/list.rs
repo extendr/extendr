@@ -152,7 +152,7 @@ impl List {
     /// Get the list a slice of `Robj`s.
     pub fn as_slice(&self) -> &[Robj] {
         unsafe {
-            let data = dataptr(self.robj.get()) as *const Robj;
+            let data = dataptr(self.robj.get()).cast::<Robj>();
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }
