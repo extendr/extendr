@@ -11,13 +11,12 @@ fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
         let nrow = a.nrows();
 
         let result = (0..(nrow - 1))
-            .map(|x| {
+            .flat_map(|x| {
                 ((x + 1)..nrow).map(move |y| {
                     let z = &a.slice(s![x, ..]) - &a.slice(s![y, ..]);
                     (&z * &z).iter().sum::<Rfloat>().sqrt()
                 })
             })
-            .flatten()
             .collect();
 
         Nullable::NotNull(result)
