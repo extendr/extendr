@@ -921,7 +921,7 @@
 <a href=#921 id=921 data-nosnippet>921</a>                (<span class="kw-2">*</span>p_dev_desc).capabilities = <span class="prelude-val">None</span>;
 <a href=#922 id=922 data-nosnippet>922</a>            } <span class="comment">// unsafe ends here
 <a href=#923 id=923 data-nosnippet>923</a>        </span>}
-<a href=#924 id=924 data-nosnippet>924</a>        <span class="kw">let </span>device_name = CString::new(device_name).unwrap();
+<a href=#924 id=924 data-nosnippet>924</a>        <span class="kw">let </span>device_name = std::ffi::CString::new(device_name).unwrap();
 <a href=#925 id=925 data-nosnippet>925</a>
 <a href=#926 id=926 data-nosnippet>926</a>        single_threaded(|| <span class="kw">unsafe </span>{
 <a href=#927 id=927 data-nosnippet>927</a>            <span class="kw">let </span>device = GEcreateDevDesc(p_dev_desc);
