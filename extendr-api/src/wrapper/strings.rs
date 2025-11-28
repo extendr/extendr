@@ -186,7 +186,7 @@ mod tests {
         use crate::na::CanBeNA;
         test! {
             let vec = Strings::new_with_na(10);
-            let manual_vec = (0..10).into_iter().map(|_| Rstr::na()).collect::<Strings>();
+            let manual_vec = (0..10).map(|_| Rstr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }

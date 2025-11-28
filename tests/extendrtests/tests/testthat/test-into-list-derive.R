@@ -6,7 +6,7 @@ test_that("IntoList derive works with basic types", {
   expect_equal(names(result), c("int_field", "double_field", "bool_field", "string_field"))
 
   expect_equal(result$int_field, 42L)
-  expect_equal(result$double_field, 3.14159)
+  expect_equal(result$double_field, 3.1415927)
   expect_equal(result$bool_field, TRUE)
   expect_equal(result$string_field, "hello from rust")
 })
