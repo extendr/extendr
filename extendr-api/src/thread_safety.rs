@@ -138,8 +138,6 @@ pub extern "C" fn register_extendr_panic_hook() {
                 .unwrap_or(false);
             if show_traceback {
                 default_hook(x)
-            } else {
-                return;
             }
         }));
     });

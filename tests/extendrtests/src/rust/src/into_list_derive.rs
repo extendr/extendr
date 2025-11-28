@@ -1,3 +1,5 @@
+use std::f64;
+
 use extendr_api::prelude::*;
 
 // Test struct with basic types
@@ -13,7 +15,7 @@ pub struct BasicStruct {
 fn make_basic_struct() -> Robj {
     BasicStruct {
         int_field: 42,
-        double_field: 3.14159,
+        double_field: f64::consts::PI,
         bool_field: true,
         string_field: String::from("hello from rust"),
     }

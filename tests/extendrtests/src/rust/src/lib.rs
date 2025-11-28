@@ -143,7 +143,7 @@ fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0.into());
+        *x = Rcplx::new((y.re() * y.re()).inner(), 0.0);
     }
 
     result
@@ -210,7 +210,7 @@ fn test_rename() -> i32 {
 }
 
 #[extendr]
-fn get_default_value(#[default = "42"] x: i32) -> i32 {
+fn get_default_value(#[extendr(default = "42")] x: i32) -> i32 {
     x
 }
 
@@ -263,7 +263,7 @@ impl MyClass {
     }
 
     // https://github.com/extendr/extendr/issues/435
-    fn get_default_value(#[default = "42"] x: i32) -> i32 {
+    fn get_default_value(#[extendr(default = "42")] x: i32) -> i32 {
         x
     }
 }
