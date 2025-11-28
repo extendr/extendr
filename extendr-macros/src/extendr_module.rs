@@ -66,9 +66,10 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 hidden: true,
                 invisible: None,
             });
-            let mut args = Vec::with_capacity(2usize);
-            args.push(extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None });
-            args.push(extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None });
+            let mut args = vec![
+                extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
+                extendr_api::metadata::Arg { name: "package_name", arg_type: "&str", default: None }
+            ];
             let args = args;
 
             // Add this function to the list, but set hidden: true.

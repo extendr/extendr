@@ -153,7 +153,6 @@ pub(crate) fn make_function_wrappers(
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
         .collect::<syn::Result<Vec<Expr>>>()?;
-    let len_meta_args = meta_args.len();
 
     // Generate wrappers for rust functions to be called from R.
     // Example:
@@ -293,11 +292,7 @@ pub(crate) fn make_function_wrappers(
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
-            let mut args = Vec::with_capacity(#len_meta_args);
-            #(
-                args.push(#meta_args);
-            )*
-            let args = args;
+            let mut args = vec![#(#meta_args,)*];
 
             metadata.push(extendr_api::metadata::Func {
                 doc: #doc_string,

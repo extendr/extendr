@@ -304,7 +304,7 @@
 //! - `result_list`: return `Ok` as `list(ok=?, err=NULL)` or `Err` `list(ok=NULL, err=?)`
 //! - `result_condition`: return `Ok` as is or `Err` as $value in an R error condition.
 #![doc(
-    html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/master/extendr-logo-256.png"
+    html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/main/extendr-logo-256.png"
 )]
 
 pub mod error;
@@ -382,9 +382,6 @@ pub const NA_STRING: Option<&str> = None;
 /// NA value for logical. `r!(NA_LOGICAL)`
 pub const NA_LOGICAL: Rbool = Rbool::na_value();
 
-#[doc(hidden)]
-pub use std::collections::HashMap;
-
 /// This is needed for the generation of wrappers.
 #[doc(hidden)]
 pub use extendr_ffi::DllInfo;
@@ -403,9 +400,6 @@ pub use extendr_ffi::PutRNGstate;
 
 #[doc(hidden)]
 pub use extendr_ffi::SEXP;
-
-#[doc(hidden)]
-use std::ffi::CString;
 
 pub use metadata::Metadata;
 
@@ -603,7 +597,7 @@ pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
 const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
-    let cs = CString::new(s).expect("NulError");
+    let cs = std::ffi::CString::new(s).expect("NulError");
     unsafe {
         extendr_ffi::Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
@@ -611,7 +605,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 
 #[doc(hidden)]
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
-    let cs = CString::new(s).expect("NulError");
+    let cs = std::ffi::CString::new(s).expect("NulError");
     unsafe {
         extendr_ffi::REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }

@@ -5,7 +5,7 @@ use extendr_api::prelude::*;
 /// @param type : i32 or `NULL`
 /// @export
 #[extendr]
-fn raw_identifier_in_fn_args(#[default = "NULL"] r#type: Nullable<i32>) -> Nullable<i32> {
+fn raw_identifier_in_fn_args(#[extendr(default = "NULL")] r#type: Nullable<i32>) -> Nullable<i32> {
     r#type
 }
 

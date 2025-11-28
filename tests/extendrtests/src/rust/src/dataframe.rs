@@ -8,32 +8,32 @@ struct MyStruct {
 
 #[extendr]
 fn test_derive_into_dataframe() -> Dataframe<MyStruct> {
-    let mut v = Vec::with_capacity(2);
-    v.push(MyStruct {
-        x: 0.into(),
-        y: "abc".into(),
-    });
-    v.push(MyStruct {
-        x: 1.into(),
-        y: "xyz".into(),
-    });
-    let v = v;
+    let v = vec![
+        MyStruct {
+            x: 0.into(),
+            y: "abc".into(),
+        },
+        MyStruct {
+            x: 1.into(),
+            y: "xyz".into(),
+        },
+    ];
 
     v.into_dataframe().unwrap()
 }
 
 #[extendr]
 fn test_into_robj_dataframe() -> Robj {
-    let mut v = Vec::with_capacity(2);
-    v.push(MyStruct {
-        x: 0.into(),
-        y: "abc".into(),
-    });
-    v.push(MyStruct {
-        x: 1.into(),
-        y: "xyz".into(),
-    });
-    let v = v;
+    let v = vec![
+        MyStruct {
+            x: 0.into(),
+            y: "abc".into(),
+        },
+        MyStruct {
+            x: 1.into(),
+            y: "xyz".into(),
+        },
+    ];
 
     v.into_dataframe().unwrap().into_robj()
 }
