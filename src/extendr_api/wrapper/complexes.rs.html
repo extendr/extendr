@@ -115,7 +115,7 @@
 <a href=#115 id=115 data-nosnippet>115</a>        <span class="kw">use </span><span class="kw">crate</span>::na::CanBeNA;
 <a href=#116 id=116 data-nosnippet>116</a>        <span class="macro">test!</span> {
 <a href=#117 id=117 data-nosnippet>117</a>            <span class="kw">let </span>vec = Complexes::new_with_na(<span class="number">10</span>);
-<a href=#118 id=118 data-nosnippet>118</a>            <span class="kw">let </span>manual_vec = (<span class="number">0</span>..<span class="number">10</span>).into_iter().map(|<span class="kw">_</span>| Rcplx::na()).collect::&lt;Complexes&gt;();
+<a href=#118 id=118 data-nosnippet>118</a>            <span class="kw">let </span>manual_vec = (<span class="number">0</span>..<span class="number">10</span>).map(|<span class="kw">_</span>| Rcplx::na()).collect::&lt;Complexes&gt;();
 <a href=#119 id=119 data-nosnippet>119</a>            <span class="macro">assert_eq!</span>(vec, manual_vec);
 <a href=#120 id=120 data-nosnippet>120</a>            <span class="macro">assert_eq!</span>(vec.len(), manual_vec.len());
 <a href=#121 id=121 data-nosnippet>121</a>        }

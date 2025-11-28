@@ -186,7 +186,7 @@
 <a href=#186 id=186 data-nosnippet>186</a>        <span class="kw">use </span><span class="kw">crate</span>::na::CanBeNA;
 <a href=#187 id=187 data-nosnippet>187</a>        <span class="macro">test!</span> {
 <a href=#188 id=188 data-nosnippet>188</a>            <span class="kw">let </span>vec = Strings::new_with_na(<span class="number">10</span>);
-<a href=#189 id=189 data-nosnippet>189</a>            <span class="kw">let </span>manual_vec = (<span class="number">0</span>..<span class="number">10</span>).into_iter().map(|<span class="kw">_</span>| Rstr::na()).collect::&lt;Strings&gt;();
+<a href=#189 id=189 data-nosnippet>189</a>            <span class="kw">let </span>manual_vec = (<span class="number">0</span>..<span class="number">10</span>).map(|<span class="kw">_</span>| Rstr::na()).collect::&lt;Strings&gt;();
 <a href=#190 id=190 data-nosnippet>190</a>            <span class="macro">assert_eq!</span>(vec, manual_vec);
 <a href=#191 id=191 data-nosnippet>191</a>            <span class="macro">assert_eq!</span>(vec.len(), manual_vec.len());
 <a href=#192 id=192 data-nosnippet>192</a>        }
