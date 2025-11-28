@@ -27,7 +27,7 @@ mod graphics_tests {
             // Start a new page.
             // Use CSS "antiquewhite" https://www.w3.org/TR/2018/REC-css-color-3-20180619/
             gc.fill(antiquewhite());
-            dev.new_page(&gc);
+            dev.new_page(&mut gc);
 
             dev.mode_on()?;
 
@@ -36,7 +36,7 @@ mod graphics_tests {
             gc.line_width(0.1);
 
             // Draw a line.
-            dev.line((2.0, 2.0), (3.0, 3.0), &gc);
+            dev.line((2.0, 2.0), (3.0, 3.0), &mut gc);
 
             // Draw a circle using `polygon()`.
             let scale = std::f64::consts::PI*2.0/10.0;
@@ -45,11 +45,11 @@ mod graphics_tests {
                 (0..10).map(|i| (
                     ((i as f64) * scale).cos() + 4.0,
                     ((i as f64) * scale).sin() + 2.0
-                )), &gc);
+                )), &mut gc);
 
             // Draw a circle using `circle()`.
             gc.fill(Color::rgb(0x20, 0x20, 0xc0));
-            dev.circle((1.0, 1.0), 0.5, &gc);
+            dev.circle((1.0, 1.0), 0.5, &mut gc);
 
             gc.color(black());
             gc.point_size(36.0);
@@ -57,22 +57,22 @@ mod graphics_tests {
             gc.font_family("Helvetica");
 
             // Draw Hello -- World with the two dashes almost touching.
-            let w = dev.text_width("Hello -", &gc);
-            dev.text((1.0, 3.0), "Hello -", (0.0, 0.0), 0.0, &gc);
-            dev.text((1.0 + w, 3.0), "- World", (0.0, 0.0), 0.0, &gc);
+            let w = dev.text_width("Hello -", &mut gc);
+            dev.text((1.0, 3.0), "Hello -", (0.0, 0.0), 0.0, &mut gc);
+            dev.text((1.0 + w, 3.0), "- World", (0.0, 0.0), 0.0, &mut gc);
 
             gc.line_width(0.01);
             for i in 0..10 {
-                dev.symbol((1.0 + i as f64 * 0.3, 4.0), i, 0.25, &gc);
+                dev.symbol((1.0 + i as f64 * 0.3, 4.0), i, 0.25, &mut gc);
             }
 
-            println!("{:?}", dev.char_metric('a', &gc));
-            println!("{:?}", dev.char_metric('g', &gc));
-            println!("{:?}", dev.char_metric('ê', &gc));
+            println!("{:?}", dev.char_metric('a', &mut gc));
+            println!("{:?}", dev.char_metric('g', &mut gc));
+            println!("{:?}", dev.char_metric('ê', &mut gc));
 
-            println!("{:?}", dev.text_metric("a", &gc));
-            println!("{:?}", dev.text_metric("g", &gc));
-            println!("{:?}", dev.text_metric("ê", &gc));
+            println!("{:?}", dev.text_metric("a", &mut gc));
+            println!("{:?}", dev.text_metric("g", &mut gc));
+            println!("{:?}", dev.text_metric("ê", &mut gc));
 
             dev.mode_off()?;
 
@@ -240,7 +240,7 @@ mod graphics_tests {
             }
         }
 
-        fn raster<T: AsRef<[u32]>>(
+        fn raster<T: AsRef<[u32]> + AsMut<[u32]>>(
             &mut self,
             raster: Raster<T>,
             pos: (f64, f64),
@@ -286,7 +286,7 @@ mod graphics_tests {
             let device_descriptor = DeviceDescriptor::new();
             let device = device_driver.create_device::<TestDevice>(device_descriptor, "test device");
 
-            let gc = Context::from_device(&device, Unit::Device);
+            let mut gc = Context::from_device(&device, Unit::Device);
 
             // if activate() is invoked, value should be 100.0
             assert_eq!(value, 100.0);
@@ -306,34 +306,34 @@ mod graphics_tests {
 
             // ASCII char
             let c1 = 'c';
-            assert_eq!(device.char_metric(c1, &gc).width, c1 as i32 as f64);
+            assert_eq!(device.char_metric(c1, &mut gc).width, c1 as i32 as f64);
             // non-ASCII char
             let c2 = 'ú';
             let c3 = '鬼';
-            assert_eq!(device.char_metric(c2, &gc).width, c2 as i32 as f64);
-            assert_eq!(device.char_metric(c3, &gc).width, c3 as i32 as f64);
+            assert_eq!(device.char_metric(c2, &mut gc).width, c2 as i32 as f64);
+            assert_eq!(device.char_metric(c3, &mut gc).width, c3 as i32 as f64);
             // text
             let t1 = "ab";
-            assert_eq!(device.text_width(t1, &gc), ('a' as i32 + 'b' as i32) as f64);
+            assert_eq!(device.text_width(t1, &mut gc), ('a' as i32 + 'b' as i32) as f64);
 
             device.clip((1.1, 2.2), (3.3, 4.4), &gc);
-            device.circle((1.1, 2.2), 3.3, &gc);
-            device.line((1.1, 2.2), (3.3, 4.4), &gc);
-            device.rect((1.1, 2.2), (3.3, 4.4), &gc);
+            device.circle((1.1, 2.2), 3.3, &mut gc);
+            device.line((1.1, 2.2), (3.3, 4.4), &mut gc);
+            device.rect((1.1, 2.2), (3.3, 4.4), &mut gc);
 
-            device.polyline([(0.0, 0.0), (0.0, 2.0)], &gc);
-            device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &gc);
-            device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &gc);
+            device.polyline([(0.0, 0.0), (0.0, 2.0)], &mut gc);
+            device.polygon([(0.0, 0.0), (1.0, 2.0), (2.0, 0.0)], &mut gc);
+            device.path([[(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], [(0.3, 0.0), (0.3, 0.3), (0.7, 0.3), (0.3, 0.7)]], true, &mut gc);
 
             // x element of `center` is `hadj`, a horizontal adjustment
             // I'm yet to figure out how the `y` element is used. Let's leave it as 0 for now.
-            device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &gc);
+            device.text((1.1, 2.2), "foo", (0.5, 0.0), 5.5, &mut gc);
 
             let r = Raster {
-                pixels: &[1, 2, 3, 4, 5, 6],
+                pixels: [1, 2, 3, 4, 5, 6],
                 width: 3,
             };
-            device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &gc);
+            device.raster(r, (1.1, 2.2), (3.3, 4.4), 5.5, false, &mut gc);
 
             assert_eq!(canvas, "clip from=(1.1, 2.2) to=(3.3, 4.4)\n\
                                     circle center=(1.1, 2.2) r=3.3\n\
@@ -347,7 +347,7 @@ mod graphics_tests {
                                     ");
 
             // Clearing canvas.
-            device.new_page(&gc);
+            device.new_page(&mut gc);
             assert_eq!(canvas, "");
 
             // check if the R doesn't crash on closing the device.
