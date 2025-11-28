@@ -921,7 +921,7 @@ pub trait DeviceDriver: std::marker::Sized {
                 (*p_dev_desc).capabilities = None;
             } // unsafe ends here
         }
-        let device_name = CString::new(device_name).unwrap();
+        let device_name = std::ffi::CString::new(device_name).unwrap();
 
         single_threaded(|| unsafe {
             let device = GEcreateDevDesc(p_dev_desc);

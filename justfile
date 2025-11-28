@@ -3,6 +3,12 @@
 default:
     echo 'Hello, world!'
 
+clean *cargo_flags:
+    cargo clean -p extendr-api {{cargo_flags}}
+    cargo clean -p extendr-macros {{cargo_flags}}
+    cargo clean -p extendr-ffi {{cargo_flags}}
+    cargo clean --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+
 check *cargo_flags:
     cargo check --workspace {{cargo_flags}}
     cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
@@ -50,6 +56,7 @@ tree *cargo_flags:
 expand *cargo_flags:
     cargo expand -p extendr-api {{cargo_flags}}
     cargo expand -p extendr-macros {{cargo_flags}}
+    cargo expand -p extendr-ffi {{cargo_flags}}
     cargo expand --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)

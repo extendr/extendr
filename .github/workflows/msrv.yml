@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - main
     paths:
       - "**.rs"
       - "**/Cargo.toml"
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - "**.rs"
       - "**/Cargo.toml"

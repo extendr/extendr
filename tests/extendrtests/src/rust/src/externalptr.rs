@@ -105,7 +105,7 @@ fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
 
 #[extendr]
 fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
-    x.into_iter().sum()
+    x.iter().sum()
 }
 
 mod submod {
