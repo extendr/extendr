@@ -1,7 +1,10 @@
 use super::*;
 use crate::robj::Attributes;
 use extendr_ffi::{dataptr, R_xlen_t, SET_VECTOR_ELT, VECTOR_ELT};
-use std::{collections::{HashMap, BTreeMap}, iter::FromIterator};
+use std::{
+    collections::{BTreeMap, HashMap},
+    iter::FromIterator,
+};
 
 #[derive(PartialEq, Clone)]
 pub struct List {
