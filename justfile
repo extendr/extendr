@@ -4,17 +4,17 @@ default:
     echo 'Hello, world!'
 
 check *cargo_flags:
-    cargo check --workspace {{cargo_flags}}
-    cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo check --features full-functionality --workspace {{cargo_flags}}
+    cargo check --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 
 build *cargo_flags:
-    cargo build --workspace {{cargo_flags}}
-    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo build --features full-functionality --workspace {{cargo_flags}}
+    cargo build --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 clippy *cargo_flags:
-    cargo clippy --workspace {{cargo_flags}}
-    cargo clippy --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo clippy --features full-functionality --workspace {{cargo_flags}}
+    cargo clippy --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 doc-check *cargo_flags:
     cargo +nightly doc --no-deps --document-private-items --features full-functionality --workspace {{cargo_flags}}
@@ -41,16 +41,16 @@ test *args:
       if [ "$sep" = "0" ]; then cargo_flags="$cargo_flags $arg"; else test_args="$test_args $arg"; fi; \
     done \
     && cargo test --workspace --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture --test-threads=1 $test_args \
-    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast $cargo_flags -- --no-capture --test-threads=1 $test_args
+    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture --test-threads=1 $test_args
 
 tree *cargo_flags:
-  cargo tree --workspace {{cargo_flags}}
-  cargo tree --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+  cargo tree --features=full-functionality --workspace {{cargo_flags}}
+  cargo tree --features=full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 expand *cargo_flags:
-    cargo expand -p extendr-api {{cargo_flags}}
+    cargo expand --features=full-functionality -p extendr-api {{cargo_flags}}
     cargo expand -p extendr-macros {{cargo_flags}}
-    cargo expand --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo expand --features=full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)
 msrv FEATURES="":
