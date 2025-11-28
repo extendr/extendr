@@ -174,7 +174,7 @@ fn test_call_macro() {
 }
 
 #[extendr]
-fn test_metadata_1(#[default = "NULL"] val: Robj) -> i32 {
+fn test_metadata_1(#[extendr(default = "NULL")] val: Robj) -> i32 {
     if val.is_null() {
         1
     } else {
