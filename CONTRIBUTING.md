@@ -2,16 +2,17 @@
 
 We welcome contributions to the extendr project. Contributions come in many forms. Please carefully read and follow these guidelines. This will help us make the contribution process easy and effective for everyone involved. It also communicates that you agree to respect the time of the developers managing and developing this project.
 
-
 ## Quicklinks
 
-* [Code of Conduct](#code-of-conduct)
-* [Getting Started](#getting-started)
-    * [Issues](#issues)
-    * [Pull Requests](#pull-requests)
-* [Getting Help](#getting-help)
-* [Authorship](#authorship)
-* [Attribution](#attribution)
+- [Contributing](#contributing)
+  - [Quicklinks](#quicklinks)
+  - [Code of Conduct](#code-of-conduct)
+  - [Getting Started](#getting-started)
+    - [Issues](#issues)
+    - [Pull Requests](#pull-requests)
+  - [Getting Help](#getting-help)
+  - [Authorship](#authorship)
+  - [Attribution](#attribution)
 
 ## Code of Conduct
 
@@ -66,4 +67,4 @@ Contributors who have made multiple, sustained, and/or non-trivial contributions
 
 ## Attribution
 
-This document was adapted from the [General Contributing Guidelines](https://github.com/auth0/open-source-template/blob/master/GENERAL-CONTRIBUTING.md) of the auth0 project.
+This document was adapted from the [General Contributing Guidelines](https://github.com/auth0/open-source-template/blob/main/GENERAL-CONTRIBUTING.md) of the auth0 project.

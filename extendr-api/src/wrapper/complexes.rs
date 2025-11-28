@@ -115,7 +115,7 @@ mod tests {
         use crate::na::CanBeNA;
         test! {
             let vec = Complexes::new_with_na(10);
-            let manual_vec = (0..10).into_iter().map(|_| Rcplx::na()).collect::<Complexes>();
+            let manual_vec = (0..10).map(|_| Rcplx::na()).collect::<Complexes>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }
