@@ -2,6 +2,7 @@ use super::*;
 use extendr_ffi::{
     R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
 };
+use std::collections::{BTreeSet, HashSet};
 use std::convert::From;
 use std::iter::FromIterator;
 
@@ -167,10 +168,35 @@ impl From<Option<Strings>> for Robj {
     }
 }
 
+impl TryFrom<&Strings> for HashSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> std::result::Result<Self, Self::Error> {
+        value
+            .robj
+            .as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(value.robj.clone()))
+            .map(|x| HashSet::from_iter(x))
+    }
+}
+
+impl TryFrom<&Strings> for BTreeSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> std::result::Result<Self, Self::Error> {
+        value
+            .robj
+            .as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(value.robj.clone()))
+            .map(|x| BTreeSet::from_iter(x))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate as extendr_api;
+    use std::collections::{BTreeSet, HashSet};
 
     #[test]
     fn new() {
@@ -189,6 +215,39 @@ mod tests {
             let manual_vec = (0..10).map(|_| Rstr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_hashset() {
+        test! {
+            let strings = Strings::from_values(["alpha", "beta", "alpha"]);
+            let set = HashSet::<&str>::try_from(&strings).unwrap();
+
+            assert_eq!(set.len(), 2);
+            assert!(set.contains("alpha"));
+            assert!(set.contains("beta"));
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_btreeset() {
+        test! {
+            let strings = Strings::from_values(["charlie", "bravo", "alpha"]);
+            let set = BTreeSet::<&str>::try_from(&strings).unwrap();
+            let ordered: Vec<_> = set.into_iter().collect();
+
+            assert_eq!(ordered, vec!["alpha", "bravo", "charlie"]);
+        }
+    }
+
+    #[test]
+    fn try_from_strings_fails_on_non_strings() {
+        test! {
+            let not_strings = Strings { robj: r!(1) };
+            let result = HashSet::<&str>::try_from(&not_strings);
+
+            assert!(matches!(result, Err(Error::ExpectedString(robj)) if robj == r!(1)));
         }
     }
 }

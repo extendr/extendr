@@ -115,6 +115,8 @@ test_try_from_hm <- function(x) .Call(wrap__test_try_from_hm, x)
 
 test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
 
+receive_hashset <- function(values) .Call(wrap__receive_hashset, values)
+
 make_basic_struct <- function() .Call(wrap__make_basic_struct)
 
 make_rwrapper_struct <- function() .Call(wrap__make_rwrapper_struct)
