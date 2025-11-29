@@ -5,7 +5,6 @@ use extendr_ffi::{
     cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
     COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
-mod repeat_into_robj;
 
 /// Returns an `CHARSXP` based on the provided `&str`.
 ///
@@ -171,6 +170,7 @@ where
 /// `ToVectorValue` is a trait that allows many different types
 /// to be converted to vectors. It is used as a type parameter
 /// to `collect_robj()`.
+#[deprecated]
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::NILSXP
@@ -721,6 +721,171 @@ impl ToVectorValue for Option<Rstr> {
         } else {
             unsafe { R_NaString }
         }
+    }
+}
+
+impl ToVectorValue for Rfloat {
+    fn sexptype() -> SEXPTYPE {
+        <f64 as ToVectorValue>::sexptype()
+    }
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_real(&self.inner())
+    }
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_complex(&self.inner())
+    }
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_integer(&self.inner())
+    }
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_logical(&self.inner())
+    }
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_raw(&self.inner())
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_sexp(&self.inner())
+    }
+}
+impl ToVectorValue for &Rfloat {
+    fn sexptype() -> SEXPTYPE {
+        <f64 as ToVectorValue>::sexptype()
+    }
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_real(&self.inner())
+    }
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_complex(&self.inner())
+    }
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_integer(&self.inner())
+    }
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_logical(&self.inner())
+    }
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_raw(&self.inner())
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        <f64 as ToVectorValue>::to_sexp(&self.inner())
+    }
+}
+impl ToVectorValue for Rint {
+    fn sexptype() -> SEXPTYPE {
+        <i32 as ToVectorValue>::sexptype()
+    }
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_real(&self.inner())
+    }
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_complex(&self.inner())
+    }
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_integer(&self.inner())
+    }
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_logical(&self.inner())
+    }
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_raw(&self.inner())
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_sexp(&self.inner())
+    }
+}
+impl ToVectorValue for &Rint {
+    fn sexptype() -> SEXPTYPE {
+        <i32 as ToVectorValue>::sexptype()
+    }
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_real(&self.inner())
+    }
+    fn to_complex(&self) -> Rcomplex
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_complex(&self.inner())
+    }
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_integer(&self.inner())
+    }
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_logical(&self.inner())
+    }
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_raw(&self.inner())
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        <i32 as ToVectorValue>::to_sexp(&self.inner())
     }
 }
 
