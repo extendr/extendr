@@ -421,7 +421,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        let s = <&str>::try_from(self.clone())?;
+        let s = <&str>::try_from(self)?;
         let mut c = s.chars();
         if let Some(ch) = c.next() {
             if c.next().is_none() {
@@ -435,14 +435,14 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_borrowed_str(<&str>::try_from(self.clone())?)
+        visitor.visit_borrowed_str(<&str>::try_from(self)?)
     }
 
     fn deserialize_string<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_string(<&str>::try_from(self.clone())?.into())
+        visitor.visit_string(<&str>::try_from(self)?.into())
     }
 
     fn deserialize_bytes<V>(self, visitor: V) -> Result<V::Value>
