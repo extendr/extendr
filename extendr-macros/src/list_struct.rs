@@ -2,8 +2,8 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{Data, DeriveInput};
 
-/// Implementation of the TryFromRobj macro. Refer to the documentation there
-pub fn derive_try_from_robj(item: TokenStream) -> syn::parse::Result<TokenStream> {
+/// Implementation of the TryFromList macro. Refer to the documentation there
+pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
     // Parse the tokens into a Struct
     let ast = syn::parse::<DeriveInput>(item)?;
     let inside = if let Data::Struct(inner) = ast.data {
