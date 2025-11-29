@@ -1,5 +1,5 @@
 use extendr_macros::extendr;
-use extendr_macros::{IntoList, TryFromRobj};
+use extendr_macros::{IntoList, TryFromList};
 
 #[extendr(foo = true)]
 fn foo() {}
@@ -42,7 +42,7 @@ impl FooStructWithParam<A> where A: usize {}
 
 // derive ---------------------------------------
 
-#[derive(TryFromRobj)]
+#[derive(TryFromList)]
 enum FooEnum1 {
     A,
     B,
