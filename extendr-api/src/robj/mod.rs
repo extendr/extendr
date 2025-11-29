@@ -944,7 +944,7 @@ pub trait Attributes: Types + Length {
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
-        T::Item: ToVectorValue + AsRef<str>,
+        T::Item: ToRNative + AsRef<str>,
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
@@ -1026,7 +1026,7 @@ pub trait Attributes: Types + Length {
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
-        T::Item: ToVectorValue + AsRef<str>,
+        T::Item: ToRNative + AsRef<str>,
     {
         let iter = class.into_iter();
         self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
