@@ -1,5 +1,5 @@
 use crate::scalar::macros::*;
-use crate::scalar::{Rfloat, Scalar};
+use crate::scalar::Rfloat;
 use crate::*;
 use extendr_ffi::{R_IsNA, R_NaReal, Rcomplex};
 use std::convert::TryFrom;
@@ -25,19 +25,14 @@ impl CanBeNA for c64 {
 ///
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rcplx(c64);
+#[readonly::make]
+pub struct Rcplx(pub c64);
 
-impl Scalar<c64> for Rcplx {
-    fn inner(&self) -> c64 {
-        self.0
-    }
-
+impl Rcplx {
     fn new(val: c64) -> Self {
         Rcplx(val)
     }
-}
 
-impl Rcplx {
     pub fn new(re: f64, im: f64) -> Self {
         Self(c64::new(re, im))
     }

@@ -127,10 +127,10 @@ fn test_try_from_robj() {
         let v: Result<Doubles> = r!(NA_REAL).try_into();
         let mut v: Vec<_> = v.unwrap().iter().collect();
         assert!(v.pop().unwrap().is_nan());
-        assert_eq!(<Doubles>::try_from(r!([1.0, 2.0])).unwrap().iter().map(|v| v.inner()).collect::<Vec<f64>>(), vec![1.0, 2.0]);
+        assert_eq!(<Doubles>::try_from(r!([1.0, 2.0])).unwrap().iter().map(|v| v.0).collect::<Vec<f64>>(), vec![1.0, 2.0]);
         assert!(<Doubles>::try_from(r!([true])).is_err());
 
-        assert_eq!(<Integers>::try_from(r!([1, 2])).unwrap().iter().map(|v| v.inner()).collect::<Vec<i32>>(), vec![1, 2]);
+        assert_eq!(<Integers>::try_from(r!([1, 2])).unwrap().iter().map(|v| v.0).collect::<Vec<i32>>(), vec![1, 2]);
         assert!(<Integers>::try_from(r!([true])).is_err());
 
         assert_eq!(<Logicals>::try_from(r!([true, false])).unwrap().iter().collect::<Vec<Rbool>>(), vec![TRUE, FALSE]);

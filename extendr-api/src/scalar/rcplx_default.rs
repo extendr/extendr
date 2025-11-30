@@ -1,5 +1,4 @@
 use crate::scalar::Rfloat;
-use crate::scalar::Scalar;
 use crate::*;
 use extendr_ffi::{R_IsNA, R_NaReal, Rcomplex};
 
@@ -46,20 +45,10 @@ impl CanBeNA for c64 {
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
 #[derive(Clone, Copy, Default, PartialEq)]
 #[repr(transparent)]
-pub struct Rcplx(c64);
-
-impl Scalar<c64> for Rcplx {
-    fn inner(&self) -> c64 {
-        self.0
-    }
-
-    fn new(val: c64) -> Self {
-        Rcplx(val)
-    }
-}
+#[readonly::make]
+pub struct Rcplx(pub c64);
 
 impl Rcplx {
-    // gen_impl!(Rcplx, c64);
     pub fn new(re: f64, im: f64) -> Self {
         Self(c64::new(re, im))
     }
@@ -103,13 +92,13 @@ impl From<(f64, f64)> for Rcplx {
 
 impl From<(Rfloat, Rfloat)> for Rcplx {
     fn from(val: (Rfloat, Rfloat)) -> Self {
-        Rcplx(c64::new(val.0.inner(), val.1.inner()))
+        Rcplx(c64::new(val.0.0, val.1.0))
     }
 }
 
 impl From<Rfloat> for Rcplx {
     fn from(val: Rfloat) -> Self {
-        Rcplx(c64::from(val.inner()))
+        Rcplx(c64::from(val.0))
     }
 }
 
@@ -124,14 +113,14 @@ impl From<Rcplx> for Option<c64> {
         if val.is_na() {
             None
         } else {
-            Some(c64::new(val.re().inner(), val.im().inner()))
+            Some(c64::new(val.re().0, val.im().0))
         }
     }
 }
 
 impl PartialEq<f64> for Rcplx {
     fn eq(&self, other: &f64) -> bool {
-        self.re().inner() == *other && self.im() == 0.0
+        self.re().0 == *other && self.im() == 0.0
     }
 }
 

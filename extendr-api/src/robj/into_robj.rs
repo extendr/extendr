@@ -1,5 +1,4 @@
 use super::*;
-use crate::scalar::Scalar;
 use crate::single_threaded;
 use extendr_ffi::{
     cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
@@ -540,7 +539,7 @@ impl ToVectorValue for Rbool {
     where
         Self: Sized,
     {
-        self.inner()
+        self.0
     }
 }
 
@@ -553,7 +552,7 @@ impl ToVectorValue for &Rbool {
     where
         Self: Sized,
     {
-        self.inner()
+        self.0
     }
 }
 

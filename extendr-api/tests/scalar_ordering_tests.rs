@@ -7,10 +7,9 @@ use rstest::rstest;
 #[case(Rfloat::from(2.0), Rfloat::from(1.0))]
 #[case(Rint::from(2), Rint::from(1))]
 #[case(Rbool::from(true), Rbool::from(false))]
-fn left_gt_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_gt_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left > right);
 }
@@ -22,10 +21,9 @@ where
 #[case(Rint::from(2), Rint::from(2))]
 #[case(Rbool::from(true), Rbool::from(true))]
 #[case(Rbool::from(false), Rbool::from(false))]
-fn left_gte_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_gte_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left >= right);
 }
@@ -34,10 +32,9 @@ where
 #[case(Rfloat::from(1.0), Rfloat::from(2.0))]
 #[case(Rint::from(1), Rint::from(2))]
 #[case(Rbool::from(false), Rbool::from(true))]
-fn left_lt_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_lt_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left < right);
 }
@@ -49,10 +46,9 @@ where
 #[case(Rint::from(2), Rint::from(2))]
 #[case(Rbool::from(true), Rbool::from(true))]
 #[case(Rbool::from(false), Rbool::from(false))]
-fn left_lte_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_lte_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left <= right);
 }
@@ -62,10 +58,9 @@ where
 #[case(Rint::from(2), Rint::from(2))]
 #[case(Rbool::from(true), Rbool::from(true))]
 #[case(Rbool::from(false), Rbool::from(false))]
-fn left_eq_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_eq_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left == right);
     assert!(right == left);
@@ -75,10 +70,9 @@ where
 #[case(Rfloat::from(1.0), Rfloat::from(2.0))]
 #[case(Rint::from(1), Rint::from(2))]
 #[case(Rbool::from(true), Rbool::from(false))]
-fn left_neq_right<T, U>(#[case] left: T, #[case] right: T)
+fn left_neq_right<T>(#[case] left: T, #[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy,
 {
     assert!(left != right);
     assert!(right != left);
@@ -90,10 +84,9 @@ where
 #[case(Rfloat::from(1.0))]
 #[case(Rint::from(1))]
 #[case(Rbool::from(true))]
-fn left_gt_or_gte_right_na<T, U>(#[case] left: T)
+fn left_gt_or_gte_right_na<T>(#[case] left: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy + CanBeNA,
 {
     test! {
         let right = T::na();
@@ -106,10 +99,9 @@ where
 #[case(Rfloat::from(1.0))]
 #[case(Rint::from(1))]
 #[case(Rbool::from(true))]
-fn left_lt_or_lte_right_na<T, U>(#[case] left: T)
+fn left_lt_or_lte_right_na<T>(#[case] left: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy + CanBeNA,
 {
     test! {
         let right = T::na();
@@ -122,10 +114,9 @@ where
 #[case(Rfloat::from(1.0))]
 #[case(Rint::from(1))]
 #[case(Rbool::from(true))]
-fn left_na_lt_or_lte_right<T, U>(#[case] right: T)
+fn left_na_lt_or_lte_right<T>(#[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy + CanBeNA,
 {
     test! {
         let left = T::na();
@@ -138,10 +129,9 @@ where
 #[case(Rfloat::from(1.0))]
 #[case(Rint::from(1))]
 #[case(Rbool::from(true))]
-fn left_na_gt_or_gte_right<T, U>(#[case] right: T)
+fn left_na_gt_or_gte_right<T>(#[case] right: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy + CanBeNA,
 {
     test! {
         let left = T::na();
@@ -155,10 +145,9 @@ where
 #[case(Rint::from(1))]
 #[case(Rbool::from(true))]
 #[case(Rbool::from(false))]
-fn na_vs_value<T, U>(#[case] value: T)
+fn na_vs_value<T>(#[case] value: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy,
-    U: PartialEq + Copy,
+    T: PartialOrd + PartialEq + Copy + CanBeNA,
 {
     test! {
         let na = T::na();
@@ -189,9 +178,9 @@ fn collection_sort_rfloat() {
 #[rstest]
 #[case(vec![45, 192, 87, 23, 255], vec![23, 45, 87, 192, 255], Rint::default())]
 #[case(vec![45.0, 192.0, 87.0, 23.0, 255.0], vec![23.0, 45.0, 87.0, 192.0, 255.0], Rfloat::default())]
-fn collection_sort<T, U>(#[case] raw: Vec<U>, #[case] ordered: Vec<U>, #[case] _marker: T)
+fn collection_sort<T,U>(#[case] raw: Vec<U>, #[case] ordered: Vec<U>, #[case] _marker: T)
 where
-    T: Scalar<U> + PartialOrd + PartialEq + Copy + From<U>,
+    T: PartialOrd + PartialEq + Copy + From<U>,
     U: PartialEq + Copy + PartialEq<T>,
 {
     let mut scalars: Vec<T> = raw.iter().map(|&x| x.into()).collect();
