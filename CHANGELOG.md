@@ -21,6 +21,7 @@
 - **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]` [[#952]](https://github.com/extendr/extendr/pull/952)
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
+- **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
 
 ### Fixed
 
