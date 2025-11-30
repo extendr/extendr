@@ -92,7 +92,7 @@ impl From<(f64, f64)> for Rcplx {
 
 impl From<(Rfloat, Rfloat)> for Rcplx {
     fn from(val: (Rfloat, Rfloat)) -> Self {
-        Rcplx(c64::new(val.0.0, val.1.0))
+        Rcplx(c64::new(val.0 .0, val.1 .0))
     }
 }
 

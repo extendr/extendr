@@ -23,6 +23,7 @@
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
 - **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
 - Removes `Scalar` trait in favour of providing read-only access to the wrapped types.
+  [[#1020]](https://github.com/extendr/extendr/pull/1020)
 
 ### Fixed
 

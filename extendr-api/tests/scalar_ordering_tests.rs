@@ -178,7 +178,7 @@ fn collection_sort_rfloat() {
 #[rstest]
 #[case(vec![45, 192, 87, 23, 255], vec![23, 45, 87, 192, 255], Rint::default())]
 #[case(vec![45.0, 192.0, 87.0, 23.0, 255.0], vec![23.0, 45.0, 87.0, 192.0, 255.0], Rfloat::default())]
-fn collection_sort<T,U>(#[case] raw: Vec<U>, #[case] ordered: Vec<U>, #[case] _marker: T)
+fn collection_sort<T, U>(#[case] raw: Vec<U>, #[case] ordered: Vec<U>, #[case] _marker: T)
 where
     T: PartialOrd + PartialEq + Copy + From<U>,
     U: PartialEq + Copy + PartialEq<T>,
