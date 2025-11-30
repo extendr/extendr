@@ -66,24 +66,6 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
 
     let conversion_impls = quote! {
         // Output conversion function for this type.
-
-        impl TryFrom<Robj> for &#self_ty {
-            type Error = extendr_api::Error;
-
-            fn try_from(robj: Robj) -> extendr_api::Result<Self> {
-                Self::try_from(&robj)
-            }
-        }
-
-        impl TryFrom<Robj> for &mut #self_ty {
-            type Error = extendr_api::Error;
-
-            fn try_from(mut robj: Robj) -> extendr_api::Result<Self> {
-                Self::try_from(&mut robj)
-            }
-        }
-
-        // Output conversion function for this type.
         impl TryFrom<&Robj> for &#self_ty {
             type Error = extendr_api::Error;
             fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
