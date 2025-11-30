@@ -16,7 +16,7 @@ use std::os::raw;
 
 use extendr_ffi::{
     dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
-    Rf_setAttrib, Rf_xlength, COMPLEX, DATAPTR, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
+    Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
     SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
@@ -183,7 +183,7 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = DATAPTR(self.get_mut()).cast::<T>();
+        let data = dataptr(self.get_mut()).cast::<T>().cast_mut();
         std::slice::from_raw_parts_mut(data, len)
     }
 }

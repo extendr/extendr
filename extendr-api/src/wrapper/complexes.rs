@@ -62,7 +62,7 @@ impl Deref for Complexes {
     /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()).cast::<Rcplx>();
+            let ptr = COMPLEX(self.get()).cast::<Rcplx>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
