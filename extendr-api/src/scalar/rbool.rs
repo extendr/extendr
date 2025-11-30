@@ -17,7 +17,7 @@ impl Rbool {
     fn new(val: i32) -> Self {
         Rbool(val)
     }
-    
+
     /// Return a `true` `Rbool`.
     pub const fn true_value() -> Rbool {
         Rbool(1)
