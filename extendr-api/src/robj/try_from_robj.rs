@@ -9,7 +9,6 @@
 use super::*;
 use crate as extendr_api;
 use crate::conversions::try_into_int::FloatToInt;
-use crate::scalar::Scalar;
 
 macro_rules! impl_try_from_scalar_integer {
     ($t:ty) => {
@@ -203,14 +202,14 @@ impl_scalar_borrow!(Rint, ExpectedInteger, true, |v: &Rint| v.is_na());
 impl_scalar_borrow!(Rfloat, ExpectedReal, true, |v: &Rfloat| v.is_na());
 impl_scalar_borrow!(Rbool, ExpectedLogical, true, |v: &Rbool| v.is_na());
 impl_scalar_borrow!(Rcplx, ExpectedComplex, true, |v: &Rcplx| {
-    let re = v.re().inner();
-    let im = v.im().inner();
+    let re = v.re().0;
+    let im = v.im().0;
     re.is_nan() || im.is_nan() || re.is_na() || im.is_na()
 });
 impl_scalar_borrow!(c64, ExpectedComplex, true, |v: &c64| {
     let rc: Rcplx = (*v).into();
-    let re = rc.re().inner();
-    let im = rc.im().inner();
+    let re = rc.re().0;
+    let im = rc.im().0;
     re.is_nan() || im.is_nan() || re.is_na() || im.is_na()
 });
 impl_scalar_borrow!(Rcomplex, ExpectedComplex, true, |v: &Rcomplex| {
