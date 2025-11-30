@@ -120,32 +120,7 @@ fn end_r() {
 
 /// Ensures that an embedded R instance is present when evaluating
 /// `f`.
-pub fn with_r(f: impl FnOnce()) {
-    start_r();
-    f();
-    // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
-    // is no `end_r()` call here.
-}
-
-/// Ensures that an embedded R instance is present when evaluating
-/// `f`, and one may use `?` within the closure.
-///
-///
-/// ```rust
-/// #[test]
-/// fn use_robj_as_key() -> Result<()> {
-///     with_r_result(|| {
-///         let some: i32 = Some(42)?;
-///         let result: f64 = Ok(50.)?;
-///         Ok(())
-///     })
-/// }
-///
-/// ```
-///
-pub fn with_r_result<T, E>(
-    f: impl FnOnce() -> std::result::Result<T, E>,
-) -> std::result::Result<T, E> {
+pub fn with_r<T, E>(f: impl FnOnce() -> std::result::Result<T, E>) -> std::result::Result<T, E> {
     start_r();
     f()
     // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
