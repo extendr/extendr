@@ -1,8 +1,10 @@
+use std::error::Error;
+
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 
 #[test]
-fn iterating_unamed_list() {
+fn iterating_unamed_list() -> std::result::Result<(), Box<dyn Error>> {
     with_r(|| {
         let unamed_list = List::from_values([1, 2, 3, 42, 100]);
         assert!(unamed_list.names().is_none());
@@ -16,5 +18,6 @@ fn iterating_unamed_list() {
         assert_eq!(unamed_list.iter().len(), 0);
 
         assert!(unamed_list.iter().collect::<Vec<_>>().is_empty());
-    });
+        Ok(())
+    })
 }

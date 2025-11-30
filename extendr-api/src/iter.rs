@@ -221,12 +221,14 @@ impl AsStrIter for Robj {}
 
 #[cfg(test)]
 mod tests {
+    use std::error::Error;
+
     use extendr_engine::with_r;
 
     use super::*;
 
     #[test]
-    fn single_charsxp_iterator() {
+    fn single_charsxp_iterator() -> std::result::Result<(), Box<dyn Error>> {
         with_r(|| {
             let single_charsxp = blank_string();
             let s1: Vec<_> = single_charsxp.as_str_iter().unwrap().collect();
@@ -235,11 +237,12 @@ mod tests {
             assert_eq!(s1, s2);
             assert_eq!(s1.len(), 1);
             assert_eq!(s2.len(), 1);
-        });
+            Ok(())
+        })
     }
 
     #[test]
-    fn test_new_constructor() {
+    fn test_new_constructor() -> std::result::Result<(), Box<dyn Error>> {
         with_r(|| {
             let str_iter = StrIter::new(10);
             assert_eq!(str_iter.collect::<Vec<_>>().len(), 10);
@@ -249,6 +252,7 @@ mod tests {
             assert!(str_iter_collect.is_empty());
             let mut str_iter = StrIter::new(0);
             assert!(str_iter.next().is_none());
-        });
+            Ok(())
+        })
     }
 }
