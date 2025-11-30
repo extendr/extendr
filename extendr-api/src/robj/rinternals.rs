@@ -243,11 +243,7 @@ pub trait Rinternals: Types + Conversions {
     unsafe fn make_external_ptr<T>(p: *mut T, prot: Robj) -> Robj {
         let type_name: Robj = std::any::type_name::<T>().into();
         Robj::from_sexp(single_threaded(|| {
-            R_MakeExternalPtr(
-                p as *mut ::std::os::raw::c_void,
-                type_name.get(),
-                prot.get(),
-            )
+            R_MakeExternalPtr(p.cast(), type_name.get(), prot.get())
         }))
     }
 

@@ -117,7 +117,7 @@ pub struct TextMetric {
 /// A row-major array of pixels. One pixel is 32-bit, whose each byte represents
 /// alpha, blue, green, and red in the order.
 #[derive(Clone, Debug, PartialEq)]
-pub struct Raster<P: AsRef<[u32]>> {
+pub struct Raster<P: AsRef<[u32]> + AsMut<[u32]>> {
     pub pixels: P,
     pub width: usize,
 }
@@ -405,7 +405,7 @@ impl Context {
     }
 
     pub(crate) fn context(&self) -> pGEcontext {
-        &self.context as *const extendr_ffi::R_GE_gcontext as *mut extendr_ffi::R_GE_gcontext
+        std::ptr::from_ref(&self.context)
     }
 
     // Affine transform.
@@ -551,7 +551,7 @@ impl Device {
     }
 
     /// Start a new page. The page color can be set in advance.
-    pub fn new_page(&self, gc: &Context) {
+    pub fn new_page(&self, gc: &mut Context) {
         unsafe { GENewPage(gc.context(), self.inner()) }
     }
 
@@ -563,7 +563,7 @@ impl Device {
     }
 
     /// Draw a stroked line. gc.color() is the stroke color.
-    pub fn line(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+    pub fn line(&self, from: (f64, f64), to: (f64, f64), gc: &mut Context) {
         let from = gc.t(from);
         let to = gc.t(to);
         unsafe { GELine(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
@@ -572,7 +572,7 @@ impl Device {
     /// Draw a stroked/filled polyline. gc.color() is the stroke color.
     /// The input is anything yielding (x,y) coordinate pairs.
     /// Polylines are not closed.
-    pub fn polyline<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &Context) {
+    pub fn polyline<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &mut Context) {
         let (mut x, mut y): (Vec<_>, Vec<_>) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
         let xptr = x.as_mut_slice().as_mut_ptr();
         let yptr = y.as_mut_slice().as_mut_ptr();
@@ -590,7 +590,7 @@ impl Device {
     /// Draw a stroked/filled polygon. gc.color() is the stroke color.
     /// The input is anything yielding (x,y) coordinate pairs.
     /// Polygons are closed.
-    pub fn polygon<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &Context) {
+    pub fn polygon<T: IntoIterator<Item = (f64, f64)>>(&self, coords: T, gc: &mut Context) {
         let (mut x, mut y): (Vec<_>, Vec<_>) = coords.into_iter().map(|xy| gc.t(xy)).unzip();
         let xptr = x.as_mut_slice().as_mut_ptr();
         let yptr = y.as_mut_slice().as_mut_ptr();
@@ -641,7 +641,7 @@ impl Device {
     /// Draw a stroked/filled circle.
     /// gc.color() is the stroke color.
     /// gc.fill() is the fill color.
-    pub fn circle(&self, center: (f64, f64), radius: f64, gc: &Context) {
+    pub fn circle(&self, center: (f64, f64), radius: f64, gc: &mut Context) {
         let center = gc.t(center);
         let radius = gc.ts(radius);
         unsafe { GECircle(center.0, center.1, radius, gc.context(), self.inner()) }
@@ -650,7 +650,7 @@ impl Device {
     /// Draw a stroked/filled axis-aligned rectangle.
     /// gc.color() is the stroke color.
     /// gc.fill() is the fill color.
-    pub fn rect(&self, from: (f64, f64), to: (f64, f64), gc: &Context) {
+    pub fn rect(&self, from: (f64, f64), to: (f64, f64), gc: &mut Context) {
         let from = gc.t(from);
         let to = gc.t(to);
         unsafe { GERect(from.0, from.1, to.0, to.1, gc.context(), self.inner()) }
@@ -664,7 +664,7 @@ impl Device {
         &self,
         coords: T,
         winding: bool,
-        gc: &Context,
+        gc: &mut Context,
     ) {
         let mut x = Vec::new();
         let mut y = Vec::new();
@@ -703,22 +703,22 @@ impl Device {
     }
 
     /// Draw a bitmap.
-    pub fn raster<T: AsRef<[u32]>>(
+    pub fn raster<T: AsRef<[u32]> + AsMut<[u32]>>(
         &self,
-        raster: Raster<T>,
+        mut raster: Raster<T>,
         pos: (f64, f64),
         size: (f64, f64),
         angle: f64,
         interpolate: bool,
-        gc: &Context,
+        gc: &mut Context,
     ) {
         let (x, y) = gc.t(pos);
         let (width, height) = gc.trel(size);
         let w = raster.width;
-        let pixels = raster.pixels.as_ref();
+        let pixels = raster.pixels.as_mut();
         let h = pixels.len() / w;
         unsafe {
-            let raster = pixels.as_ptr() as *mut u32;
+            let raster = pixels.as_mut_ptr().cast();
             let w = w as i32;
             let h = h as i32;
             let interpolate = interpolate.into();
@@ -746,7 +746,7 @@ impl Device {
         text: T,
         center: (f64, f64),
         rot: f64,
-        gc: &Context,
+        gc: &mut Context,
     ) {
         unsafe {
             let (x, y) = gc.t(pos);
@@ -769,7 +769,7 @@ impl Device {
 
     /// Draw a special symbol centered on pos.
     /// See <https://stat.ethz.ch/R-manual/R-devel/library/graphics/html/points.html>
-    pub fn symbol(&self, pos: (f64, f64), symbol: i32, size: f64, gc: &Context) {
+    pub fn symbol(&self, pos: (f64, f64), symbol: i32, size: f64, gc: &mut Context) {
         unsafe {
             let (x, y) = gc.t(pos);
             GESymbol(x, y, symbol, gc.ts(size), gc.context(), self.inner());
@@ -777,7 +777,7 @@ impl Device {
     }
 
     /// Get the metrics for a single unicode codepoint.
-    pub fn char_metric(&self, c: char, gc: &Context) -> TextMetric {
+    pub fn char_metric(&self, c: char, gc: &mut Context) -> TextMetric {
         unsafe {
             let mut res = TextMetric {
                 ascent: 0.0,
@@ -787,9 +787,9 @@ impl Device {
             GEMetricInfo(
                 c as i32,
                 gc.context(),
-                &mut res.ascent as *mut f64,
-                &mut res.descent as *mut f64,
-                &mut res.width as *mut f64,
+                std::ptr::from_mut(&mut res.ascent),
+                std::ptr::from_mut(&mut res.descent),
+                std::ptr::from_mut(&mut res.width),
                 self.inner(),
             );
             gc.tmetric(res)
@@ -797,21 +797,21 @@ impl Device {
     }
 
     /// Get the width of a unicode string.
-    pub fn text_width<T: AsRef<str>>(&self, text: T, gc: &Context) -> f64 {
+    pub fn text_width<T: AsRef<str>>(&self, text: T, gc: &mut Context) -> f64 {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
         let enc = cetype_t::CE_UTF8;
         unsafe { gc.its(GEStrWidth(text.as_ptr(), enc, gc.context(), self.inner())) }
     }
 
     /// Get the height of a unicode string.
-    pub fn text_height<T: AsRef<str>>(&self, text: T, gc: &Context) -> f64 {
+    pub fn text_height<T: AsRef<str>>(&self, text: T, gc: &mut Context) -> f64 {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
         let enc = cetype_t::CE_UTF8;
         unsafe { gc.its(GEStrHeight(text.as_ptr(), enc, gc.context(), self.inner())) }
     }
 
     /// Get the metrics for a unicode string.
-    pub fn text_metric<T: AsRef<str>>(&self, text: T, gc: &Context) -> TextMetric {
+    pub fn text_metric<T: AsRef<str>>(&self, text: T, gc: &mut Context) -> TextMetric {
         let text = std::ffi::CString::new(text.as_ref()).unwrap();
         let enc = cetype_t::CE_UTF8;
         unsafe {
@@ -824,9 +824,9 @@ impl Device {
                 text.as_ptr(),
                 enc,
                 gc.context(),
-                &mut res.ascent as *mut f64,
-                &mut res.descent as *mut f64,
-                &mut res.width as *mut f64,
+                std::ptr::from_mut(&mut res.ascent),
+                std::ptr::from_mut(&mut res.descent),
+                std::ptr::from_mut(&mut res.width),
                 self.inner(),
             );
             gc.tmetric(res)
@@ -834,17 +834,17 @@ impl Device {
     }
 
     /// Get the width of a mathematical expression.
-    pub fn math_text_width(&self, expr: &Robj, gc: &Context) -> f64 {
+    pub fn math_text_width(&self, expr: &Robj, gc: &mut Context) -> f64 {
         unsafe { gc.its(GEExpressionWidth(expr.get(), gc.context(), self.inner())) }
     }
 
     /// Get the height of a mathematical expression.
-    pub fn math_text_height(&self, expr: &Robj, gc: &Context) -> f64 {
+    pub fn math_text_height(&self, expr: &Robj, gc: &mut Context) -> f64 {
         unsafe { gc.its(GEExpressionHeight(expr.get(), gc.context(), self.inner())) }
     }
 
     /// Get the metrics for a mathematical expression.
-    pub fn math_text_metric(&self, expr: &Robj, gc: &Context) -> TextMetric {
+    pub fn math_text_metric(&self, expr: &Robj, gc: &mut Context) -> TextMetric {
         unsafe {
             let mut res = TextMetric {
                 ascent: 0.0,
@@ -854,9 +854,9 @@ impl Device {
             GEExpressionMetric(
                 expr.get(),
                 gc.context(),
-                &mut res.ascent as *mut f64,
-                &mut res.descent as *mut f64,
-                &mut res.width as *mut f64,
+                std::ptr::from_mut(&mut res.ascent),
+                std::ptr::from_mut(&mut res.descent),
+                std::ptr::from_mut(&mut res.width),
                 self.inner(),
             );
             gc.tmetric(res)
@@ -870,7 +870,7 @@ impl Device {
         pos: (f64, f64),
         center: (f64, f64),
         rot: f64,
-        gc: &Context,
+        gc: &mut Context,
     ) {
         unsafe {
             let (x, y) = gc.t(pos);

@@ -68,7 +68,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
 ///    assert_eq!(res.is_ok(), false);
 /// }
 /// ```
-pub fn catch_r_error<F>(f: F) -> Result<SEXP>
+pub fn catch_r_error<F>(mut f: F) -> Result<SEXP>
 where
     F: FnOnce() -> SEXP + Copy,
     F: std::panic::UnwindSafe,
@@ -79,8 +79,8 @@ where
     where
         F: FnOnce() -> SEXP + Copy,
     {
-        let data = data as *const ();
-        let f: &F = &*(data as *const F);
+        let data: *mut () = data.cast();
+        let f = data.cast::<F>().as_ref().unwrap();
         f()
     }
 
@@ -91,9 +91,9 @@ where
     }
 
     single_threaded(|| unsafe {
-        let fun_ptr = do_call::<F> as *const ();
-        let clean_ptr = do_cleanup as *const ();
-        let x = false;
+        let fun_ptr = std::ptr::from_ref(&do_call::<F>).cast();
+        let clean_ptr = std::ptr::from_ref(&do_cleanup).cast();
+        let mut x = false;
         let fun = std::mem::transmute::<
             *const (),
             Option<unsafe extern "C" fn(*mut std::ffi::c_void) -> *mut extendr_ffi::SEXPREC>,
@@ -102,8 +102,8 @@ where
             *const (),
             std::option::Option<unsafe extern "C" fn(*mut std::ffi::c_void, extendr_ffi::Rboolean)>,
         >(clean_ptr);
-        let data = &f as *const _ as _;
-        let cleandata = &x as *const _ as _;
+        let data = std::ptr::from_mut(&mut f).cast();
+        let cleandata = std::ptr::from_mut(&mut x).cast();
         let cont = R_MakeUnwindCont();
         Rf_protect(cont);
 

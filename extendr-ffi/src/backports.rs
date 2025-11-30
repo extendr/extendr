@@ -163,7 +163,7 @@ pub unsafe fn get_closure_formals(x: SEXP) -> SEXP {
     }
 }
 
-/// Access a DATAPTR
+/// Access a read-only DATAPTR
 ///
 /// # Safety
 ///
@@ -173,7 +173,7 @@ pub unsafe fn get_closure_formals(x: SEXP) -> SEXP {
 pub unsafe fn dataptr(x: SEXP) -> *const ::std::os::raw::c_void {
     #[cfg(not(r_4_5))]
     {
-        DATAPTR(x) as *const _
+        DATAPTR(x).cast_const()
     }
     #[cfg(r_4_5)]
     {

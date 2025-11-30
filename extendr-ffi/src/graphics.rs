@@ -12,7 +12,7 @@ pub const R_GE_version: u32 = 15;
 // Types
 pub type DevDesc = _DevDesc;
 pub type pDevDesc = *mut DevDesc;
-pub type pGEcontext = *mut R_GE_gcontext;
+pub type pGEcontext = *const R_GE_gcontext;
 pub type pGEDevDesc = *mut GEDevDesc;
 
 // Constants
