@@ -1,4 +1,4 @@
-use super::scalar::{Rbool, Scalar};
+use super::scalar::Rbool;
 use super::*;
 use extendr_ffi::{dataptr, R_xlen_t, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
 use std::iter::FromIterator;
@@ -55,7 +55,7 @@ impl Logicals {
 impl Logicals {
     pub fn set_elt(&mut self, index: usize, val: Rbool) {
         single_threaded(|| unsafe {
-            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.inner());
+            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.0);
         })
     }
 }
