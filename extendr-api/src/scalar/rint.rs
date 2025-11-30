@@ -1,5 +1,4 @@
 use crate::scalar::macros::*;
-use crate::scalar::Scalar;
 use crate::*;
 use std::cmp::Ordering::*;
 use std::convert::TryFrom;
@@ -14,19 +13,14 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 ///
 /// `Rint` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rint(i32);
+#[readonly::make]
+pub struct Rint(pub i32);
 
-impl Scalar<i32> for Rint {
-    fn inner(&self) -> i32 {
-        self.0
-    }
-
+impl Rint {
     fn new(val: i32) -> Self {
         Rint(val)
     }
-}
 
-impl Rint {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -172,7 +166,7 @@ impl std::fmt::Debug for Rint {
         if self.is_na() {
             write!(f, "NA_INTEGER")
         } else {
-            self.inner().fmt(f)
+            self.0.fmt(f)
         }
     }
 }

@@ -1,4 +1,4 @@
-use crate::prelude::{Rint, Scalar};
+use crate::prelude::Rint;
 use crate::scalar::macros::*;
 use crate::*;
 use std::cmp::Ordering::*;
@@ -12,17 +12,8 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 ///
 /// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rfloat(f64);
-
-impl Scalar<f64> for Rfloat {
-    fn inner(&self) -> f64 {
-        self.0
-    }
-
-    fn new(val: f64) -> Self {
-        Rfloat(val)
-    }
-}
+#[readonly::make]
+pub struct Rfloat(pub f64);
 
 impl Rfloat {
     pub fn is_nan(&self) -> bool {
@@ -86,7 +77,7 @@ impl Rfloat {
 
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` is `NA_real_`.
-gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.inner().is_na(), f64::na());
+gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.0.is_na(), f64::na());
 gen_from_primitive!(Rfloat, f64);
 
 impl From<Rfloat> for Option<f64> {
@@ -174,7 +165,7 @@ impl From<Rint> for Rfloat {
         if value.is_na() {
             Rfloat::na()
         } else {
-            Rfloat::from(value.inner())
+            Rfloat::from(value.0)
         }
     }
 }
@@ -199,7 +190,7 @@ impl std::fmt::Debug for Rfloat {
         if self.is_na() {
             write!(f, "NA_REAL")
         } else {
-            self.inner().fmt(f)
+            self.0.fmt(f)
         }
     }
 }

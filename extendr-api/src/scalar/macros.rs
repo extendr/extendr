@@ -638,7 +638,7 @@ macro_rules! gen_trait_impl {
             #[doc = "```"]
             impl PartialEq<$type> for $type {
                 fn eq(&self, other: &$type) -> bool {
-                    !(self.is_na() || other.is_na()) && self.inner().eq(&other.inner())
+                    !(self.is_na() || other.is_na()) && self.0.eq(&other.0)
                 }
             }
         }
@@ -716,7 +716,7 @@ macro_rules! gen_partial_ord {
                     if self.is_na() || other.is_na() {
                         None
                     } else {
-                        self.inner().partial_cmp(&other.inner())
+                        self.0.partial_cmp(&other.0)
                     }
                 }
             }

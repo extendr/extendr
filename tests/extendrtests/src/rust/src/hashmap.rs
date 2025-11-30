@@ -29,8 +29,8 @@ impl TryFrom<Robj> for Point {
 
     fn try_from(value: Robj) -> Result<Self> {
         let inner_vec = Doubles::try_from(value)?;
-        let x = inner_vec[0].inner();
-        let y = inner_vec[1].inner();
+        let x = inner_vec[0].0;
+        let y = inner_vec[1].0;
         Ok(Point { x, y })
     }
 }

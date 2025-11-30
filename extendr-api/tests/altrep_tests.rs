@@ -1,3 +1,6 @@
+#[cfg(use_r_altlist)]
+use std::error::Error;
+
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 
@@ -240,7 +243,7 @@ fn test_altstring() {
 
 #[test]
 #[cfg(use_r_altlist)]
-fn test_altlist() {
+fn test_altlist() -> std::result::Result<(), Box<dyn Error>> {
     use extendr_api::AltListImpl;
     with_r(|| {
         #[derive(Debug, Clone)]
@@ -280,5 +283,6 @@ fn test_altlist() {
         let li = l.elt(1).unwrap();
 
         assert!(li.inherits("VecUsize"));
+        Ok(())
     })
 }

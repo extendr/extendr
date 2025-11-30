@@ -1,5 +1,5 @@
 use crate::scalar::macros::*;
-use crate::scalar::{Rfloat, Scalar};
+use crate::scalar::Rfloat;
 use crate::*;
 use extendr_ffi::{R_IsNA, R_NaReal, Rcomplex};
 use std::convert::TryFrom;
@@ -25,17 +25,8 @@ impl CanBeNA for c64 {
 ///
 /// Rcplx has the same footprint as R's complex value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rcplx(c64);
-
-impl Scalar<c64> for Rcplx {
-    fn inner(&self) -> c64 {
-        self.0
-    }
-
-    fn new(val: c64) -> Self {
-        Rcplx(val)
-    }
-}
+#[readonly::make]
+pub struct Rcplx(pub c64);
 
 impl Rcplx {
     pub fn new(re: f64, im: f64) -> Self {
@@ -73,13 +64,13 @@ impl From<(f64, f64)> for Rcplx {
 
 impl From<(Rfloat, Rfloat)> for Rcplx {
     fn from(val: (Rfloat, Rfloat)) -> Self {
-        Rcplx(c64::new(val.0.inner(), val.1.inner()))
+        Rcplx(c64::new(val.0 .0, val.1 .0))
     }
 }
 
 impl From<Rfloat> for Rcplx {
     fn from(val: Rfloat) -> Self {
-        Rcplx(c64::from(val.inner()))
+        Rcplx(c64::from(val.0))
     }
 }
 
@@ -94,14 +85,14 @@ impl From<Rcplx> for Option<c64> {
         if val.is_na() {
             None
         } else {
-            Some(c64::new(val.re().inner(), val.im().inner()))
+            Some(c64::new(val.re().0, val.im().0))
         }
     }
 }
 
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` is `NA_real_`.
-gen_trait_impl!(Rcplx, c64, |x: &Rcplx| x.inner().re.is_na(), c64::na());
+gen_trait_impl!(Rcplx, c64, |x: &Rcplx| x.0.re.is_na(), c64::na());
 gen_from_primitive!(Rcplx, c64);
 // gen_from_scalar!(Rcplx, c64);
 gen_sum_iter!(Rcplx);
@@ -169,7 +160,7 @@ gen_unop!(Rcplx, Neg, |lhs: c64| Some(-lhs), "Negate a Rcplx value.");
 
 impl PartialEq<f64> for Rcplx {
     fn eq(&self, other: &f64) -> bool {
-        self.re().inner() == *other && self.im() == 0.0
+        self.re().0 == *other && self.im() == 0.0
     }
 }
 

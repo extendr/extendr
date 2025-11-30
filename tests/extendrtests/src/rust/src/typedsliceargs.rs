@@ -23,7 +23,7 @@ fn floats_mean(x: &[Rfloat]) -> f64 {
         if next.is_na() {
             acc
         } else {
-            let v = next.inner();
+            let v = next.0;
             acc + v
         }
     });
