@@ -14,7 +14,7 @@ use std::convert::TryFrom;
 pub struct Rbool(pub i32);
 
 impl Rbool {
-    fn new(val: i32) -> Self {
+    pub fn new(val: i32) -> Self {
         Rbool(val)
     }
 

@@ -37,7 +37,7 @@ fn test_try_from() {
             assert!(String::try_from(&robj).is_ok() == $str_ok);
             assert!(<&[i32]>::try_from(&robj).is_ok() == $int_slice_ok);
             assert!(<&[f64]>::try_from(&robj).is_ok() == $float_slice_ok);
-            assert!(<Robj>::try_from($value.clone()).is_ok() == true);
+            assert!(<Robj>::try_from($value).is_ok() == true);
         };
     }
 
