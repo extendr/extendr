@@ -77,7 +77,7 @@ impl Deref for Doubles {
     /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()).cast::<Rfloat>();
+            let ptr = REAL(self.get()).cast::<Rfloat>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }

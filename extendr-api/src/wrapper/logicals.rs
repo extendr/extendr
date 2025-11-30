@@ -66,7 +66,7 @@ impl Deref for Logicals {
     /// Treat Logicals as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()).cast::<Rbool>();
+            let ptr = LOGICAL(self.get()).cast::<Rbool>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }

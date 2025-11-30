@@ -78,7 +78,7 @@ impl Deref for Integers {
     /// Treat Integers as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()).cast::<Rint>();
+            let ptr = INTEGER(self.get()).cast::<Rint>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
