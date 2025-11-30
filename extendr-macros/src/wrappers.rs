@@ -522,31 +522,31 @@ fn get_defaults(attrs: &mut Vec<syn::Attribute>) -> Option<String> {
     res
 }
 
+fn type_needs_mut_robj(ty: &Type) -> bool {
+    match ty {
+        Type::Reference(reference) => {
+            reference.mutability.is_some() || type_needs_mut_robj(&reference.elem)
+        }
+        Type::Path(path) => path.path.segments.iter().any(|seg| match &seg.arguments {
+            syn::PathArguments::AngleBracketed(args) => args.args.iter().any(|arg| {
+                if let syn::GenericArgument::Type(inner_ty) = arg {
+                    type_needs_mut_robj(inner_ty)
+                } else {
+                    false
+                }
+            }),
+            _ => false,
+        }),
+        Type::Tuple(tuple) => tuple.elems.iter().any(type_needs_mut_robj),
+        _ => false,
+    }
+}
+
 /// Convert `SEXP` arguments into `Robj`.
 /// This maintains the lifetime of references.
 ///
 /// These conversions are from R into Rust
 fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
-    fn type_needs_mut_robj(ty: &Type) -> bool {
-        match ty {
-            Type::Reference(reference) => {
-                reference.mutability.is_some() || type_needs_mut_robj(&reference.elem)
-            }
-            Type::Path(path) => path.path.segments.iter().any(|seg| match &seg.arguments {
-                syn::PathArguments::AngleBracketed(args) => args.args.iter().any(|arg| {
-                    if let syn::GenericArgument::Type(inner_ty) = arg {
-                        type_needs_mut_robj(inner_ty)
-                    } else {
-                        false
-                    }
-                }),
-                _ => false,
-            }),
-            Type::Tuple(tuple) => tuple.elems.iter().any(type_needs_mut_robj),
-            _ => false,
-        }
-    }
-
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
@@ -578,26 +578,6 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
 
 // Generate actual argument list for the call (ie. a list of conversions).
 fn translate_actual(input: &FnArg) -> Option<Expr> {
-    fn type_needs_mut_robj(ty: &Type) -> bool {
-        match ty {
-            Type::Reference(reference) => {
-                reference.mutability.is_some() || type_needs_mut_robj(&reference.elem)
-            }
-            Type::Path(path) => path.path.segments.iter().any(|seg| match &seg.arguments {
-                syn::PathArguments::AngleBracketed(args) => args.args.iter().any(|arg| {
-                    if let syn::GenericArgument::Type(inner_ty) = arg {
-                        type_needs_mut_robj(inner_ty)
-                    } else {
-                        false
-                    }
-                }),
-                _ => false,
-            }),
-            Type::Tuple(tuple) => tuple.elems.iter().any(type_needs_mut_robj),
-            _ => false,
-        }
-    }
-
     match input {
         FnArg::Typed(ref pattype) => {
             let pat = &pattype.pat.as_ref();
