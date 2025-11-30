@@ -6,10 +6,11 @@
         "extendr-macros/Cargo.toml",
         "tests/extendrtests/src/rust/Cargo.toml"
     ],
-    // enable to debug proc-macros
-    // "rust-analyzer.cargo.extraEnv": {
-    //     "RUSTUP_TOOLCHAIN": "nightly",
-    //     "RUSTFLAGS": "-Zmacro-backtrace",
-    //     "RUSTUP_AUTO_INSTALL": "1"
-    // },
+    "rust-analyzer.cargo.extraEnv": {
+        // // enable to debug proc-macros
+        // "RUSTUP_TOOLCHAIN": "nightly",
+        // "RUSTFLAGS": "-Zmacro-backtrace",
+        // "RUSTUP_AUTO_INSTALL": "1",
+        "CARGO_TARGET_DIR": "${workspaceFolder}/target"
+    },
 }
