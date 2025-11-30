@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/externalptr.rs`."><title>externalptr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (cc3eee7fb 2025-11-28)" data-channel="nightly" data-search-js="search-b9c1cd9b.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/wrapper/</div>externalptr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! `ExternalPtr` is a way to leak Rust allocated data to R, forego deallocation
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `extendr-api/src/wrapper/externalptr.rs`."><title>externalptr.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="extendr_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0-nightly (3ff30e7ea 2025-11-29)" data-channel="nightly" data-search-js="search-b9c1cd9b.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">extendr_api/wrapper/</div>externalptr.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! `ExternalPtr` is a way to leak Rust allocated data to R, forego deallocation
 <a href=#2 id=2 data-nosnippet>2</a>//! to R and its GC strategy.
 <a href=#3 id=3 data-nosnippet>3</a>//!
 <a href=#4 id=4 data-nosnippet>4</a>//! An `ExternalPtr` encompasses three values, an owned pointer to the Rust
@@ -360,62 +360,66 @@
 <a href=#360 id=360 data-nosnippet>360</a>
 <a href=#361 id=361 data-nosnippet>361</a><span class="attr">#[cfg(test)]
 <a href=#362 id=362 data-nosnippet>362</a></span><span class="kw">mod </span>tests {
-<a href=#363 id=363 data-nosnippet>363</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#364 id=364 data-nosnippet>364</a>    <span class="kw">use </span>extendr_engine::with_r;
-<a href=#365 id=365 data-nosnippet>365</a>
-<a href=#366 id=366 data-nosnippet>366</a>    <span class="attr">#[derive(Debug)]
-<a href=#367 id=367 data-nosnippet>367</a>    </span><span class="kw">struct </span>BareWrapper(i32);
-<a href=#368 id=368 data-nosnippet>368</a>
-<a href=#369 id=369 data-nosnippet>369</a>    <span class="attr">#[test]
-<a href=#370 id=370 data-nosnippet>370</a>    </span><span class="kw">fn </span>externalptr_is_ptr() {
-<a href=#371 id=371 data-nosnippet>371</a>        with_r(|| {
-<a href=#372 id=372 data-nosnippet>372</a>            <span class="kw">let </span>a = BareWrapper(<span class="number">42</span>);
-<a href=#373 id=373 data-nosnippet>373</a>            <span class="kw">let </span>b = BareWrapper(<span class="number">42</span>);
-<a href=#374 id=374 data-nosnippet>374</a>            <span class="macro">assert_eq!</span>(a.<span class="number">0</span>, b.<span class="number">0</span>);
-<a href=#375 id=375 data-nosnippet>375</a>
-<a href=#376 id=376 data-nosnippet>376</a>            <span class="kw">let </span>a_ptr = <span class="macro">std::ptr::addr_of!</span>(a);
-<a href=#377 id=377 data-nosnippet>377</a>            <span class="kw">let </span>b_ptr = <span class="macro">std::ptr::addr_of!</span>(b);
-<a href=#378 id=378 data-nosnippet>378</a>            <span class="kw">let </span>a_externalptr = ExternalPtr::new(a);
-<a href=#379 id=379 data-nosnippet>379</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(b);
-<a href=#380 id=380 data-nosnippet>380</a>
-<a href=#381 id=381 data-nosnippet>381</a>            <span class="macro">assert_ne!</span>(
-<a href=#382 id=382 data-nosnippet>382</a>                a_ptr, b_ptr,
-<a href=#383 id=383 data-nosnippet>383</a>                <span class="string">"pointers has to be equal by address, not value"
-<a href=#384 id=384 data-nosnippet>384</a>            </span>);
-<a href=#385 id=385 data-nosnippet>385</a>
-<a href=#386 id=386 data-nosnippet>386</a>            <span class="macro">assert_ne!</span>(
-<a href=#387 id=387 data-nosnippet>387</a>                a_externalptr.robj, b_externalptr.robj,
-<a href=#388 id=388 data-nosnippet>388</a>                <span class="string">"R only knows about the pointer, and not the pointee"
-<a href=#389 id=389 data-nosnippet>389</a>            </span>);
-<a href=#390 id=390 data-nosnippet>390</a>            <span class="macro">assert_ne!</span>(
-<a href=#391 id=391 data-nosnippet>391</a>                a_externalptr, b_externalptr,
-<a href=#392 id=392 data-nosnippet>392</a>                <span class="string">"ExternalPtr acts exactly like a pointer"
-<a href=#393 id=393 data-nosnippet>393</a>            </span>);
-<a href=#394 id=394 data-nosnippet>394</a>            <span class="macro">assert_ne!</span>(<span class="kw-2">&amp;</span>a_externalptr, <span class="kw-2">&amp;</span>b_externalptr,);
-<a href=#395 id=395 data-nosnippet>395</a>        });
-<a href=#396 id=396 data-nosnippet>396</a>    }
-<a href=#397 id=397 data-nosnippet>397</a>
-<a href=#398 id=398 data-nosnippet>398</a>    <span class="attr">#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-<a href=#399 id=399 data-nosnippet>399</a>    </span><span class="kw">struct </span>Wrapper(i32);
+<a href=#363 id=363 data-nosnippet>363</a>    <span class="kw">use </span>std::error::Error;
+<a href=#364 id=364 data-nosnippet>364</a>
+<a href=#365 id=365 data-nosnippet>365</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#366 id=366 data-nosnippet>366</a>    <span class="kw">use </span>extendr_engine::with_r;
+<a href=#367 id=367 data-nosnippet>367</a>
+<a href=#368 id=368 data-nosnippet>368</a>    <span class="attr">#[derive(Debug)]
+<a href=#369 id=369 data-nosnippet>369</a>    </span><span class="kw">struct </span>BareWrapper(i32);
+<a href=#370 id=370 data-nosnippet>370</a>
+<a href=#371 id=371 data-nosnippet>371</a>    <span class="attr">#[test]
+<a href=#372 id=372 data-nosnippet>372</a>    </span><span class="kw">fn </span>externalptr_is_ptr() -&gt; std::result::Result&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+<a href=#373 id=373 data-nosnippet>373</a>        with_r(|| {
+<a href=#374 id=374 data-nosnippet>374</a>            <span class="kw">let </span>a = BareWrapper(<span class="number">42</span>);
+<a href=#375 id=375 data-nosnippet>375</a>            <span class="kw">let </span>b = BareWrapper(<span class="number">42</span>);
+<a href=#376 id=376 data-nosnippet>376</a>            <span class="macro">assert_eq!</span>(a.<span class="number">0</span>, b.<span class="number">0</span>);
+<a href=#377 id=377 data-nosnippet>377</a>
+<a href=#378 id=378 data-nosnippet>378</a>            <span class="kw">let </span>a_ptr = <span class="macro">std::ptr::addr_of!</span>(a);
+<a href=#379 id=379 data-nosnippet>379</a>            <span class="kw">let </span>b_ptr = <span class="macro">std::ptr::addr_of!</span>(b);
+<a href=#380 id=380 data-nosnippet>380</a>            <span class="kw">let </span>a_externalptr = ExternalPtr::new(a);
+<a href=#381 id=381 data-nosnippet>381</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(b);
+<a href=#382 id=382 data-nosnippet>382</a>
+<a href=#383 id=383 data-nosnippet>383</a>            <span class="macro">assert_ne!</span>(
+<a href=#384 id=384 data-nosnippet>384</a>                a_ptr, b_ptr,
+<a href=#385 id=385 data-nosnippet>385</a>                <span class="string">"pointers has to be equal by address, not value"
+<a href=#386 id=386 data-nosnippet>386</a>            </span>);
+<a href=#387 id=387 data-nosnippet>387</a>
+<a href=#388 id=388 data-nosnippet>388</a>            <span class="macro">assert_ne!</span>(
+<a href=#389 id=389 data-nosnippet>389</a>                a_externalptr.robj, b_externalptr.robj,
+<a href=#390 id=390 data-nosnippet>390</a>                <span class="string">"R only knows about the pointer, and not the pointee"
+<a href=#391 id=391 data-nosnippet>391</a>            </span>);
+<a href=#392 id=392 data-nosnippet>392</a>            <span class="macro">assert_ne!</span>(
+<a href=#393 id=393 data-nosnippet>393</a>                a_externalptr, b_externalptr,
+<a href=#394 id=394 data-nosnippet>394</a>                <span class="string">"ExternalPtr acts exactly like a pointer"
+<a href=#395 id=395 data-nosnippet>395</a>            </span>);
+<a href=#396 id=396 data-nosnippet>396</a>            <span class="macro">assert_ne!</span>(<span class="kw-2">&amp;</span>a_externalptr, <span class="kw-2">&amp;</span>b_externalptr,);
+<a href=#397 id=397 data-nosnippet>397</a>            <span class="prelude-val">Ok</span>(())
+<a href=#398 id=398 data-nosnippet>398</a>        })
+<a href=#399 id=399 data-nosnippet>399</a>    }
 <a href=#400 id=400 data-nosnippet>400</a>
-<a href=#401 id=401 data-nosnippet>401</a>    <span class="attr">#[test]
-<a href=#402 id=402 data-nosnippet>402</a>    </span><span class="kw">fn </span>compare_externalptr_pointee() {
-<a href=#403 id=403 data-nosnippet>403</a>        with_r(|| {
-<a href=#404 id=404 data-nosnippet>404</a>            <span class="kw">let </span>a = Wrapper(<span class="number">42</span>);
-<a href=#405 id=405 data-nosnippet>405</a>            <span class="kw">let </span>b = Wrapper(<span class="number">42</span>);
-<a href=#406 id=406 data-nosnippet>406</a>            <span class="kw">let </span>a_externalptr = ExternalPtr::new(a);
-<a href=#407 id=407 data-nosnippet>407</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(b);
-<a href=#408 id=408 data-nosnippet>408</a>            <span class="macro">assert_eq!</span>(a_externalptr.as_ref(), b_externalptr.as_ref());
-<a href=#409 id=409 data-nosnippet>409</a>
-<a href=#410 id=410 data-nosnippet>410</a>            <span class="comment">// let's test more use of `PartialOrd` on `T`
-<a href=#411 id=411 data-nosnippet>411</a>            </span><span class="kw">let </span>a_externalptr = ExternalPtr::new(Wrapper(<span class="number">50</span>));
-<a href=#412 id=412 data-nosnippet>412</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(Wrapper(<span class="number">60</span>));
-<a href=#413 id=413 data-nosnippet>413</a>            <span class="macro">assert!</span>(a_externalptr.as_ref() &lt;= b_externalptr.as_ref());
-<a href=#414 id=414 data-nosnippet>414</a>            <span class="macro">assert_eq!</span>(
-<a href=#415 id=415 data-nosnippet>415</a>                a_externalptr.as_ref().max(b_externalptr.as_ref()),
-<a href=#416 id=416 data-nosnippet>416</a>                <span class="kw-2">&amp;</span>Wrapper(<span class="number">60</span>)
-<a href=#417 id=417 data-nosnippet>417</a>            )
-<a href=#418 id=418 data-nosnippet>418</a>        });
-<a href=#419 id=419 data-nosnippet>419</a>    }
-<a href=#420 id=420 data-nosnippet>420</a>}
+<a href=#401 id=401 data-nosnippet>401</a>    <span class="attr">#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+<a href=#402 id=402 data-nosnippet>402</a>    </span><span class="kw">struct </span>Wrapper(i32);
+<a href=#403 id=403 data-nosnippet>403</a>
+<a href=#404 id=404 data-nosnippet>404</a>    <span class="attr">#[test]
+<a href=#405 id=405 data-nosnippet>405</a>    </span><span class="kw">fn </span>compare_externalptr_pointee() -&gt; std::result::Result&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+<a href=#406 id=406 data-nosnippet>406</a>        with_r(|| {
+<a href=#407 id=407 data-nosnippet>407</a>            <span class="kw">let </span>a = Wrapper(<span class="number">42</span>);
+<a href=#408 id=408 data-nosnippet>408</a>            <span class="kw">let </span>b = Wrapper(<span class="number">42</span>);
+<a href=#409 id=409 data-nosnippet>409</a>            <span class="kw">let </span>a_externalptr = ExternalPtr::new(a);
+<a href=#410 id=410 data-nosnippet>410</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(b);
+<a href=#411 id=411 data-nosnippet>411</a>            <span class="macro">assert_eq!</span>(a_externalptr.as_ref(), b_externalptr.as_ref());
+<a href=#412 id=412 data-nosnippet>412</a>
+<a href=#413 id=413 data-nosnippet>413</a>            <span class="comment">// let's test more use of `PartialOrd` on `T`
+<a href=#414 id=414 data-nosnippet>414</a>            </span><span class="kw">let </span>a_externalptr = ExternalPtr::new(Wrapper(<span class="number">50</span>));
+<a href=#415 id=415 data-nosnippet>415</a>            <span class="kw">let </span>b_externalptr = ExternalPtr::new(Wrapper(<span class="number">60</span>));
+<a href=#416 id=416 data-nosnippet>416</a>            <span class="macro">assert!</span>(a_externalptr.as_ref() &lt;= b_externalptr.as_ref());
+<a href=#417 id=417 data-nosnippet>417</a>            <span class="macro">assert_eq!</span>(
+<a href=#418 id=418 data-nosnippet>418</a>                a_externalptr.as_ref().max(b_externalptr.as_ref()),
+<a href=#419 id=419 data-nosnippet>419</a>                <span class="kw-2">&amp;</span>Wrapper(<span class="number">60</span>)
+<a href=#420 id=420 data-nosnippet>420</a>            );
+<a href=#421 id=421 data-nosnippet>421</a>            <span class="prelude-val">Ok</span>(())
+<a href=#422 id=422 data-nosnippet>422</a>        })
+<a href=#423 id=423 data-nosnippet>423</a>    }
+<a href=#424 id=424 data-nosnippet>424</a>}
 </code></pre></div></section></main></body></html>
