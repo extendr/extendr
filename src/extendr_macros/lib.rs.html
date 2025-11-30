@@ -211,11 +211,11 @@
 <a href=#211 id=211 data-nosnippet>211</a>/// from an R list:
 <a href=#212 id=212 data-nosnippet>212</a>/// ```rust,ignore
 <a href=#213 id=213 data-nosnippet>213</a>/// use extendr_api::prelude::*;
-<a href=#214 id=214 data-nosnippet>214</a>/// use extendr_macros::TryFromRobj;
+<a href=#214 id=214 data-nosnippet>214</a>/// use extendr_macros::TryFromList;
 <a href=#215 id=215 data-nosnippet>215</a>/// # use extendr_api::test;
 <a href=#216 id=216 data-nosnippet>216</a>/// # test!{
 <a href=#217 id=217 data-nosnippet>217</a>///
-<a href=#218 id=218 data-nosnippet>218</a>/// #[derive(TryFromRobj, PartialEq, Debug)]
+<a href=#218 id=218 data-nosnippet>218</a>/// #[derive(TryFromList, PartialEq, Debug)]
 <a href=#219 id=219 data-nosnippet>219</a>/// struct Foo {
 <a href=#220 id=220 data-nosnippet>220</a>///     a: u64,
 <a href=#221 id=221 data-nosnippet>221</a>///     b: String
@@ -230,9 +230,9 @@
 <a href=#230 id=230 data-nosnippet>230</a>/// See [`IntoRobj`] for converting arbitrary Rust types into R type by using
 <a href=#231 id=231 data-nosnippet>231</a>/// R's list / `List`.
 <a href=#232 id=232 data-nosnippet>232</a>///
-<a href=#233 id=233 data-nosnippet>233</a></span><span class="attr">#[proc_macro_derive(TryFromRobj)]
-<a href=#234 id=234 data-nosnippet>234</a></span><span class="kw">pub fn </span>derive_try_from_robj(item: TokenStream) -&gt; TokenStream {
-<a href=#235 id=235 data-nosnippet>235</a>    <span class="kw">match </span>list_struct::derive_try_from_robj(item) {
+<a href=#233 id=233 data-nosnippet>233</a></span><span class="attr">#[proc_macro_derive(TryFromList)]
+<a href=#234 id=234 data-nosnippet>234</a></span><span class="kw">pub fn </span>derive_try_from_list(item: TokenStream) -&gt; TokenStream {
+<a href=#235 id=235 data-nosnippet>235</a>    <span class="kw">match </span>list_struct::derive_try_from_list(item) {
 <a href=#236 id=236 data-nosnippet>236</a>        <span class="prelude-val">Ok</span>(result) =&gt; result,
 <a href=#237 id=237 data-nosnippet>237</a>        <span class="prelude-val">Err</span>(e) =&gt; e.into_compile_error().into(),
 <a href=#238 id=238 data-nosnippet>238</a>    }
@@ -266,7 +266,7 @@
 <a href=#266 id=266 data-nosnippet>266</a>/// # Ok::&lt;(), extendr_api::Error&gt;(())
 <a href=#267 id=267 data-nosnippet>267</a>/// ```
 <a href=#268 id=268 data-nosnippet>268</a>///
-<a href=#269 id=269 data-nosnippet>269</a>/// See [`TryFromRobj`] for a `derive`-macro in the other direction, i.e.
+<a href=#269 id=269 data-nosnippet>269</a>/// See [`TryFromList`] for a `derive`-macro in the other direction, i.e.
 <a href=#270 id=270 data-nosnippet>270</a>/// instantiation of a rust type, by an R list with fields corresponding to
 <a href=#271 id=271 data-nosnippet>271</a>/// said type.
 <a href=#272 id=272 data-nosnippet>272</a>///

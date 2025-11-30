@@ -23,7 +23,7 @@ where the list names correspond to the field names of the Rust struct.</p>
     b: String::from(<span class="string">"bar"</span>)
 }.into();
 <span class="macro">assert_eq!</span>(converted, <span class="macro">R!</span>(<span class="string">r"list(a=5, b='bar')"</span>)<span class="question-mark">?</span>);</code></pre></div>
-<p>See <a href="derive.TryFromRobj.html" title="derive extendr_macros::TryFromRobj"><code>TryFromRobj</code></a> for a <code>derive</code>-macro in the other direction, i.e.
+<p>See <a href="derive.TryFromList.html" title="derive extendr_macros::TryFromList"><code>TryFromList</code></a> for a <code>derive</code>-macro in the other direction, i.e.
 instantiation of a rust type, by an R list with fields corresponding to
 said type.</p>
 <p>Supported field attributes</p>
