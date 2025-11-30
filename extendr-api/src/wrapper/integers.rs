@@ -1,8 +1,7 @@
 use super::scalar::{Rint, Scalar};
 use super::*;
 use extendr_ffi::{
-    dataptr, R_xlen_t, INTEGER, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA,
-    SET_INTEGER_ELT,
+    R_xlen_t, INTEGER, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
 };
 use std::iter::FromIterator;
 

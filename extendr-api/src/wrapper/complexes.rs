@@ -1,6 +1,6 @@
 use super::scalar::{c64, Rcplx};
 use super::*;
-use extendr_ffi::{dataptr, R_xlen_t, Rcomplex, COMPLEX, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
+use extendr_ffi::{R_xlen_t, Rcomplex, COMPLEX, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's complex vectors.

@@ -1,6 +1,6 @@
 use super::scalar::{Rbool, Scalar};
 use super::*;
-use extendr_ffi::{dataptr, R_xlen_t, LOGICAL, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
+use extendr_ffi::{R_xlen_t, LOGICAL, LOGICAL_GET_REGION, SET_INTEGER_ELT, SEXPTYPE};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's logical vectors.
