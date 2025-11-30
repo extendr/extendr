@@ -638,7 +638,7 @@
 <a href=#638 id=638 data-nosnippet>638</a>            #[doc = <span class="string">"```"</span>]
 <a href=#639 id=639 data-nosnippet>639</a>            </span><span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$type</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$type </span>{
 <a href=#640 id=640 data-nosnippet>640</a>                <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$type</span>) -&gt; bool {
-<a href=#641 id=641 data-nosnippet>641</a>                    !(<span class="self">self</span>.is_na() || other.is_na()) &amp;&amp; <span class="self">self</span>.inner().eq(<span class="kw-2">&amp;</span>other.inner())
+<a href=#641 id=641 data-nosnippet>641</a>                    !(<span class="self">self</span>.is_na() || other.is_na()) &amp;&amp; <span class="self">self</span>.<span class="number">0</span>.eq(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
 <a href=#642 id=642 data-nosnippet>642</a>                }
 <a href=#643 id=643 data-nosnippet>643</a>            }
 <a href=#644 id=644 data-nosnippet>644</a>        }
@@ -716,7 +716,7 @@
 <a href=#716 id=716 data-nosnippet>716</a>                    <span class="kw">if </span><span class="self">self</span>.is_na() || other.is_na() {
 <a href=#717 id=717 data-nosnippet>717</a>                        <span class="prelude-val">None
 <a href=#718 id=718 data-nosnippet>718</a>                    </span>} <span class="kw">else </span>{
-<a href=#719 id=719 data-nosnippet>719</a>                        <span class="self">self</span>.inner().partial_cmp(<span class="kw-2">&amp;</span>other.inner())
+<a href=#719 id=719 data-nosnippet>719</a>                        <span class="self">self</span>.<span class="number">0</span>.partial_cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
 <a href=#720 id=720 data-nosnippet>720</a>                    }
 <a href=#721 id=721 data-nosnippet>721</a>                }
 <a href=#722 id=722 data-nosnippet>722</a>            }
