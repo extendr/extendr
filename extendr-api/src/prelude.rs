@@ -62,7 +62,7 @@ pub use super::wrapper::{
 };
 
 pub use extendr_macros::{
-    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromRobj, R,
+    call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromList, R,
 };
 
 pub use super::iter::StrIter;

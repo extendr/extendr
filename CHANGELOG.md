@@ -4,7 +4,7 @@
 
 ### Added
 
-- Support for tuple-structs in `IntoList` and `TryFromRobj` [[#985]](https://github.com/extendr/extendr/pull/871)
+- Support for tuple-structs in `IntoList` and `TryFromList` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
 `TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
@@ -21,6 +21,7 @@
 - **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
 - **Deprecates** `#[default = "value"]` and replaces it with `#[extendr(default = "value)]` [[#952]](https://github.com/extendr/extendr/pull/952)
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
+- **Breaking** renamed `TryFromRobj` and the associated derive-macro to `TryFromList` [[#]](https://github.com/extendr/extendr/pull/1018)
 - **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
 - **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types.
   [[#1020]](https://github.com/extendr/extendr/pull/1020)
@@ -206,7 +207,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]]
 - `serde::Serialize` implementation for R types. [[#305]](https://github.com/extendr/extendr/pull/305), [[#355]](https://github.com/extendr/extendr/pull/355)
 - `Rany` type and the `as_any` conversion method. [[#320]](https://github.com/extendr/extendr/pull/320)
 - `std::fmt::Debug` implementation for wrapper types. [[#345]](https://github.com/extendr/extendr/pull/345)
-- `#[derive(TryFromRobj)` and `#[derive(IntoRobj)]` which provide an automatic conversion from and to any custom Rust struct and `Robj` [[#347]](https://github.com/extendr/extendr/pull/347)
+- `#[derive(TryFromList)` and `#[derive(IntoRobj)]` which provide an automatic conversion from and to any custom Rust struct and `Robj` [[#347]](https://github.com/extendr/extendr/pull/347)
 - `[[` operator that works with Rust classes. Its behavior is identical to that of the `$` operator. [[#359]](https://github.com/extendr/extendr/pull/359)
 - `Load` and `Save`, traits that, once implemented, provide the ability to load and save R data in the RDS format. These traits are implemented for all `Robj`. [[#363]](https://github.com/extendr/extendr/pull/363)
 - `Dataframe` wrapper struct. [[#393]](https://github.com/extendr/extendr/pull/393)
