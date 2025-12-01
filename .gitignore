@@ -42,3 +42,6 @@ extendr.Rproj
 **/.cargo/*
 .zed/settings.json
 .claude/*
+
+# Reference documentation (not tracked, but used by Claude)
+background/

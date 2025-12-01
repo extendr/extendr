@@ -77,23 +77,19 @@ msrv FEATURES="":
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
     fi
 
-# Generate documentation (R wrappers) via rextendr::document()
+# Generate R wrappers and documentation for extendrtests
+# Uses --no-test-load for bootstrapping (when extendr-wrappers.R doesn't exist yet)
 document:
     cd tests/extendrtests && \
-    if [ -d ../../rextendr ]; then \
-      echo "Loading vendored {rextendr}" && \
-      Rscript -e 'requireNamespace("devtools")' \
-              -e 'devtools::load_all("../../rextendr")' \
-              -e 'rextendr::document()'; \
-    else \
-      echo "Using installed {rextendr}" && \
-      Rscript -e 'requireNamespace("rextendr")' \
-              -e 'rextendr::document()'; \
-    fi
+    Rscript -e "devtools::document()" && \
+    R CMD INSTALL --no-multiarch --with-keep.source --no-test-load . && \
+    Rscript -e 'source("R/document.R"); document()' && \
+    Rscript -e "devtools::document()" && \
+    R CMD INSTALL --no-multiarch --with-keep.source .
 
 # Run devtools::test() for extendrtests; set FILTER or SNAPSHOT=1 to accept snapshots
 devtools-test FILTER="" SNAPSHOT="0":
-    cd tests/extendrtests && \
+    @cd tests/extendrtests && \
     if [ "{{SNAPSHOT}}" = "1" ]; then \
       Rscript -e 'testthat::snapshot_accept("macro-snapshot")'; \
     fi; \
@@ -106,7 +102,7 @@ devtools-test FILTER="" SNAPSHOT="0":
 alias rcmdcheck := r-cmd-check
 # Run R CMD check on extendrtests; accepts NO_VIGNETTES=1, ERROR_ON=warning|error, CHECK_DIR=path
 r-cmd-check *args:
-    NO_VIGNETTES="0" \
+    @NO_VIGNETTES="0" \
     ERROR_ON="warning" \
     CHECK_DIR="" \
     ROOT_DIR="$(pwd)" \

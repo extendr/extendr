@@ -3,4 +3,6 @@
 ^LICENSE\.md$
 ^notebooks$
 ^src/\.cargo$
+^src/rust/target
 ^src/rust/vendor$
+^src/extendrtests-wrappers\.

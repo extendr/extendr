@@ -3,6 +3,7 @@ use std::path::PathBuf;
 fn main() {
     println!("cargo:rerun-if-env-changed=R_HOME");
     println!("cargo::rerun-if-changed=build.rs");
+    println!("cargo::rerun-if-changed=../entrypoint.c");
     println!("cargo::rustc-check-cfg=cfg(use_r_altlist)");
 
     let r_home_env = std::env::var_os("R_HOME");
