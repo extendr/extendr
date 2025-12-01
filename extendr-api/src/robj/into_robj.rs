@@ -172,16 +172,6 @@ where
 }
 
 #[allow(non_snake_case)]
-extern "C" fn LOGICAL_AS_RBOOL(sexp: SEXP) -> *mut Rbool {
-    unsafe { LOGICAL(sexp).cast() }
-}
-
-#[allow(non_snake_case)]
-extern "C" fn REAL_AS_RFLOAT(sexp: SEXP) -> *mut Rfloat {
-    unsafe { REAL(sexp).cast() }
-}
-
-#[allow(non_snake_case)]
 extern "C" fn COMPLEX_AS_RCPLX(sexp: SEXP) -> *mut Rcplx {
     unsafe { COMPLEX(sexp).cast() }
 }
@@ -194,11 +184,6 @@ extern "C" fn COMPLEX_AS_C64(sexp: SEXP) -> *mut c64 {
 #[allow(non_snake_case)]
 extern "C" fn COMPLEX_AS_FLOAT_TUPLE(sexp: SEXP) -> *mut (f64, f64) {
     unsafe { COMPLEX(sexp).cast() }
-}
-
-#[allow(non_snake_case)]
-extern "C" fn INTEGER_AS_RINT(sexp: SEXP) -> *mut Rint {
-    unsafe { INTEGER(sexp).cast() }
 }
 
 pub trait RNativeType: Copy {
@@ -275,14 +260,19 @@ macro_rules! impl_rnative_type {
 }
 
 impl_rnative_type!(f64, f64, SEXPTYPE::REALSXP, REAL);
-impl_rnative_type!(Rfloat, Rfloat, SEXPTYPE::REALSXP, REAL_AS_RFLOAT);
+impl_rnative_type!(Rfloat, f64, SEXPTYPE::REALSXP, REAL);
 impl_rnative_type!(Rcomplex, Rcomplex, SEXPTYPE::CPLXSXP, COMPLEX);
 impl_rnative_type!(Rcplx, Rcplx, SEXPTYPE::CPLXSXP, COMPLEX_AS_RCPLX);
 impl_rnative_type!(c64, c64, SEXPTYPE::CPLXSXP, COMPLEX_AS_C64);
-impl_rnative_type!((f64, f64), (f64, f64), SEXPTYPE::CPLXSXP, COMPLEX_AS_FLOAT_TUPLE);
+impl_rnative_type!(
+    (f64, f64),
+    (f64, f64),
+    SEXPTYPE::CPLXSXP,
+    COMPLEX_AS_FLOAT_TUPLE
+);
 impl_rnative_type!(i32, i32, SEXPTYPE::INTSXP, INTEGER);
-impl_rnative_type!(Rint, Rint, SEXPTYPE::INTSXP, INTEGER_AS_RINT);
-impl_rnative_type!(Rbool, Rbool, SEXPTYPE::LGLSXP, LOGICAL_AS_RBOOL);
+impl_rnative_type!(Rint, i32, SEXPTYPE::INTSXP, INTEGER);
+impl_rnative_type!(Rbool, i32, SEXPTYPE::LGLSXP, LOGICAL);
 impl_rnative_type!(u8, u8, SEXPTYPE::RAWSXP, RAW);
 
 impl_cast_raw_slice_copy!(f64, Rfloat, i32, Rint, Rbool, u8);
