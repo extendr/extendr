@@ -218,124 +218,372 @@ pub trait ToVectorValue {
     }
 }
 
-macro_rules! impl_real_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
-
-            fn to_real(&self) -> f64 {
-                *self as f64
-            }
+impl ToVectorValue for f64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &f64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<f64> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
         }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
-
-            fn to_real(&self) -> f64 {
-                **self as f64
-            }
+    }
+}
+impl ToVectorValue for f32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &f32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<f32> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
         }
-
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
-
-            fn to_real(&self) -> f64 {
-                if self.is_some() {
-                    self.unwrap() as f64
-                } else {
-                    unsafe { R_NaReal }
-                }
-            }
-        }
-    };
+    }
 }
 
-impl_real_tvv!(f64);
-impl_real_tvv!(f32);
-
-// Since these types might exceeds the max or min of R's 32bit integer, we need
-// to return as REALSXP
-impl_real_tvv!(i64);
-impl_real_tvv!(u32);
-impl_real_tvv!(u64);
-impl_real_tvv!(usize);
-
-macro_rules! impl_complex_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::CPLXSXP
-            }
-
-            fn to_complex(&self) -> Rcomplex {
-                unsafe { std::mem::transmute(*self) }
-            }
+impl ToVectorValue for i64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &i64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<i64> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
         }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::CPLXSXP
-            }
-
-            fn to_complex(&self) -> Rcomplex {
-                unsafe { std::mem::transmute(**self) }
-            }
+    }
+}
+impl ToVectorValue for u32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &u32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<u32> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
         }
-    };
+    }
+}
+impl ToVectorValue for u64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &u64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<u64> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
+        }
+    }
+}
+impl ToVectorValue for usize {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        *self as f64
+    }
+}
+impl ToVectorValue for &usize {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        **self as f64
+    }
+}
+impl ToVectorValue for Option<usize> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::REALSXP
+    }
+    fn to_real(&self) -> f64 {
+        if self.is_some() {
+            self.unwrap() as f64
+        } else {
+            unsafe { R_NaReal }
+        }
+    }
 }
 
-impl_complex_tvv!(c64);
-impl_complex_tvv!(Rcplx);
-impl_complex_tvv!((f64, f64));
+impl ToVectorValue for c64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
+}
+impl ToVectorValue for &c64 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(**self) }
+    }
+}
+impl ToVectorValue for Rcplx {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
 
-macro_rules! impl_integer_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
+    fn to_real(&self) -> f64
+    where
+        Self: Sized,
+    {
+        0.
+    }
 
-            fn to_integer(&self) -> i32 {
-                *self as i32
-            }
-        }
+    fn to_integer(&self) -> i32
+    where
+        Self: Sized,
+    {
+        i32::MIN
+    }
 
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
+    fn to_logical(&self) -> i32
+    where
+        Self: Sized,
+    {
+        i32::MIN
+    }
 
-            fn to_integer(&self) -> i32 {
-                **self as i32
-            }
-        }
+    fn to_raw(&self) -> u8
+    where
+        Self: Sized,
+    {
+        0
+    }
 
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
-
-            fn to_integer(&self) -> i32 {
-                if self.is_some() {
-                    self.unwrap() as i32
-                } else {
-                    unsafe { R_NaInt }
-                }
-            }
-        }
-    };
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        unsafe { R_NilValue }
+    }
+}
+impl ToVectorValue for &Rcplx {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(**self) }
+    }
+}
+impl ToVectorValue for (f64, f64) {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
+}
+impl ToVectorValue for &(f64, f64) {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::CPLXSXP
+    }
+    fn to_complex(&self) -> Rcomplex {
+        unsafe { std::mem::transmute(**self) }
+    }
 }
 
-impl_integer_tvv!(i8);
-impl_integer_tvv!(i16);
-impl_integer_tvv!(i32);
-impl_integer_tvv!(u16);
+impl ToVectorValue for i8 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        *self as i32
+    }
+}
+impl ToVectorValue for &i8 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        **self as i32
+    }
+}
+impl ToVectorValue for Option<i8> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        if self.is_some() {
+            self.unwrap() as i32
+        } else {
+            unsafe { R_NaInt }
+        }
+    }
+}
+impl ToVectorValue for i16 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        *self as i32
+    }
+}
+impl ToVectorValue for &i16 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        **self as i32
+    }
+}
+impl ToVectorValue for Option<i16> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        if self.is_some() {
+            self.unwrap() as i32
+        } else {
+            unsafe { R_NaInt }
+        }
+    }
+}
+impl ToVectorValue for i32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        *self as i32
+    }
+}
+impl ToVectorValue for &i32 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        **self as i32
+    }
+}
+impl ToVectorValue for Option<i32> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        if self.is_some() {
+            self.unwrap() as i32
+        } else {
+            unsafe { R_NaInt }
+        }
+    }
+}
+impl ToVectorValue for u16 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        *self as i32
+    }
+}
+impl ToVectorValue for &u16 {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        **self as i32
+    }
+}
+impl ToVectorValue for Option<u16> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::INTSXP
+    }
+    fn to_integer(&self) -> i32 {
+        if self.is_some() {
+            self.unwrap() as i32
+        } else {
+            unsafe { R_NaInt }
+        }
+    }
+}
 
 impl ToVectorValue for u8 {
     fn sexptype() -> SEXPTYPE {
@@ -357,55 +605,80 @@ impl ToVectorValue for &u8 {
     }
 }
 
-macro_rules! impl_str_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                str_to_character(self.as_ref())
-            }
-        }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                str_to_character(self.as_ref())
-            }
-        }
-
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                if let Some(s) = self {
-                    str_to_character(s.as_ref())
-                } else {
-                    unsafe { R_NaString }
-                }
-            }
-        }
-    };
+impl ToVectorValue for &str {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        str_to_character(self.as_ref())
+    }
 }
-
-impl_str_tvv! {&str}
-impl_str_tvv! {String}
+impl ToVectorValue for &&str {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        str_to_character(self.as_ref())
+    }
+}
+impl ToVectorValue for Option<&str> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        if let Some(s) = self {
+            str_to_character(s.as_ref())
+        } else {
+            unsafe { R_NaString }
+        }
+    }
+}
+impl ToVectorValue for String {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        str_to_character(self.as_ref())
+    }
+}
+impl ToVectorValue for &String {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        str_to_character(self.as_ref())
+    }
+}
+impl ToVectorValue for Option<String> {
+    fn sexptype() -> SEXPTYPE {
+        SEXPTYPE::STRSXP
+    }
+    fn to_sexp(&self) -> SEXP
+    where
+        Self: Sized,
+    {
+        if let Some(s) = self {
+            str_to_character(s.as_ref())
+        } else {
+            unsafe { R_NaString }
+        }
+    }
+}
 
 impl ToVectorValue for Rstr {
     fn sexptype() -> SEXPTYPE {
