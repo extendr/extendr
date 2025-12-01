@@ -72,10 +72,7 @@ use std::sync::Once;
 // Generates asciiz.
 macro_rules! cstr_mut {
     ($s: expr) => {
-        concat!($s, "\0")
-            .as_ptr()
-            .cast::<raw::c_char>()
-            .cast_mut()
+        concat!($s, "\0").as_ptr().cast::<raw::c_char>().cast_mut()
     };
 }
 
