@@ -1,6 +1,6 @@
 use super::*;
 use extendr_ffi::*;
-use prelude::{Rbool, Rcplx, Rfloat, Rint, Scalar};
+use prelude::{Rbool, Rcplx, Rfloat, Rint};
 
 macro_rules! make_from_iterator_impl {
     ($impl : ident, $scalar_type : ident) => {
@@ -214,9 +214,9 @@ pub trait AltIntegerImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.inner() as i64;
-                min = min.min(val.inner());
-                max = max.max(val.inner());
+                tot += val.0 as i64;
+                min = min.min(val.0);
+                max = max.max(val.0);
                 nas += 1;
             }
         }
@@ -295,9 +295,9 @@ pub trait AltRealImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.inner();
-                min = min.min(val.inner());
-                max = max.max(val.inner());
+                tot += val.0;
+                min = min.min(val.0);
+                max = max.max(val.0);
                 nas += 1;
             }
         }
@@ -374,7 +374,7 @@ pub trait AltLogicalImpl: AltrepImpl {
         for i in 0..len {
             let val = self.elt(i);
             if !val.is_na() {
-                tot += val.inner() as i64;
+                tot += val.0 as i64;
                 nas += 1;
             }
         }
@@ -746,7 +746,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
+                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
             }
 
             unsafe extern "C" fn altinteger_Get_region<StateType: AltIntegerImpl + 'static>(
@@ -762,7 +762,7 @@ impl Altrep {
             unsafe extern "C" fn altinteger_Is_sorted<StateType: AltIntegerImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
             }
 
             unsafe extern "C" fn altinteger_No_NA<StateType: AltIntegerImpl + 'static>(
@@ -826,7 +826,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> f64 {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner()
+                Altrep::get_state::<StateType>(x).elt(i as usize).0
             }
 
             unsafe extern "C" fn altreal_Get_region<StateType: AltRealImpl + 'static>(
@@ -842,7 +842,7 @@ impl Altrep {
             unsafe extern "C" fn altreal_Is_sorted<StateType: AltRealImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
             }
 
             unsafe extern "C" fn altreal_No_NA<StateType: AltRealImpl + 'static>(x: SEXP) -> c_int {
@@ -903,7 +903,7 @@ impl Altrep {
                 x: SEXP,
                 i: R_xlen_t,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).elt(i as usize).inner() as c_int
+                Altrep::get_state::<StateType>(x).elt(i as usize).0 as c_int
             }
 
             unsafe extern "C" fn altlogical_Get_region<StateType: AltLogicalImpl + 'static>(
@@ -919,7 +919,7 @@ impl Altrep {
             unsafe extern "C" fn altlogical_Is_sorted<StateType: AltLogicalImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
             }
 
             unsafe extern "C" fn altlogical_No_NA<StateType: AltLogicalImpl + 'static>(
@@ -1048,7 +1048,7 @@ impl Altrep {
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
                 x: SEXP,
             ) -> c_int {
-                Altrep::get_state::<StateType>(x).is_sorted().inner() as c_int
+                Altrep::get_state::<StateType>(x).is_sorted().0 as c_int
             }
 
             unsafe extern "C" fn altstring_No_NA<StateType: AltStringImpl + 'static>(

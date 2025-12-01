@@ -1,5 +1,4 @@
 use crate::scalar::macros::*;
-use crate::scalar::Scalar;
 use crate::*;
 use std::convert::TryFrom;
 
@@ -11,19 +10,14 @@ use std::convert::TryFrom;
 ///
 /// `Rbool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
-pub struct Rbool(i32);
+#[readonly::make]
+pub struct Rbool(pub i32);
 
-impl Scalar<i32> for Rbool {
-    fn inner(&self) -> i32 {
-        self.0
-    }
-
+impl Rbool {
     fn new(val: i32) -> Self {
         Rbool(val)
     }
-}
 
-impl Rbool {
     /// Return a `true` `Rbool`.
     pub const fn true_value() -> Rbool {
         Rbool(1)
@@ -41,17 +35,17 @@ impl Rbool {
 
     /// Return `true` if this triboolean is `true` but not `NA`.
     pub fn is_true(&self) -> bool {
-        self.inner() != 0 && !self.is_na()
+        self.0 != 0 && !self.is_na()
     }
 
     /// Return `true` if this triboolean is `false` but not `NA`.
     pub fn is_false(&self) -> bool {
-        self.inner() == 0 && !self.is_na()
+        self.0 == 0 && !self.is_na()
     }
 
     /// Convert this `Rbool` to a bool. Note `NA` will be true.
     pub fn to_bool(&self) -> bool {
-        self.inner() != 0
+        self.0 != 0
     }
 
     /// Convert this construct a `Rbool` from a rust boolean.
@@ -60,7 +54,7 @@ impl Rbool {
     }
 }
 
-gen_trait_impl!(Rbool, bool, |x: &Rbool| x.inner() == i32::MIN, i32::MIN);
+gen_trait_impl!(Rbool, bool, |x: &Rbool| x.0 == i32::MIN, i32::MIN);
 gen_from_primitive!(Rbool, i32);
 gen_partial_ord!(Rbool, bool);
 
@@ -82,10 +76,10 @@ impl From<Option<bool>> for Rbool {
 
 impl From<Rbool> for Option<bool> {
     fn from(v: Rbool) -> Self {
-        if v.inner().is_na() {
+        if v.0.is_na() {
             None
         } else {
-            Some(v.inner() != 0)
+            Some(v.0 != 0)
         }
     }
 }

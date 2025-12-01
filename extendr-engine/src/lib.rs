@@ -120,9 +120,9 @@ fn end_r() {
 
 /// Ensures that an embedded R instance is present when evaluating
 /// `f`.
-pub fn with_r(f: impl FnOnce()) {
+pub fn with_r<T, E>(f: impl FnOnce() -> std::result::Result<T, E>) -> std::result::Result<T, E> {
     start_r();
-    f();
+    f()
     // For compatibility with `test!` in `extendr-api/src/rmacros.rs`, there
     // is no `end_r()` call here.
 }
