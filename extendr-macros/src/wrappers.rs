@@ -37,7 +37,10 @@ lazy_static::lazy_static! {
     static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
 }
 
-/// Called by the struct‐level #[extendr] macro to register docstrings.
+/// Called by the struct‐level [`extendr`]-macro to register docstrings.
+///
+///
+/// [`extendr`]: macro@crate::extendr
 pub fn register_struct_doc(name: &str, doc: &str) {
     STRUCT_DOCS
         .lock()
@@ -534,7 +537,7 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
                 let varname = format_ident!("_{}_robj", ident.ident);
                 let ident = &ident.ident;
                 // TODO: these do not need protection, as they come from R
-                Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
+                Ok(parse_quote! { let mut #varname = extendr_api::robj::Robj::from_sexp(#ident); })
             } else {
                 Err(syn::Error::new_spanned(
                     input,
@@ -556,8 +559,31 @@ fn translate_actual(input: &FnArg) -> Option<Expr> {
             let pat = &pattype.pat.as_ref();
             if let syn::Pat::Ident(ref ident) = pat {
                 let varname = format_ident!("_{}_robj", ident.ident);
+                let arg_name = ident.ident.to_string();
+                let ty = pattype.ty.as_ref();
+                let is_ref = matches!(ty, Type::Reference(_));
+                let is_mut = matches!(
+                    ty,
+                    Type::Reference(syn::TypeReference {
+                        mutability: Some(_),
+                        ..
+                    })
+                );
+                let robj_to_try: Expr = if is_mut {
+                    parse_quote! { &mut #varname }
+                } else if is_ref {
+                    parse_quote! { &#varname }
+                } else {
+                    parse_quote! { #varname }
+                };
                 Some(parse_quote! {
-                    #varname.try_into()?
+                    (#robj_to_try)
+                        .try_into()
+                        .map_err(|error| extendr_api::error::Error::Other(format!(
+                            "failed to convert argument `{}` from R: {}",
+                            #arg_name,
+                            error
+                    )))?
                 })
             } else {
                 None

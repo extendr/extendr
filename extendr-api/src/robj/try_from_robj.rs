@@ -102,6 +102,123 @@ impl_try_from_scalar_integer!(isize);
 impl_try_from_scalar_real!(f32);
 impl_try_from_scalar_real!(f64);
 
+macro_rules! impl_scalar_borrow {
+    ($type:ty, $err_variant:ident, $allow_na:expr, $is_na:expr) => {
+        impl<'a> TryFrom<&'a Robj> for &'a $type
+        where
+            Robj: AsTypedSlice<'a, $type>,
+        {
+            type Error = Error;
+
+            fn try_from(robj: &'a Robj) -> Result<Self> {
+                let slice: &[$type] = match robj.as_typed_slice() {
+                    Some(s) => s,
+                    None => return Err(Error::$err_variant(robj.clone())),
+                };
+
+                match slice.len() {
+                    0 => Err(Error::ExpectedNonZeroLength(robj.clone())),
+                    1 => {
+                        let value = &slice[0];
+                        if !$allow_na && $is_na(value) {
+                            Err(Error::MustNotBeNA(robj.clone()))
+                        } else {
+                            Ok(value)
+                        }
+                    }
+                    _ => Err(Error::ExpectedScalar(robj.clone())),
+                }
+            }
+        }
+
+        impl<'a> TryFrom<&'a mut Robj> for &'a mut $type
+        where
+            Robj: AsTypedSlice<'a, $type>,
+        {
+            type Error = Error;
+
+            fn try_from(robj: &'a mut Robj) -> Result<Self> {
+                let len = robj.len();
+                if len == 0 {
+                    return Err(Error::ExpectedNonZeroLength(robj.clone()));
+                }
+                if len != 1 {
+                    return Err(Error::ExpectedScalar(robj.clone()));
+                }
+
+                if robj.as_typed_slice().is_none() {
+                    return Err(Error::$err_variant(robj.clone()));
+                }
+
+                let slice: &mut [$type] = match robj.as_typed_slice_mut() {
+                    Some(s) => s,
+                    None => return Err(Error::$err_variant(robj.clone())),
+                };
+                let value = &mut slice[0];
+
+                if !$allow_na && $is_na(value) {
+                    return Err(Error::MustNotBeNA(robj.clone()));
+                }
+
+                Ok(value)
+            }
+        }
+
+        impl<'a> TryFrom<&'a Robj> for Option<&'a $type>
+        where
+            Robj: AsTypedSlice<'a, $type>,
+        {
+            type Error = Error;
+
+            fn try_from(robj: &'a Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    <&$type>::try_from(robj).map(Some)
+                }
+            }
+        }
+
+        impl<'a> TryFrom<&'a mut Robj> for Option<&'a mut $type>
+        where
+            Robj: AsTypedSlice<'a, $type>,
+        {
+            type Error = Error;
+
+            fn try_from(robj: &'a mut Robj) -> Result<Self> {
+                if robj.is_null() || robj.is_na() {
+                    Ok(None)
+                } else {
+                    <&mut $type>::try_from(robj).map(Some)
+                }
+            }
+        }
+    };
+}
+
+impl_scalar_borrow!(i32, ExpectedInteger, false, |v: &i32| v.is_na());
+impl_scalar_borrow!(f64, ExpectedReal, false, |v: &f64| v.is_na() || v.is_nan());
+impl_scalar_borrow!(Rint, ExpectedInteger, true, |v: &Rint| v.is_na());
+impl_scalar_borrow!(Rfloat, ExpectedReal, true, |v: &Rfloat| v.is_na());
+impl_scalar_borrow!(Rbool, ExpectedLogical, true, |v: &Rbool| v.is_na());
+impl_scalar_borrow!(Rcplx, ExpectedComplex, true, |v: &Rcplx| {
+    let re = v.re().0;
+    let im = v.im().0;
+    re.is_nan() || im.is_nan() || re.is_na() || im.is_na()
+});
+impl_scalar_borrow!(c64, ExpectedComplex, false, |v: &c64| {
+    let rc: Rcplx = (*v).into();
+    let re = rc.re().0;
+    let im = rc.im().0;
+    re.is_nan() || im.is_nan() || re.is_na() || im.is_na()
+});
+impl_scalar_borrow!(Rcomplex, ExpectedComplex, true, |v: &Rcomplex| {
+    let r = v.r;
+    let i = v.i;
+    r.is_nan() || i.is_nan() || unsafe { R_IsNA(r) != 0 || R_IsNA(i) != 0 }
+});
+impl_scalar_borrow!(u8, ExpectedRaw, false, |_v: &u8| false);
+
 impl TryFrom<&Robj> for bool {
     type Error = Error;
 
@@ -760,5 +877,101 @@ impl TryFrom<&Robj> for HashMap<String, Robj> {
     fn try_from(value: &Robj) -> Result<Self> {
         let value: HashMap<&str, _> = value.try_into()?;
         Ok(value.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+    }
+}
+
+#[cfg(test)]
+mod scalar_ref_tests {
+    use super::*;
+    use crate::{error::Error, prelude::*, test};
+
+    #[test]
+    fn borrow_i32_ref_is_strict_and_scalar() {
+        test! {
+            let robj_int = r!(1);
+            let value: &i32 = (&robj_int).try_into().unwrap();
+            assert_eq!(*value, 1);
+
+            let wrong_type_robj = r!(1.0);
+            let wrong_type: Result<&i32> = (&wrong_type_robj).try_into();
+            assert!(matches!(wrong_type, Err(Error::ExpectedInteger(_))));
+
+            let wrong_len_robj = r!([1, 2]);
+            let wrong_len: Result<&i32> = (&wrong_len_robj).try_into();
+            assert!(matches!(wrong_len, Err(Error::ExpectedScalar(_))));
+
+            let na_robj = r!(NA_INTEGER);
+            let na_value: Result<&i32> = (&na_robj).try_into();
+            assert!(matches!(na_value, Err(Error::MustNotBeNA(_))));
+        }
+    }
+
+    #[test]
+    fn borrow_i32_mut_is_strict_and_scalar() {
+        test! {
+            let mut robj_int = r!(1);
+            {
+                let value: &mut i32 = (&mut robj_int).try_into().unwrap();
+                *value = 5;
+            }
+            assert_eq!(robj_int.as_integer(), Some(5));
+
+            let mut wrong_type_robj = r!(1.0);
+            let wrong_type: Result<&mut i32> = (&mut wrong_type_robj).try_into();
+            assert!(matches!(wrong_type, Err(Error::ExpectedInteger(_))));
+
+            let mut wrong_len_robj = r!([1, 2]);
+            let wrong_len: Result<&mut i32> = (&mut wrong_len_robj).try_into();
+            assert!(matches!(wrong_len, Err(Error::ExpectedScalar(_))));
+
+            let mut na_robj = r!(NA_INTEGER);
+            let na_value: Result<&mut i32> = (&mut na_robj).try_into();
+            assert!(matches!(na_value, Err(Error::MustNotBeNA(_))));
+        }
+    }
+
+    #[test]
+    fn borrow_f64_ref_is_strict_and_scalar() {
+        test! {
+            let robj_real = r!(1.5);
+            let value: &f64 = (&robj_real).try_into().unwrap();
+            assert_eq!(*value, 1.5);
+
+            let wrong_type_robj = r!(1);
+            let wrong_type: Result<&f64> = (&wrong_type_robj).try_into();
+            assert!(matches!(wrong_type, Err(Error::ExpectedReal(_))));
+
+            let wrong_len_robj = r!([1.0, 2.0]);
+            let wrong_len: Result<&f64> = (&wrong_len_robj).try_into();
+            assert!(matches!(wrong_len, Err(Error::ExpectedScalar(_))));
+
+            let na_robj = r!(NA_REAL);
+            let na_value: Result<&f64> = (&na_robj).try_into();
+            assert!(matches!(na_value, Err(Error::MustNotBeNA(_))));
+        }
+    }
+
+    #[test]
+    fn borrow_f64_mut_is_strict_and_scalar() {
+        test! {
+            let mut robj_real = r!(1.5);
+            {
+                let value: &mut f64 = (&mut robj_real).try_into().unwrap();
+                *value = 2.5;
+            }
+            assert_eq!(robj_real.as_real(), Some(2.5));
+
+            let mut wrong_type_robj = r!(1);
+            let wrong_type: Result<&mut f64> = (&mut wrong_type_robj).try_into();
+            assert!(matches!(wrong_type, Err(Error::ExpectedReal(_))));
+
+            let mut wrong_len_robj = r!([1.0, 2.0]);
+            let wrong_len: Result<&mut f64> = (&mut wrong_len_robj).try_into();
+            assert!(matches!(wrong_len, Err(Error::ExpectedScalar(_))));
+
+            let mut na_robj = r!(NA_REAL);
+            let na_value: Result<&mut f64> = (&mut na_robj).try_into();
+            assert!(matches!(na_value, Err(Error::MustNotBeNA(_))));
+        }
     }
 }
