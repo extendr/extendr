@@ -4,7 +4,6 @@ use extendr_ffi::{
     cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
     COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
-mod repeat_into_robj;
 
 /// Returns an `CHARSXP` based on the provided `&str`.
 ///
@@ -167,559 +166,500 @@ where
     }
 }
 
-/// `ToVectorValue` is a trait that allows many different types
-/// to be converted to vectors. It is used as a type parameter
-/// to `collect_robj()`.
-pub trait ToVectorValue {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::NILSXP
-    }
+// ===========================================================
+// RNativeType: Marker trait for R's native vector element types
+// ===========================================================
 
-    fn to_real(&self) -> f64
-    where
-        Self: Sized,
-    {
-        0.
-    }
+/// Marker trait for R's native vector element types.
+///
+/// This trait is implemented directly on the primitive types that R vectors store:
+/// - `f64` for REALSXP (real/numeric vectors)
+/// - `i32` for INTSXP (integer vectors)
+/// - `Rbool` for LGLSXP (logical vectors)
+/// - `u8` for RAWSXP (raw vectors)
+/// - `Rcomplex` for CPLXSXP (complex vectors)
+///
+/// Note: Strings (STRSXP) are handled separately since they store SEXP elements.
+pub trait RNativeType: Copy {
+    const SEXPTYPE: SEXPTYPE;
 
-    fn to_complex(&self) -> Rcomplex
-    where
-        Self: Sized,
-    {
-        Rcomplex { r: 0., i: 0. }
-    }
+    /// Write this value to an R vector at the given index.
+    ///
+    /// # Safety
+    /// - `sexp` must be a vector of `Self::SEXPTYPE`
+    /// - `idx` must be less than the vector's length
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize);
+}
 
-    fn to_integer(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
+impl RNativeType for f64 {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::REALSXP;
 
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        0
-    }
-
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { R_NilValue }
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        *REAL(sexp).add(idx) = self;
     }
 }
 
-impl ToVectorValue for f64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &f64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<f64> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
-    }
-}
-impl ToVectorValue for f32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &f32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<f32> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
+impl RNativeType for i32 {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::INTSXP;
+
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        *INTEGER(sexp).add(idx) = self;
     }
 }
 
-impl ToVectorValue for i64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &i64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<i64> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
-    }
-}
-impl ToVectorValue for u32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &u32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<u32> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
-    }
-}
-impl ToVectorValue for u64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &u64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<u64> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
-    }
-}
-impl ToVectorValue for usize {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        *self as f64
-    }
-}
-impl ToVectorValue for &usize {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        **self as f64
-    }
-}
-impl ToVectorValue for Option<usize> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::REALSXP
-    }
-    fn to_real(&self) -> f64 {
-        if self.is_some() {
-            self.unwrap() as f64
-        } else {
-            unsafe { R_NaReal }
-        }
+impl RNativeType for Rbool {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::LGLSXP;
+
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        *LOGICAL(sexp).add(idx) = self.inner();
     }
 }
 
-impl ToVectorValue for c64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(*self) }
-    }
-}
-impl ToVectorValue for &c64 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(**self) }
-    }
-}
-impl ToVectorValue for Rcplx {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(*self) }
-    }
+impl RNativeType for u8 {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::RAWSXP;
 
-    fn to_real(&self) -> f64
-    where
-        Self: Sized,
-    {
-        0.
-    }
-
-    fn to_integer(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
-
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        0
-    }
-
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { R_NilValue }
-    }
-}
-impl ToVectorValue for &Rcplx {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(**self) }
-    }
-}
-impl ToVectorValue for (f64, f64) {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(*self) }
-    }
-}
-impl ToVectorValue for &(f64, f64) {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::CPLXSXP
-    }
-    fn to_complex(&self) -> Rcomplex {
-        unsafe { std::mem::transmute(**self) }
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        *RAW(sexp).add(idx) = self;
     }
 }
 
-impl ToVectorValue for i8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        *self as i32
-    }
-}
-impl ToVectorValue for &i8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        **self as i32
-    }
-}
-impl ToVectorValue for Option<i8> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap() as i32
-        } else {
-            unsafe { R_NaInt }
-        }
-    }
-}
-impl ToVectorValue for i16 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        *self as i32
-    }
-}
-impl ToVectorValue for &i16 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        **self as i32
-    }
-}
-impl ToVectorValue for Option<i16> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap() as i32
-        } else {
-            unsafe { R_NaInt }
-        }
-    }
-}
-impl ToVectorValue for i32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        *self as i32
-    }
-}
-impl ToVectorValue for &i32 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        **self as i32
-    }
-}
-impl ToVectorValue for Option<i32> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap() as i32
-        } else {
-            unsafe { R_NaInt }
-        }
-    }
-}
-impl ToVectorValue for u16 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        *self as i32
-    }
-}
-impl ToVectorValue for &u16 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        **self as i32
-    }
-}
-impl ToVectorValue for Option<u16> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::INTSXP
-    }
-    fn to_integer(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap() as i32
-        } else {
-            unsafe { R_NaInt }
-        }
+impl RNativeType for Rcomplex {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
+
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        *COMPLEX(sexp).add(idx) = self;
     }
 }
 
-impl ToVectorValue for u8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::RAWSXP
-    }
-
-    fn to_raw(&self) -> u8 {
+// &Rcomplex (Rcomplex itself is handled by blanket impl)
+impl ToRNative for &Rcomplex {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
         *self
     }
 }
 
-impl ToVectorValue for &u8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::RAWSXP
-    }
+// ===========================================================
+// ToRNative: Convert Rust types to R native element types
+// ===========================================================
 
-    fn to_raw(&self) -> u8 {
-        **self
+/// Trait for types that can be converted to an R native element type.
+///
+/// This consolidates the mapping from Rust types to R types and the
+/// conversion logic into a single trait.
+pub trait ToRNative {
+    /// The R native element type this converts to.
+    type Native: RNativeType;
+
+    /// Convert to the native R element type.
+    fn to_r_native(self) -> Self::Native;
+}
+
+/// Backwards-compatible alias for [`ToRNative`].
+#[deprecated(since = "0.8.0", note = "Use ToRNative instead")]
+pub trait ToVectorValue: ToRNative {}
+
+#[allow(deprecated)]
+impl<T: ToRNative> ToVectorValue for T {}
+
+// Blanket impl: any RNativeType converts to itself
+impl<T: RNativeType> ToRNative for T {
+    type Native = T;
+
+    #[inline]
+    fn to_r_native(self) -> Self::Native {
+        self
     }
 }
 
-impl ToVectorValue for &str {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        str_to_character(self.as_ref())
+// ===========================================================
+// fixed_size_collect using ToRNative
+// ===========================================================
+
+fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
+where
+    I: Iterator,
+    I::Item: ToRNative,
+{
+    single_threaded(|| unsafe {
+        let sexptype = <I::Item as ToRNative>::Native::SEXPTYPE;
+        let res = Robj::alloc_vector(sexptype, len);
+        let sexp = res.get();
+
+        for (i, v) in iter.enumerate() {
+            v.to_r_native().write_to_sexp(sexp, i);
+        }
+
+        res
+    })
+}
+
+// ===========================================================
+// Real-like types -> f64
+// ===========================================================
+
+macro_rules! impl_to_r_native_real {
+    ($($t:ty => $convert:expr),* $(,)?) => {
+        $(
+            impl ToRNative for $t {
+                type Native = f64;
+                #[inline]
+                fn to_r_native(self) -> f64 {
+                    $convert(self)
+                }
+            }
+
+            impl ToRNative for &$t {
+                type Native = f64;
+                #[inline]
+                fn to_r_native(self) -> f64 {
+                    $convert(*self)
+                }
+            }
+
+            impl ToRNative for Option<$t> {
+                type Native = f64;
+                #[inline]
+                fn to_r_native(self) -> f64 {
+                    match self {
+                        Some(x) => $convert(x),
+                        None => unsafe { R_NaReal },
+                    }
+                }
+            }
+        )*
     }
 }
-impl ToVectorValue for &&str {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        str_to_character(self.as_ref())
+
+impl_to_r_native_real!(
+    f32   => |x: f32| x as f64,
+    i64   => |x: i64| x as f64,
+    u32   => |x: u32| x as f64,
+    u64   => |x: u64| x as f64,
+    usize => |x: usize| x as f64,
+);
+
+// &f64 (f64 itself is handled by blanket impl)
+impl ToRNative for &f64 {
+    type Native = f64;
+    #[inline]
+    fn to_r_native(self) -> f64 {
+        *self
     }
 }
-impl ToVectorValue for Option<&str> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
+
+// Option<f64> (f64 itself is handled by blanket impl)
+impl ToRNative for Option<f64> {
+    type Native = f64;
+    #[inline]
+    fn to_r_native(self) -> f64 {
+        self.unwrap_or(unsafe { R_NaReal })
     }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        if let Some(s) = self {
-            str_to_character(s.as_ref())
-        } else {
-            unsafe { R_NaString }
+}
+
+// Rfloat -> f64
+impl ToRNative for Rfloat {
+    type Native = f64;
+    #[inline]
+    fn to_r_native(self) -> f64 {
+        self.inner()
+    }
+}
+
+impl ToRNative for &Rfloat {
+    type Native = f64;
+    #[inline]
+    fn to_r_native(self) -> f64 {
+        self.inner()
+    }
+}
+
+// ===========================================================
+// Complex-like types -> Rcomplex
+// ===========================================================
+
+impl ToRNative for c64 {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl ToRNative for &c64 {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
+}
+
+impl ToRNative for Rcplx {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl ToRNative for &Rcplx {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
+}
+
+impl ToRNative for (f64, f64) {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl ToRNative for &(f64, f64) {
+    type Native = Rcomplex;
+    #[inline]
+    fn to_r_native(self) -> Rcomplex {
+        unsafe { std::mem::transmute(*self) }
+    }
+}
+
+// ===========================================================
+// Int-like types -> i32
+// ===========================================================
+
+macro_rules! impl_to_r_native_int {
+    ($($t:ty => $convert:expr),* $(,)?) => {
+        $(
+            impl ToRNative for $t {
+                type Native = i32;
+                #[inline]
+                fn to_r_native(self) -> i32 {
+                    $convert(self)
+                }
+            }
+
+            impl ToRNative for &$t {
+                type Native = i32;
+                #[inline]
+                fn to_r_native(self) -> i32 {
+                    $convert(*self)
+                }
+            }
+
+            impl ToRNative for Option<$t> {
+                type Native = i32;
+                #[inline]
+                fn to_r_native(self) -> i32 {
+                    match self {
+                        Some(x) => $convert(x),
+                        None => unsafe { R_NaInt },
+                    }
+                }
+            }
+        )*
+    }
+}
+
+impl_to_r_native_int!(
+    i8  => |x: i8| x as i32,
+    i16 => |x: i16| x as i32,
+    u16 => |x: u16| x as i32,
+);
+
+// &i32 (i32 itself is handled by blanket impl)
+impl ToRNative for &i32 {
+    type Native = i32;
+    #[inline]
+    fn to_r_native(self) -> i32 {
+        *self
+    }
+}
+
+// Option<i32> (i32 itself is handled by blanket impl)
+impl ToRNative for Option<i32> {
+    type Native = i32;
+    #[inline]
+    fn to_r_native(self) -> i32 {
+        self.unwrap_or(unsafe { R_NaInt })
+    }
+}
+
+// Rint -> i32
+impl ToRNative for Rint {
+    type Native = i32;
+    #[inline]
+    fn to_r_native(self) -> i32 {
+        self.inner()
+    }
+}
+
+impl ToRNative for &Rint {
+    type Native = i32;
+    #[inline]
+    fn to_r_native(self) -> i32 {
+        self.inner()
+    }
+}
+
+// ===========================================================
+// Logical-like types -> Rbool
+// ===========================================================
+
+impl ToRNative for bool {
+    type Native = Rbool;
+    #[inline]
+    fn to_r_native(self) -> Rbool {
+        Rbool::from(self)
+    }
+}
+
+impl ToRNative for &bool {
+    type Native = Rbool;
+    #[inline]
+    fn to_r_native(self) -> Rbool {
+        Rbool::from(*self)
+    }
+}
+
+impl ToRNative for Option<bool> {
+    type Native = Rbool;
+    #[inline]
+    fn to_r_native(self) -> Rbool {
+        match self {
+            Some(b) => Rbool::from(b),
+            None => Rbool::na(),
         }
     }
 }
-impl ToVectorValue for String {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        str_to_character(self.as_ref())
-    }
-}
-impl ToVectorValue for &String {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        str_to_character(self.as_ref())
-    }
-}
-impl ToVectorValue for Option<String> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        if let Some(s) = self {
-            str_to_character(s.as_ref())
-        } else {
-            unsafe { R_NaString }
-        }
+
+// &Rbool (Rbool itself is handled by blanket impl)
+impl ToRNative for &Rbool {
+    type Native = Rbool;
+    #[inline]
+    fn to_r_native(self) -> Rbool {
+        *self
     }
 }
 
-impl ToVectorValue for Rstr {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
+// ===========================================================
+// Raw-like types -> u8
+// ===========================================================
 
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { self.get() }
-    }
-}
-
-impl ToVectorValue for &Rstr {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { self.get() }
+// u8 is handled by blanket impl since u8: RNativeType
+// &u8 needs explicit impl
+impl ToRNative for &u8 {
+    type Native = u8;
+    #[inline]
+    fn to_r_native(self) -> u8 {
+        *self
     }
 }
 
-impl ToVectorValue for Option<Rstr> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
+// ===========================================================
+// String-like types (special handling for STRSXP)
+// ===========================================================
 
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        if let Some(s) = self {
-            unsafe { s.get() }
-        } else {
-            unsafe { R_NaString }
-        }
+/// Wrapper type for string elements in STRSXP vectors.
+/// This is needed because STRSXP stores SEXP (CHARSXP) elements.
+#[derive(Copy, Clone)]
+pub struct RString(pub SEXP);
+
+impl RNativeType for RString {
+    const SEXPTYPE: SEXPTYPE = SEXPTYPE::STRSXP;
+
+    #[inline]
+    unsafe fn write_to_sexp(self, sexp: SEXP, idx: usize) {
+        SET_STRING_ELT(sexp, idx as isize, self.0);
+    }
+}
+
+impl ToRNative for &str {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(str_to_character(self))
+    }
+}
+
+impl ToRNative for &&str {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(str_to_character(self))
+    }
+}
+
+impl ToRNative for Option<&str> {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(match self {
+            Some(s) => str_to_character(s),
+            None => unsafe { R_NaString },
+        })
+    }
+}
+
+impl ToRNative for String {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(str_to_character(self.as_str()))
+    }
+}
+
+impl ToRNative for &String {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(str_to_character(self.as_str()))
+    }
+}
+
+impl ToRNative for Option<String> {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(match self {
+            Some(s) => str_to_character(s.as_str()),
+            None => unsafe { R_NaString },
+        })
+    }
+}
+
+impl ToRNative for Rstr {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(unsafe { self.get() })
+    }
+}
+
+impl ToRNative for &Rstr {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(unsafe { self.get() })
+    }
+}
+
+impl ToRNative for Option<Rstr> {
+    type Native = RString;
+    #[inline]
+    fn to_r_native(self) -> RString {
+        RString(match self {
+            Some(s) => unsafe { s.get() },
+            None => unsafe { R_NaString },
+        })
     }
 }
 
@@ -845,71 +785,11 @@ impl ToVectorValue for Option<bool> {
 
 impl<T> From<&Option<T>> for Robj
 where
-    Option<T>: ToVectorValue + Clone,
+    Option<T>: ToRNative + Clone,
 {
     fn from(value: &Option<T>) -> Self {
         value.clone().into()
     }
-}
-
-// Not thread safe.
-fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
-where
-    I: Iterator,
-    I: Sized,
-    I::Item: ToVectorValue,
-{
-    single_threaded(|| unsafe {
-        // Length of the vector is known in advance.
-        let sexptype = I::Item::sexptype();
-        if sexptype != SEXPTYPE::NILSXP {
-            let res = Robj::alloc_vector(sexptype, len);
-            let sexp = res.get();
-            match sexptype {
-                SEXPTYPE::REALSXP => {
-                    let ptr = REAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_real();
-                    }
-                }
-                SEXPTYPE::CPLXSXP => {
-                    let ptr = COMPLEX(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_complex();
-                    }
-                }
-                SEXPTYPE::INTSXP => {
-                    let ptr = INTEGER(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_integer();
-                    }
-                }
-                SEXPTYPE::LGLSXP => {
-                    let ptr = LOGICAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_logical();
-                    }
-                }
-                SEXPTYPE::STRSXP => {
-                    for (i, v) in iter.enumerate() {
-                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                    }
-                }
-                SEXPTYPE::RAWSXP => {
-                    let ptr = RAW(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_raw();
-                    }
-                }
-                _ => {
-                    panic!("unexpected SEXPTYPE in collect_robj");
-                }
-            }
-            res
-        } else {
-            Robj::from(())
-        }
-    })
 }
 
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
@@ -940,7 +820,7 @@ pub trait RobjItertools: Iterator {
     where
         Self: Iterator,
         Self: Sized,
-        Self::Item: ToVectorValue,
+        Self::Item: ToRNative,
     {
         if let (len, Some(max)) = self.size_hint() {
             if len == max {
@@ -963,7 +843,7 @@ pub trait RobjItertools: Iterator {
     where
         Self: Iterator,
         Self: Sized,
-        Self::Item: ToVectorValue,
+        Self::Item: ToRNative,
         Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
         let mut vector = self.collect_robj();
@@ -986,13 +866,13 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
-// Scalars which are ToVectorValue
+// Scalars which are ToRNative
 impl<T> From<T> for Robj
 where
-    T: ToVectorValue,
+    T: ToRNative,
 {
     fn from(scalar: T) -> Self {
-        Some(scalar).into_iter().collect_robj()
+        fixed_size_collect(std::iter::once(scalar), 1)
     }
 }
 
@@ -1001,8 +881,8 @@ macro_rules! impl_from_as_iterator {
         impl<T> From<$t> for Robj
         where
             $t: RobjItertools,
-            <$t as Iterator>::Item: ToVectorValue,
-            T: ToVectorValue,
+            <$t as Iterator>::Item: ToRNative,
+            T: ToRNative,
         {
             fn from(val: $t) -> Self {
                 val.collect_robj()
@@ -1011,20 +891,9 @@ macro_rules! impl_from_as_iterator {
     };
 }
 
-// impl<T> From<Range<T>> for Robj
-// where
-//     Range<T> : RobjItertools,
-//     <Range<T> as Iterator>::Item: ToVectorValue,
-//     T : ToVectorValue
-// {
-//     fn from(val: Range<T>) -> Self {
-//         val.collect_robj()
-//     }
-// } //
-
 impl<T, const N: usize> From<[T; N]> for Robj
 where
-    T: ToVectorValue,
+    T: ToRNative,
 {
     fn from(val: [T; N]) -> Self {
         fixed_size_collect(val.into_iter(), N)
@@ -1034,7 +903,7 @@ where
 impl<'a, T, const N: usize> From<&'a [T; N]> for Robj
 where
     Self: 'a,
-    &'a T: ToVectorValue + 'a,
+    &'a T: ToRNative + 'a,
 {
     fn from(val: &'a [T; N]) -> Self {
         fixed_size_collect(val.iter(), N)
@@ -1044,21 +913,21 @@ where
 impl<'a, T, const N: usize> From<&'a mut [T; N]> for Robj
 where
     Self: 'a,
-    &'a mut T: ToVectorValue + 'a,
+    &'a mut T: ToRNative + 'a,
 {
     fn from(val: &'a mut [T; N]) -> Self {
         fixed_size_collect(val.iter_mut(), N)
     }
 }
 
-impl<T: ToVectorValue + Clone> From<&Vec<T>> for Robj {
+impl<T: ToRNative + Clone> From<&Vec<T>> for Robj {
     fn from(value: &Vec<T>) -> Self {
         let len = value.len();
         fixed_size_collect(value.iter().cloned(), len)
     }
 }
 
-impl<T: ToVectorValue> From<Vec<T>> for Robj {
+impl<T: ToRNative> From<Vec<T>> for Robj {
     fn from(value: Vec<T>) -> Self {
         let len = value.len();
         fixed_size_collect(value.into_iter(), len)
@@ -1069,7 +938,7 @@ impl<'a, T> From<&'a [T]> for Robj
 where
     Self: 'a,
     T: 'a,
-    &'a T: ToVectorValue,
+    &'a T: ToRNative,
 {
     fn from(val: &'a [T]) -> Self {
         val.iter().collect_robj()
