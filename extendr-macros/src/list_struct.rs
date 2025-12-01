@@ -26,10 +26,10 @@ pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream
         if is_tuple_struct {
             let field_name = syn::Index::from(id_field);
             let field_str = format!(".{id_field}");
-            // This is like `value$.0` in R
+            // This is like `value[[id_field]]` in R
             tokens.push(quote!(
-               #field_name: value
-                    .dollar(#field_str)?
+                #field_name: value
+                    .elt(#id_field)?
                     .try_into()
                     .map_err(|error| extendr_api::error::Error::Other(format!(
                         "failed to convert tuple field `{}` on `{}`: {}",
@@ -62,6 +62,7 @@ pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream
             type Error = extendr_api::Error;
 
             fn try_from(value: &extendr_api::Robj) -> extendr_api::Result<Self> {
+                let value: List = value.try_into()?;
                 Ok(#struct_name {
                     #(#tokens),*
                 })
@@ -72,6 +73,7 @@ pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream
             type Error = extendr_api::Error;
 
             fn try_from(value: extendr_api::Robj) -> extendr_api::Result<Self> {
+                let value: List = value.try_into()?;
                 Ok(#struct_name {
                     #(#tokens),*
                 })
