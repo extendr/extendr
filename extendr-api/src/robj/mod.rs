@@ -170,6 +170,9 @@ pub trait Slices: GetSexp {
     /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
+        if len == 0 {
+            return &[];
+        }
         let data = dataptr(self.get()).cast::<T>();
         std::slice::from_raw_parts(data, len)
     }
@@ -183,7 +186,12 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
+        if len == 0 {
+            return &mut [];
+        }
         let data = dataptr(self.get_mut()).cast::<T>().cast_mut();
+        debug_assert_ne!(data as usize, 1, "unexpected sentinel pointer for non-empty slice");
+        debug_assert_eq!((data as usize) % std::mem::align_of::<T>(), 0);
         std::slice::from_raw_parts_mut(data, len)
     }
 }

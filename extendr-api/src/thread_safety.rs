@@ -91,8 +91,8 @@ where
     }
 
     single_threaded(|| unsafe {
-        let fun_ptr = std::ptr::from_ref(&do_call::<F>).cast();
-        let clean_ptr = std::ptr::from_ref(&do_cleanup).cast();
+        let fun_ptr = (*std::ptr::from_ref(&do_call::<F>)) as *const ();
+        let clean_ptr = (*std::ptr::from_ref(&do_cleanup)) as *const ();
         let mut x = false;
         let fun = std::mem::transmute::<
             *const (),

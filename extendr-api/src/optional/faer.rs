@@ -198,7 +198,7 @@ mod test {
     }
 
     #[test]
-    fn test_faer_mat_ref_to_rmatrix() {
+    fn test_faer_mat_ref_to_rmatrix() -> Result<()> {
         extendr_engine::with_r(|| {
             let vec: Vec<f64> = (1..13).map(f64::from).collect();
             let a = mat![
@@ -209,7 +209,8 @@ mod test {
             ];
             let rmatrix: RMatrix<f64> = a.as_ref().into();
             assert_eq!(rmatrix.as_real_slice().expect("slice"), &vec);
-        });
+            Ok(())
+        })
     }
 
     #[test]
