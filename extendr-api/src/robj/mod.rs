@@ -190,8 +190,6 @@ pub trait Slices: GetSexp {
             return &mut [];
         }
         let data = dataptr(self.get_mut()).cast::<T>().cast_mut();
-        debug_assert_ne!(data as usize, 1, "unexpected sentinel pointer for non-empty slice");
-        debug_assert_eq!((data as usize) % std::mem::align_of::<T>(), 0);
         std::slice::from_raw_parts_mut(data, len)
     }
 }

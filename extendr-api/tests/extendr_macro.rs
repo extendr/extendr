@@ -205,8 +205,7 @@ fn test_metadata() {
             c_name: "wrap__test_metadata_1",
             args,
             return_type: "i32",
-            func_ptr: unsafe { *std::ptr::from_ref(&wrap__test_metadata_1) }
-                as *const ()
+            func_ptr: unsafe { *std::ptr::from_ref(&wrap__test_metadata_1) } as *const ()
                 as *const u8,
             hidden: false,
             invisible: None,
