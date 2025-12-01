@@ -94,13 +94,13 @@ pub type RMatrix5D<T> = RArray<T, 5>;
 
 impl<T, const NDIM: usize> RArray<T, NDIM>
 where
-    T: ToVectorValue,
+    T: Default,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     pub fn new_array(dim: [usize; NDIM]) -> Self {
-        let sexptype = T::sexptype();
         let len = dim.iter().product();
-        let mut robj = Robj::alloc_vector(sexptype, len);
+        let mut robj: Robj = std::iter::repeat_with(T::default).take(len).collect();
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
     }
@@ -108,22 +108,26 @@ where
 
 impl<T> RMatrix<T>
 where
-    T: ToVectorValue,
+    T: Default,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with arbitrary entries. To initialize a matrix containing only `NA`
     /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
-        let sexptype = T::sexptype();
-        let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
-        RArray::from_parts(matrix)
+        let len = nrow * ncol;
+        let mut robj: Robj = std::iter::repeat_with(T::default).take(len).collect();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), [nrow, ncol])
+            .unwrap();
+        RArray::from_parts(robj)
     }
 }
 
 impl<T> RMatrix<T>
 where
-    T: ToVectorValue + CanBeNA,
+    T: Default + CanBeNA,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
@@ -242,7 +246,7 @@ where
 
 impl<T> RColumn<T>
 where
-    T: ToVectorValue,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Make a new column type.
@@ -261,7 +265,7 @@ where
 
 impl<T> RMatrix<T>
 where
-    T: ToVectorValue,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Create a new matrix wrapper.
@@ -271,7 +275,6 @@ where
     /// * `nrows` - the number of rows the returned matrix will have
     /// * `ncols` - the number of columns the returned matrix will have
     /// * `f` - a function that will be called for each entry of the matrix in order to populate it with values.
-    ///   It must return a scalar value that can be converted to an R scalar, such as `i32`, `u32`, or `f64`, i.e. see [ToVectorValue].
     ///   It accepts two arguments:
     ///     * `r` - the current row of the entry we are creating
     ///     * `c` - the current column of the entry we are creating
@@ -304,7 +307,7 @@ where
 
 impl<T> RMatrix3D<T>
 where
-    T: ToVectorValue,
+    Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     pub fn new_matrix3d<F: Clone + FnMut(usize, usize, usize) -> T>(

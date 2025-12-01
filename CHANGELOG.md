@@ -17,6 +17,7 @@
 
 ### Changed
 
+- **Breaking** removes the `ToVectorValue` trait; conversions now use explicit `From`/`FromIterator` implementations for scalars and iterators. [[#1019]](https://github.com/extendr/extendr/pull/1019)
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
@@ -35,7 +36,6 @@
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
 `TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
-- Implements ToVectorValue for `Rstr` enabling the creating of character matrices
 - Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present [[#864]](https://github.com/extendr/extendr/pull/864)
