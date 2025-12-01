@@ -25,6 +25,7 @@
 - **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
 - **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types.
   [[#1020]](https://github.com/extendr/extendr/pull/1020)
+- Removed `ToVectorValue` completely. [[#1019]](https://github.com/extendr/extendr/pull/1019)
 
 ### Fixed
 
