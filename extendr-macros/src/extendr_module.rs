@@ -62,7 +62,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 c_name: #wrap_module_metadata_name_str,
                 args: Vec::new(),
                 return_type: "Metadata",
-                func_ptr: #wrap_module_metadata_name as * const u8,
+                func_ptr: unsafe { *std::ptr::from_ref(&#wrap_module_metadata_name) }
+                    as *const ()
+                    as *const u8,
                 hidden: true,
                 invisible: None,
             });
@@ -81,7 +83,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 c_name: #wrap_make_module_wrappers_string,
                 args,
                 return_type: "String",
-                func_ptr: #wrap_make_module_wrappers as * const u8,
+                func_ptr: unsafe { *std::ptr::from_ref(&#wrap_make_module_wrappers) }
+                    as *const ()
+                    as *const u8,
                 hidden: true,
                 invisible: None,
             });

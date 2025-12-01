@@ -132,14 +132,19 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// This function dereferences a raw SEXP pointer.
     /// The caller must ensure that `x` is a valid SEXP pointer.
     unsafe fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
+        // R returns a sentinel 0x1 pointer for zero-length vectors; use a safe dangling
+        // pointer instead to keep Rust slices well-defined.
+        if XLENGTH(x) == 0 {
+            return std::ptr::NonNull::<u8>::dangling().as_ptr();
+        }
         single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
                 R_set_altrep_data2(x, data2);
-                dataptr(data2) as *mut u8
+                dataptr(data2).cast::<u8>().cast_mut()
             } else {
-                dataptr(data2) as *mut u8
+                dataptr(data2).cast::<u8>().cast_mut()
             }
         })
     }

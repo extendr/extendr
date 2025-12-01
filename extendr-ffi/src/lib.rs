@@ -521,11 +521,34 @@ mod tests {
     // Generates asciiz.
     macro_rules! cstr_mut {
         ($s: expr) => {
-            std::ptr::from_mut(&mut concat!($s, "\0")).cast::<raw::c_char>()
+            concat!($s, "\0")
+                .as_ptr()
+                .cast::<raw::c_char>()
+                .cast_mut()
         };
     }
 
+    #[cfg(all(target_os = "windows", target_arch = "x86"))]
+    static mut R_ARGV: [*mut raw::c_char; 6] = [
+        cstr_mut!("R"),
+        cstr_mut!("--arch=i386"),
+        cstr_mut!("--slave"),
+        cstr_mut!("--no-save"),
+        cstr_mut!("--vanilla"),
+        std::ptr::null_mut(),
+    ];
+
+    #[cfg(not(all(target_os = "windows", target_arch = "x86")))]
+    static mut R_ARGV: [*mut raw::c_char; 5] = [
+        cstr_mut!("R"),
+        cstr_mut!("--slave"),
+        cstr_mut!("--no-save"),
+        cstr_mut!("--vanilla"),
+        std::ptr::null_mut(),
+    ];
+
     // Thanks to @qinwf and @scottmmjackson for showing the way here.
+    #[allow(static_mut_refs)]
     fn start_R() {
         unsafe {
             if std::env::var("R_HOME").is_err() {
@@ -539,21 +562,9 @@ mod tests {
 
             //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
             if cfg!(target_os = "windows") && cfg!(target_arch = "x86") {
-                Rf_initialize_R(
-                    4,
-                    [
-                        cstr_mut!("R"),
-                        cstr_mut!("--arch=i386"),
-                        cstr_mut!("--slave"),
-                        cstr_mut!("--no-save"),
-                    ]
-                    .as_mut_ptr(),
-                );
+                Rf_initialize_R(5, R_ARGV.as_mut_ptr());
             } else {
-                Rf_initialize_R(
-                    3,
-                    [cstr_mut!("R"), cstr_mut!("--slave"), cstr_mut!("--no-save")].as_mut_ptr(),
-                );
+                Rf_initialize_R(4, R_ARGV.as_mut_ptr());
             }
 
             // In case you are curious.
