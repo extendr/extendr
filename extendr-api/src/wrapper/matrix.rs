@@ -90,25 +90,36 @@ pub type RMatrix3D<T> = RArray<T, 3>;
 pub type RMatrix4D<T> = RArray<T, 4>;
 pub type RMatrix5D<T> = RArray<T, 5>;
 
+fn dims_to_robj(dims: &[usize]) -> Robj {
+    dims.iter()
+        .map(|&d| i32::try_from(d).expect("dimension does not fit in i32"))
+        .collect_robj()
+}
+
 // TODO: The function name should be cleaner
 
 impl<T, const NDIM: usize> RArray<T, NDIM>
 where
-    T: Default,
+    T: Default + 'static,
     Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
     pub fn new_array(dim: [usize; NDIM]) -> Self {
         let len = dim.iter().product();
-        let mut robj: Robj = std::iter::repeat_with(T::default).take(len).collect();
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        let mut values = Vec::with_capacity(len);
+        for _ in 0..len {
+            values.push(T::default());
+        }
+        let mut robj: Robj = values.into();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dims_to_robj(&dim))
+            .unwrap();
         RArray::from_parts(robj)
     }
 }
 
 impl<T> RMatrix<T>
 where
-    T: Default,
+    T: Default + 'static,
     Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
@@ -117,8 +128,12 @@ where
     /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let len = nrow * ncol;
-        let mut robj: Robj = std::iter::repeat_with(T::default).take(len).collect();
-        robj.set_attrib(wrapper::symbol::dim_symbol(), [nrow, ncol])
+        let mut values = Vec::with_capacity(len);
+        for _ in 0..len {
+            values.push(T::default());
+        }
+        let mut robj: Robj = values.into();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dims_to_robj(&[nrow, ncol]))
             .unwrap();
         RArray::from_parts(robj)
     }
@@ -126,7 +141,7 @@ where
 
 impl<T> RMatrix<T>
 where
-    T: Default + CanBeNA,
+    T: Default + CanBeNA + 'static,
     Robj: FromIterator<T>,
     Robj: for<'a> AsTypedSlice<'a, T>,
 {
@@ -138,13 +153,9 @@ where
     pub fn new_with_na(nrow: usize, ncol: usize) -> Self {
         let mut matrix = Self::new(nrow, ncol);
         if nrow != 0 || ncol != 0 {
-            matrix
-                .as_typed_slice_mut()
-                .unwrap()
-                .iter_mut()
-                .for_each(|x| {
-                    *x = T::na();
-                });
+            for value in matrix.as_typed_slice_mut().unwrap().iter_mut() {
+                *value = T::na();
+            }
         }
         matrix
     }
@@ -252,8 +263,8 @@ where
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
         let mut robj = (0..nrows).map(f).collect_robj();
-        let dim = [nrows];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dims_to_robj(&[nrows]))
+            .unwrap();
         RArray::from_parts(robj)
     }
 
@@ -289,8 +300,8 @@ where
                 (0..nrows).map(move |r| g(r, c))
             })
             .collect_robj();
-        let dim = [nrows, ncols];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(wrapper::symbol::dim_symbol(), dims_to_robj(&[nrows, ncols]))
+            .unwrap();
         RArray::from_parts(robj)
     }
 
@@ -325,8 +336,11 @@ where
                 })
             })
             .collect_robj();
-        let dim = [nrows, ncols, nmatrix];
-        robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
+        robj.set_attrib(
+            wrapper::symbol::dim_symbol(),
+            dims_to_robj(&[nrows, ncols, nmatrix]),
+        )
+        .unwrap();
         RArray::from_parts(robj)
     }
 

@@ -57,6 +57,7 @@
 #[allow(non_snake_case)]
 mod R;
 mod call;
+mod coerce_native;
 mod dataframe;
 mod extendr_conversion;
 mod extendr_function;
@@ -65,6 +66,7 @@ mod extendr_module;
 mod extendr_options;
 mod list;
 mod list_struct;
+mod native_slice;
 mod pairlist;
 mod pairs;
 mod wrappers;
@@ -165,6 +167,18 @@ pub fn list(item: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn call(item: TokenStream) -> TokenStream {
     call::call(item)
+}
+
+/// Derive marker to coerce a newtype into an R-native slice element type.
+#[proc_macro_derive(CoerceNative)]
+pub fn derive_coerce_native(item: TokenStream) -> TokenStream {
+    coerce_native::coerce_native(item)
+}
+
+/// Derive marker indicating a newtype can be copied to an R vector buffer like its inner field.
+#[proc_macro_derive(RSliceNative)]
+pub fn derive_rslice_native(item: TokenStream) -> TokenStream {
+    native_slice::rslice_native(item)
 }
 
 /// Execute R code by parsing and evaluating tokens.
