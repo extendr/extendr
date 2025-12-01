@@ -3,19 +3,32 @@ use crate::*;
 use extendr_ffi::{
     R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_error, Rf_protect, Rf_unprotect,
 };
-use std::cell::RefCell;
+use std::cell::{Cell, UnsafeCell};
 use std::sync::{Mutex, MutexGuard};
 
 static R_API_LOCK: Mutex<()> = Mutex::new(());
 
 struct State {
-    depth: u32,
-    guard: Option<MutexGuard<'static, ()>>,
+    depth: Cell<u32>,
+    guard: UnsafeCell<Option<MutexGuard<'static, ()>>>,
+}
+
+impl State {
+    #[inline]
+    unsafe fn guard_mut(&self) -> &mut Option<MutexGuard<'static, ()>> {
+        self.guard
+            .get()
+            .as_mut()
+            .expect("the reentrant guard state is `NULL`")
+    }
 }
 
 thread_local! {
-    static R_API_STATE: RefCell<State> = const {
-        RefCell::new(State { depth: 0, guard: None })
+    static R_API_STATE: State = const {
+            State {
+                depth: Cell::new(0),
+                guard: UnsafeCell::new(None),
+        }
     };
 }
 
@@ -24,16 +37,20 @@ struct RApiGuard;
 impl Drop for RApiGuard {
     fn drop(&mut self) {
         // RAII exit path (normal return or Rust panic)
-        R_API_STATE.with(|cell| {
-            let mut st = cell.borrow_mut();
-            if st.depth == 0 {
+        R_API_STATE.with(|st| {
+            let depth = st.depth.get();
+            if depth == 0 {
                 return;
             }
 
-            st.depth -= 1;
-            if st.depth == 0 {
+            let new_depth = depth - 1;
+            st.depth.set(new_depth);
+
+            if new_depth == 0 {
                 // dropping the guard here unlocks the mutex
-                st.guard = None;
+                unsafe {
+                    *st.guard_mut() = None;
+                }
             }
         });
     }
@@ -45,13 +62,15 @@ where
     F: FnOnce() -> R,
 {
     // Enter: take lock on first entry in this thread
-    R_API_STATE.with(|cell| {
-        let mut st = cell.borrow_mut();
-        if st.depth == 0 {
+    R_API_STATE.with(|st| {
+        let depth = st.depth.get();
+        if depth == 0 {
             let g = R_API_LOCK.lock().unwrap_or_else(|p| p.into_inner());
-            st.guard = Some(g);
+            unsafe {
+                *st.guard_mut() = Some(g);
+            }
         }
-        st.depth += 1;
+        st.depth.set(depth + 1);
     });
 
     let _guard = RApiGuard; // RAII for normal/panic paths
@@ -61,11 +80,11 @@ where
 
 /// Best-effort reset for this thread after a longjmp.
 pub fn reset_r_api_for_thread() {
-    R_API_STATE.with(|cell| {
-        let mut st = cell.borrow_mut();
-        st.depth = 0;
-        // Setting to None drops the MutexGuard, unlocking the mutex if needed.
-        st.guard = None;
+    R_API_STATE.with(|st| {
+        st.depth.set(0);
+        unsafe {
+            *st.guard_mut() = None;
+        }
     });
 }
 
@@ -74,7 +93,7 @@ thread_local! {
     // Mutable TLS buffer to keep the error message alive across the R longjmp.
     // Using UnsafeCell avoids RefCell borrow bookkeeping, which would otherwise
     // remain "borrowed" if Rf_error longjmps past the destructor.
-    static R_ERROR_BUF: std::cell::UnsafeCell<Option<CString>> = const { std::cell::UnsafeCell::new(None) };
+    static R_ERROR_BUF: std::cell::UnsafeCell<Option<std::ffi::CString>> = const { std::cell::UnsafeCell::new(None) };
 }
 
 static RF_ERROR_FORMAT: &std::ffi::CStr =
@@ -86,7 +105,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let mut cstr_ptr: *const std::os::raw::c_char = std::ptr::null();
     R_ERROR_BUF.with(|slot| unsafe {
         let buf = &mut *slot.get();
-        *buf = Some(CString::new(msg).unwrap());
+        *buf = Some(std::ffi::CString::new(msg).unwrap());
         cstr_ptr = buf.as_ref().unwrap().as_ptr();
     });
 
