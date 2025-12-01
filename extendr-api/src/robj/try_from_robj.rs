@@ -206,7 +206,7 @@ impl_scalar_borrow!(Rcplx, ExpectedComplex, true, |v: &Rcplx| {
     let im = v.im().0;
     re.is_nan() || im.is_nan() || re.is_na() || im.is_na()
 });
-impl_scalar_borrow!(c64, ExpectedComplex, true, |v: &c64| {
+impl_scalar_borrow!(c64, ExpectedComplex, false, |v: &c64| {
     let rc: Rcplx = (*v).into();
     let re = rc.re().0;
     let im = rc.im().0;
