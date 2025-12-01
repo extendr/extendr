@@ -16,7 +16,7 @@ use extendr_ffi::Rcomplex;
 /// * `$synonym_type` - A type that has a `ToVectorValue`-impl, and an `inner`-method.
 ///
 /// Requirements: `$type` must have an `inner`-method to extract the
-/// wrapped value. It suffices that `$type` implements `Scalar<T>`.
+/// wrapped value.
 ///
 /// Example usage:
 ///
@@ -42,42 +42,42 @@ macro_rules! impl_synonym_type {
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_real(&self.inner())
+                <$synonym_type as ToVectorValue>::to_real(&self.0)
             }
 
             fn to_complex(&self) -> Rcomplex
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_complex(&self.inner())
+                <$synonym_type as ToVectorValue>::to_complex(&self.0)
             }
 
             fn to_integer(&self) -> i32
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_integer(&self.inner())
+                <$synonym_type as ToVectorValue>::to_integer(&self.0)
             }
 
             fn to_logical(&self) -> i32
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_logical(&self.inner())
+                <$synonym_type as ToVectorValue>::to_logical(&self.0)
             }
 
             fn to_raw(&self) -> u8
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_raw(&self.inner())
+                <$synonym_type as ToVectorValue>::to_raw(&self.0)
             }
 
             fn to_sexp(&self) -> SEXP
             where
                 Self: Sized,
             {
-                <$synonym_type as ToVectorValue>::to_sexp(&self.inner())
+                <$synonym_type as ToVectorValue>::to_sexp(&self.0)
             }
         }
     };

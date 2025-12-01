@@ -33,8 +33,8 @@ fn new_usize(robj: Integers) -> Altrep {
         .iter()
         .map(|x| match &x {
             _ if x.is_na() => None,
-            _ if x.inner() < 0 => None,
-            _ => Some(x.inner() as usize),
+            _ if x.0 < 0 => None,
+            _ => Some(x.0 as usize),
         })
         .collect();
 

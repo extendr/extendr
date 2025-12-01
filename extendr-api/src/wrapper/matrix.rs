@@ -637,6 +637,8 @@ impl<T, const NDIM: usize> From<Option<RArray<T, NDIM>>> for Robj {
 
 #[cfg(test)]
 mod tests {
+    use std::error::Error;
+
     use super::*;
     use crate as extendr_api;
     use extendr_engine::with_r;
@@ -644,7 +646,7 @@ mod tests {
     use prelude::{Rcplx, Rfloat, Rint};
 
     #[test]
-    fn test_empty_matrix_new() {
+    fn test_empty_matrix_new() -> std::result::Result<(), Box<dyn Error>> {
         with_r(|| {
             // These are arbitrarily filled. We cannot create assertions for them.
             // let m: RMatrix<Rbyte> = RMatrix::new(5, 2); //   Error: Error: unimplemented type 'char' in 'eval'
@@ -672,7 +674,8 @@ mod tests {
 
             let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
-        });
+            Ok(())
+        })
     }
 
     #[test]

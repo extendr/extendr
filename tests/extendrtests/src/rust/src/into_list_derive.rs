@@ -1,3 +1,5 @@
+use std::f64;
+
 use extendr_api::prelude::*;
 
 // Test struct with basic types

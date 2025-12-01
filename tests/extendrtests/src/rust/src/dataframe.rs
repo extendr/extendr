@@ -18,6 +18,7 @@ fn test_derive_into_dataframe() -> Dataframe<MyStruct> {
             y: "xyz".into(),
         },
     ];
+
     v.into_dataframe().unwrap()
 }
 
