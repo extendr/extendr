@@ -142,6 +142,11 @@ pub struct Rcomplex {
     pub i: f64,
 }
 
+#[cfg(feature = "bytemuck")]
+unsafe impl bytemuck::Zeroable for Rcomplex {}
+#[cfg(feature = "bytemuck")]
+unsafe impl bytemuck::Pod for Rcomplex {}
+
 #[doc = "R_xlen_t is defined as int on 32-bit platforms, and\n that confuses Rust. Keeping it always as ptrdiff_t works\n fine even on 32-bit.\n <div rustbindgen replaces=\"R_xlen_t\"></div>"]
 pub type R_xlen_t = isize;
 

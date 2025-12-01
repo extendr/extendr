@@ -34,13 +34,25 @@ pub(crate) fn rslice_native(input: TokenStream) -> TokenStream {
 
     TokenStream::from(quote! {
         impl extendr_api::robj::into_robj::RNativeType for #ident {
+            type Raw = <#field_ty as extendr_api::robj::into_robj::RNativeType>::Raw;
             const SEXPTYPE: extendr_api::SEXPTYPE =
                 <#field_ty as extendr_api::robj::into_robj::RNativeType>::SEXPTYPE;
-            const PTR: unsafe extern "C" fn(extendr_api::SEXP) -> *mut Self = |sexp| {
-                <#field_ty as extendr_api::robj::into_robj::RNativeType>::PTR(sexp).cast()
-            };
+            const RAW_PTR: unsafe extern "C" fn(extendr_api::SEXP) -> *mut Self::Raw =
+                <#field_ty as extendr_api::robj::into_robj::RNativeType>::RAW_PTR;
         }
 
         impl extendr_api::robj::into_robj::RSliceNative for #ident {}
+
+        impl extendr_api::robj::into_robj::CastRawSlice for #ident {
+            fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self] {
+                let inner: &mut [#field_ty] =
+                    <#field_ty as extendr_api::robj::into_robj::CastRawSlice>::cast_raw_mut(raw);
+                let len = inner.len();
+                let ptr = inner.as_mut_ptr() as *mut Self;
+                // SAFETY: #ident is a single-field newtype so it has the same layout as the
+                // wrapped field type.
+                unsafe { std::slice::from_raw_parts_mut(ptr, len) }
+            }
+        }
     })
 }

@@ -1,0 +1,13 @@
+error: `CanBeNA` derive only supports newtype structs with a single field
+ --> tests/cases/case-canbena-derive.rs:5:1
+  |
+5 | struct TwoFields(Rint, Rint);
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: `CanBeNA` derive is only available for structs
+  --> tests/cases/case-canbena-derive.rs:8:1
+   |
+ 8 | / enum BadEnum {
+ 9 | |     A(Rint),
+10 | | }
+   | |_^

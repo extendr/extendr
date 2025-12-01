@@ -39,3 +39,24 @@ fn test_float_not_na_is_not_na() {
         assert!(!f64::MIN_POSITIVE.is_na());
     }
 }
+
+#[derive(CanBeNA, Copy, Clone, Debug, Default)]
+#[repr(transparent)]
+struct WrappedFloat(Rfloat);
+
+#[derive(CanBeNA, Copy, Clone, Debug, Default)]
+#[repr(transparent)]
+struct NamedInt {
+    value: Rint,
+}
+
+#[test]
+fn test_canbena_derives_delegate_to_inner() {
+    test! {
+        assert!(WrappedFloat::na().is_na());
+        assert!(NamedInt::na().is_na());
+
+        assert!(!WrappedFloat(Rfloat::from(1.5)).is_na());
+        assert!(!NamedInt { value: Rint::from(2) }.is_na());
+    }
+}

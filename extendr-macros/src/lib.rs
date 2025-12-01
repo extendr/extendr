@@ -57,6 +57,7 @@
 #[allow(non_snake_case)]
 mod R;
 mod call;
+mod canbena;
 mod coerce_native;
 mod dataframe;
 mod extendr_conversion;
@@ -173,6 +174,12 @@ pub fn call(item: TokenStream) -> TokenStream {
 #[proc_macro_derive(CoerceNative)]
 pub fn derive_coerce_native(item: TokenStream) -> TokenStream {
     coerce_native::coerce_native(item)
+}
+
+/// Derive a `CanBeNA` implementation by delegating to the inner field.
+#[proc_macro_derive(CanBeNA)]
+pub fn derive_canbena(item: TokenStream) -> TokenStream {
+    canbena::canbena(item)
 }
 
 /// Derive marker indicating a newtype can be copied to an R vector buffer like its inner field.
