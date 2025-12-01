@@ -17,7 +17,7 @@ use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 pub struct Rint(pub i32);
 
 impl Rint {
-    fn new(val: i32) -> Self {
+    pub fn new(val: i32) -> Self {
         Rint(val)
     }
 
