@@ -3,6 +3,14 @@ use crate::conversions::try_into_int::ConversionError;
 use crate::scalar::*;
 use crate::*;
 
+fn hash_obj(value: &Robj) -> u64 {
+    use std::hash::{Hash, Hasher};
+
+    let mut hasher = std::hash::DefaultHasher::new();
+    value.hash(&mut hasher);
+    hasher.finish()
+}
+
 #[test]
 fn test_try_from_robj() {
     test! {
@@ -251,6 +259,51 @@ fn output_iterator_test() {
             .map(|x| format!("{}", x))
             .collect_robj();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
+    }
+}
+
+#[test]
+fn hash_handles_numeric_edge_cases() {
+    test! {
+        let zero = r!(0.0);
+        let neg_zero = r!(-0.0);
+        assert_eq!(zero, neg_zero);
+        assert_eq!(hash_obj(&zero), hash_obj(&neg_zero));
+
+        let nan1 = r!(f64::NAN);
+        let nan2 = r!(f64::NAN);
+        assert_eq!(nan1, nan2);
+        assert_eq!(hash_obj(&nan1), hash_obj(&nan2));
+
+        let na_real = r!(NA_REAL);
+        let na_real_2 = r!(NA_REAL);
+        assert_eq!(na_real, na_real_2);
+        assert_eq!(hash_obj(&na_real), hash_obj(&na_real_2));
+    }
+}
+
+#[test]
+fn hash_handles_recursive_lists() {
+    test! {
+        let x = R!(r#"local({ x <- list(); x[[1]] <- x; x })"#)?;
+        let y = R!(r#"local({ x <- list(); x[[1]] <- x; x })"#)?;
+        assert_eq!(x, y);
+        assert_eq!(hash_obj(&x), hash_obj(&y));
+    }
+}
+
+#[test]
+fn hash_functions_track_environment() {
+    test! {
+        let f1 = R!("function(x) x + 1")?;
+        let f2 = R!("function(x) x + 1")?;
+        assert_eq!(f1, f2);
+        assert_eq!(hash_obj(&f1), hash_obj(&f2));
+
+        let g1 = R!(r#"local({ y <- 1; function(x) x + y })"#)?;
+        let g2 = R!(r#"local({ y <- 1; function(x) x + y })"#)?;
+        assert_ne!(g1, g2);
+        assert_ne!(hash_obj(&g1), hash_obj(&g2));
     }
 }
 
