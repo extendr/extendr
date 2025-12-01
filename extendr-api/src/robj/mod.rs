@@ -11,7 +11,6 @@
 
 use std::collections::HashMap;
 use std::iter::IntoIterator;
-use std::ops::{Range, RangeInclusive};
 use std::os::raw;
 
 use extendr_ffi::{
@@ -944,7 +943,8 @@ pub trait Attributes: Types + Length {
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
-        T::Item: ToVectorValue + AsRef<str>,
+        Robj: FromIterator<T::Item>,
+        T::Item: AsRef<str>,
     {
         let iter = names.into_iter();
         let robj = iter.collect_robj();
@@ -1026,7 +1026,8 @@ pub trait Attributes: Types + Length {
     where
         T: IntoIterator,
         T::IntoIter: ExactSizeIterator,
-        T::Item: ToVectorValue + AsRef<str>,
+        Robj: FromIterator<T::Item>,
+        T::Item: AsRef<str>,
     {
         let iter = class.into_iter();
         self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())

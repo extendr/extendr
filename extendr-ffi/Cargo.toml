@@ -11,4 +11,8 @@ links = "R"
 
 [features]
 default = []
+bytemuck = ["dep:bytemuck"]
 non-api = []
+
+[dependencies]
+bytemuck = { version = "1.24.0", features = ["min_const_generics", "derive", "must_cast"], optional = true }

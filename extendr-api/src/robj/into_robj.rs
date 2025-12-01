@@ -4,7 +4,11 @@ use extendr_ffi::{
     cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
     COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
-mod repeat_into_robj;
+
+#[cfg(not(feature = "bytemuck"))]
+compile_error!("The `bytemuck` feature must remain enabled for extendr-api");
+
+use bytemuck::{must_cast_slice_mut, Pod, Zeroable};
 
 /// Returns an `CHARSXP` based on the provided `&str`.
 ///
@@ -167,286 +171,779 @@ where
     }
 }
 
-/// `ToVectorValue` is a trait that allows many different types
-/// to be converted to vectors. It is used as a type parameter
-/// to `collect_robj()`.
-pub trait ToVectorValue {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::NILSXP
-    }
+#[allow(non_snake_case)]
+extern "C" fn COMPLEX_AS_RCPLX(sexp: SEXP) -> *mut Rcplx {
+    unsafe { COMPLEX(sexp).cast() }
+}
 
-    fn to_real(&self) -> f64
-    where
-        Self: Sized,
-    {
-        0.
-    }
+#[allow(non_snake_case)]
+extern "C" fn COMPLEX_AS_C64(sexp: SEXP) -> *mut c64 {
+    unsafe { COMPLEX(sexp).cast() }
+}
 
-    fn to_complex(&self) -> Rcomplex
-    where
-        Self: Sized,
-    {
-        Rcomplex { r: 0., i: 0. }
-    }
+#[allow(non_snake_case)]
+extern "C" fn COMPLEX_AS_FLOAT_TUPLE(sexp: SEXP) -> *mut (f64, f64) {
+    unsafe { COMPLEX(sexp).cast() }
+}
 
-    fn to_integer(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
+pub trait RNativeType: Copy {
+    type Raw: Copy;
+    const SEXPTYPE: SEXPTYPE;
+    const RAW_PTR: unsafe extern "C" fn(SEXP) -> *mut Self::Raw;
+}
 
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        i32::MIN
-    }
+pub trait RSliceNative: RNativeType {}
 
-    fn to_raw(&self) -> u8
-    where
-        Self: Sized,
-    {
-        0
-    }
+pub trait CoerceNative {
+    type Target: RSliceNative + CastRawSlice;
+    fn coerce(&self) -> Self::Target;
+}
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rbool {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rbool {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rint {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rint {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rfloat {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rfloat {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Zeroable for Rcplx {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Pod for Rcplx {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Zeroable for c64 {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Pod for c64 {}
 
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { R_NilValue }
+pub trait CastRawSlice: RNativeType {
+    fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self];
+}
+
+macro_rules! impl_cast_raw_slice_copy {
+    ($($t:ty),+ $(,)?) => {$(
+        impl CastRawSlice for $t {
+            fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self] {
+                must_cast_slice_mut(raw)
+            }
+        }
+    )+};
+}
+
+macro_rules! impl_cast_raw_slice_identity {
+    ($($t:ty),+ $(,)?) => {$(
+        impl CastRawSlice for $t {
+            fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self] {
+                raw
+            }
+        }
+    )+};
+}
+
+macro_rules! impl_rnative_type {
+    ($ty:ty, $raw:ty, $sexp:expr, $ptr:expr) => {
+        impl RNativeType for $ty {
+            type Raw = $raw;
+            const SEXPTYPE: SEXPTYPE = $sexp;
+            const RAW_PTR: unsafe extern "C" fn(SEXP) -> *mut Self::Raw = $ptr;
+        }
+
+        impl RSliceNative for $ty {}
+    };
+}
+
+impl_rnative_type!(f64, f64, SEXPTYPE::REALSXP, REAL);
+impl_rnative_type!(Rfloat, f64, SEXPTYPE::REALSXP, REAL);
+impl_rnative_type!(Rcomplex, Rcomplex, SEXPTYPE::CPLXSXP, COMPLEX);
+impl_rnative_type!(Rcplx, Rcplx, SEXPTYPE::CPLXSXP, COMPLEX_AS_RCPLX);
+impl_rnative_type!(c64, c64, SEXPTYPE::CPLXSXP, COMPLEX_AS_C64);
+impl_rnative_type!(
+    (f64, f64),
+    (f64, f64),
+    SEXPTYPE::CPLXSXP,
+    COMPLEX_AS_FLOAT_TUPLE
+);
+impl_rnative_type!(i32, i32, SEXPTYPE::INTSXP, INTEGER);
+impl_rnative_type!(Rint, i32, SEXPTYPE::INTSXP, INTEGER);
+impl_rnative_type!(Rbool, i32, SEXPTYPE::LGLSXP, LOGICAL);
+impl_rnative_type!(u8, u8, SEXPTYPE::RAWSXP, RAW);
+
+impl_cast_raw_slice_copy!(f64, Rfloat, i32, Rint, Rbool, u8);
+impl_cast_raw_slice_identity!(Rcomplex, Rcplx, c64, (f64, f64));
+
+impl CoerceNative for bool {
+    type Target = Rbool;
+
+    fn coerce(&self) -> Self::Target {
+        Rbool::from(*self)
     }
 }
 
-macro_rules! impl_real_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
+impl CoerceNative for Option<bool> {
+    type Target = Rbool;
 
-            fn to_real(&self) -> f64 {
-                *self as f64
-            }
+    fn coerce(&self) -> Self::Target {
+        match self {
+            Some(v) => Rbool::from(*v),
+            None => Rbool::na(),
         }
+    }
+}
 
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
+impl<T> CoerceNative for Option<T>
+where
+    T: RSliceNative + CanBeNA + CastRawSlice,
+{
+    type Target = T;
 
-            fn to_real(&self) -> f64 {
-                **self as f64
-            }
+    fn coerce(&self) -> Self::Target {
+        match self {
+            Some(v) => *v,
+            None => T::na(),
         }
+    }
+}
 
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::REALSXP
-            }
-
-            fn to_real(&self) -> f64 {
-                if self.is_some() {
-                    self.unwrap() as f64
-                } else {
-                    unsafe { R_NaReal }
+fn collect_native<T, I>(iterable: I) -> Robj
+where
+    T: RNativeType + CastRawSlice,
+    I: IntoIterator<Item = T>,
+{
+    let mut iter = iterable.into_iter();
+    if let (len, Some(max)) = iter.size_hint() {
+        if len == max {
+            return single_threaded(|| unsafe {
+                let robj = Robj::alloc_vector(T::SEXPTYPE, len);
+                if len != 0 {
+                    let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), len);
+                    let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
+                    for (idx, value) in (&mut iter).enumerate() {
+                        *dest.get_unchecked_mut(idx) = value;
+                    }
                 }
-            }
+                robj
+            });
         }
-    };
+    }
+
+    let values: Vec<T> = iter.collect();
+    single_threaded(|| unsafe {
+        let len = values.len();
+        let robj = Robj::alloc_vector(T::SEXPTYPE, len);
+        if len != 0 {
+            let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), len);
+            let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
+            dest.copy_from_slice(&values);
+        }
+        robj
+    })
 }
 
-impl_real_tvv!(f64);
-impl_real_tvv!(f32);
-
-// Since these types might exceeds the max or min of R's 32bit integer, we need
-// to return as REALSXP
-impl_real_tvv!(i64);
-impl_real_tvv!(u32);
-impl_real_tvv!(u64);
-impl_real_tvv!(usize);
-
-macro_rules! impl_complex_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::CPLXSXP
-            }
-
-            fn to_complex(&self) -> Rcomplex {
-                unsafe { std::mem::transmute(*self) }
-            }
+fn copy_slice_to_robj<T>(slice: &[T]) -> Robj
+where
+    T: RSliceNative + CastRawSlice,
+{
+    single_threaded(|| unsafe {
+        let robj = Robj::alloc_vector(T::SEXPTYPE, slice.len());
+        if !slice.is_empty() {
+            let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), slice.len());
+            let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
+            dest.copy_from_slice(slice);
         }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::CPLXSXP
-            }
-
-            fn to_complex(&self) -> Rcomplex {
-                unsafe { std::mem::transmute(**self) }
-            }
-        }
-    };
+        robj
+    })
 }
 
-impl_complex_tvv!(c64);
-impl_complex_tvv!(Rcplx);
-impl_complex_tvv!((f64, f64));
+fn coerce_slice_to_robj<T>(slice: &[T]) -> Robj
+where
+    T: CoerceNative,
+{
+    let mut values = Vec::with_capacity(slice.len());
+    for value in slice {
+        values.push(value.coerce());
+    }
+    copy_slice_to_robj(values.as_slice())
+}
 
-macro_rules! impl_integer_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
-
-            fn to_integer(&self) -> i32 {
-                *self as i32
-            }
-        }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
-
-            fn to_integer(&self) -> i32 {
-                **self as i32
-            }
-        }
-
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::INTSXP
-            }
-
-            fn to_integer(&self) -> i32 {
-                if self.is_some() {
-                    self.unwrap() as i32
-                } else {
-                    unsafe { R_NaInt }
+fn collect_strings<I, S, F>(iterable: I, to_sexp: F) -> Robj
+where
+    I: IntoIterator<Item = S>,
+    F: Fn(S) -> SEXP + Copy,
+{
+    let mut iter = iterable.into_iter();
+    if let (len, Some(max)) = iter.size_hint() {
+        if len == max {
+            let mut robj = Robj::alloc_vector(SEXPTYPE::STRSXP, len);
+            let sexp = unsafe { robj.get_mut() };
+            return single_threaded(|| unsafe {
+                for (idx, value) in (&mut iter).enumerate() {
+                    SET_STRING_ELT(sexp, idx as isize, to_sexp(value));
                 }
-            }
+                robj
+            });
         }
-    };
+    }
+
+    let values: Vec<S> = iter.collect();
+    single_threaded(|| unsafe {
+        let robj = Robj::alloc_vector(SEXPTYPE::STRSXP, values.len());
+        let sexp = robj.get();
+        for (idx, value) in values.into_iter().enumerate() {
+            SET_STRING_ELT(sexp, idx as isize, to_sexp(value));
+        }
+        robj
+    })
 }
 
-impl_integer_tvv!(i8);
-impl_integer_tvv!(i16);
-impl_integer_tvv!(i32);
-impl_integer_tvv!(u16);
-
-impl ToVectorValue for u8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::RAWSXP
-    }
-
-    fn to_raw(&self) -> u8 {
-        *self
-    }
+trait StrLike: Clone {
+    fn to_sexp(&self) -> SEXP;
 }
 
-impl ToVectorValue for &u8 {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::RAWSXP
-    }
-
-    fn to_raw(&self) -> u8 {
-        **self
+impl StrLike for &str {
+    fn to_sexp(&self) -> SEXP {
+        str_to_character(self)
     }
 }
 
-macro_rules! impl_str_tvv {
-    ($t: ty) => {
-        impl ToVectorValue for $t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                str_to_character(self.as_ref())
-            }
-        }
-
-        impl ToVectorValue for &$t {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                str_to_character(self.as_ref())
-            }
-        }
-
-        impl ToVectorValue for Option<$t> {
-            fn sexptype() -> SEXPTYPE {
-                SEXPTYPE::STRSXP
-            }
-
-            fn to_sexp(&self) -> SEXP
-            where
-                Self: Sized,
-            {
-                if let Some(s) = self {
-                    str_to_character(s.as_ref())
-                } else {
-                    unsafe { R_NaString }
-                }
-            }
-        }
-    };
+impl StrLike for String {
+    fn to_sexp(&self) -> SEXP {
+        str_to_character(self.as_str())
+    }
 }
 
-impl_str_tvv! {&str}
-impl_str_tvv! {String}
-
-impl ToVectorValue for Rstr {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
+impl StrLike for Rstr {
+    fn to_sexp(&self) -> SEXP {
         unsafe { self.get() }
     }
 }
 
-impl ToVectorValue for &Rstr {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
-    }
-
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        unsafe { self.get() }
+impl FromIterator<f64> for Robj {
+    fn from_iter<I: IntoIterator<Item = f64>>(iter: I) -> Self {
+        collect_native(iter)
     }
 }
 
-impl ToVectorValue for Option<Rstr> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::STRSXP
+impl<'a> FromIterator<&'a f64> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a f64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
     }
+}
 
-    fn to_sexp(&self) -> SEXP
-    where
-        Self: Sized,
-    {
-        if let Some(s) = self {
-            unsafe { s.get() }
-        } else {
-            unsafe { R_NaString }
+impl FromIterator<f32> for Robj {
+    fn from_iter<I: IntoIterator<Item = f32>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as f64))
+    }
+}
+
+impl<'a> FromIterator<&'a f32> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a f32>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as f64))
+    }
+}
+
+impl FromIterator<i64> for Robj {
+    fn from_iter<I: IntoIterator<Item = i64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as f64))
+    }
+}
+
+impl<'a> FromIterator<&'a i64> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a i64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as f64))
+    }
+}
+
+impl FromIterator<u32> for Robj {
+    fn from_iter<I: IntoIterator<Item = u32>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as f64))
+    }
+}
+
+impl<'a> FromIterator<&'a u32> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a u32>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as f64))
+    }
+}
+
+impl FromIterator<u64> for Robj {
+    fn from_iter<I: IntoIterator<Item = u64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as f64))
+    }
+}
+
+impl<'a> FromIterator<&'a u64> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a u64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as f64))
+    }
+}
+
+impl FromIterator<usize> for Robj {
+    fn from_iter<I: IntoIterator<Item = usize>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as f64))
+    }
+}
+
+impl<'a> FromIterator<&'a usize> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a usize>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as f64))
+    }
+}
+
+impl FromIterator<Option<f64>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<f64>>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v.unwrap_or(unsafe { R_NaReal })))
+    }
+}
+
+impl FromIterator<Option<f32>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<f32>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as f64).unwrap_or(unsafe { R_NaReal })),
+        )
+    }
+}
+
+impl FromIterator<Option<i64>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<i64>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as f64).unwrap_or(unsafe { R_NaReal })),
+        )
+    }
+}
+
+impl FromIterator<Option<u32>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<u32>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as f64).unwrap_or(unsafe { R_NaReal })),
+        )
+    }
+}
+
+impl FromIterator<Option<u64>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<u64>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as f64).unwrap_or(unsafe { R_NaReal })),
+        )
+    }
+}
+
+impl FromIterator<Option<usize>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<usize>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as f64).unwrap_or(unsafe { R_NaReal })),
+        )
+    }
+}
+
+impl FromIterator<c64> for Robj {
+    fn from_iter<I: IntoIterator<Item = c64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| {
+            let rc = Rcplx::from(v);
+            Rcomplex {
+                r: rc.re().0,
+                i: rc.im().0,
+            }
+        }))
+    }
+}
+
+impl<'a> FromIterator<&'a c64> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a c64>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| {
+            let rc = Rcplx::from(*v);
+            Rcomplex {
+                r: rc.re().0,
+                i: rc.im().0,
+            }
+        }))
+    }
+}
+
+impl FromIterator<Rcplx> for Robj {
+    fn from_iter<I: IntoIterator<Item = Rcplx>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| Rcomplex {
+            r: v.re().0,
+            i: v.im().0,
+        }))
+    }
+}
+
+impl<'a> FromIterator<&'a Rcplx> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a Rcplx>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| Rcomplex {
+            r: v.re().0,
+            i: v.im().0,
+        }))
+    }
+}
+
+impl FromIterator<(f64, f64)> for Robj {
+    fn from_iter<I: IntoIterator<Item = (f64, f64)>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|(r, i)| Rcomplex { r, i }))
+    }
+}
+
+impl<'a> FromIterator<&'a (f64, f64)> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a (f64, f64)>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|(r, i)| Rcomplex { r: *r, i: *i }))
+    }
+}
+
+impl FromIterator<i8> for Robj {
+    fn from_iter<I: IntoIterator<Item = i8>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as i32))
+    }
+}
+
+impl<'a> FromIterator<&'a i8> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a i8>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as i32))
+    }
+}
+
+impl FromIterator<i16> for Robj {
+    fn from_iter<I: IntoIterator<Item = i16>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as i32))
+    }
+}
+
+impl<'a> FromIterator<&'a i16> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a i16>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as i32))
+    }
+}
+
+impl FromIterator<i32> for Robj {
+    fn from_iter<I: IntoIterator<Item = i32>>(iter: I) -> Self {
+        collect_native(iter)
+    }
+}
+
+impl<'a> FromIterator<&'a i32> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a i32>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
+    }
+}
+
+impl FromIterator<u16> for Robj {
+    fn from_iter<I: IntoIterator<Item = u16>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v as i32))
+    }
+}
+
+impl<'a> FromIterator<&'a u16> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a u16>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| *v as i32))
+    }
+}
+
+impl FromIterator<Option<i8>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<i8>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as i32).unwrap_or(unsafe { R_NaInt })),
+        )
+    }
+}
+
+impl FromIterator<Option<i16>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<i16>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as i32).unwrap_or(unsafe { R_NaInt })),
+        )
+    }
+}
+
+impl FromIterator<Option<i32>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<i32>>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| v.unwrap_or(unsafe { R_NaInt })))
+    }
+}
+
+impl FromIterator<Option<u16>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<u16>>>(iter: I) -> Self {
+        collect_native(
+            iter.into_iter()
+                .map(|v| v.map(|v| v as i32).unwrap_or(unsafe { R_NaInt })),
+        )
+    }
+}
+
+impl FromIterator<u8> for Robj {
+    fn from_iter<I: IntoIterator<Item = u8>>(iter: I) -> Self {
+        collect_native(iter)
+    }
+}
+
+impl<'a> FromIterator<&'a u8> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a u8>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
+    }
+}
+
+impl<'a> FromIterator<&'a str> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a str>>(iter: I) -> Self {
+        collect_strings(iter, str_to_character)
+    }
+}
+
+impl<'a, 'b> FromIterator<&'a &'b str> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a &'b str>>(iter: I) -> Self {
+        collect_strings(iter.into_iter().copied(), str_to_character)
+    }
+}
+
+impl FromIterator<String> for Robj {
+    fn from_iter<I: IntoIterator<Item = String>>(iter: I) -> Self {
+        collect_strings(iter, |s| str_to_character(&s))
+    }
+}
+
+impl<'a> FromIterator<&'a String> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a String>>(iter: I) -> Self {
+        collect_strings(iter.into_iter().map(|s| s.as_str()), str_to_character)
+    }
+}
+
+impl<'a> FromIterator<Option<&'a str>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<&'a str>>>(iter: I) -> Self {
+        collect_strings(
+            iter.into_iter().map(|s| {
+                s.map(str_to_character)
+                    .unwrap_or_else(|| unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl FromIterator<Option<String>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<String>>>(iter: I) -> Self {
+        collect_strings(
+            iter.into_iter().map(|s| {
+                s.as_ref()
+                    .map(|s| str_to_character(s.as_str()))
+                    .unwrap_or_else(|| unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl FromIterator<Rstr> for Robj {
+    fn from_iter<I: IntoIterator<Item = Rstr>>(iter: I) -> Self {
+        collect_strings(iter, |s| unsafe { s.get() })
+    }
+}
+
+impl<'a> FromIterator<&'a Rstr> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a Rstr>>(iter: I) -> Self {
+        collect_strings(iter, |s| unsafe { s.get() })
+    }
+}
+
+impl FromIterator<Option<Rstr>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<Rstr>>>(iter: I) -> Self {
+        collect_strings(
+            iter.into_iter().map(|s| {
+                s.map(|s| unsafe { s.get() })
+                    .unwrap_or_else(|| unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl FromIterator<bool> for Robj {
+    fn from_iter<I: IntoIterator<Item = bool>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(Rbool::from))
+    }
+}
+
+impl<'a> FromIterator<&'a bool> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a bool>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(|v| Rbool::from(*v)))
+    }
+}
+
+impl FromIterator<Rbool> for Robj {
+    fn from_iter<I: IntoIterator<Item = Rbool>>(iter: I) -> Self {
+        collect_native(iter)
+    }
+}
+
+impl<'a> FromIterator<&'a Rbool> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a Rbool>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
+    }
+}
+
+impl<const N: usize> From<[bool; N]> for Robj {
+    fn from(val: [bool; N]) -> Self {
+        collect_native(val.into_iter().map(Rbool::from))
+    }
+}
+
+impl<'a, const N: usize> From<&'a [bool; N]> for Robj {
+    fn from(val: &'a [bool; N]) -> Self {
+        collect_native(val.iter().copied().map(Rbool::from))
+    }
+}
+
+impl<'a, const N: usize> From<&'a mut [bool; N]> for Robj {
+    fn from(val: &'a mut [bool; N]) -> Self {
+        collect_native(val.iter().copied().map(Rbool::from))
+    }
+}
+
+impl<'a> From<&'a [bool]> for Robj {
+    fn from(val: &'a [bool]) -> Self {
+        collect_native(val.iter().copied().map(Rbool::from))
+    }
+}
+
+impl<const N: usize> From<[Option<bool>; N]> for Robj {
+    fn from(val: [Option<bool>; N]) -> Self {
+        collect_native(val.into_iter().map(Rbool::from))
+    }
+}
+
+impl<'a, const N: usize> From<&'a [Option<bool>; N]> for Robj {
+    fn from(val: &'a [Option<bool>; N]) -> Self {
+        collect_native(val.iter().cloned().map(Rbool::from))
+    }
+}
+
+impl<'a, const N: usize> From<&'a mut [Option<bool>; N]> for Robj {
+    fn from(val: &'a mut [Option<bool>; N]) -> Self {
+        collect_native(val.iter().cloned().map(Rbool::from))
+    }
+}
+
+impl<'a> From<&'a [Option<bool>]> for Robj {
+    fn from(val: &'a [Option<bool>]) -> Self {
+        collect_native(val.iter().cloned().map(Rbool::from))
+    }
+}
+
+impl FromIterator<Option<bool>> for Robj {
+    fn from_iter<I: IntoIterator<Item = Option<bool>>>(iter: I) -> Self {
+        collect_native(iter.into_iter().map(Rbool::from))
+    }
+}
+
+impl FromIterator<Rfloat> for Robj {
+    fn from_iter<I: IntoIterator<Item = Rfloat>>(iter: I) -> Self {
+        collect_native(iter)
+    }
+}
+
+impl<'a> FromIterator<&'a Rfloat> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a Rfloat>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
+    }
+}
+
+impl FromIterator<Rint> for Robj {
+    fn from_iter<I: IntoIterator<Item = Rint>>(iter: I) -> Self {
+        collect_native(iter)
+    }
+}
+
+impl<'a> FromIterator<&'a Rint> for Robj {
+    fn from_iter<I: IntoIterator<Item = &'a Rint>>(iter: I) -> Self {
+        collect_native(iter.into_iter().copied())
+    }
+}
+
+macro_rules! impl_scalar_from_iter {
+    ($t:ty) => {
+        impl From<$t> for Robj {
+            fn from(value: $t) -> Self {
+                std::iter::once(value).collect()
+            }
         }
+    };
+}
+
+impl_scalar_from_iter!(f64);
+impl_scalar_from_iter!(f32);
+impl_scalar_from_iter!(i64);
+impl_scalar_from_iter!(u32);
+impl_scalar_from_iter!(u64);
+impl_scalar_from_iter!(usize);
+impl_scalar_from_iter!(i32);
+impl_scalar_from_iter!(i16);
+impl_scalar_from_iter!(i8);
+impl_scalar_from_iter!(u16);
+impl_scalar_from_iter!(u8);
+impl_scalar_from_iter!(c64);
+impl_scalar_from_iter!(Rcplx);
+impl_scalar_from_iter!((f64, f64));
+impl_scalar_from_iter!(Rfloat);
+impl_scalar_from_iter!(Rint);
+impl_scalar_from_iter!(Rbool);
+impl_scalar_from_iter!(bool);
+impl_scalar_from_iter!(String);
+impl_scalar_from_iter!(&str);
+impl_scalar_from_iter!(Rstr);
+impl_scalar_from_iter!(Option<f64>);
+impl_scalar_from_iter!(Option<f32>);
+impl_scalar_from_iter!(Option<i64>);
+impl_scalar_from_iter!(Option<u32>);
+impl_scalar_from_iter!(Option<u64>);
+impl_scalar_from_iter!(Option<usize>);
+impl_scalar_from_iter!(Option<i32>);
+impl_scalar_from_iter!(Option<i16>);
+impl_scalar_from_iter!(Option<i8>);
+impl_scalar_from_iter!(Option<u16>);
+impl_scalar_from_iter!(Option<bool>);
+impl_scalar_from_iter!(Option<String>);
+impl_scalar_from_iter!(Option<&str>);
+impl_scalar_from_iter!(Option<Rstr>);
+
+macro_rules! impl_ref_from_scalar {
+    ($($t:ty),+ $(,)?) => {
+        $(impl<'a> From<&'a $t> for Robj {
+            fn from(value: &'a $t) -> Self {
+                (*value).into()
+            }
+        })+
+    };
+}
+
+impl_ref_from_scalar!(
+    f64, f32, i64, u32, u64, usize, i32, i16, i8, u16, u8, bool, c64, Rcplx, Rfloat, Rint, Rbool
+);
+
+impl<'a, 'b> From<&'a &'b str> for Robj {
+    fn from(value: &'a &'b str) -> Self {
+        (*value).into()
+    }
+}
+
+impl<'a> From<&'a String> for Robj {
+    fn from(value: &'a String) -> Self {
+        value.as_str().into()
+    }
+}
+
+impl<'a> From<&'a Rstr> for Robj {
+    fn from(value: &'a Rstr) -> Self {
+        value.clone().into()
     }
 }
 
@@ -504,139 +1001,14 @@ impl Rinternals for Rstr {}
 impl Slices for Rstr {}
 impl Operators for Rstr {}
 
-impl ToVectorValue for bool {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        *self as i32
-    }
-}
-
-impl ToVectorValue for &bool {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        **self as i32
-    }
-}
-
-impl ToVectorValue for Rbool {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        self.0
-    }
-}
-
-impl ToVectorValue for &Rbool {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::LGLSXP
-    }
-
-    fn to_logical(&self) -> i32
-    where
-        Self: Sized,
-    {
-        self.0
-    }
-}
-
-impl ToVectorValue for Option<bool> {
-    fn sexptype() -> SEXPTYPE {
-        SEXPTYPE::LGLSXP
-    }
-
-    fn to_logical(&self) -> i32 {
-        if self.is_some() {
-            self.unwrap() as i32
-        } else {
-            unsafe { R_NaInt }
-        }
-    }
-}
-
 impl<T> From<&Option<T>> for Robj
 where
-    Option<T>: ToVectorValue + Clone,
+    T: Clone,
+    Robj: From<Option<T>>,
 {
     fn from(value: &Option<T>) -> Self {
         value.clone().into()
     }
-}
-
-// Not thread safe.
-fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
-where
-    I: Iterator,
-    I: Sized,
-    I::Item: ToVectorValue,
-{
-    single_threaded(|| unsafe {
-        // Length of the vector is known in advance.
-        let sexptype = I::Item::sexptype();
-        if sexptype != SEXPTYPE::NILSXP {
-            let res = Robj::alloc_vector(sexptype, len);
-            let sexp = res.get();
-            match sexptype {
-                SEXPTYPE::REALSXP => {
-                    let ptr = REAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_real();
-                    }
-                }
-                SEXPTYPE::CPLXSXP => {
-                    let ptr = COMPLEX(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_complex();
-                    }
-                }
-                SEXPTYPE::INTSXP => {
-                    let ptr = INTEGER(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_integer();
-                    }
-                }
-                SEXPTYPE::LGLSXP => {
-                    let ptr = LOGICAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_logical();
-                    }
-                }
-                SEXPTYPE::STRSXP => {
-                    for (i, v) in iter.enumerate() {
-                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                    }
-                }
-                SEXPTYPE::RAWSXP => {
-                    let ptr = RAW(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_raw();
-                    }
-                }
-                _ => {
-                    panic!("unexpected SEXPTYPE in collect_robj");
-                }
-            }
-            res
-        } else {
-            Robj::from(())
-        }
-    })
 }
 
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
@@ -665,19 +1037,10 @@ pub trait RobjItertools: Iterator {
     /// ```
     fn collect_robj(self) -> Robj
     where
-        Self: Iterator,
         Self: Sized,
-        Self::Item: ToVectorValue,
+        Robj: FromIterator<Self::Item>,
     {
-        if let (len, Some(max)) = self.size_hint() {
-            if len == max {
-                return fixed_size_collect(self, len);
-            }
-        }
-        // If the size is indeterminate, create a vector and call recursively.
-        let vec: Vec<_> = self.collect();
-        assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
-        vec.into_iter().collect_robj()
+        Robj::from_iter(self)
     }
 
     /// Collects an iterable into an [`RArray`].
@@ -688,9 +1051,8 @@ pub trait RobjItertools: Iterator {
     /// * `dims` - an array containing the length of each dimension
     fn collect_rarray<const LEN: usize>(self, dims: [usize; LEN]) -> Result<RArray<Self::Item, LEN>>
     where
-        Self: Iterator,
         Self: Sized,
-        Self::Item: ToVectorValue,
+        Robj: FromIterator<Self::Item>,
         Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
         let mut vector = self.collect_robj();
@@ -713,98 +1075,299 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
-// Scalars which are ToVectorValue
-impl<T> From<T> for Robj
-where
-    T: ToVectorValue,
-{
-    fn from(scalar: T) -> Self {
-        Some(scalar).into_iter().collect_robj()
-    }
-}
+macro_rules! impl_native_slice_conversions {
+    ($t:ty) => {
+        impl<const N: usize> From<[$t; N]> for Robj {
+            fn from(val: [$t; N]) -> Self {
+                copy_slice_to_robj(&val)
+            }
+        }
 
-macro_rules! impl_from_as_iterator {
-    ($t: ty) => {
-        impl<T> From<$t> for Robj
-        where
-            $t: RobjItertools,
-            <$t as Iterator>::Item: ToVectorValue,
-            T: ToVectorValue,
-        {
-            fn from(val: $t) -> Self {
-                val.collect_robj()
+        impl<'a, const N: usize> From<&'a [$t; N]> for Robj {
+            fn from(val: &'a [$t; N]) -> Self {
+                copy_slice_to_robj(val)
+            }
+        }
+
+        impl<'a, const N: usize> From<&'a mut [$t; N]> for Robj {
+            fn from(val: &'a mut [$t; N]) -> Self {
+                copy_slice_to_robj(val)
+            }
+        }
+
+        impl<'a> From<&'a [$t]> for Robj {
+            fn from(val: &'a [$t]) -> Self {
+                copy_slice_to_robj(val)
             }
         }
     };
 }
 
-// impl<T> From<Range<T>> for Robj
-// where
-//     Range<T> : RobjItertools,
-//     <Range<T> as Iterator>::Item: ToVectorValue,
-//     T : ToVectorValue
-// {
-//     fn from(val: Range<T>) -> Self {
-//         val.collect_robj()
-//     }
-// } //
+impl_native_slice_conversions!(f64);
+impl_native_slice_conversions!(Rfloat);
+impl_native_slice_conversions!(Rcomplex);
+impl_native_slice_conversions!(Rcplx);
+impl_native_slice_conversions!(c64);
+impl_native_slice_conversions!((f64, f64));
+impl_native_slice_conversions!(i32);
+impl_native_slice_conversions!(Rint);
+impl_native_slice_conversions!(Rbool);
+impl_native_slice_conversions!(u8);
 
 impl<T, const N: usize> From<[T; N]> for Robj
 where
-    T: ToVectorValue,
+    T: StrLike,
 {
     fn from(val: [T; N]) -> Self {
-        fixed_size_collect(val.into_iter(), N)
+        collect_strings(val, |s| s.to_sexp())
     }
 }
 
 impl<'a, T, const N: usize> From<&'a [T; N]> for Robj
 where
-    Self: 'a,
-    &'a T: ToVectorValue + 'a,
+    T: StrLike,
 {
     fn from(val: &'a [T; N]) -> Self {
-        fixed_size_collect(val.iter(), N)
+        collect_strings(val.iter().cloned(), |s| s.to_sexp())
     }
 }
 
 impl<'a, T, const N: usize> From<&'a mut [T; N]> for Robj
 where
-    Self: 'a,
-    &'a mut T: ToVectorValue + 'a,
+    T: StrLike,
 {
     fn from(val: &'a mut [T; N]) -> Self {
-        fixed_size_collect(val.iter_mut(), N)
+        collect_strings(val.iter().cloned(), |s| s.to_sexp())
     }
 }
 
-impl<T: ToVectorValue + Clone> From<&Vec<T>> for Robj {
-    fn from(value: &Vec<T>) -> Self {
-        let len = value.len();
-        fixed_size_collect(value.iter().cloned(), len)
-    }
-}
-
-impl<T: ToVectorValue> From<Vec<T>> for Robj {
-    fn from(value: Vec<T>) -> Self {
-        let len = value.len();
-        fixed_size_collect(value.into_iter(), len)
-    }
-}
-
-impl<'a, T> From<&'a [T]> for Robj
+impl<T> From<&[T]> for Robj
 where
-    Self: 'a,
-    T: 'a,
-    &'a T: ToVectorValue,
+    T: StrLike,
 {
-    fn from(val: &'a [T]) -> Self {
-        val.iter().collect_robj()
+    fn from(val: &[T]) -> Self {
+        collect_strings(val.iter().cloned(), |s| s.to_sexp())
     }
 }
 
-impl_from_as_iterator! {Range<T>}
-impl_from_as_iterator! {RangeInclusive<T>}
+impl<const N: usize> From<[Option<&str>; N]> for Robj {
+    fn from(val: [Option<&str>; N]) -> Self {
+        collect_strings(
+            val.into_iter()
+                .map(|s| s.map(str_to_character).unwrap_or(unsafe { R_NaString })),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a [Option<&str>; N]> for Robj {
+    fn from(val: &'a [Option<&str>; N]) -> Self {
+        collect_strings(
+            val.iter()
+                .cloned()
+                .map(|s| s.map(str_to_character).unwrap_or(unsafe { R_NaString })),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a mut [Option<&str>; N]> for Robj {
+    fn from(val: &'a mut [Option<&str>; N]) -> Self {
+        collect_strings(
+            val.iter()
+                .cloned()
+                .map(|s| s.map(str_to_character).unwrap_or(unsafe { R_NaString })),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a> From<&'a [Option<&str>]> for Robj {
+    fn from(val: &'a [Option<&str>]) -> Self {
+        collect_strings(
+            val.iter()
+                .cloned()
+                .map(|s| s.map(str_to_character).unwrap_or(unsafe { R_NaString })),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<const N: usize> From<[Option<String>; N]> for Robj {
+    fn from(val: [Option<String>; N]) -> Self {
+        collect_strings(
+            val.into_iter().map(|s| {
+                s.as_ref()
+                    .map(|s| str_to_character(s.as_str()))
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a [Option<String>; N]> for Robj {
+    fn from(val: &'a [Option<String>; N]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.as_ref()
+                    .map(|s| str_to_character(s.as_str()))
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a mut [Option<String>; N]> for Robj {
+    fn from(val: &'a mut [Option<String>; N]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.as_ref()
+                    .map(|s| str_to_character(s.as_str()))
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a> From<&'a [Option<String>]> for Robj {
+    fn from(val: &'a [Option<String>]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.as_ref()
+                    .map(|s| str_to_character(s.as_str()))
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<const N: usize> From<[Option<Rstr>; N]> for Robj {
+    fn from(val: [Option<Rstr>; N]) -> Self {
+        collect_strings(
+            val.into_iter().map(|s| {
+                s.map(|s| unsafe { s.get() })
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a [Option<Rstr>; N]> for Robj {
+    fn from(val: &'a [Option<Rstr>; N]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.map(|s| unsafe { s.get() })
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a, const N: usize> From<&'a mut [Option<Rstr>; N]> for Robj {
+    fn from(val: &'a mut [Option<Rstr>; N]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.map(|s| unsafe { s.get() })
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<'a> From<&'a [Option<Rstr>]> for Robj {
+    fn from(val: &'a [Option<Rstr>]) -> Self {
+        collect_strings(
+            val.iter().cloned().map(|s| {
+                s.map(|s| unsafe { s.get() })
+                    .unwrap_or(unsafe { R_NaString })
+            }),
+            |sexp| sexp,
+        )
+    }
+}
+
+impl<T, const N: usize> From<[Option<T>; N]> for Robj
+where
+    T: RSliceNative + CanBeNA + CastRawSlice,
+{
+    fn from(val: [Option<T>; N]) -> Self {
+        coerce_slice_to_robj(&val)
+    }
+}
+
+impl<'a, T, const N: usize> From<&'a [Option<T>; N]> for Robj
+where
+    T: RSliceNative + CanBeNA + CastRawSlice,
+{
+    fn from(val: &'a [Option<T>; N]) -> Self {
+        coerce_slice_to_robj(val)
+    }
+}
+
+impl<'a, T, const N: usize> From<&'a mut [Option<T>; N]> for Robj
+where
+    T: RSliceNative + CanBeNA + CastRawSlice,
+{
+    fn from(val: &'a mut [Option<T>; N]) -> Self {
+        coerce_slice_to_robj(val)
+    }
+}
+
+impl<'a, T> From<&'a [Option<T>]> for Robj
+where
+    T: RSliceNative + CanBeNA + CastRawSlice,
+{
+    fn from(val: &'a [Option<T>]) -> Self {
+        coerce_slice_to_robj(val)
+    }
+}
+
+impl<T> From<Vec<T>> for Robj
+where
+    Robj: FromIterator<T>,
+{
+    fn from(value: Vec<T>) -> Self {
+        value.into_iter().collect()
+    }
+}
+
+impl<T: Clone> From<&Vec<T>> for Robj
+where
+    Robj: FromIterator<T>,
+{
+    fn from(value: &Vec<T>) -> Self {
+        value.iter().cloned().collect()
+    }
+}
+
+macro_rules! impl_range_from {
+    ($t:ty) => {
+        impl From<std::ops::Range<$t>> for Robj {
+            fn from(val: std::ops::Range<$t>) -> Self {
+                val.collect()
+            }
+        }
+
+        impl From<std::ops::RangeInclusive<$t>> for Robj {
+            fn from(val: std::ops::RangeInclusive<$t>) -> Self {
+                val.collect()
+            }
+        }
+    };
+}
+
+impl_range_from!(i32);
+impl_range_from!(i64);
+impl_range_from!(u32);
+impl_range_from!(u64);
+impl_range_from!(usize);
 
 impl From<Vec<Robj>> for Robj {
     /// Convert a vector of Robj into a list.

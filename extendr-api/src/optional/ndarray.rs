@@ -146,7 +146,8 @@ make_array_view_2!(Rstr, "Not a string matrix.", Error::ExpectedString);
 impl<A, S, D> TryFrom<&ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,
-    A: Copy + ToVectorValue,
+    A: Copy,
+    Robj: FromIterator<A>,
     D: Dimension,
 {
     type Error = Error;
@@ -186,7 +187,8 @@ where
 impl<A, S, D> TryFrom<ArrayBase<S, D>> for Robj
 where
     S: Data<Elem = A>,
-    A: Copy + ToVectorValue,
+    A: Copy,
+    Robj: FromIterator<A>,
     D: Dimension,
 {
     type Error = Error;
