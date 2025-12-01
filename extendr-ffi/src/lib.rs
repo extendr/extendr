@@ -142,6 +142,13 @@ pub struct Rcomplex {
     pub i: f64,
 }
 
+// TODO: find a way to add this impl in the right place
+// impl RNativeType for Rcomplex {
+//     const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
+//     const TYPE_ERROR: &str = "expected `CPLXSXP`";
+//     const PTR_ACCESS: unsafe extern "C" fn(SEXP) -> *mut Self = COMPLEX;
+// }
+
 #[doc = "R_xlen_t is defined as int on 32-bit platforms, and\n that confuses Rust. Keeping it always as ptrdiff_t works\n fine even on 32-bit.\n <div rustbindgen replaces=\"R_xlen_t\"></div>"]
 pub type R_xlen_t = isize;
 
@@ -229,7 +236,7 @@ pub struct R_inpstream_st {
     pub nat2utf8_obj: *mut ::std::os::raw::c_void,
 }
 
-extern "C" {
+unsafe extern "C" {
     #[doc = "IEEE NaN"]
     pub static R_NaN: f64;
     #[doc = "IEEE Inf"]

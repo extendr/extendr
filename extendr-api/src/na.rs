@@ -1,6 +1,8 @@
-use extendr_ffi::{R_IsNA, R_NaReal};
+use extendr_ffi::{R_IsNA, R_NaReal, Rf_allocVector, Rf_isNull};
 use once_cell::sync::Lazy;
 use std::alloc::{self, Layout};
+
+use crate::{GetSexp, Robj};
 
 // To make sure this "NA" is allocated at a different place than any other "NA"
 // strings (so that it can be used as a sentinel value), we allocate it by
@@ -77,5 +79,20 @@ impl CanBeNA for &str {
 
     fn na() -> Self {
         &EXTENDR_NA_STRING
+    }
+}
+
+// TODO: add NA definitions for u8..
+
+impl CanBeNA for Robj {
+    fn is_na(&self) -> bool {
+        unsafe { Rf_isNull(self.get()).into() }
+    }
+
+    // Note:
+    // > is.na(NULL)
+    // logical(0)
+    fn na() -> Self {
+        unsafe { Robj::from_sexp(Rf_allocVector(extendr_ffi::SEXPTYPE::LGLSXP, 0)) }
     }
 }

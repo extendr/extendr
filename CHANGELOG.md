@@ -26,6 +26,7 @@
 - **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types.
   [[#1020]](https://github.com/extendr/extendr/pull/1020)
 - Removed `ToVectorValue` completely. [[#1019]](https://github.com/extendr/extendr/pull/1019)
+- Removed `Scalar` trait, and replaced with read-only access to inner element in our R-like types, e.g. `Rbool`, `Rint`, `Rfloat`, `Rcplx`, etc.
 
 ### Fixed
 

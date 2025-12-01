@@ -71,7 +71,7 @@ expand *cargo_flags:
 
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)
 msrv FEATURES="":
-    if [ "x{{FEATURES}}" = "x" ]; then \
+    if [ -z "{{FEATURES}}" ]; then \
       cargo msrv --path extendr-api verify -- cargo check; \
     else \
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
@@ -97,7 +97,7 @@ devtools-test FILTER="" SNAPSHOT="0":
     if [ "{{SNAPSHOT}}" = "1" ]; then \
       Rscript -e 'testthat::snapshot_accept("macro-snapshot")'; \
     fi; \
-    if [ "x{{FILTER}}" = "x" ]; then \
+    if [ -z "{{FILTER}}" ]; then \
       Rscript -e 'devtools::test()'; \
     else \
       Rscript -e 'devtools::test(filter = "{{FILTER}}")'; \

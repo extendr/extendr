@@ -200,6 +200,7 @@ pub trait Length: GetSexp {
     /// assert_eq!(a.len(), 4);
     /// }
     /// ```
+    #[inline]
     fn len(&self) -> usize {
         unsafe { Rf_xlength(self.get()) as usize }
     }
@@ -213,6 +214,7 @@ pub trait Length: GetSexp {
     /// assert_eq!(a.is_empty(), true);
     /// }
     /// ```
+    #[inline]
     fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -235,6 +237,7 @@ impl Robj {
 
 pub trait Types: GetSexp {
     #[doc(hidden)]
+    #[inline]
     /// Get the XXXSXP type of the object.
     fn sexptype(&self) -> SEXPTYPE {
         unsafe { TYPEOF(self.get()) }
