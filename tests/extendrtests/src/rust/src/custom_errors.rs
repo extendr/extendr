@@ -20,7 +20,7 @@ fn custom_error_conversion(_val: A) -> std::result::Result<(), std::io::Error> {
     Ok(())
 }
 
-#[derive(IntoList, TryFromRobj)]
+#[derive(IntoList, TryFromList)]
 struct B(f64);
 
 #[extendr]

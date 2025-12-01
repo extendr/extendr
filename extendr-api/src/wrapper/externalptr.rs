@@ -360,6 +360,8 @@ impl<T: 'static> AsMut<T> for ExternalPtr<T> {
 
 #[cfg(test)]
 mod tests {
+    use std::error::Error;
+
     use super::*;
     use extendr_engine::with_r;
 
@@ -367,7 +369,7 @@ mod tests {
     struct BareWrapper(i32);
 
     #[test]
-    fn externalptr_is_ptr() {
+    fn externalptr_is_ptr() -> std::result::Result<(), Box<dyn Error>> {
         with_r(|| {
             let a = BareWrapper(42);
             let b = BareWrapper(42);
@@ -392,14 +394,15 @@ mod tests {
                 "ExternalPtr acts exactly like a pointer"
             );
             assert_ne!(&a_externalptr, &b_externalptr,);
-        });
+            Ok(())
+        })
     }
 
     #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
     struct Wrapper(i32);
 
     #[test]
-    fn compare_externalptr_pointee() {
+    fn compare_externalptr_pointee() -> std::result::Result<(), Box<dyn Error>> {
         with_r(|| {
             let a = Wrapper(42);
             let b = Wrapper(42);
@@ -414,7 +417,8 @@ mod tests {
             assert_eq!(
                 a_externalptr.as_ref().max(b_externalptr.as_ref()),
                 &Wrapper(60)
-            )
-        });
+            );
+            Ok(())
+        })
     }
 }

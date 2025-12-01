@@ -211,11 +211,11 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// from an R list:
 /// ```rust,ignore
 /// use extendr_api::prelude::*;
-/// use extendr_macros::TryFromRobj;
+/// use extendr_macros::TryFromList;
 /// # use extendr_api::test;
 /// # test!{
 ///
-/// #[derive(TryFromRobj, PartialEq, Debug)]
+/// #[derive(TryFromList, PartialEq, Debug)]
 /// struct Foo {
 ///     a: u64,
 ///     b: String
@@ -230,9 +230,9 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// See [`IntoRobj`] for converting arbitrary Rust types into R type by using
 /// R's list / `List`.
 ///
-#[proc_macro_derive(TryFromRobj)]
-pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
-    match list_struct::derive_try_from_robj(item) {
+#[proc_macro_derive(TryFromList)]
+pub fn derive_try_from_list(item: TokenStream) -> TokenStream {
+    match list_struct::derive_try_from_list(item) {
         Ok(result) => result,
         Err(e) => e.into_compile_error().into(),
     }
@@ -266,7 +266,7 @@ pub fn derive_try_from_robj(item: TokenStream) -> TokenStream {
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
 ///
-/// See [`TryFromRobj`] for a `derive`-macro in the other direction, i.e.
+/// See [`TryFromList`] for a `derive`-macro in the other direction, i.e.
 /// instantiation of a rust type, by an R list with fields corresponding to
 /// said type.
 ///

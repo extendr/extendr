@@ -1,4 +1,4 @@
-use super::scalar::{Rint, Scalar};
+use super::scalar::Rint;
 use super::*;
 use extendr_ffi::{
     dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
@@ -66,7 +66,7 @@ impl Integers {
 impl Integers {
     pub fn set_elt(&mut self, index: usize, val: Rint) {
         single_threaded(|| unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.inner());
+            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.0);
         })
     }
 }
