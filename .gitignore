@@ -42,3 +42,4 @@ extendr.Rproj
 **/.cargo/*
 .zed/settings.json
 .claude/*
+vendor

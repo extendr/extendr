@@ -5,6 +5,11 @@ use extendr_ffi::{
     COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
 
+#[cfg(not(feature = "bytemuck"))]
+compile_error!("The `bytemuck` feature must remain enabled for extendr-api");
+
+use bytemuck::{must_cast_slice_mut, Pod, Zeroable};
+
 /// Returns an `CHARSXP` based on the provided `&str`.
 ///
 /// Note that R does string interning, thus repeated application of this
@@ -197,76 +202,91 @@ extern "C" fn INTEGER_AS_RINT(sexp: SEXP) -> *mut Rint {
 }
 
 pub trait RNativeType: Copy {
+    type Raw: Copy;
     const SEXPTYPE: SEXPTYPE;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self;
+    const RAW_PTR: unsafe extern "C" fn(SEXP) -> *mut Self::Raw;
 }
 
 pub trait RSliceNative: RNativeType {}
 
 pub trait CoerceNative {
-    type Target: RSliceNative;
+    type Target: RSliceNative + CastRawSlice;
     fn coerce(&self) -> Self::Target;
 }
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rbool {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rbool {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rint {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rint {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Zeroable for Rfloat {}
+#[cfg(feature = "bytemuck")]
+unsafe impl Pod for Rfloat {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Zeroable for Rcplx {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Pod for Rcplx {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Zeroable for c64 {}
+#[cfg(feature = "bytemuck")]
+#[cfg(not(feature = "num-complex"))]
+unsafe impl Pod for c64 {}
 
-impl RNativeType for f64 {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::REALSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = REAL;
+pub trait CastRawSlice: RNativeType {
+    fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self];
 }
-impl RSliceNative for f64 {}
 
-impl RNativeType for Rfloat {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::REALSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = REAL_AS_RFLOAT;
+macro_rules! impl_cast_raw_slice_copy {
+    ($($t:ty),+ $(,)?) => {$(
+        impl CastRawSlice for $t {
+            fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self] {
+                must_cast_slice_mut(raw)
+            }
+        }
+    )+};
 }
-impl RSliceNative for Rfloat {}
 
-impl RNativeType for Rcomplex {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = COMPLEX;
+macro_rules! impl_cast_raw_slice_identity {
+    ($($t:ty),+ $(,)?) => {$(
+        impl CastRawSlice for $t {
+            fn cast_raw_mut(raw: &mut [Self::Raw]) -> &mut [Self] {
+                raw
+            }
+        }
+    )+};
 }
-impl RSliceNative for Rcomplex {}
 
-impl RNativeType for Rcplx {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = COMPLEX_AS_RCPLX;
-}
-impl RSliceNative for Rcplx {}
+macro_rules! impl_rnative_type {
+    ($ty:ty, $raw:ty, $sexp:expr, $ptr:expr) => {
+        impl RNativeType for $ty {
+            type Raw = $raw;
+            const SEXPTYPE: SEXPTYPE = $sexp;
+            const RAW_PTR: unsafe extern "C" fn(SEXP) -> *mut Self::Raw = $ptr;
+        }
 
-impl RNativeType for c64 {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = COMPLEX_AS_C64;
+        impl RSliceNative for $ty {}
+    };
 }
-impl RSliceNative for c64 {}
 
-impl RNativeType for (f64, f64) {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::CPLXSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = COMPLEX_AS_FLOAT_TUPLE;
-}
-impl RSliceNative for (f64, f64) {}
+impl_rnative_type!(f64, f64, SEXPTYPE::REALSXP, REAL);
+impl_rnative_type!(Rfloat, Rfloat, SEXPTYPE::REALSXP, REAL_AS_RFLOAT);
+impl_rnative_type!(Rcomplex, Rcomplex, SEXPTYPE::CPLXSXP, COMPLEX);
+impl_rnative_type!(Rcplx, Rcplx, SEXPTYPE::CPLXSXP, COMPLEX_AS_RCPLX);
+impl_rnative_type!(c64, c64, SEXPTYPE::CPLXSXP, COMPLEX_AS_C64);
+impl_rnative_type!((f64, f64), (f64, f64), SEXPTYPE::CPLXSXP, COMPLEX_AS_FLOAT_TUPLE);
+impl_rnative_type!(i32, i32, SEXPTYPE::INTSXP, INTEGER);
+impl_rnative_type!(Rint, Rint, SEXPTYPE::INTSXP, INTEGER_AS_RINT);
+impl_rnative_type!(Rbool, Rbool, SEXPTYPE::LGLSXP, LOGICAL_AS_RBOOL);
+impl_rnative_type!(u8, u8, SEXPTYPE::RAWSXP, RAW);
 
-impl RNativeType for i32 {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::INTSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = INTEGER;
-}
-impl RSliceNative for i32 {}
-
-impl RNativeType for Rint {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::INTSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = INTEGER_AS_RINT;
-}
-impl RSliceNative for Rint {}
-
-impl RNativeType for Rbool {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::LGLSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = LOGICAL_AS_RBOOL;
-}
-impl RSliceNative for Rbool {}
-
-impl RNativeType for u8 {
-    const SEXPTYPE: SEXPTYPE = SEXPTYPE::RAWSXP;
-    const PTR: unsafe extern "C" fn(SEXP) -> *mut Self = RAW;
-}
-impl RSliceNative for u8 {}
+impl_cast_raw_slice_copy!(f64, Rfloat, i32, Rint, Rbool, u8);
+impl_cast_raw_slice_identity!(Rcomplex, Rcplx, c64, (f64, f64));
 
 impl CoerceNative for bool {
     type Target = Rbool;
@@ -289,7 +309,7 @@ impl CoerceNative for Option<bool> {
 
 impl<T> CoerceNative for Option<T>
 where
-    T: RSliceNative + CanBeNA,
+    T: RSliceNative + CanBeNA + CastRawSlice,
 {
     type Target = T;
 
@@ -303,7 +323,7 @@ where
 
 fn collect_native<T, I>(iterable: I) -> Robj
 where
-    T: RNativeType,
+    T: RNativeType + CastRawSlice,
     I: IntoIterator<Item = T>,
 {
     let mut iter = iterable.into_iter();
@@ -312,7 +332,8 @@ where
             return single_threaded(|| unsafe {
                 let robj = Robj::alloc_vector(T::SEXPTYPE, len);
                 if len != 0 {
-                    let dest = std::slice::from_raw_parts_mut((T::PTR)(robj.get()), len);
+                    let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), len);
+                    let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
                     for (idx, value) in (&mut iter).enumerate() {
                         *dest.get_unchecked_mut(idx) = value;
                     }
@@ -327,7 +348,8 @@ where
         let len = values.len();
         let robj = Robj::alloc_vector(T::SEXPTYPE, len);
         if len != 0 {
-            let dest = std::slice::from_raw_parts_mut((T::PTR)(robj.get()), len);
+            let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), len);
+            let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
             dest.copy_from_slice(&values);
         }
         robj
@@ -336,12 +358,13 @@ where
 
 fn copy_slice_to_robj<T>(slice: &[T]) -> Robj
 where
-    T: RSliceNative,
+    T: RSliceNative + CastRawSlice,
 {
     single_threaded(|| unsafe {
         let robj = Robj::alloc_vector(T::SEXPTYPE, slice.len());
         if !slice.is_empty() {
-            let dest = std::slice::from_raw_parts_mut((T::PTR)(robj.get()), slice.len());
+            let raw = std::slice::from_raw_parts_mut((T::RAW_PTR)(robj.get()), slice.len());
+            let dest: &mut [T] = <T as CastRawSlice>::cast_raw_mut(raw);
             dest.copy_from_slice(slice);
         }
         robj
@@ -1282,7 +1305,7 @@ impl<'a> From<&'a [Option<Rstr>]> for Robj {
 
 impl<T, const N: usize> From<[Option<T>; N]> for Robj
 where
-    T: RSliceNative + CanBeNA,
+    T: RSliceNative + CanBeNA + CastRawSlice,
 {
     fn from(val: [Option<T>; N]) -> Self {
         coerce_slice_to_robj(&val)
@@ -1291,7 +1314,7 @@ where
 
 impl<'a, T, const N: usize> From<&'a [Option<T>; N]> for Robj
 where
-    T: RSliceNative + CanBeNA,
+    T: RSliceNative + CanBeNA + CastRawSlice,
 {
     fn from(val: &'a [Option<T>; N]) -> Self {
         coerce_slice_to_robj(val)
@@ -1300,7 +1323,7 @@ where
 
 impl<'a, T, const N: usize> From<&'a mut [Option<T>; N]> for Robj
 where
-    T: RSliceNative + CanBeNA,
+    T: RSliceNative + CanBeNA + CastRawSlice,
 {
     fn from(val: &'a mut [Option<T>; N]) -> Self {
         coerce_slice_to_robj(val)
@@ -1309,7 +1332,7 @@ where
 
 impl<'a, T> From<&'a [Option<T>]> for Robj
 where
-    T: RSliceNative + CanBeNA,
+    T: RSliceNative + CanBeNA + CastRawSlice,
 {
     fn from(val: &'a [Option<T>]) -> Self {
         coerce_slice_to_robj(val)
