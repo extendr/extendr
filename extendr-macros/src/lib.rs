@@ -40,7 +40,7 @@
 // fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
 //     call_methods.push(extendr_api::CallMethod {
 //         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
-//         func_ptr: wrap__hello as *const u8,
+//         func_ptr: unsafe { *std::ptr::from_ref(&wrap__hello) } as *const () as *const u8,
 //         num_args: 0i32,
 //     })
 // }

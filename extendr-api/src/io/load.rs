@@ -29,7 +29,7 @@ pub trait Load {
         hook: Option<ReadHook>,
     ) -> Result<Robj> {
         unsafe extern "C" fn inchar<R: Read>(arg1: R_inpstream_t) -> ::std::os::raw::c_int {
-            let reader = &mut *((*arg1).data as *mut R);
+            let reader = (*arg1).data.cast::<R>().as_mut().unwrap();
             let buf: &mut [u8] = &mut [0_u8];
             reader.read_exact(buf).map(|_| buf[0].into()).unwrap_or(-1)
         }
@@ -39,8 +39,8 @@ pub trait Load {
             arg2: *mut ::std::os::raw::c_void,
             arg3: ::std::os::raw::c_int,
         ) {
-            let reader = &mut *((*arg1).data as *mut R);
-            let buf = std::slice::from_raw_parts_mut(arg2 as *mut u8, arg3 as usize);
+            let reader = (*arg1).data.cast::<R>().as_mut().unwrap();
+            let buf = std::slice::from_raw_parts_mut(arg2.cast::<u8>(), arg3 as usize);
             reader.read_exact(buf).unwrap();
         }
 

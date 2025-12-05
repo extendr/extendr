@@ -3,8 +3,7 @@
 use super::PstreamFormat;
 use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp};
 use extendr_ffi::{
-    R_NilValue, R_Serialize, R_outpstream_st, R_outpstream_t, R_pstream_data_t, R_pstream_format_t,
-    SEXP,
+    R_NilValue, R_Serialize, R_outpstream_st, R_outpstream_t, R_pstream_format_t, SEXP,
 };
 use std::io::Write;
 
@@ -27,7 +26,7 @@ impl<W: Write> OutStream<W> {
         hook: Option<WriteHook>,
     ) -> Box<OutStream<W>> {
         unsafe extern "C" fn outchar<W: Write>(arg1: R_outpstream_t, arg2: ::std::os::raw::c_int) {
-            let writer = &mut *((*arg1).data as *mut W);
+            let writer = (*arg1).data.cast::<W>().as_mut().unwrap();
             let b = [arg2 as u8];
             writer.write_all(&b).unwrap();
         }
@@ -37,8 +36,8 @@ impl<W: Write> OutStream<W> {
             arg2: *mut ::std::os::raw::c_void,
             arg3: ::std::os::raw::c_int,
         ) {
-            let writer = &mut *((*arg1).data as *mut W);
-            let b = std::slice::from_raw_parts(arg2 as *mut u8, arg3 as usize);
+            let writer = (*arg1).data.cast::<W>().as_mut().unwrap();
+            let b = std::slice::from_raw_parts(arg2.cast::<u8>(), arg3 as usize);
             writer.write_all(b).unwrap();
         }
 
@@ -59,7 +58,7 @@ impl<W: Write> OutStream<W> {
                 OutPersistHookData: hook_data,
             };
             let mut os = Box::new(OutStream { r_state, writer });
-            os.r_state.data = &mut os.writer as *mut W as R_pstream_data_t;
+            os.r_state.data = std::ptr::from_mut(&mut os.writer).cast();
             os
         }
     }

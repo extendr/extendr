@@ -1,7 +1,7 @@
 use super::scalar::Rint;
 use super::*;
 use extendr_ffi::{
-    dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
+    R_xlen_t, INTEGER, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
 };
 use std::iter::FromIterator;
 
@@ -46,7 +46,7 @@ impl Integers {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
         unsafe {
-            let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
+            let ptr = dest.as_mut_ptr().cast::<i32>();
             INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }
@@ -77,7 +77,7 @@ impl Deref for Integers {
     /// Treat Integers as if it is a slice, like `Vec<Rint>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rint;
+            let ptr = INTEGER(self.get()).cast::<Rint>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -87,7 +87,7 @@ impl DerefMut for Integers {
     /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rint;
+            let ptr = INTEGER(self.get_mut()).cast::<Rint>();
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

@@ -23,8 +23,10 @@
 - **Deprecates** `Rstr::from_string()` and `Rstr::as_str()` in favor of the standard library's `From` and `AsRef` traits. Use `.from()` and `.as_ref()` instead [[#972]](https://github.com/extendr/extendr/pull/972)
 - **Breaking** renamed `TryFromRobj` and the associated derive-macro to `TryFromList` [[#]](https://github.com/extendr/extendr/pull/1018)
 - **Breaking** `extendr_engine::with_r()` requires a closure that returns a result [[#1005]](https://github.com/extendr/extendr/pull/1005)
-- **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types.
-  [[#1020]](https://github.com/extendr/extendr/pull/1020)
+- **Breaking** removes `Scalar` trait in favour of providing read-only access to the wrapped types. [[#1020]](https://github.com/extendr/extendr/pull/1020)
+- **Breaking** graphics engine functions now appropriately mark mutability requirement. Previously arguments were marked immutable, but treated as immutable violating the type safety system [[#1017]](https://github.com/extendr/extendr/pull/1017)
+- **Possibly Breaking** extendr-engine now sets the flag `--vanilla` when starting R [[#1017]](https://github.com/extendr/extendr/pull/1017)
+- **Breaking** `extendr_api::catch_r_error()` now requires a mutable closure to ensure type-safe casting of pointers [[#1017]](https://github.com/extendr/extendr/pull/1017)
 
 ### Fixed
 

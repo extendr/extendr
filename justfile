@@ -12,18 +12,18 @@ clean *cargo_flags:
 
 alias cargo-check := check
 check *cargo_flags:
-    cargo check --workspace {{cargo_flags}}
-    cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo check --features full-functionality --workspace {{cargo_flags}}
+    cargo check --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 alias cargo-build := build
 build *cargo_flags:
-    cargo build --workspace {{cargo_flags}}
-    cargo build --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo build --features full-functionality --workspace {{cargo_flags}}
+    cargo build --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 alias cargo-clippy := clippy
 clippy *cargo_flags:
-    cargo clippy --workspace {{cargo_flags}}
-    cargo clippy --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo clippy --features full-functionality --workspace {{cargo_flags}}
+    cargo clippy --features full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 alias cargo-doc-check := doc-check
 doc-check *cargo_flags:
@@ -55,23 +55,23 @@ test *args:
       if [ "$sep" = "0" ]; then cargo_flags="$cargo_flags $arg"; else test_args="$test_args $arg"; fi; \
     done \
     && cargo test --workspace --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture --test-threads=1 $test_args \
-    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast $cargo_flags -- --no-capture --test-threads=1 $test_args
+    && cargo test --manifest-path=tests/extendrtests/src/rust/Cargo.toml --no-fail-fast --features=full-functionality $cargo_flags -- --no-capture --test-threads=1 $test_args
 
 alias cargo-tree := tree
 tree *cargo_flags:
-  cargo tree --workspace {{cargo_flags}}
-  cargo tree --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+  cargo tree --features=full-functionality --workspace {{cargo_flags}}
+  cargo tree --features=full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 alias cargo-expand := expand
 expand *cargo_flags:
-    cargo expand -p extendr-api {{cargo_flags}}
+    cargo expand --features=full-functionality -p extendr-api {{cargo_flags}}
     cargo expand -p extendr-macros {{cargo_flags}}
     cargo expand -p extendr-ffi {{cargo_flags}}
-    cargo expand --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo expand --features=full-functionality --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
 
 # Verify MSRV with optional comma-separated FEATURES (empty means default features)
 msrv FEATURES="":
-    if [ "x{{FEATURES}}" = "x" ]; then \
+    if [ -z "{{FEATURES}}" ]; then \
       cargo msrv --path extendr-api verify -- cargo check; \
     else \
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
@@ -97,7 +97,7 @@ devtools-test FILTER="" SNAPSHOT="0":
     if [ "{{SNAPSHOT}}" = "1" ]; then \
       Rscript -e 'testthat::snapshot_accept("macro-snapshot")'; \
     fi; \
-    if [ "x{{FILTER}}" = "x" ]; then \
+    if [ -z "{{FILTER}}" ]; then \
       Rscript -e 'devtools::test()'; \
     else \
       Rscript -e 'devtools::test(filter = "{{FILTER}}")'; \
