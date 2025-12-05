@@ -61,6 +61,9 @@
   [[#1020]](https://github.com/extendr/extendr/pull/1020)
 - **Breaking** we no longer permit `TryFrom<Robj> for &T/&mut T` as this violates
   Rust's memory model. [[#1000]](https://github.com/extendr/extendr/pull/1000)
+- **Breaking** graphics engine functions now appropriately mark mutability requirement. Previously arguments were marked immutable, but treated as immutable violating the type safety system [[#1017]](https://github.com/extendr/extendr/pull/1017)
+- **Possibly Breaking** extendr-engine now sets the flag `--vanilla` when starting R [[#1017]](https://github.com/extendr/extendr/pull/1017)
+- **Breaking** `extendr_api::catch_r_error()` now requires a mutable closure to ensure type-safe casting of pointers [[#1017]](https://github.com/extendr/extendr/pull/1017)
 
 ### Fixed
 
