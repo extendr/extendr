@@ -18,6 +18,7 @@
 
 ### Changed
 
+- **Breaking**: `extendr_api::error::Result<>` has been removed from the prelude
 - **Deprecates** `List::from_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::from_hashmap()` with `List::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
 - **Deprecates** `List::into_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::into_hashmap()` with `HashMap::<String, Robj>::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
 - **Deprecates** `Scalar::new()` in favor of the idiomatic `From::from()` and `Into` traits [[#971]](https://github.com/extendr/extendr/pull/971)
