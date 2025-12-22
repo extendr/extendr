@@ -58,12 +58,6 @@ gen_trait_impl!(Rbool, bool, |x: &Rbool| x.0 == i32::MIN, i32::MIN);
 gen_from_primitive!(Rbool, i32);
 gen_partial_ord!(Rbool, bool);
 
-impl std::hash::Hash for Rbool {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state);
-    }
-}
-
 impl From<bool> for Rbool {
     fn from(v: bool) -> Self {
         Rbool(i32::from(v))

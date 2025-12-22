@@ -106,9 +106,9 @@ pub enum SEXPTYPE {
     WEAKREFSXP = 23,
     #[doc = "raw bytes"]
     RAWSXP = 24,
-    #[cfg(not(use_objsxp))]
+    #[cfg(not(r_4_4))]
     S4SXP = 25,
-    #[cfg(use_objsxp)]
+    #[cfg(r_4_4)]
     #[doc = "S4 non-vector"]
     OBJSXP = 25,
     #[doc = "fresh node created in new page"]
@@ -303,7 +303,6 @@ extern "C" {
     pub fn R_SetExternalPtrProtected(s: SEXP, p: SEXP);
     pub fn R_WeakRefKey(w: SEXP) -> SEXP;
     pub fn R_WeakRefValue(w: SEXP) -> SEXP;
-    pub fn ATTRIB(x: SEXP) -> SEXP;
     pub fn R_compute_identical(arg1: SEXP, arg2: SEXP, arg3: ::std::os::raw::c_int) -> Rboolean;
     #[doc = "C stack limit"]
     pub static mut R_CStackLimit: usize;
