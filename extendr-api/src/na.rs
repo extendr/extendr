@@ -1,4 +1,4 @@
-use extendr_ffi::{R_IsNA, R_NaReal};
+use extendr_ffi::{R_IsNA, R_NaReal, Rcomplex};
 use once_cell::sync::Lazy;
 use std::alloc::{self, Layout};
 
@@ -77,5 +77,36 @@ impl CanBeNA for &str {
 
     fn na() -> Self {
         &EXTENDR_NA_STRING
+    }
+}
+
+impl CanBeNA for u8 {
+    /// Returns `false` always as `u8`/`Raw` cannot be `NA` in the traditional
+    /// sense.
+    fn is_na(&self) -> bool {
+        false
+    }
+
+    /// Returns `0_u8` as the `NA` value for `u8`/`Raw`.
+    ///
+    /// Note that this follows the convention of R, by using the minimum as
+    /// the sentinel value.
+    fn na() -> Self {
+        0
+    }
+}
+
+impl CanBeNA for Rcomplex {
+    fn is_na(&self) -> bool {
+        unsafe { R_IsNA(self.r) != 0 || R_IsNA(self.i) != 0 }
+    }
+
+    fn na() -> Self {
+        unsafe {
+            Rcomplex {
+                r: R_NaReal,
+                i: R_NaReal,
+            }
+        }
     }
 }
