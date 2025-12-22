@@ -5,8 +5,7 @@
 ### Added
 
 - Implements `CanBeNa` for `u8` and `Rcomplex` [[#1000]](https://github.com/extendr/extendr/pull/1000)
-- Added type-strict conversions through `&/&mut T`, where `T` is a R native data type namely
-  `i32`, `f64`, `Rint`, `Rfloat`, `Rcplx`, `Rbool`, and `u8`. [[#1000]](https://github.com/extendr/extendr/pull/1000)
+- References to R native types are strictly checked `&/&mut T`, where `T` is a R native data type namely `i32`, `f64`, `Rint`, `Rfloat`, `Rcplx`, `Rbool`, and `u8`. We cannot perform coercion on borrowed data only owned data. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - Support for tuple-structs in `IntoList` and `TryFromList` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
