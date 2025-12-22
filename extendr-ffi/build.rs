@@ -168,6 +168,7 @@ impl InstallationPaths {
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(use_objsxp)");
+    println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_16)");
@@ -217,7 +218,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Set R version specfic config flags
     // S4 non-vector was introduced in R 4.4
     if (r_paths.version.major, r_paths.version.minor) >= (4, 4) {
-        println!("cargo:rustc-cfg=use_objsxp")
+        // FIXME: consolidate to version based flags
+        println!("cargo:rustc-cfg=use_objsxp");
+        println!("cargo:rustc-cfg=r_4_4");
     }
 
     // use r_4_5 config
