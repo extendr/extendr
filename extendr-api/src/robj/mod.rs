@@ -19,8 +19,8 @@ const HASH_CYCLE_MARKER: u8 = 0xFF;
 
 use extendr_ffi::{
     dataptr, R_IsNA, R_NilValue, R_WeakRefKey, R_WeakRefValue, R_compute_identical, R_tryEval,
-    Rboolean, Rcomplex, Rf_getAttrib, Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX, INTEGER,
-    LOGICAL, OBJECT, PRINTNAME, RAW, REAL, SEXPTYPE, STRING_ELT, STRING_PTR_RO, TAG, TYPEOF,
+    Rboolean, Rcomplex, Rf_getAttrib, Rf_isObject, Rf_setAttrib, Rf_xlength, CAR, CDR, COMPLEX,
+    INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE, STRING_ELT, STRING_PTR_RO, TAG, TYPEOF,
     XLENGTH,
 };
 
@@ -134,7 +134,7 @@ fn hash_robj<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>) {
 
     stack.insert(sexp);
     // seed similar to R's vhash_one: OBJECT flag + 2*TYPEOF + 100*LENGTH
-    let obj_flag = unsafe { OBJECT(sexp) };
+    let obj_flag = unsafe { Rf_isObject(sexp) };
     obj_flag.hash(state);
     robj.sexptype().hash(state);
     robj.len().hash(state);
@@ -225,13 +225,13 @@ fn hash_closure<H: Hasher>(robj: &Robj, state: &mut H, stack: &mut HashSet<SEXP>
     unsafe {
         let sexp = robj.get();
         // Hash formals
-        let formals = Robj::from_sexp(extendr_ffi::R_ClosureFormals(sexp));
+        let formals = Robj::from_sexp(extendr_ffi::get_closure_formals(sexp));
         hash_robj(&formals, state, stack);
         // Hash body
-        let body = Robj::from_sexp(extendr_ffi::R_ClosureBody(sexp));
+        let body = Robj::from_sexp(extendr_ffi::backports::get_closure_body(sexp));
         hash_robj(&body, state, stack);
         // Hash environment pointer
-        let env = extendr_ffi::R_ClosureEnv(sexp);
+        let env = extendr_ffi::get_closure_env(sexp);
         env.hash(state);
     }
 }
