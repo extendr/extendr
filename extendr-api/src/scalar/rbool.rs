@@ -60,7 +60,7 @@ gen_partial_ord!(Rbool, bool);
 
 impl std::hash::Hash for Rbool {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.inner().hash(state);
+        self.0.hash(state);
     }
 }
 
