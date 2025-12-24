@@ -1,4 +1,4 @@
-use extendr_api::prelude::*;
+use extendr_api::{error::Result, prelude::*};
 
 #[extendr]
 fn error_simple() -> Result<i32> {

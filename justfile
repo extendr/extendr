@@ -1,7 +1,7 @@
 # https://just.systems
 
 default:
-    echo 'Hello, world!'
+    just --list
 
 alias cargo-clean := clean
 clean *cargo_flags:

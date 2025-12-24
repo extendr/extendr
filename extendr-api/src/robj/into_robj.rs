@@ -51,7 +51,7 @@ impl From<()> for Robj {
 /// * Neither of the above (default): `Ok(T)` is encoded as `x_ok` and `Err(E)` will trigger `throw_r_error()` with the error message.
 /// ```
 /// use extendr_api::prelude::*;
-/// fn my_func() -> Result<f64> {
+/// fn my_func() -> extendr_api::error::Result<f64> {
 ///     Ok(1.0)
 /// }
 ///
