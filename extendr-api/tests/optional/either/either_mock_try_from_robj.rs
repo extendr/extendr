@@ -1,4 +1,4 @@
-use extendr_api::prelude::*;
+use extendr_api::{error::Result, prelude::*};
 
 #[derive(Debug, PartialEq)]
 struct Success {}
