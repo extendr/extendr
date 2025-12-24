@@ -1,4 +1,4 @@
-use extendr_api::prelude::*;
+use extendr_api::{error::Result, prelude::*};
 
 #[extendr]
 fn sum_triplet_ints(x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32)) -> Rint {
