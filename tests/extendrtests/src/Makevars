@@ -1,18 +1,38 @@
+# Compute Rust target from R_PLATFORM (strip darwin version, fix linux vendor)
+# This mapping is needed because cargo builds to target-specific directories
+RUST_TARGET = `echo $(R_PLATFORM) | sed 's/darwin[0-9]*/darwin/' | sed 's/-pc-linux-/-unknown-linux-/'`
+
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/debug
+LIBDIR = $(TARGET_DIR)/$(RUST_TARGET)/debug
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 
-all: $(SHLIB) rust_clean
+WRAPPERS_C = extendrtests-wrappers.c
+WRAPPERS_DIR = $(LIBDIR)/wrappers
+
+all: $(SHLIB) wrappers cleanup
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --color=auto
+	cargo build --quiet --lib --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) --target $(RUST_TARGET) --color=auto
 
+# Build the wrappers shlib for development use (optional).
+# Uses EXTENDR_BUILDING_WRAPPERS to prevent infinite recursion when R CMD SHLIB
+# invokes make with this Makevars.
+wrappers: $(STATLIB)
+	@if [ -z "$${EXTENDR_BUILDING_WRAPPERS}" ] && [ -f "$(WRAPPERS_C)" ]; then \
+		mkdir -p $(WRAPPERS_DIR); \
+		EXTENDR_BUILDING_WRAPPERS=1 R CMD SHLIB -o $(WRAPPERS_DIR)/libextendrtests.so $(WRAPPERS_C) $(PKG_LIBS); \
+		rm -f extendrtests-wrappers.o; \
+	fi
 
-rust_clean:
-	rm -Rf $(CARGOTMP) $(TARGET_DIR)
+# Remove static libraries after linking to avoid R CMD check warnings about
+# symbols in intermediate build artifacts (abort, exit, etc from Rust stdlib).
+# The final .so already contains everything needed.
+cleanup: $(SHLIB) wrappers
+	rm -f $(LIBDIR)/*.rlib $(LIBDIR)/*.a 2>/dev/null || true
+	rm -f $(LIBDIR)/deps/*.rlib $(LIBDIR)/deps/*.a 2>/dev/null || true
 
 clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR)

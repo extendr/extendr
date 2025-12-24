@@ -17,7 +17,7 @@ test_that("Wrapper code is up-to-date", {
   # Make sure you know which it is before running `make_wrappers()`.
 
   x <- .Call(
-    "wrap__make_extendrtests_wrappers",
+    wrap__make_extendrtests_wrappers,
     use_symbols = TRUE,
     package_name = "extendrtests"
   )
