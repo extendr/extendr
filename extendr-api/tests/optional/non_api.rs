@@ -1,17 +1,19 @@
 #![cfg(test)]
+use extendr_api::error::Result;
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 
 #[test]
-fn non_api_promise() {
+fn non_api_promise() -> Result<()> {
     with_r(|| {
         let _special = r!(Primitive::from_string("if"));
         let _builtin = r!(Primitive::from_string("+"));
-    });
+        Ok(())
+    })
 }
 
 #[test]
-fn environment() {
+fn environment() -> Result<()> {
     with_r(|| {
         let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
         let env = Environment::from_pairs(global_env(), names_and_values);
@@ -36,11 +38,12 @@ fn environment() {
             .iter()
             .collect::<Vec<_>>();
         assert_eq!(names_and_values, vec![("x", r!(1))]);
-    });
+        Ok(())
+    })
 }
 
 #[test]
-fn non_api_rinternals_promise() {
+fn non_api_rinternals_promise() -> Result<()> {
     with_r(|| {
         let iris_dataframe = global_env()
             .find_var(sym!(iris))
@@ -52,30 +55,33 @@ fn non_api_rinternals_promise() {
 
         // Note: this may crash on some versions of windows which don't support unwinding.
         //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
-    });
+        Ok(())
+    })
 }
 
 #[test]
-fn non_api_getsexp_rtype() {
+fn non_api_getsexp_rtype() -> Result<()> {
     with_r(|| {
         assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
         assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
-    });
+        Ok(())
+    })
 }
 
 #[test]
-fn non_api_rmacros() {
+fn non_api_rmacros() -> Result<()> {
     with_r(|| {
         // The "iris" dataset is a dataframe.
         assert!(global!(iris).unwrap().is_frame());
-    });
+        Ok(())
+    })
 }
 
 /// In `extendr-api/lib.rs` there was a section with this
 ///
 /// > You can call R functions and primitives using the [call!] macro.
 #[test]
-fn non_api_lib_readme() {
+fn non_api_lib_readme() -> Result<()> {
     with_r(|| {
         // As one R! macro call
         let confint1 = R!("confint(lm(weight ~ group - 1, PlantGrowth))").unwrap();
@@ -88,16 +94,18 @@ fn non_api_lib_readme() {
         let confint2 = call!("confint", model).unwrap();
 
         assert_eq!(confint1.as_real_vector(), confint2.as_real_vector());
-    });
+        Ok(())
+    })
 }
 
 #[test]
-fn non_api_base_env() {
+fn non_api_base_env() -> Result<()> {
     with_r(|| {
         global_env().set_local(sym!(x), "hello");
         assert_eq!(
             base_env().local(sym!(+)),
             Ok(r!(Primitive::from_string("+")))
         );
-    });
+        Ok(())
+    })
 }

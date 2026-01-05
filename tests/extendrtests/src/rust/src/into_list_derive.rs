@@ -15,7 +15,7 @@ pub struct BasicStruct {
 fn make_basic_struct() -> Robj {
     BasicStruct {
         int_field: 42,
-        double_field: f64::consts::PI,
+        double_field: std::f64::consts::PI,
         bool_field: true,
         string_field: String::from("hello from rust"),
     }
