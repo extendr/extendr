@@ -1,4 +1,4 @@
-use extendr_api::prelude::*;
+use extendr_api::{error::Result, prelude::*};
 use extendr_engine::with_r_result;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;
