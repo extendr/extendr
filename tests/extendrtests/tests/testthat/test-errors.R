@@ -34,6 +34,11 @@ test_that("Error functions throw clean errors by default", {
     error_long_message(),
     "This is a longer error message"
   )
+
+  expect_error(
+    error_anyhow(),
+    "anyhow Context\\\\n\\\\nCaused by:\\\\n.*anyhow Error"
+  )
 })
 
 test_that("Successful Result returns value correctly", {
@@ -204,7 +209,7 @@ test_that("Error handling on panic", {
   expect_error(
     error_on_panic()
   )
-  
+
   # Restore original value
   if (is.na(orig_val)) {
     Sys.unsetenv("EXTENDR_BACKTRACE")

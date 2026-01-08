@@ -107,6 +107,8 @@ error_long_message <- function() .Call(wrap__error_long_message)
 
 error_on_panic <- function() .Call(wrap__error_on_panic)
 
+error_anyhow <- function() .Call(wrap__error_anyhow)
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)

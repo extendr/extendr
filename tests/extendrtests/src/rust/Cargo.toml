@@ -28,7 +28,9 @@ extendr-api = { version = "*", features = [
     "ndarray",
     "faer",
     "either",
+    "anyhow"
 ] }
+anyhow = { version = "*" }
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.

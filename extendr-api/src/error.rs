@@ -249,6 +249,13 @@ impl From<String> for Error {
     }
 }
 
+#[cfg(feature = "anyhow")]
+impl From<anyhow::Error> for Error {
+    fn from(err: anyhow::Error) -> Error {
+        Error::Other(format!("{:?}.", err))
+    }
+}
+
 // NoneError is unstable.
 //
 // impl From<std::option::NoneError> for Error {

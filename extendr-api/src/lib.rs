@@ -294,6 +294,7 @@
 //! - `graphics`: provides the functionality to control or implement graphics devices.
 //! - `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 //! - `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
+//! - `anyhow`: provides conversion from anyhow error type to extendr-api's error type.
 //!
 //! extendr-api supports three ways of returning a Result<T,E> to R.
 //! Only one behavior feature can be enabled at a time.

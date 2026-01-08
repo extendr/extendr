@@ -1,3 +1,4 @@
+use anyhow::Context;
 use extendr_api::{error::Result, prelude::*};
 
 #[extendr]
@@ -53,6 +54,12 @@ fn error_on_panic() {
     panic!("this does circumvents the hook mechanism");
 }
 
+#[extendr]
+fn error_anyhow() -> Result<()> {
+    Err(anyhow::anyhow!("This is the anyhow Error")).with_context(|| format!("anyhow Context"))?;
+    Ok(())
+}
+
 extendr_module! {
     mod errors;
     fn error_simple;
@@ -62,4 +69,5 @@ extendr_module! {
     fn error_chain;
     fn error_long_message;
     fn error_on_panic;
+    fn error_anyhow;
 }
