@@ -21,7 +21,7 @@ jobs:
             "r": "release",
             "rust-version": "stable-msvc",
             "rtools-version": "44",
-            "features": "full-functionality"
+            "features": "tests"
           },
           {
             "os": "windows-latest",
@@ -34,7 +34,7 @@ jobs:
             "os": "macOS-latest",
             "r": "release",
             "rust-version": "stable",
-            "features": "full-functionality"
+            "features": "tests"
           },
           {
             "os": "macOS-latest",
@@ -46,7 +46,7 @@ jobs:
             "os": "ubuntu-latest",
             "r": "release",
             "rust-version": "stable",
-            "features": "full-functionality",
+            "features": "tests",
             "check_fmt": true
           },
           {

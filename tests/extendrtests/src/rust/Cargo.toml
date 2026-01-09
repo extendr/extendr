@@ -16,11 +16,23 @@ publish = false
 crate-type = ["staticlib"]
 
 [features]
-full-functionality = []
+full-functionality = ["extendr-api/full-functionality"]
 serde = ["extendr-api/serde"]
-faer = []
-graphics = []
-ndarray = []
+faer = ["extendr-api/faer"]
+graphics = ["extendr-api/graphics"]
+ndarray = ["extendr-api/ndarray"]
+num-complex = ["dep:num-complex", "extendr-api/num-complex"]
+either = ["dep:either", "extendr-api/either"]
+
+# The minimal set of features without all optional ones
+tests-minimal = []
+
+tests = ["tests-minimal", "ndarray", "faer", "serde", "num-complex", "either"]
+
+tests-graphics = ["tests-minimal", "graphics"]
+
+# Literally all features to test
+tests-all = ["tests", "graphics"]
 
 [dependencies]
 extendr-api = { version = "*", features = [
@@ -29,6 +41,8 @@ extendr-api = { version = "*", features = [
     "faer",
     "either",
 ] }
+num-complex = { version = "0.4.6", optional = true }
+either = { version = "1.8.1", optional = true }
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.

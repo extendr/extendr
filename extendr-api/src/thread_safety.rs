@@ -3,58 +3,117 @@ use crate::*;
 use extendr_ffi::{
     R_MakeUnwindCont, R_UnwindProtect, Rboolean, Rf_error, Rf_protect, Rf_unprotect,
 };
-use std::cell::Cell;
-use std::sync::Mutex;
+use std::cell::{Cell, UnsafeCell};
+use std::sync::{Mutex, MutexGuard};
 
-/// A global lock, that should represent the global lock on the R-API.
-/// It is not tied to an actual instance of R.
 static R_API_LOCK: Mutex<()> = Mutex::new(());
 
-thread_local! {
-    static THREAD_HAS_LOCK: Cell<bool> = const { Cell::new(false) };
+struct State {
+    depth: Cell<u32>,
+    guard: UnsafeCell<Option<MutexGuard<'static, ()>>>,
 }
 
-/// Run `f` while ensuring that `f` runs in a single-threaded manner.
-///
-/// This is intended for single-threaded access of the R's C-API.
-/// It is possible to have nested calls of `single_threaded` without deadlocking.
-///
-/// Note: This will fail badly if the called function `f` panics or calls `Rf_error`.
+impl State {
+    #[inline]
+    unsafe fn guard_mut(&self) -> &mut Option<MutexGuard<'static, ()>> {
+        self.guard
+            .get()
+            .as_mut()
+            .expect("the reentrant guard state is `NULL`")
+    }
+}
+
+thread_local! {
+    static R_API_STATE: State = const {
+            State {
+                depth: Cell::new(0),
+                guard: UnsafeCell::new(None),
+        }
+    };
+}
+
+struct RApiGuard;
+
+impl Drop for RApiGuard {
+    fn drop(&mut self) {
+        // RAII exit path (normal return or Rust panic)
+        R_API_STATE.with(|st| {
+            let depth = st.depth.get();
+            if depth == 0 {
+                return;
+            }
+
+            let new_depth = depth - 1;
+            st.depth.set(new_depth);
+
+            if new_depth == 0 {
+                // dropping the guard here unlocks the mutex
+                unsafe {
+                    *st.guard_mut() = None;
+                }
+            }
+        });
+    }
+}
+
+/// Run `f` while ensuring single-threaded access to the R C API.
 pub fn single_threaded<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
 {
-    let has_lock = THREAD_HAS_LOCK.with(|x| x.get());
+    // Enter: take lock on first entry in this thread
+    R_API_STATE.with(|st| {
+        let depth = st.depth.get();
+        if depth == 0 {
+            let g = R_API_LOCK.lock().unwrap_or_else(|p| p.into_inner());
+            unsafe {
+                *st.guard_mut() = Some(g);
+            }
+        }
+        st.depth.set(depth + 1);
+    });
 
-    // acquire R-API lock
-    let _guard = if !has_lock {
-        Some(R_API_LOCK.lock().unwrap())
-    } else {
-        None
-    };
+    let _guard = RApiGuard; // RAII for normal/panic paths
 
-    // this thread now has the lock
-    THREAD_HAS_LOCK.with(|x| x.set(true));
-
-    let result = f();
-
-    // release the R-API lock
-    if _guard.is_some() {
-        THREAD_HAS_LOCK.with(|x| x.set(false));
-    }
-
-    result
+    f()
 }
 
-static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
+/// Best-effort reset for this thread after a longjmp.
+pub fn reset_r_api_for_thread() {
+    R_API_STATE.with(|st| {
+        st.depth.set(0);
+        unsafe {
+            *st.guard_mut() = None;
+        }
+    });
+}
+
+// Per-thread storage for the last error message
+thread_local! {
+    // Mutable TLS buffer to keep the error message alive across the R longjmp.
+    // Using UnsafeCell avoids RefCell borrow bookkeeping, which would otherwise
+    // remain "borrowed" if Rf_error longjmps past the destructor.
+    static R_ERROR_BUF: std::cell::UnsafeCell<Option<std::ffi::CString>> = const { std::cell::UnsafeCell::new(None) };
+}
+
+static RF_ERROR_FORMAT: &std::ffi::CStr =
+    unsafe { std::ffi::CStr::from_bytes_with_nul_unchecked(b"%s\0") };
 
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
-    let s = s.as_ref();
+    let msg = s.as_ref();
+
+    let mut cstr_ptr: *const std::os::raw::c_char = std::ptr::null();
+    R_ERROR_BUF.with(|slot| unsafe {
+        let buf = &mut *slot.get();
+        *buf = Some(std::ffi::CString::new(msg).unwrap());
+        cstr_ptr = buf.as_ref().unwrap().as_ptr();
+    });
+
     unsafe {
-        R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
-        let ptr = std::ptr::addr_of!(R_ERROR_BUF);
-        Rf_error((*ptr).as_ref().unwrap().as_ptr());
-    };
+        // Rf_error never returns: it longjmps out through Rust.
+        // The CString is never dropped, so the pointer stays valid.
+        Rf_error(RF_ERROR_FORMAT.as_ptr(), cstr_ptr)
+    }
 }
 
 /// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
