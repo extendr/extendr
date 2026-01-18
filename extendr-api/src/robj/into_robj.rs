@@ -713,6 +713,16 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
+// Make Iterator::collect() work
+impl<A> FromIterator<A> for Robj
+where
+    A: ToVectorValue,
+{
+    fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self {
+        iter.into_iter().collect_robj()
+    }
+}
+
 // Scalars which are ToVectorValue
 impl<T> From<T> for Robj
 where
