@@ -655,7 +655,7 @@ pub trait RobjItertools: Iterator {
     /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
     ///
     /// // Integer iterators: using standard `.collect()`
-    /// let robj = (0..3).collect();
+    /// let robj = (0..3).collect::<Robj>();
     /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
     ///
     /// // Logical iterators.
@@ -663,7 +663,7 @@ pub trait RobjItertools: Iterator {
     /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
     ///
     /// // Logical iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| x % 2 == 0).collect();
+    /// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
     /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
     ///
     /// // Numeric iterators.
@@ -671,7 +671,7 @@ pub trait RobjItertools: Iterator {
     /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
     ///
     /// // Numeric iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| x as f64).collect();
+    /// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
     /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
     ///
     /// // String iterators.
@@ -679,7 +679,7 @@ pub trait RobjItertools: Iterator {
     /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
     ///
     /// // String iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| format!("{}", x)).collect();
+    /// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
     /// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
     ///
     /// }
