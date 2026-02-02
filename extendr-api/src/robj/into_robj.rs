@@ -642,6 +642,10 @@ where
 /// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
 pub trait RobjItertools: Iterator {
     /// Convert a wide range of iterators to Robj.
+    ///
+    /// Using `.collect::<Robj>()` is the usual way to use this functionality via the
+    /// [`FromIterator`] trait.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     ///
@@ -650,17 +654,34 @@ pub trait RobjItertools: Iterator {
     /// let robj = (0..3).collect_robj();
     /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
     ///
+    /// // Integer iterators: using standard `.collect()`
+    /// let robj = (0..3).collect::<Robj>();
+    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+    ///
     /// // Logical iterators.
     /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+    ///
+    /// // Logical iterators: using standard `.collect()`
+    /// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
     /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
     ///
     /// // Numeric iterators.
     /// let robj = (0..3).map(|x| x as f64).collect_robj();
     /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
     ///
+    /// // Numeric iterators: using standard `.collect()`
+    /// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
+    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+    ///
     /// // String iterators.
     /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
     /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+    ///
+    /// // String iterators: using standard `.collect()`
+    /// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
+    /// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
+    ///
     /// }
     /// ```
     fn collect_robj(self) -> Robj
@@ -712,6 +733,16 @@ pub trait RobjItertools: Iterator {
 
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
+
+// Make Iterator::collect() work
+impl<A> FromIterator<A> for Robj
+where
+    A: ToVectorValue,
+{
+    fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self {
+        iter.into_iter().collect_robj()
+    }
+}
 
 // Scalars which are ToVectorValue
 impl<T> From<T> for Robj
