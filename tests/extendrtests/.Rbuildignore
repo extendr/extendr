@@ -4,3 +4,7 @@
 ^notebooks$
 ^src/\.cargo$
 ^src/rust/vendor$
+^\.vscode$
+^src/rust/target$
+^src/Makevars$
+^src/Makevars\.win$
