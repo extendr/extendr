@@ -1,34 +1,36 @@
-[workspace]
-resolver = "2"
-
 [package]
 name = "extendrtests"
 version = "0.7.1"
 authors = [
-    "andy-thomason <andy@andythomason.com>",
-    "Claus O. Wilke <wilke@austin.utexas.edu>",
-    "Ilia Kosenkov <ilia.kosenkov@outlook.com",
+  "andy-thomason <andy@andythomason.com>",
+  "Claus O. Wilke <wilke@austin.utexas.edu>",
+  "Ilia Kosenkov <ilia.kosenkov@outlook.com",
 ]
 edition = "2021"
+rust-version = "1.65"
 publish = false
+
+[workspace]
+resolver = "2"
 
 [lib]
 crate-type = ["staticlib"]
-
-[features]
-full-functionality = []
-serde = ["extendr-api/serde"]
-faer = []
-graphics = []
-ndarray = []
+name = "extendrtests"
 
 [dependencies]
 extendr-api = { version = "*", features = [
-    "graphics",
-    "ndarray",
-    "faer",
-    "either",
+  "either",
+  "faer",
+  "graphics",
+  "ndarray",
 ] }
+
+[features]
+faer = []
+full-functionality = []
+graphics = []
+ndarray = []
+serde = ["extendr-api/serde"]
 
 [patch.crates-io]
 ## This is configured to work with RStudio features.
@@ -38,7 +40,6 @@ extendr-api = { path = "../../../../extendr-api" }
 ## This allows to run `rcmdcheck` from `./tests/extendrtests/`
 # extendr-api = { path = "../../../../../../../../../extendr/extendr-api" }
 
-
 ## Build against current extendr version on github. Not recommended
 ## for development work.
-#extendr-api = { git = "https://github.com/extendr/extendr"}
+# extendr-api = { git = "https://github.com/extendr/extendr"}
