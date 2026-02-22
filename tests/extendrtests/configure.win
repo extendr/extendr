@@ -1,3 +1,2 @@
 #!/usr/bin/env sh
-"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" tools/msrv.R
-
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" tools/config.R
