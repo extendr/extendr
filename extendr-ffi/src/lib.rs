@@ -229,12 +229,6 @@ pub struct R_inpstream_st {
     pub nat2utf8_obj: *mut ::std::os::raw::c_void,
 }
 
-#[cfg(not(r_4_5))]
-#[inline]
-pub unsafe fn Rf_isDataFrame(arg1: SEXP) -> Rboolean {
-    Rf_isFrame(arg1)
-}
-
 extern "C" {
     #[doc = "IEEE NaN"]
     pub static R_NaN: f64;
@@ -403,10 +397,6 @@ extern "C" {
     pub fn Rf_isEnvironment(s: SEXP) -> Rboolean;
     pub fn Rf_isExpression(s: SEXP) -> Rboolean;
     pub fn Rf_isFactor(arg1: SEXP) -> Rboolean;
-    #[cfg(r_4_5)]
-    pub fn Rf_isDataFrame(arg1: SEXP) -> Rboolean;
-    #[cfg(not(r_4_5))]
-    pub fn Rf_isFrame(arg1: SEXP) -> Rboolean;
     pub fn Rf_isFunction(arg1: SEXP) -> Rboolean;
     pub fn Rf_isInteger(arg1: SEXP) -> Rboolean;
     pub fn Rf_isLanguage(arg1: SEXP) -> Rboolean;
