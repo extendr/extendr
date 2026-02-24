@@ -397,7 +397,6 @@ extern "C" {
     pub fn Rf_isEnvironment(s: SEXP) -> Rboolean;
     pub fn Rf_isExpression(s: SEXP) -> Rboolean;
     pub fn Rf_isFactor(arg1: SEXP) -> Rboolean;
-    pub fn Rf_isFrame(arg1: SEXP) -> Rboolean;
     pub fn Rf_isFunction(arg1: SEXP) -> Rboolean;
     pub fn Rf_isInteger(arg1: SEXP) -> Rboolean;
     pub fn Rf_isLanguage(arg1: SEXP) -> Rboolean;
