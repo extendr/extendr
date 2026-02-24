@@ -1,11 +1,11 @@
 use crate::*;
 use extendr_ffi::{
-    get_var, R_CFinalizer_t, R_ExternalPtrAddr, R_ExternalPtrProtected, R_ExternalPtrTag,
-    R_GetCurrentSrcref, R_GetSrcFilename, R_IsNamespaceEnv, R_IsPackageEnv, R_MakeExternalPtr,
-    R_MissingArg, R_NamespaceEnvSpec, R_PackageEnvName, R_RegisterCFinalizerEx, R_UnboundValue,
-    R_xlen_t, Rboolean, Rf_PairToVectorList, Rf_VectorToPairList, Rf_allocMatrix, Rf_allocVector,
-    Rf_asChar, Rf_asCharacterFactor, Rf_coerceVector, Rf_conformable, Rf_duplicate, Rf_findFun,
-    Rf_isArray, Rf_isComplex, Rf_isEnvironment, Rf_isExpression, Rf_isFactor, is_data_frame,
+    get_var, is_data_frame, R_CFinalizer_t, R_ExternalPtrAddr, R_ExternalPtrProtected,
+    R_ExternalPtrTag, R_GetCurrentSrcref, R_GetSrcFilename, R_IsNamespaceEnv, R_IsPackageEnv,
+    R_MakeExternalPtr, R_MissingArg, R_NamespaceEnvSpec, R_PackageEnvName, R_RegisterCFinalizerEx,
+    R_UnboundValue, R_xlen_t, Rboolean, Rf_PairToVectorList, Rf_VectorToPairList, Rf_allocMatrix,
+    Rf_allocVector, Rf_asChar, Rf_asCharacterFactor, Rf_coerceVector, Rf_conformable, Rf_duplicate,
+    Rf_findFun, Rf_isArray, Rf_isComplex, Rf_isEnvironment, Rf_isExpression, Rf_isFactor,
     Rf_isFunction, Rf_isInteger, Rf_isLanguage, Rf_isList, Rf_isLogical, Rf_isMatrix, Rf_isNewList,
     Rf_isNull, Rf_isNumber, Rf_isObject, Rf_isPrimitive, Rf_isReal, Rf_isS4, Rf_isString,
     Rf_isSymbol, Rf_isTs, Rf_isUserBinop, Rf_isVector, Rf_isVectorAtomic, Rf_isVectorList,
