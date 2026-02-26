@@ -26,7 +26,7 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use std::{collections::HashMap, sync::Mutex};
-use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
+use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, Token, Type};
 
 use crate::extendr_options::ExtendrOptions;
 
@@ -58,7 +58,7 @@ pub fn get_struct_doc(name: &str) -> String {
 // Generate wrappers for a specific function.
 pub(crate) fn make_function_wrappers(
     opts: &ExtendrOptions,
-    wrappers: &mut Vec<ItemFn>,
+    wrappers: &mut Vec<syn::Item>,
     prefix: &str,
     attrs: &[syn::Attribute],
     sig: &mut syn::Signature,
@@ -239,7 +239,7 @@ pub(crate) fn make_function_wrappers(
     };
 
     // TODO: the unsafe in here is unnecessary
-    wrappers.push(parse_quote!(
+    wrappers.push(syn::Item::Fn(parse_quote!(
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #wrap_name(#formal_args) -> extendr_api::SEXP {
@@ -286,10 +286,10 @@ pub(crate) fn make_function_wrappers(
                 }
             }
         }
-    ));
+    )));
 
     // Generate a function to push the metadata for a function.
-    wrappers.push(parse_quote!(
+    wrappers.push(syn::Item::Fn(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
             let mut args = vec![#(#meta_args,)*];
@@ -307,7 +307,49 @@ pub(crate) fn make_function_wrappers(
                 invisible: #opts_invisible,
             })
         }
-    ));
+    )));
+
+    if self_ty.is_none() {
+        let arg_names: Vec<String> = sexp_args.iter().map(|i| i.to_string()).collect();
+        let r_name_r = {
+            let s = r_name_str.strip_prefix("r#").unwrap_or(&r_name_str);
+            if s.starts_with('_') {
+                format!("`{}`", s)
+            } else {
+                s.to_string()
+            }
+        };
+        let call_args = if arg_names.is_empty() {
+            wrap_name_str.clone()
+        } else {
+            format!("{}, {}", wrap_name_str, arg_names.join(", "))
+        };
+        let wrapper_str = if opts.invisible == Some(true) {
+            format!(
+                "{} <- function({}) invisible(.Call({}))\n",
+                r_name_r,
+                arg_names.join(", "),
+                call_args
+            )
+        } else {
+            format!(
+                "{} <- function({}) .Call({})\n",
+                r_name_r,
+                arg_names.join(", "),
+                call_args
+            )
+        };
+        let const_name = format_ident!(
+            "R_WRAPPER_{}",
+            wrap_name_str
+                .strip_prefix("wrap__")
+                .unwrap_or(&wrap_name_str)
+                .to_uppercase()
+        );
+        wrappers.push(syn::Item::Const(parse_quote! {
+            pub const #const_name: &str = #wrapper_str;
+        }));
+    }
 
     Ok(())
 }

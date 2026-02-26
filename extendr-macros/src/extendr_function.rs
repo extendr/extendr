@@ -5,7 +5,7 @@ use syn::ItemFn;
 
 /// Generate bindings for a single function.
 pub(crate) fn extendr_function(mut func: ItemFn, opts: &ExtendrOptions) -> TokenStream {
-    let mut wrappers: Vec<ItemFn> = Vec::new();
+    let mut wrappers: Vec<syn::Item> = Vec::new();
 
     let res =
         wrappers::make_function_wrappers(opts, &mut wrappers, "", &func.attrs, &mut func.sig, None);

@@ -1,6 +1,7 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{ItemFn, ItemImpl};
+use syn::parse_quote;
+use syn::ItemImpl;
 
 #[allow(unused_imports)]
 use crate::extendr;
@@ -358,7 +359,7 @@ pub(crate) fn extendr_impl(
     //     }
     // }
     // ```
-    let mut wrappers: Vec<ItemFn> = Vec::new();
+    let mut wrappers: Vec<syn::Item> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
             method_meta_names.push(format_ident!(
@@ -377,6 +378,96 @@ pub(crate) fn extendr_impl(
             )?;
         }
     }
+
+    let exported = full_doc.contains("@export");
+    let class_name_r = if self_ty_name.starts_with('_') {
+        format!("`{}`", self_ty_name)
+    } else {
+        self_ty_name.clone()
+    };
+    let mut wrapper_str = String::new();
+    if !full_doc.is_empty() {
+        wrapper_str.push_str("#'");
+        for c in full_doc.chars() {
+            if c == '\n' {
+                wrapper_str.push_str("\n#'");
+            } else {
+                wrapper_str.push(c);
+            }
+        }
+        wrapper_str.push('\n');
+    }
+    wrapper_str.push_str(&format!(
+        "{} <- new.env(parent = emptyenv())\n\n",
+        class_name_r
+    ));
+    for impl_item in &item_impl.items {
+        if let syn::ImplItem::Fn(method) = impl_item {
+            let mname = {
+                let s = method.sig.ident.to_string();
+                s.strip_prefix("r#").unwrap_or(&s).to_string()
+            };
+            let r_name_r = if mname.starts_with('_') {
+                format!("`{}`", mname)
+            } else {
+                mname.clone()
+            };
+            let wrap = format!("wrap__{}__{}", self_ty_name, mname);
+            let has_self = matches!(
+                method.sig.inputs.iter().next(),
+                Some(syn::FnArg::Receiver(_))
+            );
+            let typed_args: Vec<String> = method
+                .sig
+                .inputs
+                .iter()
+                .filter_map(|a| match a {
+                    syn::FnArg::Typed(pt) => match pt.pat.as_ref() {
+                        syn::Pat::Ident(i) => {
+                            let s = i.ident.to_string();
+                            Some(s.strip_prefix("r#").unwrap_or(&s).to_string())
+                        }
+                        _ => None,
+                    },
+                    _ => None,
+                })
+                .collect();
+            let formal = typed_args.join(", ");
+            let mut actual = if has_self {
+                vec!["self".to_string()]
+            } else {
+                vec![]
+            };
+            actual.extend(typed_args);
+            let call = if actual.is_empty() {
+                wrap.clone()
+            } else {
+                format!("{}, {}", wrap, actual.join(", "))
+            };
+            wrapper_str.push_str(&if opts.invisible == Some(true) {
+                format!(
+                    "{}${} <- function({}) invisible(.Call({}))\n\n",
+                    class_name_r, r_name_r, formal, call
+                )
+            } else {
+                format!(
+                    "{}${} <- function({}) .Call({})\n\n",
+                    class_name_r, r_name_r, formal, call
+                )
+            });
+        }
+    }
+    if exported {
+        wrapper_str.push_str(&format!("#' @rdname {}\n#' @usage NULL\n", self_ty_name));
+    }
+    wrapper_str.push_str("#' @export\n");
+    wrapper_str.push_str(&format!("`$.{0}` <- function (self, name) {{ func <- {1}[[name]]; environment(func) <- environment(); func }}\n\n", self_ty_name, class_name_r));
+    wrapper_str.push_str("#' @export\n");
+    wrapper_str.push_str(&format!("`[[.{0}` <- `$.{0}`\n", self_ty_name));
+    let impl_const_name = format_ident!("R_WRAPPERS_IMPL_{}", self_ty_name.to_uppercase());
+    wrappers.push(syn::Item::Const(parse_quote! {
+        pub const #impl_const_name: &str = #wrapper_str;
+    }));
 
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
 

@@ -38,7 +38,23 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         .map(|id| format_ident!("get_{}_metadata", id))
         .collect::<Vec<Ident>>();
 
+    let fn_wrapper_consts = fnnames.iter().map(|id| {
+        let name = id.to_string();
+        let name = name.strip_prefix("r#").unwrap_or(&name);
+        format_ident!("R_WRAPPER_{}", name.to_uppercase())
+    });
+    let r_wrappers_ident = format_ident!("R_WRAPPERS_{}", modname_string.to_uppercase());
+
+    let impl_wrapper_consts = implnames
+        .iter()
+        .map(|ty| format_ident!("R_WRAPPERS_IMPL_{}", wrappers::type_name(ty).to_uppercase()));
+    let r_wrappers_impls_ident =
+        format_ident!("R_WRAPPERS_IMPLS_{}", modname_string.to_uppercase());
+
     TokenStream::from(quote! {
+        pub const #r_wrappers_ident: &[&str] = &[#(#fn_wrapper_consts),*];
+        pub const #r_wrappers_impls_ident: &[&str] = &[#(#impl_wrapper_consts),*];
+
         #[no_mangle]
         #[allow(non_snake_case)]
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
