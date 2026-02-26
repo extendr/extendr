@@ -412,7 +412,7 @@ pub(crate) fn extendr_impl(
             } else {
                 mname.clone()
             };
-            let wrap = format!("wrap__{}__{}", self_ty_name, mname);
+            let wrap = format!("{}{}__{}", wrappers::WRAP_PREFIX, self_ty_name, mname);
             let has_self = matches!(
                 method.sig.inputs.iter().next(),
                 Some(syn::FnArg::Receiver(_))

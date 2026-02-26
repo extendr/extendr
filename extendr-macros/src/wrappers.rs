@@ -342,7 +342,7 @@ pub(crate) fn make_function_wrappers(
         let const_name = format_ident!(
             "R_WRAPPER_{}",
             wrap_name_str
-                .strip_prefix("wrap__")
+                .strip_prefix(WRAP_PREFIX)
                 .unwrap_or(&wrap_name_str)
                 .to_uppercase()
         );
