@@ -149,6 +149,8 @@ pub(crate) fn make_function_wrappers(
     let actual_args: Punctuated<Expr, Token![,]> =
         inputs.iter().filter_map(translate_actual).collect();
 
+    let input_defaults: Vec<Option<String>> = inputs.iter().map(peek_default).collect();
+
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
         .map(|input| translate_meta_arg(input, self_ty))
@@ -310,16 +312,27 @@ pub(crate) fn make_function_wrappers(
     )));
 
     if self_ty.is_none() {
-        let arg_names: Vec<String> = sexp_args.iter().map(|i| {
-            let s = i.to_string();
-            if s.starts_with('_') {
-                format!("`{}`", s)
-            } else if let Some(stripped) = s.strip_prefix("r#") {
-                stripped.to_string()
-            } else {
-                s
-            }
-        }).collect();
+        let arg_names: Vec<String> = sexp_args
+            .iter()
+            .map(|i| {
+                let s = i.to_string();
+                if s.starts_with('_') {
+                    format!("`{}`", s)
+                } else if let Some(stripped) = s.strip_prefix("r#") {
+                    stripped.to_string()
+                } else {
+                    s
+                }
+            })
+            .collect();
+        let formal_args: Vec<String> = arg_names
+            .iter()
+            .zip(input_defaults.iter())
+            .map(|(name, default)| match default {
+                Some(d) => format!("{} = {}", name, d),
+                None => name.clone(),
+            })
+            .collect();
         let r_name_r = {
             let s = r_name_str.strip_prefix("r#").unwrap_or(&r_name_str);
             if s.starts_with('_') {
@@ -337,14 +350,14 @@ pub(crate) fn make_function_wrappers(
             format!(
                 "{} <- function({}) invisible(.Call({}))\n",
                 r_name_r,
-                arg_names.join(", "),
+                formal_args.join(", "),
                 call_args
             )
         } else {
             format!(
                 "{} <- function({}) .Call({})\n",
                 r_name_r,
-                arg_names.join(", "),
+                formal_args.join(", "),
                 call_args
             )
         };
@@ -534,6 +547,33 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             })
         }
     }
+}
+
+// Peek at the default value from #[extendr(default = "value")] without consuming the attribute.
+fn peek_default(input: &FnArg) -> Option<String> {
+    use syn::Lit;
+    if let FnArg::Typed(pt) = input {
+        for attr in &pt.attrs {
+            if let syn::Meta::List(ref ml) = attr.meta {
+                if ml.path.is_ident("extendr") {
+                    let mut default_value = None;
+                    let _ = ml.parse_nested_meta(|meta| {
+                        if meta.path.is_ident("default") {
+                            let value = meta.value()?;
+                            if let Ok(Lit::Str(s)) = value.parse() {
+                                default_value = Some(s.value());
+                            }
+                        }
+                        Ok(())
+                    });
+                    if default_value.is_some() {
+                        return default_value;
+                    }
+                }
+            }
+        }
+    }
+    None
 }
 
 // Get defaults from #[extendr(default = "value")] attribute.

@@ -42,7 +42,7 @@ integers_square <- function(input) .Call(wrap__integers_square, input)
 
 logicals_not <- function(input) .Call(wrap__logicals_not, input)
 
-check_default <- function(x) .Call(wrap__check_default, x)
+check_default <- function(x = NULL) .Call(wrap__check_default, x)
 
 try_rfloat_na <- function() .Call(wrap__try_rfloat_na)
 
@@ -58,7 +58,7 @@ special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x
 
 test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
 
-get_default_value <- function(x) .Call(wrap__get_default_value, x)
+get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
 
 add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 
@@ -156,7 +156,7 @@ robj_to_mat <- function(x) .Call(wrap__robj_to_mat, x)
 
 matref_to_mat <- function(x) .Call(wrap__matref_to_mat, x)
 
-raw_identifier_in_fn_args <- function(type) .Call(wrap__raw_identifier_in_fn_args, type)
+raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in_fn_args, type)
 
 true <- function() .Call(wrap__true)
 
