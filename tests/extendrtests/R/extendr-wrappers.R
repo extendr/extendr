@@ -14,6 +14,7 @@ hello_world <- function() .Call(wrap__hello_world)
 
 do_nothing <- function() .Call(wrap__do_nothing)
 
+#' Return a string but invisibly
 invisible_string <- function() invisible(.Call(wrap__invisible_string))
 
 double_scalar <- function(x) .Call(wrap__double_scalar, x)
@@ -52,8 +53,16 @@ check_rfloat_na <- function(x) .Call(wrap__check_rfloat_na, x)
 
 check_rint_na <- function(x) .Call(wrap__check_rint_na, x)
 
+#' Test whether `_arg` parameters are treated correctly in R
+#' Executes \code{`_x` - `_y`}
+#' @param _x an integer scalar, ignored
+#' @param `_y` an integer scalar, ignored
+#' @export
 special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x`, `_y`)
 
+#' Test wrapping of special function name
+#' @name f__00__special_function_name
+#' @export
 `__00__special_function_name` <- function() .Call(wrap____00__special_function_name)
 
 test.rename.rlike <- function() .Call(wrap__test_rename_mymod)
@@ -62,6 +71,10 @@ get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
 
 add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 
+#' Create a new device.
+#'
+#' @param welcome_message A warm message to welcome you.
+#' @export
 my_device <- function(welcome_message) .Call(wrap__my_device, welcome_message)
 
 new_usize <- function(robj) .Call(wrap__new_usize, robj)
@@ -140,6 +153,10 @@ leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
+#' Calculate Euclidean distance matrix
+#' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
+#' @param a : Matrix of real values or `NULL`
+#' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
 
 mat_to_mat <- function(x) .Call(wrap__mat_to_mat, x)
@@ -156,12 +173,25 @@ robj_to_mat <- function(x) .Call(wrap__robj_to_mat, x)
 
 matref_to_mat <- function(x) .Call(wrap__matref_to_mat, x)
 
+#' Test raw identifiers (`r#`) in function arguments are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @param type : i32 or `NULL`
+#' @export
 raw_identifier_in_fn_args <- function(type = NULL) .Call(wrap__raw_identifier_in_fn_args, type)
 
+#' Test raw identifiers (`r#`) as function names are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @export
 true <- function() .Call(wrap__true)
 
+#' Combine raw identifiers (`r#`) as a function name and in arguments are parsed correctly.
+#' See [Issue #582](https://github.com/extendr/extendr/issues/528) for details.
+#' @param type : i32 or `NULL`
+#' @export
 false <- function(type) .Call(wrap__false, type)
 
+#' Return string `"Hello world!"` to R.
+#' @export
 hello_submodule <- function() .Call(wrap__hello_submodule)
 
 sum_triplet_ints <- function(x) .Call(wrap__sum_triplet_ints, x)

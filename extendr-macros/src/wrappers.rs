@@ -346,16 +346,29 @@ pub(crate) fn make_function_wrappers(
         } else {
             format!("{}, {}", wrap_name_str, arg_names.join(", "))
         };
+        let doc_prefix = if doc_string.is_empty() {
+            String::new()
+        } else {
+            let mut s = String::new();
+            for line in doc_string.lines() {
+                s.push_str("#'");
+                s.push_str(line);
+                s.push('\n');
+            }
+            s
+        };
         let wrapper_str = if opts.invisible == Some(true) {
             format!(
-                "{} <- function({}) invisible(.Call({}))\n",
+                "{}{} <- function({}) invisible(.Call({}))\n",
+                doc_prefix,
                 r_name_r,
                 formal_args.join(", "),
                 call_args
             )
         } else {
             format!(
-                "{} <- function({}) .Call({})\n",
+                "{}{} <- function({}) .Call({})\n",
+                doc_prefix,
                 r_name_r,
                 formal_args.join(", "),
                 call_args
