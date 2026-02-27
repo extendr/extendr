@@ -14,8 +14,13 @@ publish = false
 resolver = "2"
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = ["rlib", "staticlib"]
 name = "extendrtests"
+
+[[bin]]
+bench = false
+name = "document"
+path = "document.rs"
 
 [dependencies]
 extendr-api = { version = "*", features = [
