@@ -43,17 +43,26 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         let name = name.strip_prefix("r#").unwrap_or(&name);
         format_ident!("R_WRAPPER_{}", name.to_uppercase())
     });
-    let r_wrappers_ident = format_ident!("R_WRAPPERS_{}", modname_string.to_uppercase());
+    let r_wrappers_ident = format_ident!("R_WRAPPERS_PARTS");
 
     let impl_wrapper_consts = implnames
         .iter()
         .map(|ty| format_ident!("R_WRAPPERS_IMPL_{}", wrappers::type_name(ty).to_uppercase()));
-    let r_wrappers_impls_ident =
-        format_ident!("R_WRAPPERS_IMPLS_{}", modname_string.to_uppercase());
+    let r_wrappers_impls_ident = format_ident!("R_WRAPPERS_IMPLS");
+
+    let use_parts_consts = usenames.iter().map(|_| format_ident!("R_WRAPPERS_PARTS"));
+    let r_wrappers_deps_ident = format_ident!("R_WRAPPERS_DEPS");
+
+    let use_impls_consts = usenames.iter().map(|_| format_ident!("R_WRAPPERS_IMPLS"));
+    let r_wrappers_impl_deps_ident = format_ident!("R_WRAPPERS_IMPL_DEPS");
+
+    let usenames2 = usenames.clone();
 
     TokenStream::from(quote! {
         pub const #r_wrappers_ident: &[&str] = &[#(#fn_wrapper_consts),*];
         pub const #r_wrappers_impls_ident: &[&str] = &[#(#impl_wrapper_consts),*];
+        pub const #r_wrappers_deps_ident: &[&[&str]] = &[#(#usenames::#use_parts_consts),*];
+        pub const #r_wrappers_impl_deps_ident: &[&[&str]] = &[#(#usenames2::#use_impls_consts),*];
 
         #[no_mangle]
         #[allow(non_snake_case)]

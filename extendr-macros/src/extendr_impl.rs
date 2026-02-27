@@ -425,7 +425,12 @@ pub(crate) fn extendr_impl(
                     syn::FnArg::Typed(pt) => match pt.pat.as_ref() {
                         syn::Pat::Ident(i) => {
                             let s = i.ident.to_string();
-                            Some(s.strip_prefix("r#").unwrap_or(&s).to_string())
+                            let s = s.strip_prefix("r#").unwrap_or(&s);
+                            Some(if s.starts_with('_') {
+                                format!("`{}`", s)
+                            } else {
+                                s.to_string()
+                            })
                         }
                         _ => None,
                     },

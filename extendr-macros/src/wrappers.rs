@@ -310,7 +310,16 @@ pub(crate) fn make_function_wrappers(
     )));
 
     if self_ty.is_none() {
-        let arg_names: Vec<String> = sexp_args.iter().map(|i| i.to_string()).collect();
+        let arg_names: Vec<String> = sexp_args.iter().map(|i| {
+            let s = i.to_string();
+            if s.starts_with('_') {
+                format!("`{}`", s)
+            } else if let Some(stripped) = s.strip_prefix("r#") {
+                stripped.to_string()
+            } else {
+                s
+            }
+        }).collect();
         let r_name_r = {
             let s = r_name_str.strip_prefix("r#").unwrap_or(&r_name_str);
             if s.starts_with('_') {
