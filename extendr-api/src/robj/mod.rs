@@ -17,9 +17,10 @@ use std::os::raw;
 use extendr_ffi::{
     dataptr, R_IsNA, R_NilValue, R_compute_identical, R_tryEval, Rboolean, Rcomplex, Rf_getAttrib,
     Rf_setAttrib, Rf_xlength, COMPLEX, INTEGER, LOGICAL, PRINTNAME, RAW, REAL, SEXPTYPE,
-    SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
+    STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
+pub mod hash;
 use crate::scalar::{Rbool, Rfloat, Rint};
 use crate::*;
 pub use into_robj::*;
@@ -27,6 +28,7 @@ pub use iter::*;
 pub use operators::Operators;
 use prelude::{c64, Rcplx};
 pub use rinternals::Rinternals;
+use wrapper::rstr;
 
 mod debug;
 mod into_robj;
@@ -107,6 +109,7 @@ mod tests;
 /// is true.
 ///
 #[repr(transparent)]
+#[derive(Eq)]
 pub struct Robj {
     inner: SEXP,
 }
@@ -606,6 +609,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_str<'a>(&self) -> Option<&'a str> {
+        use SEXPTYPE::*;
         unsafe {
             let charsxp = match self.sexptype() {
                 STRSXP => {
@@ -782,6 +786,7 @@ macro_rules! make_typed_slice {
             Self : 'a,
         {
             fn as_typed_slice(&self) -> Option<&'a [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
@@ -799,6 +804,7 @@ macro_rules! make_typed_slice {
             }
 
             fn as_typed_slice_mut(&mut self) -> Option<&'a mut [$type]> {
+                use SEXPTYPE::*;
                 match self.sexptype() {
                     $( $sexp )|* => {
                         unsafe {
