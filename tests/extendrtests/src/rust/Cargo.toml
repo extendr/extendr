@@ -7,15 +7,20 @@ authors = [
   "Ilia Kosenkov <ilia.kosenkov@outlook.com",
 ]
 edition = "2021"
-rust-version = "1.68"
+rust-version = "1.65"
 publish = false
 
 [workspace]
 resolver = "2"
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = ["rlib", "staticlib"]
 name = "extendrtests"
+
+[[bin]]
+bench = false
+name = "document"
+path = "document.rs"
 
 [dependencies]
 extendr-api = { version = "*", features = [
@@ -43,3 +48,7 @@ extendr-api = { path = "../../../../extendr-api" }
 ## Build against current extendr version on github. Not recommended
 ## for development work.
 # extendr-api = { git = "https://github.com/extendr/extendr"}
+
+[profile.release]
+lto = true
+codegen-units = 1
