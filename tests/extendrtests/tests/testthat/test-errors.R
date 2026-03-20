@@ -194,6 +194,14 @@ test_that("Error handling does not leak memory", {
   }
 })
 
+test_that("Foreign error types (anyhow) produce clean errors", {
+  Sys.unsetenv("EXTENDR_BACKTRACE")
+  err <- tryCatch(error_anyhow(), error = function(e) conditionMessage(e))
+  expect_true(grepl("This is an anyhow error", err, fixed = TRUE))
+  expect_false(grepl("called.*unwrap.*on an.*Err", err))
+  expect_false(grepl("stack backtrace", err, ignore.case = TRUE))
+})
+
 test_that("Error handling on panic", {
   # Save original EXTENDR_BACKTRACE value
   orig_val <- Sys.getenv("EXTENDR_BACKTRACE", unset = NA)
