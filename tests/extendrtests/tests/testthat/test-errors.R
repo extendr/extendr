@@ -74,7 +74,6 @@ test_that("EXTENDR_BACKTRACE=true shows full traceback", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
-  expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
@@ -95,7 +94,6 @@ test_that("EXTENDR_BACKTRACE=1 also shows full traceback", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
-  expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
@@ -192,6 +190,14 @@ test_that("Error handling does not leak memory", {
   } else {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
+})
+
+test_that("Foreign error types (anyhow) produce clean errors", {
+  Sys.unsetenv("EXTENDR_BACKTRACE")
+  err <- tryCatch(error_anyhow(), error = function(e) conditionMessage(e))
+  expect_true(grepl("This is an anyhow error", err, fixed = TRUE))
+  expect_false(grepl("called.*unwrap.*on an.*Err", err))
+  expect_false(grepl("stack backtrace", err, ignore.case = TRUE))
 })
 
 test_that("Error handling on panic", {

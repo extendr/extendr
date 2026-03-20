@@ -23,6 +23,7 @@ graphics = []
 ndarray = []
 
 [dependencies]
+anyhow = "1"
 extendr-api = { version = "*", features = [
     "graphics",
     "ndarray",
