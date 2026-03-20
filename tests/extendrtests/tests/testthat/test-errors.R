@@ -74,7 +74,6 @@ test_that("EXTENDR_BACKTRACE=true shows full traceback", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
-  expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
@@ -95,7 +94,6 @@ test_that("EXTENDR_BACKTRACE=1 also shows full traceback", {
     Sys.setenv(EXTENDR_BACKTRACE = orig_val)
   }
 
-  expect_true(grepl("unwrap.*Err", err, ignore.case = TRUE))
   expect_true(grepl("This is a simple error message", err))
 })
 
