@@ -1,11 +1,6 @@
 [package]
 name = "extendrtests"
 version = "0.7.1"
-authors = [
-  "andy-thomason <andy@andythomason.com>",
-  "Claus O. Wilke <wilke@austin.utexas.edu>",
-  "Ilia Kosenkov <ilia.kosenkov@outlook.com",
-]
 edition = "2021"
 rust-version = "1.65"
 publish = false
@@ -23,6 +18,7 @@ name = "document"
 path = "document.rs"
 
 [dependencies]
+anyhow = "1"
 extendr-api = { version = "*", features = [
   "either",
   "faer",
