@@ -2,7 +2,7 @@ use crate as extendr_api;
 use crate::*;
 use extendr_ffi::{
     R_BaseEnv, R_BaseNamespace, R_BlankScalarString, R_BlankString, R_EmptyEnv, R_GetCurrentEnv,
-    R_GlobalEnv, R_NaString, R_NamespaceRegistry, R_NilValue, R_Srcref, R_dot_Generic,
+    R_GlobalEnv, R_NaString, R_NilValue, R_Srcref, R_dot_Generic,
 };
 
 #[cfg(feature = "non-api")]
@@ -154,18 +154,6 @@ pub fn base_env() -> Environment {
 /// ```
 pub fn base_namespace() -> Environment {
     unsafe { Robj::from_sexp(R_BaseNamespace).try_into().unwrap() }
-}
-
-/// For registered namespaces.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///    assert_eq!(namespace_registry().is_environment(), true);
-/// }
-/// ```
-pub fn namespace_registry() -> Environment {
-    unsafe { Robj::from_sexp(R_NamespaceRegistry).try_into().unwrap() }
 }
 
 /// Current srcref, for debuggers
