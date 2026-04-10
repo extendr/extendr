@@ -7,7 +7,7 @@ pub use super::error::Error;
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
     eval_string, eval_string_with_params, find_namespace, find_namespaced_function, global_env,
-    global_function, na_string, namespace_registry, new_env, nil_value, parse, srcref,
+    global_function, na_string, new_env, nil_value, parse, srcref,
 };
 pub use super::{
     print_r_error, print_r_output, CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,

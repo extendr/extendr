@@ -322,8 +322,6 @@ extern "C" {
     #[doc = "Missing argument marker"]
     pub static R_MissingArg: SEXP;
     pub fn R_NamespaceEnvSpec(rho: SEXP) -> SEXP;
-    #[doc = "Registry for registered namespaces"]
-    pub static R_NamespaceRegistry: SEXP;
     #[doc = "Environment and Binding Features"]
     pub fn R_NewEnv(arg1: SEXP, arg2: ::std::os::raw::c_int, arg3: ::std::os::raw::c_int) -> SEXP;
     pub fn R_PackageEnvName(rho: SEXP) -> SEXP;
