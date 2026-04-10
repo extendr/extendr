@@ -18,6 +18,7 @@
 
 ### Changed
 
+- **Breaking**: Removed `is_unbound_value()` and `unbound_value()` as `R_UnboundValue` has been removed from the R-API
 - **Breaking**: MSRV has been bumped to 1.71
 - **Breaking**: `extendr_api::error::Result<>` has been removed from the prelude
 - **Deprecates** `List::from_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::from_hashmap()` with `List::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)

@@ -204,9 +204,15 @@ impl Iterator for EnvIter {
             // Get the first available value from the pair list.
             for (key, value) in &mut self.pairlist {
                 // if the key and value are valid, return a pair.
-                if !key.is_na() && !value.is_unbound_value() {
-                    return Some((key, value));
+                #[cfg(not(r_4_5))]
+                if key.is_na() || value.is_unbound_value() {
+                    continue;
                 }
+                #[cfg(r_4_5)]
+                if key.is_na() {
+                    continue;
+                }
+                return Some((key, value));
             }
 
             // Get the first pairlist from the hash table.
