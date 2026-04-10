@@ -12,7 +12,6 @@ impl Promise {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let promise = Promise::from_parts(r!(1), global_env())?;
-    ///     assert!(promise.value().is_unbound_value());
     ///     assert_eq!(promise.eval_promise()?, r!(1));
     ///     assert_eq!(promise.value(), r!(1));
     /// }
@@ -24,6 +23,7 @@ impl Promise {
             let robj = Robj::from_sexp(sexp);
             extendr_ffi::SET_PRCODE(sexp, code.get());
             extendr_ffi::SET_PRENV(sexp, environment.robj.get());
+            #[cfg(not(r_4_5))]
             extendr_ffi::SET_PRVALUE(sexp, extendr_ffi::R_UnboundValue);
             Ok(Promise { robj })
         })
@@ -79,11 +79,11 @@ impl Promise {
     /// ```
     pub fn eval(&self) -> Result<Robj> {
         assert!(self.is_promise());
+        #[cfg(not(r_4_5))]
         if !self.value().is_unbound_value() {
-            Ok(self.value())
-        } else {
-            self.robj.eval()
+            return Ok(self.value());
         }
+        self.robj.eval()
     }
 }
 

@@ -23,7 +23,7 @@ pub use super::wrapper::symbol::{
     dot_target, dots_symbol, double_colon_symbol, lastvalue_symbol, levels_symbol, missing_arg,
     mode_symbol, na_rm_symbol, name_symbol, names_symbol, namespace_env_symbol, package_symbol,
     previous_symbol, quote_symbol, row_names_symbol, seeds_symbol, sort_list_symbol, source_symbol,
-    spec_symbol, triple_colon_symbol, tsp_symbol, unbound_value,
+    spec_symbol, triple_colon_symbol, tsp_symbol,
 };
 
 // Exported macros have crate scope.

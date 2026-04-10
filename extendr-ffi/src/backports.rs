@@ -11,6 +11,9 @@
 
 use crate::{Rboolean, SEXP};
 
+#[cfg(not(r_4_5))]
+use crate::R_UnboundValue;
+
 extern "C" {
     #[cfg(not(r_4_5))]
     fn ENCLOS(x: SEXP) -> SEXP;
@@ -94,6 +97,33 @@ pub unsafe fn get_var(symbol: SEXP, env: SEXP) -> SEXP {
     #[cfg(r_4_5)]
     {
         R_getVar(symbol, env)
+    }
+}
+
+/// Returns a variable from an environment, or `None` if unbound.
+///
+/// On R < 4.5, uses `Rf_findVar` and checks against `R_UnboundValue`.
+/// On R >= 4.5, uses `R_getVar` which signals an error if not found;
+/// callers should wrap this with `catch_r_error` if needed.
+///
+/// # Safety
+///
+/// This function dereferences raw SEXP pointers.
+/// The caller must ensure that `symbol` and `env` are valid SEXP pointers.
+#[inline]
+pub unsafe fn get_var_safe(symbol: SEXP, env: SEXP) -> Option<SEXP> {
+    #[cfg(not(r_4_5))]
+    {
+        let var = Rf_findVar(symbol, env);
+        if var == R_UnboundValue {
+            None
+        } else {
+            Some(var)
+        }
+    }
+    #[cfg(r_4_5)]
+    {
+        Some(R_getVar(symbol, env))
     }
 }
 
