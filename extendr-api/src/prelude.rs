@@ -7,7 +7,7 @@ pub use super::error::Error;
 pub use super::functions::{
     base_env, base_namespace, blank_scalar_string, blank_string, current_env, empty_env,
     eval_string, eval_string_with_params, find_namespace, find_namespaced_function, global_env,
-    global_function, na_string, namespace_registry, new_env, nil_value, parse, srcref,
+    global_function, na_string, new_env, nil_value, parse, srcref,
 };
 pub use super::{
     print_r_error, print_r_output, CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
@@ -23,7 +23,7 @@ pub use super::wrapper::symbol::{
     dot_target, dots_symbol, double_colon_symbol, lastvalue_symbol, levels_symbol, missing_arg,
     mode_symbol, na_rm_symbol, name_symbol, names_symbol, namespace_env_symbol, package_symbol,
     previous_symbol, quote_symbol, row_names_symbol, seeds_symbol, sort_list_symbol, source_symbol,
-    spec_symbol, triple_colon_symbol, tsp_symbol, unbound_value,
+    spec_symbol, triple_colon_symbol, tsp_symbol,
 };
 
 // Exported macros have crate scope.

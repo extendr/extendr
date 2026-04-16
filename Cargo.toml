@@ -15,6 +15,6 @@ repository = "https://github.com/extendr/extendr"
 license = "MIT"
 
 [workspace.dependencies]
-extendr-ffi = { path = "./extendr-ffi", version = "0.8.1" }
+extendr-ffi = { path = "./extendr-ffi", workspace = true }
 # When updating extendr's version, this version also needs to be updated
-extendr-macros = { path = "./extendr-macros", version = "0.8.1" }
+extendr-macros = { path = "./extendr-macros", workspace = true }
