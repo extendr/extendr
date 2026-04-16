@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 — 2026-04-16
 
 ### Added
 
@@ -18,7 +18,8 @@
 
 ### Changed
 
-- **Breaking**: Removed `is_unbound_value()` and `unbound_value()` as `R_UnboundValue` has been removed from the R-API
+- **Breaking**: Removed `is_unbound_value()` and `unbound_value()` as `R_UnboundValue` has been removed from the R-API [[#1067]](https://github.com/extendr/extendr/pull/1067)
+- **Breaking**: Removed `R_NamespaceRegistry` binding from extendr [[#1069]](https://github.com/extendr/extendr/pull/1069)
 - **Breaking**: MSRV has been bumped to 1.71
 - **Breaking**: `extendr_api::error::Result<>` has been removed from the prelude
 - **Deprecates** `List::from_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::from_hashmap()` with `List::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
@@ -34,6 +35,8 @@
   Rust's memory model. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 
 ### Fixed
+
+- Panics raised in `#[extendr]` functions are now rethrown without prepending the `unwrap` message [[#1055]](https://github.com/extendr/extendr/pull/1055)
 
 ## 0.8.0
 
