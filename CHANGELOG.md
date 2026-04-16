@@ -15,6 +15,9 @@
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `impl From<&Vec<Robj>> for Robj` [[#864]](https://github.com/extendr/extendr/pull/864)
+- Struct-level docs are now carried into generated wrapper documentation [[#913]](https://github.com/extendr/extendr/pull/913)
+- Impl-level docs are now appended to the struct-level documentation block in generated wrapper docs [[#913]](https://github.com/extendr/extendr/pull/913)
+- fn-level docs in `impl` blocks are now emitted in generated R docs with roxygen-style sections [[#913]](https://github.com/extendr/extendr/pull/913)
 
 ### Changed
 
