@@ -216,7 +216,7 @@ fn test_deserialize_complex_named_list() {
         let end_file = RRunEndFile {
             start: "2024-01-01T00:00:00Z".into(),
             end: "2024-01-01T01:00:00Z".into(),
-            runtime_ms: 3600_000.0,
+            runtime_ms: 3_600_000.0,
             files_copied,
             output_files_rewrites,
             output_files_hashes: vec![OutputFileHash {

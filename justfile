@@ -150,3 +150,7 @@ r-cmd-check *args:
     && ARGS="'--as-cran','--no-manual'" \
     && if [ "$NO_VIGNETTES" = "1" ]; then ARGS="${ARGS},'--no-build-vignettes'"; fi \
     && Rscript -e "rcmdcheck::rcmdcheck(args = c(${ARGS}), error_on = '${ERROR_ON}', check_dir = ${CHECK_DIR_ARG})"
+
+# Bump version
+bump version:
+    cargo release version {{version}} --execute
