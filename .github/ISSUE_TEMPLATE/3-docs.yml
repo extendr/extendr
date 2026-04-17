@@ -1,0 +1,43 @@
+name: Documentation Issue
+description: Report an issue with the documentation
+title: "docs: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!NOTE]
+        > If the documentation issue is **not** related to the Rust API (e.g. guides, tutorials, the extendr website), please open an issue at https://github.com/extendr/extendr.github.io instead.
+
+  - type: checkboxes
+    id: existing-issue
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+        - label: This issue is about the Rust API docs, not the extendr website
+          required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Where is the documentation issue?
+      placeholder: <!-- Link to the relevant docs page, or describe where to find it -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      placeholder: "<!-- Optional: what should it say instead? -->"
+    validations:
+      required: false

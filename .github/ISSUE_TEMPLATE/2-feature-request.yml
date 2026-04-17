@@ -1,0 +1,45 @@
+name: Feature Request
+description: Propose a new feature or enhancement
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: checkboxes
+    id: existing-issue
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature description
+      description: What would you like to see added or changed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-solved
+    attributes:
+      label: What problem does this solve?
+      description: What use case or pain point does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-workaround
+    attributes:
+      label: Why is the current API not sufficient?
+      placeholder: <!-- Describe what you currently have to do and why it falls short -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-api
+    attributes:
+      label: Proposed API or design
+      placeholder: |
+        <!-- Optional: sketch out what the ideal API might look like -->
+    validations:
+      required: false
