@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- PR type: feat | fix | docs | refactor | enh -->
+<!-- PR type: feat | fix | chore | docs | refactor | enh -->
 
 <!-- What does this solve? -->
 
