@@ -307,6 +307,7 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/main/extendr-logo-256.png"
 )]
 
+pub mod cnd;
 pub mod error;
 pub mod functions;
 pub mod io;
@@ -400,6 +401,9 @@ pub use extendr_ffi::PutRNGstate;
 
 #[doc(hidden)]
 pub use extendr_ffi::SEXP;
+
+#[doc(hidden)]
+pub use extendr_ffi::{R_NilValue, Rf_errorcall, Rf_warningcall};
 
 pub use metadata::Metadata;
 

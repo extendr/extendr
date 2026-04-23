@@ -381,6 +381,8 @@ extern "C" {
     pub fn Rf_dimnamesgets(arg1: SEXP, arg2: SEXP) -> SEXP;
     pub fn Rf_duplicate(arg1: SEXP) -> SEXP;
     pub fn Rf_error(arg1: *const ::std::os::raw::c_char, ...) -> !;
+    pub fn Rf_errorcall(call: SEXP, arg1: *const ::std::os::raw::c_char, ...) -> !;
+    pub fn Rf_warningcall(call: SEXP, arg1: *const ::std::os::raw::c_char, ...);
     pub fn Rf_findFun(arg1: SEXP, arg2: SEXP) -> SEXP;
     pub fn Rf_GetArrayDimnames(arg1: SEXP) -> SEXP;
     pub fn Rf_getAttrib(arg1: SEXP, arg2: SEXP) -> SEXP;

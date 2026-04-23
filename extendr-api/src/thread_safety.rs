@@ -53,7 +53,7 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     unsafe {
         R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
         let ptr = std::ptr::addr_of!(R_ERROR_BUF);
-        Rf_error((*ptr).as_ref().unwrap().as_ptr());
+        Rf_error(c"%s".as_ptr(), (*ptr).as_ref().unwrap().as_ptr());
     };
 }
 
