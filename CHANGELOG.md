@@ -1,5 +1,15 @@
 # Changelog
 
+## Development 
+
+### Added
+
+### Changed
+
+- **Breaking**: removed the unsoud lifetime from `as_integer_slice()` closes <https://github.com/extendr/extendr/issues/1061>
+
+### Fixed
+
 ## 0.9.0 — 2026-04-16
 
 ### Added
