@@ -60,7 +60,7 @@ jobs:
 
       # Add sccache for compilation caching
       - name: Setup sccache
-        uses: mozilla-actions/sccache-action@v0.0.9
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Configure sccache
         run: |
