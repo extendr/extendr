@@ -118,15 +118,6 @@ impl Environment {
         None
     }
 
-    /// Get the caller's environment (i.e. `parent.frame()`).
-    pub fn caller() -> Self {
-        lang!("parent.frame")
-            .eval_with_env(&Environment::current())
-            .ok()
-            .and_then(|r| r.try_into().ok())
-            .unwrap_or_else(Environment::global)
-    }
-
     /// Get the enclosing (parent) environment.
     pub fn parent(&self) -> Option<Environment> {
         unsafe {

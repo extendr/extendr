@@ -1,12 +1,4 @@
-use crate::robj::Rinternals;
-use crate::wrapper::environment::Environment;
-use crate::{append, append_lang, make_lang, Robj};
-
 /// Format an error message with rlang-style bullets.
-///
-/// The header gets a `! ` prefix, additional elements get `• ` prefix.
-/// A leading `\n` is included so the message appears on a new line after
-/// `Error in foo():` or `Error:`.
 pub fn format_cnd_message(header: &str, body: &[&str]) -> String {
     use std::io::IsTerminal;
     let use_color = std::io::stderr().is_terminal();
@@ -26,8 +18,6 @@ pub fn format_cnd_message(header: &str, body: &[&str]) -> String {
 }
 
 /// Format a warning message with rlang-style bullets.
-///
-/// No `!` prefix — just the header and `• ` bullets.
 pub fn format_warn_message(header: &str, body: &[&str]) -> String {
     use std::io::IsTerminal;
     let use_color = std::io::stderr().is_terminal();
@@ -45,32 +35,7 @@ pub fn format_warn_message(header: &str, body: &[&str]) -> String {
     msg
 }
 
-/// Extract a call label from an environment for use in error prefixes.
-/// Returns a string like "`my_function()`" or `None` if unavailable.
-pub fn call_label(env: &Environment) -> Option<String> {
-    use crate::robj::Eval;
-    // Get sys.call() in the environment
-    let call = crate::lang!("sys.call").eval_with_env(env).ok()?;
-    if call.is_null() {
-        return None;
-    }
-    // Deparse call[[1]] to get just the function name
-    let name = crate::lang!("deparse", crate::lang!("[[", call, 1))
-        .eval_with_env(env)
-        .ok()?;
-    let name_str = name.as_str()?;
-    Some(format!("`{name_str}()`"))
-}
-
 /// Signal a warning with an rlang-style formatted message.
-///
-/// # Examples
-///
-/// ```rust,ignore
-/// warn!("something went wrong");
-/// warn!("something went wrong", &["detail 1", "detail 2"]);
-/// warn!("something went wrong", &["detail 1", "detail 2"], call);
-/// ```
 #[macro_export]
 macro_rules! warn {
     ($msg:expr) => {{
@@ -102,14 +67,6 @@ macro_rules! warn {
 }
 
 /// Signal an error with an rlang-style formatted message.
-///
-/// # Examples
-///
-/// ```rust,ignore
-/// abort!("something went wrong");
-/// abort!("something went wrong", &["detail 1", "detail 2"]);
-/// abort!("something went wrong", &["detail 1", "detail 2"], Environment::caller());
-/// ```
 #[macro_export]
 macro_rules! abort {
     ($msg:expr) => {{
