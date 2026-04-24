@@ -1,5 +1,22 @@
 # Changelog
 
+## Development
+
+### Added
+
+- `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`.
+- `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()`
+- `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`.
+- `Environment` gains `base()`, `empty()`, and `global()` associated methods.
+
+### Changed
+
+- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`.
+
+### Fixed
+
+- `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
+
 ## 0.9.0 — 2026-04-16
 
 ### Added

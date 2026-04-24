@@ -51,8 +51,9 @@ pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
 }
 
 #[doc(hidden)]
-pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
-    single_threaded(|| {
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub fn append(tail: SEXP, obj: Robj) -> SEXP {
+    single_threaded(|| unsafe {
         let cons = Rf_cons(obj.get(), R_NilValue);
         SETCDR(tail, cons);
         cons
@@ -60,8 +61,8 @@ pub unsafe fn append(tail: SEXP, obj: Robj) -> SEXP {
 }
 
 #[doc(hidden)]
-pub unsafe fn make_lang(sym: &str) -> Robj {
-    Robj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym))))
+pub fn make_lang(sym: &str) -> Robj {
+    unsafe { Robj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym)))) }
 }
 
 /// Convert a list of tokens to an array of tuples.
@@ -101,18 +102,14 @@ macro_rules! append_lang {
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {
-        unsafe {
-            make_lang($sym)
-        }
+        make_lang($sym)
     };
-    ($sym : expr, $($rest: tt)*) => {
-        unsafe {
-            use extendr_api::robj::GetSexp;
-            let res = make_lang($sym);
-            let mut tail = res.get();
-            append_lang!(tail, $($rest)*);
-            let _ = tail;
-            res
-        }
-    };
+    ($sym : expr, $($rest: tt)*) => {{
+        use $crate::robj::GetSexp;
+        let res = make_lang($sym);
+        let mut tail = unsafe { res.get() };
+        append_lang!(tail, $($rest)*);
+        let _ = tail;
+        res
+    }};
 }

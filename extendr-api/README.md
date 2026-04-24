@@ -9,7 +9,7 @@ You will then be able to call R code from Rust.
 
 ```toml
 [dependencies]
-extendr-api = "0.8.0"
+extendr-api = "0.9.0"
 ```
 
 ## About
@@ -204,7 +204,7 @@ test! {
 
     // As many parameterized calls.
     let formula = call!("~", sym!(weight), lang!("-", sym!(group), 1))?;
-    let plant_growth = global!(PlantGrowth)?;
+    let plant_growth = R!("PlantGrowth")?;
     let model = call!("lm", formula, plant_growth)?;
     let confint2 = call!("confint", model)?;
 

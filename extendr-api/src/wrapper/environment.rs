@@ -1,6 +1,7 @@
 use super::*;
 use extendr_ffi::{
-    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GlobalEnv, Rf_defineVar,
+    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GetCurrentEnv, R_GlobalEnv,
+    Rf_defineVar,
 };
 #[derive(PartialEq, Clone)]
 pub struct Environment {
@@ -71,6 +72,59 @@ impl Environment {
             }
             env
         })
+    }
+
+    /// Get the current evaluation environment.
+    pub fn current() -> Self {
+        unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
+    }
+
+    /// Get the global environment.
+    pub fn global() -> Self {
+        unsafe { Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
+    }
+
+    /// Get the base environment.
+    pub fn base() -> Self {
+        unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
+    }
+
+    /// Get the empty environment.
+    pub fn empty() -> Self {
+        unsafe { Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
+    }
+
+    /// Get the call associated with this environment.
+    /// Mimics rlang's `frame_call()`: evaluates `sys.frames()` in `self`, finds the matching
+    /// frame index, then returns `sys.call(i)`.
+    /// Returns `None` if not called from a function frame or if the call cannot be determined.
+    pub fn call(&self) -> Option<Robj> {
+        use crate::robj::Eval;
+        // Evaluate sys.frames() in self to get the call stack visible from that frame
+        // sys.frames() returns a pairlist of all active frames
+        let frames = lang!("sys.frames").eval_with_env(self).ok()?;
+        let frames_list = frames.as_pairlist()?;
+        // Find the index (1-based) of self in the frames list
+        for (i, frame) in frames_list.values().enumerate() {
+            let frame_env: Environment = match frame.try_into() {
+                Ok(e) => e,
+                Err(_) => continue,
+            };
+            if frame_env == *self {
+                let idx = (i + 1) as i32;
+                return lang!("sys.call", idx).eval_with_env(self).ok();
+            }
+        }
+        None
+    }
+
+    /// Get the caller's environment (i.e. `parent.frame()`).
+    pub fn caller() -> Self {
+        lang!("parent.frame")
+            .eval_with_env(&Environment::current())
+            .ok()
+            .and_then(|r| r.try_into().ok())
+            .unwrap_or_else(Environment::global)
     }
 
     /// Get the enclosing (parent) environment.

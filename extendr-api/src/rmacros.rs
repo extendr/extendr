@@ -44,16 +44,6 @@ macro_rules! var {
     }};
 }
 
-/// Get a global variable.
-///
-/// Variables with embedded "." may not work.
-#[macro_export]
-macro_rules! global {
-    ($($tokens: tt)*) => {{
-        global_var(sym!($($tokens)*))
-    }};
-}
-
 /// The sym! macro install symbols.
 /// You should cache your symbols in variables
 /// as generating them is costly.

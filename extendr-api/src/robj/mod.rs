@@ -711,7 +711,7 @@ pub trait Eval: GetSexp {
     /// }
     /// ```
     fn eval(&self) -> Result<Robj> {
-        self.eval_with_env(&global_env())
+        self.eval_with_env(&Environment::global())
     }
 
     /// Evaluate the expression in R and return an error or an R object.

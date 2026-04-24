@@ -259,6 +259,10 @@ cnd_abort <- function(msg) .Call(wrap__cnd_abort, msg)
 
 cnd_abort_with_body <- function(msg, body) .Call(wrap__cnd_abort_with_body, msg, body)
 
+cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_call, msg, call)
+
+throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
