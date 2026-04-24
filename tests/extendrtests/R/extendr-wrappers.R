@@ -66,12 +66,6 @@ get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
 
 add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 
-#' Create a new device.
-#'
-#' @param welcome_message A warm message to welcome you.
-#' @export
-my_device <- function(welcome_message) .Call(wrap__my_device, welcome_message)
-
 new_usize <- function(robj) .Call(wrap__new_usize, robj)
 
 tst_altstring <- function() .Call(wrap__tst_altstring)
@@ -101,6 +95,8 @@ error_chain <- function(s) .Call(wrap__error_chain, s)
 error_long_message <- function() .Call(wrap__error_long_message)
 
 error_on_panic <- function() .Call(wrap__error_on_panic)
+
+error_anyhow <- function() .Call(wrap__error_anyhow)
 
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 

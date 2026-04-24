@@ -3,6 +3,12 @@
 version = 4
 
 [[package]]
+name = "anyhow"
+version = "1.0.102"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
+
+[[package]]
 name = "autocfg"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -212,13 +218,12 @@ dependencies = [
 
 [[package]]
 name = "extendr-api"
-version = "0.8.1"
+version = "0.9.0"
 dependencies = [
  "either",
  "extendr-ffi",
  "extendr-macros",
  "faer",
- "libc",
  "ndarray",
  "once_cell",
  "paste",
@@ -228,11 +233,11 @@ dependencies = [
 
 [[package]]
 name = "extendr-ffi"
-version = "0.8.1"
+version = "0.9.0"
 
 [[package]]
 name = "extendr-macros"
-version = "0.8.1"
+version = "0.9.0"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -244,6 +249,7 @@ dependencies = [
 name = "extendrtests"
 version = "0.7.1"
 dependencies = [
+ "anyhow",
  "extendr-api",
 ]
 

@@ -22,14 +22,12 @@ anyhow = "1"
 extendr-api = { version = "*", features = [
   "either",
   "faer",
-  "graphics",
   "ndarray",
 ] }
 
 [features]
 faer = []
 full-functionality = []
-graphics = []
 ndarray = []
 serde = ["extendr-api/serde"]
 
