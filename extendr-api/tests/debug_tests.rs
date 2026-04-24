@@ -16,7 +16,7 @@ fn test_debug() {
         let r = Environment::empty();
         assert_eq!(format!("{:?}", r), "Environment::empty()");
         let r = Environment::base();
-        assert_eq!(format!("{:?}", r), "base_env()");
+        assert_eq!(format!("{:?}", r), "Environment::base()");
         let r = Environment::new_with_parent(Environment::global());
         assert_eq!(format!("{:?}", r), "<environment>");
         #[cfg(feature = "non-api")]
