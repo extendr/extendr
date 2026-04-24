@@ -129,11 +129,11 @@ pub trait Rinternals: Types + Conversions {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
+    ///    let my_fun = Environment::base().find_function(sym!(ls)).unwrap();
     ///    assert_eq!(my_fun.is_function(), true);
     ///
     ///    // Note: this may crash on some versions of windows which don't support unwinding.
-    ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+    ///    // assert!(Environment::base().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
     fn find_function<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
@@ -210,7 +210,7 @@ pub trait Rinternals: Types + Conversions {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+    ///    let iris_promise = Environment::global().find_var(sym!(iris)).unwrap();
     ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// }

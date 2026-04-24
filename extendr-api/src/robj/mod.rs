@@ -720,7 +720,7 @@ pub trait Eval: GetSexp {
     /// test! {
     ///
     ///    let add = lang!("+", 1, 2);
-    ///    assert_eq!(add.eval_with_env(&global_env()).unwrap(), r!(3));
+    ///    assert_eq!(add.eval_with_env(&Environment::global()).unwrap(), r!(3));
     /// }
     /// ```
     fn eval_with_env(&self, env: &Environment) -> Result<Robj> {

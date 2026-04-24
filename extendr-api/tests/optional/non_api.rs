@@ -54,7 +54,7 @@ fn non_api_rinternals_promise() -> Result<(), Box<dyn std::error::Error>> {
         assert_eq!(iris_dataframe.len(), 5);
 
         // Note: this may crash on some versions of windows which don't support unwinding.
-        //assert_eq!(global_env().find_var(sym!(imnotasymbol)), None);
+        //assert_eq!(Environment::global().find_var(sym!(imnotasymbol)), None);
         Ok(())
     })
 }

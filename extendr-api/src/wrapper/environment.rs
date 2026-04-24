@@ -13,7 +13,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     assert_eq!(env.len(), 0);
     /// }
     /// ```
@@ -29,7 +29,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_capacity(global_env(), 5);
+    ///     let env = Environment::new_with_capacity(Environment::global(), 5);
     ///     env.set_local(sym!(a), 1);
     ///     env.set_local(sym!(b), 2);
     ///     assert_eq!(env.len(), 2);
@@ -51,7 +51,7 @@ impl Environment {
     /// use std::convert::TryInto;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let mut env = Environment::from_pairs(global_env(), names_and_values);
+    ///     let mut env = Environment::from_pairs(Environment::global(), names_and_values);
     ///     assert_eq!(env.len(), 100);
     /// }
     /// ```
@@ -194,7 +194,7 @@ impl Environment {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = Environment::from_pairs(global_env(), names_and_values);
+    ///    let env = Environment::from_pairs(Environment::global(), names_and_values);
     ///    assert_eq!(env.names().collect::<Vec<_>>(), vec!["n0", "n1", "n2", "n3"]);
     /// }
     /// ```
@@ -206,7 +206,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
@@ -226,7 +226,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
@@ -291,11 +291,11 @@ impl std::fmt::Debug for Environment {
         unsafe {
             let sexp = self.get();
             if sexp == R_GlobalEnv {
-                write!(f, "global_env()")
+                write!(f, "Environment::global()")
             } else if sexp == R_BaseEnv {
-                write!(f, "base_env()")
+                write!(f, "Environment::base()")
             } else if sexp == R_EmptyEnv {
-                write!(f, "empty_env()")
+                write!(f, "Environment::empty()")
             } else {
                 write!(f, "{}", self.deparse().unwrap())
             }
