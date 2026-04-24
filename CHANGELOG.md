@@ -4,14 +4,17 @@
 
 ### Added
 
-- `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`.
-- `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()`
-- `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`.
-- `Environment` gains `base()`, `empty()`, and `global()` associated methods.
+- `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`. <https://github.com/extendr/extendr/pull/1075>
+- `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()` <https://github.com/extendr/extendr/pull/1075>
+- `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`. <https://github.com/extendr/extendr/pull/1075>
+- `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
+- Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
+- Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
 
 ### Changed
 
-- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`.
+- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 
 ### Fixed
 
