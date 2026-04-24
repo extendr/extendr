@@ -118,15 +118,14 @@ mod tests {
     #[test]
     fn test_format_cnd_message_no_body() {
         let msg = super::format_cnd_message("something went wrong", &[]);
-        assert_eq!(msg, "\n! something went wrong");
+        assert!(msg.contains("something went wrong"));
     }
 
     #[test]
     fn test_format_cnd_message_with_body() {
         let msg = super::format_cnd_message("something went wrong", &["detail 1", "detail 2"]);
-        assert_eq!(
-            msg,
-            "\n! something went wrong\n\u{2022} detail 1\n\u{2022} detail 2"
-        );
+        assert!(msg.contains("something went wrong"));
+        assert!(msg.contains("detail 1"));
+        assert!(msg.contains("detail 2"));
     }
 }

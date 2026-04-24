@@ -44,7 +44,7 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert!(current_env().is_environment());
+///    assert!(Environment::current().is_environment());
 /// }
 /// ```
 #[deprecated(since = "0.10.0", note = "Use `Environment::current()` instead")]
@@ -57,8 +57,8 @@ pub fn current_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(global_env().local(sym!(x)), Ok(r!("hello")));
+///     Environment::global().set_local(sym!(x), "hello");
+///     assert_eq!(Environment::global().local(sym!(x)), Ok(r!("hello")));
 /// }
 /// ```
 #[deprecated(since = "0.10.0", note = "Use `Environment::global()` instead")]
@@ -77,7 +77,7 @@ pub fn empty_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();
+///     let env: Environment = new_env(Environment::global(), true, 10).try_into().unwrap();
 ///     env.set_local(sym!(x), "hello");
 ///     assert_eq!(env.local(sym!(x)), Ok(r!("hello")));
 /// }
@@ -111,7 +111,7 @@ pub fn base_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
+///    assert_eq!(base_namespace().parent().ok_or("no parent")?, Environment::global());
 /// }
 /// ```
 pub fn base_namespace() -> Environment {

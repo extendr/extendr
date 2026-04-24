@@ -102,14 +102,19 @@ macro_rules! append_lang {
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {
-        make_lang($sym)
+        #[allow(unused_unsafe)]
+        unsafe {
+            make_lang($sym)
+        }
     };
-    ($sym : expr, $($rest: tt)*) => {{
-        use $crate::robj::GetSexp;
-        let res = make_lang($sym);
-        let mut tail = unsafe { res.get() };
-        append_lang!(tail, $($rest)*);
-        let _ = tail;
-        res
-    }};
+    ($sym : expr, $($rest: tt)*) => {
+        unsafe {
+            use $crate::robj::GetSexp;
+            let res = make_lang($sym);
+            let mut tail = res.get();
+            append_lang!(tail, $($rest)*);
+            let _ = tail;
+            res
+        }
+    };
 }
