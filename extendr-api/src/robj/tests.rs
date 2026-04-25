@@ -219,7 +219,7 @@ fn parse_test() {
 }
 
 #[test]
-fn output_iterator_test() {
+fn output_from_iterator_collect_robj_test() {
     test! {
         // Allocation where size is known in advance.
         let robj = (0..3).collect_robj();
@@ -257,6 +257,49 @@ fn output_iterator_test() {
             .filter(|&x| x != 1)
             .map(|x| format!("{}", x))
             .collect_robj();
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
+    }
+}
+
+#[test]
+fn output_from_iterator_collect_test() {
+    test! {
+        // Allocation where size is known in advance.
+        let robj = (0..3).collect::<Robj>();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+
+        let robj = [0, 1, 2].iter().collect::<Robj>();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+
+        let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
+        assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+
+        let robj = [TRUE, FALSE, TRUE].iter().collect::<Robj>();
+        assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+
+        let robj = (0..3).map(|x| x as f64).collect::<Robj>();
+        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+
+        let robj = [0., 1., 2.].iter().collect::<Robj>();
+        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+
+        let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+
+        let robj = ["0", "1", "2"].iter().collect::<Robj>();
+        assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
+
+        // Fallback allocation where size is not known in advance.
+        let robj = (0..3).filter(|&x| x != 1).collect::<Robj>();
+        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 2]);
+
+        let robj = (0..3).filter(|&x| x != 1).map(|x| x as f64).collect::<Robj>();
+        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 2.]);
+
+        let robj = (0..3)
+            .filter(|&x| x != 1)
+            .map(|x| format!("{}", x))
+            .collect::<Robj>();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
     }
 }
