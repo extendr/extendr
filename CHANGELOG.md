@@ -4,6 +4,7 @@
 
 ### Added
 
+- `stop()` is an alias for `throw_r_error()` 
 - `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`. <https://github.com/extendr/extendr/pull/1075>
 - `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()` <https://github.com/extendr/extendr/pull/1075>
 - `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`. <https://github.com/extendr/extendr/pull/1075>

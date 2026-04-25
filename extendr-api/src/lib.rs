@@ -307,7 +307,7 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/main/extendr-logo-256.png"
 )]
 
-pub mod cnd;
+pub mod conditions;
 pub mod error;
 pub mod functions;
 pub mod io;

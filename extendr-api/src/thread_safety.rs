@@ -48,6 +48,7 @@ where
 
 static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 
+/// Signals an error via [extendr_ffi::Rf_error]
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
@@ -55,6 +56,11 @@ pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
         let ptr = std::ptr::addr_of!(R_ERROR_BUF);
         Rf_error(c"%s".as_ptr(), (*ptr).as_ref().unwrap().as_ptr());
     };
+}
+
+/// An alias to [throw_r_error]
+pub fn stop<S: AsRef<str>>(s: S) -> ! {
+    throw_r_error(s)
 }
 
 /// Wrap an R function such as `Rf_findFunction` and convert errors and panics into results.
