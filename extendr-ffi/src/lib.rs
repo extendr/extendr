@@ -6,8 +6,6 @@
 #![allow(non_snake_case)]
 #![allow(improper_ctypes)]
 
-pub mod graphics;
-pub use graphics::*;
 pub mod altrep;
 pub use altrep::*;
 mod symbols;

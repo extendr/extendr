@@ -291,7 +291,6 @@
 //! - `ndarray`: provides the conversion between R's matrices and [`ndarray`](https://docs.rs/ndarray/latest/ndarray/).
 //! - `num-complex`: provides the conversion between R's complex numbers and [`num-complex`](https://docs.rs/num-complex/latest/num_complex/).
 //! - `serde`: provides the [`serde`](https://serde.rs/) support.
-//! - `graphics`: provides the functionality to control or implement graphics devices.
 //! - `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 //! - `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 //!
@@ -333,9 +332,6 @@ pub mod serializer;
 
 #[cfg(feature = "serde")]
 pub mod deserializer;
-
-#[cfg(feature = "graphics")]
-pub mod graphics;
 
 pub(crate) mod conversions;
 
