@@ -98,11 +98,11 @@ Note that clone() only adds a reference.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
 <span class="macro">test!</span> {
-   <span class="kw">let </span>my_fun = base_env().find_function(<span class="macro">sym!</span>(ls)).unwrap();
+   <span class="kw">let </span>my_fun = Environment::base().find_function(<span class="macro">sym!</span>(ls)).unwrap();
    <span class="macro">assert_eq!</span>(my_fun.is_function(), <span class="bool-val">true</span>);
 
    <span class="comment">// Note: this may crash on some versions of windows which don't support unwinding.
-   // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+   // assert!(Environment::base().find_function(sym!(qwertyuiop)).is_none());
 </span>}</code></pre></div></div></details><details class="toggle method-toggle" open><summary><section id="method.find_var" class="method"><a class="src rightside" href="../../../src/extendr_api/robj/rinternals.rs.html#178-206">Source</a><h4 class="code-header">fn <a href="#method.find_var" class="fn">find_var</a>&lt;K: <a class="trait" href="../../trait.TryInto.html" title="trait extendr_api::TryInto">TryInto</a>&lt;<a class="struct" href="../../wrapper/symbol/struct.Symbol.html" title="struct extendr_api::wrapper::symbol::Symbol">Symbol</a>, Error = <a class="enum" href="../../error/enum.Error.html" title="enum extendr_api::error::Error">Error</a>&gt;&gt;(&amp;self, key: K) -&gt; <a class="type" href="../../error/type.Result.html" title="type extendr_api::error::Result">Result</a>&lt;<a class="struct" href="../struct.Robj.html" title="struct extendr_api::robj::Robj">Robj</a>&gt;</h4></section></summary><div class="docblock"><p>Find a variable in an environment.</p>
 <p>Note that many common variables and functions are contained in promises
 which must be evaluated and this function may throw an R error.</p>

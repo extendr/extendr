@@ -10,7 +10,7 @@
     <span class="macro">assert_eq!</span>(<span class="macro">sym!</span>(xyz).rtype(), Rtype::Symbol);
     <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(Pairlist::from_pairs(<span class="macro">vec!</span>[(<span class="string">"a"</span>, <span class="macro">r!</span>(<span class="number">1</span>))])).rtype(), Rtype::Pairlist);
     <span class="macro">assert_eq!</span>(<span class="macro">R!</span>(<span class="string">"function() {}"</span>)<span class="question-mark">?</span>.rtype(), Rtype::Function);
-    <span class="macro">assert_eq!</span>(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+    <span class="macro">assert_eq!</span>(Environment::new_with_parent(Environment::global()).rtype(), Rtype::Environment);
     <span class="macro">assert_eq!</span>(<span class="macro">lang!</span>(<span class="string">"+"</span>, <span class="number">1</span>, <span class="number">2</span>).rtype(), Rtype::Language);
     <span class="macro">assert_eq!</span>(Rstr::from_string(<span class="string">"hello"</span>).rtype(), Rtype::Rstr);
     <span class="macro">assert_eq!</span>(<span class="macro">r!</span>(TRUE).rtype(), Rtype::Logicals);

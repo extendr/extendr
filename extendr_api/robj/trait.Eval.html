@@ -16,7 +16,7 @@
 <span class="macro">test!</span> {
 
    <span class="kw">let </span>add = <span class="macro">lang!</span>(<span class="string">"+"</span>, <span class="number">1</span>, <span class="number">2</span>);
-   <span class="macro">assert_eq!</span>(add.eval_with_env(<span class="kw-2">&amp;</span>global_env()).unwrap(), <span class="macro">r!</span>(<span class="number">3</span>));
+   <span class="macro">assert_eq!</span>(add.eval_with_env(<span class="kw-2">&amp;</span>Environment::global()).unwrap(), <span class="macro">r!</span>(<span class="number">3</span>));
 }</code></pre></div></div></details><details class="toggle method-toggle" open><summary><section id="method.eval_blind" class="method"><a class="src rightside" href="../../src/extendr_api/robj/mod.rs.html#746-753">Source</a><h4 class="code-header">fn <a href="#method.eval_blind" class="fn">eval_blind</a>(&amp;self) -&gt; <a class="struct" href="struct.Robj.html" title="struct extendr_api::robj::Robj">Robj</a></h4></section></summary><div class="docblock"><p>Evaluate the expression and return NULL or an R object.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;

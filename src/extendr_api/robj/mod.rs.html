@@ -248,7 +248,7 @@
 <a href=#248 id=248 data-nosnippet>248</a>    ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
 <a href=#249 id=249 data-nosnippet>249</a>    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
 <a href=#250 id=250 data-nosnippet>250</a>    ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
-<a href=#251 id=251 data-nosnippet>251</a>    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+<a href=#251 id=251 data-nosnippet>251</a>    ///     assert_eq!(Environment::new_with_parent(Environment::global()).rtype(), Rtype::Environment);
 <a href=#252 id=252 data-nosnippet>252</a>    ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
 <a href=#253 id=253 data-nosnippet>253</a>    ///     assert_eq!(Rstr::from_string("hello").rtype(), Rtype::Rstr);
 <a href=#254 id=254 data-nosnippet>254</a>    ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
@@ -711,7 +711,7 @@
 <a href=#711 id=711 data-nosnippet>711</a>    /// }
 <a href=#712 id=712 data-nosnippet>712</a>    /// ```
 <a href=#713 id=713 data-nosnippet>713</a>    </span><span class="kw">fn </span>eval(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
-<a href=#714 id=714 data-nosnippet>714</a>        <span class="self">self</span>.eval_with_env(<span class="kw-2">&amp;</span>global_env())
+<a href=#714 id=714 data-nosnippet>714</a>        <span class="self">self</span>.eval_with_env(<span class="kw-2">&amp;</span>Environment::global())
 <a href=#715 id=715 data-nosnippet>715</a>    }
 <a href=#716 id=716 data-nosnippet>716</a>
 <a href=#717 id=717 data-nosnippet>717</a>    <span class="doccomment">/// Evaluate the expression in R and return an error or an R object.
@@ -720,7 +720,7 @@
 <a href=#720 id=720 data-nosnippet>720</a>    /// test! {
 <a href=#721 id=721 data-nosnippet>721</a>    ///
 <a href=#722 id=722 data-nosnippet>722</a>    ///    let add = lang!("+", 1, 2);
-<a href=#723 id=723 data-nosnippet>723</a>    ///    assert_eq!(add.eval_with_env(&amp;global_env()).unwrap(), r!(3));
+<a href=#723 id=723 data-nosnippet>723</a>    ///    assert_eq!(add.eval_with_env(&amp;Environment::global()).unwrap(), r!(3));
 <a href=#724 id=724 data-nosnippet>724</a>    /// }
 <a href=#725 id=725 data-nosnippet>725</a>    /// ```
 <a href=#726 id=726 data-nosnippet>726</a>    </span><span class="kw">fn </span>eval_with_env(<span class="kw-2">&amp;</span><span class="self">self</span>, env: <span class="kw-2">&amp;</span>Environment) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {

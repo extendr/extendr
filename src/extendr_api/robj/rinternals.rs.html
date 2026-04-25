@@ -129,11 +129,11 @@
 <a href=#129 id=129 data-nosnippet>129</a>    /// ```
 <a href=#130 id=130 data-nosnippet>130</a>    /// use extendr_api::prelude::*;
 <a href=#131 id=131 data-nosnippet>131</a>    /// test! {
-<a href=#132 id=132 data-nosnippet>132</a>    ///    let my_fun = base_env().find_function(sym!(ls)).unwrap();
+<a href=#132 id=132 data-nosnippet>132</a>    ///    let my_fun = Environment::base().find_function(sym!(ls)).unwrap();
 <a href=#133 id=133 data-nosnippet>133</a>    ///    assert_eq!(my_fun.is_function(), true);
 <a href=#134 id=134 data-nosnippet>134</a>    ///
 <a href=#135 id=135 data-nosnippet>135</a>    ///    // Note: this may crash on some versions of windows which don't support unwinding.
-<a href=#136 id=136 data-nosnippet>136</a>    ///    // assert!(base_env().find_function(sym!(qwertyuiop)).is_none());
+<a href=#136 id=136 data-nosnippet>136</a>    ///    // assert!(Environment::base().find_function(sym!(qwertyuiop)).is_none());
 <a href=#137 id=137 data-nosnippet>137</a>    /// }
 <a href=#138 id=138 data-nosnippet>138</a>    /// ```
 <a href=#139 id=139 data-nosnippet>139</a>    </span><span class="kw">fn </span>find_function&lt;K: TryInto&lt;Symbol, Error = Error&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, key: K) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
@@ -210,7 +210,7 @@
 <a href=#210 id=210 data-nosnippet>210</a>    /// ```
 <a href=#211 id=211 data-nosnippet>211</a>    /// use extendr_api::prelude::*;
 <a href=#212 id=212 data-nosnippet>212</a>    /// test! {
-<a href=#213 id=213 data-nosnippet>213</a>    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+<a href=#213 id=213 data-nosnippet>213</a>    ///    let iris_promise = Environment::global().find_var(sym!(iris)).unwrap();
 <a href=#214 id=214 data-nosnippet>214</a>    ///    let iris_dataframe = iris_promise.eval_promise().unwrap();
 <a href=#215 id=215 data-nosnippet>215</a>    ///    assert_eq!(iris_dataframe.is_frame(), true);
 <a href=#216 id=216 data-nosnippet>216</a>    /// }

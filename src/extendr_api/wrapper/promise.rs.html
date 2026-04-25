@@ -11,7 +11,7 @@
 <a href=#11 id=11 data-nosnippet>11</a>    /// ```
 <a href=#12 id=12 data-nosnippet>12</a>    /// use extendr_api::prelude::*;
 <a href=#13 id=13 data-nosnippet>13</a>    /// test! {
-<a href=#14 id=14 data-nosnippet>14</a>    ///     let promise = Promise::from_parts(r!(1), global_env())?;
+<a href=#14 id=14 data-nosnippet>14</a>    ///     let promise = Promise::from_parts(r!(1), Environment::global())?;
 <a href=#15 id=15 data-nosnippet>15</a>    ///     assert_eq!(promise.eval_promise()?, r!(1));
 <a href=#16 id=16 data-nosnippet>16</a>    ///     assert_eq!(promise.value(), r!(1));
 <a href=#17 id=17 data-nosnippet>17</a>    /// }
@@ -72,7 +72,7 @@
 <a href=#72 id=72 data-nosnippet>72</a>    /// ```
 <a href=#73 id=73 data-nosnippet>73</a>    /// use extendr_api::prelude::*;
 <a href=#74 id=74 data-nosnippet>74</a>    /// test! {
-<a href=#75 id=75 data-nosnippet>75</a>    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+<a href=#75 id=75 data-nosnippet>75</a>    ///    let iris_promise = Environment::global().find_var(sym!(iris)).unwrap();
 <a href=#76 id=76 data-nosnippet>76</a>    ///    let iris_dataframe = iris_promise.as_promise().unwrap().eval().unwrap();
 <a href=#77 id=77 data-nosnippet>77</a>    ///    assert_eq!(iris_dataframe.is_frame(), true);
 <a href=#78 id=78 data-nosnippet>78</a>    /// }

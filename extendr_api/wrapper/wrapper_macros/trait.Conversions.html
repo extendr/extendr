@@ -62,7 +62,7 @@
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
 <span class="macro">test!</span> {
     <span class="kw">let </span>names_and_values = (<span class="number">0</span>..<span class="number">100</span>).map(|i| (<span class="macro">format!</span>(<span class="string">"n{}"</span>, i), i));
-    <span class="kw">let </span>env = Environment::from_pairs(global_env(), names_and_values);
+    <span class="kw">let </span>env = Environment::from_pairs(Environment::global(), names_and_values);
     <span class="kw">let </span>expr = env.clone();
     <span class="macro">assert_eq!</span>(expr.len(), <span class="number">100</span>);
     <span class="kw">let </span>env2 = expr.as_environment().unwrap();

@@ -17,7 +17,7 @@
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>extendr_api::prelude::<span class="kw-2">*</span>;
 <span class="macro">test!</span> {
-<span class="kw">let </span>env = Environment::from_pairs(global_env(),
+<span class="kw">let </span>env = Environment::from_pairs(Environment::global(),
    <span class="macro">vec!</span>[(<span class="string">"a"</span>.to_string(), <span class="macro">r!</span>(<span class="number">1</span>)), (<span class="string">"b"</span>.to_string(), <span class="macro">r!</span>(<span class="number">2</span>))]);
 <span class="macro">assert_eq!</span>(env.dollar(<span class="string">"a"</span>).unwrap(), <span class="macro">r!</span>(<span class="number">1</span>));
 <span class="macro">assert_eq!</span>(env.dollar(<span class="string">"b"</span>).unwrap(), <span class="macro">r!</span>(<span class="number">2</span>));

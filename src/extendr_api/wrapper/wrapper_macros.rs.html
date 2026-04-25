@@ -276,7 +276,7 @@
 <a href=#276 id=276 data-nosnippet>276</a>    /// use extendr_api::prelude::*;
 <a href=#277 id=277 data-nosnippet>277</a>    /// test! {
 <a href=#278 id=278 data-nosnippet>278</a>    ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-<a href=#279 id=279 data-nosnippet>279</a>    ///     let env = Environment::from_pairs(global_env(), names_and_values);
+<a href=#279 id=279 data-nosnippet>279</a>    ///     let env = Environment::from_pairs(Environment::global(), names_and_values);
 <a href=#280 id=280 data-nosnippet>280</a>    ///     let expr = env.clone();
 <a href=#281 id=281 data-nosnippet>281</a>    ///     assert_eq!(expr.len(), 100);
 <a href=#282 id=282 data-nosnippet>282</a>    ///     let env2 = expr.as_environment().unwrap();

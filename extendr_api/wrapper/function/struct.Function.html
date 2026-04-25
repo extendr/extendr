@@ -13,7 +13,7 @@
         <span class="string">"{"</span>, <span class="macro">lang!</span>(<span class="string">"&lt;-"</span>, <span class="macro">sym!</span>(c), <span class="macro">lang!</span>(<span class="string">"+"</span>, <span class="macro">sym!</span>(a), <span class="macro">sym!</span>(b))));
     <span class="macro">assert_eq!</span>(func.formals().unwrap(), expected_formals);
     <span class="macro">assert_eq!</span>(func.body().unwrap(), expected_body);
-    <span class="macro">assert_eq!</span>(func.environment().unwrap(), global_env());
+    <span class="macro">assert_eq!</span>(func.environment().unwrap(), Environment::global());
 
     <span class="comment">// Primitives can also be functions.
     </span><span class="kw">let </span>expr = <span class="macro">R!</span>(<span class="string">"`~`"</span>)<span class="question-mark">?</span>;
