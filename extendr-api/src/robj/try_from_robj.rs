@@ -409,6 +409,24 @@ impl_try_from_robj!(Vec::<f64>);
 
 impl_try_from_robj!(String);
 
+impl TryFrom<&Robj> for Option<Environment> {
+    type Error = Error;
+    fn try_from(robj: &Robj) -> Result<Self> {
+        if robj.is_null() || robj.is_na() {
+            Ok(None)
+        } else {
+            Ok(Some(Environment::try_from(robj)?))
+        }
+    }
+}
+
+impl TryFrom<Robj> for Option<Environment> {
+    type Error = Error;
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
 impl_try_from_robj!(@generics<T> HashMap::<&str, T> where T: TryFrom<Robj, Error = error::Error>);
 impl_try_from_robj!(@generics<T> HashMap::<String,T> where T: TryFrom<Robj, Error = error::Error>);
 

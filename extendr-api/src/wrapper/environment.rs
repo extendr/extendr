@@ -1,6 +1,7 @@
 use super::*;
 use extendr_ffi::{
-    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GlobalEnv, Rf_defineVar,
+    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GetCurrentEnv, R_GlobalEnv,
+    Rf_defineVar,
 };
 #[derive(PartialEq, Clone)]
 pub struct Environment {
@@ -12,7 +13,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     assert_eq!(env.len(), 0);
     /// }
     /// ```
@@ -28,7 +29,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_capacity(global_env(), 5);
+    ///     let env = Environment::new_with_capacity(Environment::global(), 5);
     ///     env.set_local(sym!(a), 1);
     ///     env.set_local(sym!(b), 2);
     ///     assert_eq!(env.len(), 2);
@@ -50,7 +51,7 @@ impl Environment {
     /// use std::convert::TryInto;
     /// test! {
     ///     let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let mut env = Environment::from_pairs(global_env(), names_and_values);
+    ///     let mut env = Environment::from_pairs(Environment::global(), names_and_values);
     ///     assert_eq!(env.len(), 100);
     /// }
     /// ```
@@ -71,6 +72,59 @@ impl Environment {
             }
             env
         })
+    }
+
+    /// Get the current evaluation environment.
+    pub fn current() -> Self {
+        unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
+    }
+
+    /// Get the global environment.
+    pub fn global() -> Self {
+        unsafe { Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
+    }
+
+    /// Get the base environment.
+    pub fn base() -> Self {
+        unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
+    }
+
+    /// Get the empty environment.
+    pub fn empty() -> Self {
+        unsafe { Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
+    }
+
+    /// Get the call associated with this environment.
+    /// Mimics rlang's `frame_call()`: evaluates `sys.frames()` in `self`, finds the matching
+    /// frame index, then returns `sys.call(i)`.
+    /// Returns `None` if not called from a function frame or if the call cannot be determined.
+    pub fn call(&self) -> Option<Robj> {
+        use crate::robj::Eval;
+        // Evaluate sys.frames() in self to get the call stack visible from that frame
+        // sys.frames() returns a pairlist of all active frames
+        let frames = lang!("sys.frames").eval_with_env(self).ok()?;
+        let frames_list = frames.as_pairlist()?;
+        // Find the index (1-based) of self in the frames list
+        for (i, frame) in frames_list.values().enumerate() {
+            let frame_env: Environment = match frame.try_into() {
+                Ok(e) => e,
+                Err(_) => continue,
+            };
+            if frame_env == *self {
+                let idx = (i + 1) as i32;
+                return lang!("sys.call", idx).eval_with_env(self).ok();
+            }
+        }
+        None
+    }
+
+    /// Get the caller's environment (i.e. `parent.frame()`).
+    pub fn caller() -> Self {
+        lang!("parent.frame")
+            .eval_with_env(&Environment::current())
+            .ok()
+            .and_then(|r| r.try_into().ok())
+            .unwrap_or_else(Environment::global)
     }
 
     /// Get the enclosing (parent) environment.
@@ -140,7 +194,7 @@ impl Environment {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let names_and_values : std::collections::HashMap<_, _> = (0..4).map(|i| (format!("n{}", i), r!(i))).collect();
-    ///    let env = Environment::from_pairs(global_env(), names_and_values);
+    ///    let env = Environment::from_pairs(Environment::global(), names_and_values);
     ///    assert_eq!(env.names().collect::<Vec<_>>(), vec!["n0", "n1", "n2", "n3"]);
     /// }
     /// ```
@@ -152,7 +206,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     env.set_local(sym!(x), "harry");
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
@@ -172,7 +226,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(global_env());
+    ///     let env = Environment::new_with_parent(Environment::global());
     ///     env.set_local(sym!(x), "fred");
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
@@ -237,11 +291,11 @@ impl std::fmt::Debug for Environment {
         unsafe {
             let sexp = self.get();
             if sexp == R_GlobalEnv {
-                write!(f, "global_env()")
+                write!(f, "Environment::global()")
             } else if sexp == R_BaseEnv {
-                write!(f, "base_env()")
+                write!(f, "Environment::base()")
             } else if sexp == R_EmptyEnv {
-                write!(f, "empty_env()")
+                write!(f, "Environment::empty()")
             } else {
                 write!(f, "{}", self.deparse().unwrap())
             }

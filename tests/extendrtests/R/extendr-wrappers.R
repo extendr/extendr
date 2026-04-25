@@ -102,6 +102,8 @@ error_long_message <- function() .Call(wrap__error_long_message)
 
 error_on_panic <- function() .Call(wrap__error_on_panic)
 
+error_anyhow <- function() .Call(wrap__error_anyhow)
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
@@ -248,6 +250,18 @@ must_see_drop_msg_panic <- function() .Call(wrap__must_see_drop_msg_panic)
 must_see_drop_msg_r_error_heap <- function() .Call(wrap__must_see_drop_msg_r_error_heap)
 
 must_see_drop_msg_panic_heap <- function() .Call(wrap__must_see_drop_msg_panic_heap)
+
+cnd_warn <- function(msg) .Call(wrap__cnd_warn, msg)
+
+cnd_warn_with_body <- function(msg, body) .Call(wrap__cnd_warn_with_body, msg, body)
+
+cnd_abort <- function(msg) .Call(wrap__cnd_abort, msg)
+
+cnd_abort_with_body <- function(msg, body) .Call(wrap__cnd_abort_with_body, msg, body)
+
+cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_call, msg, call)
+
+throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
 
 #' Class for testing (exported)
 #' @examples

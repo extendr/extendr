@@ -858,7 +858,7 @@ pub trait DeviceDriver: std::marker::Sized {
             // most of the cases.
             (*p_dev_desc).useRotatedTextInContour = Rboolean::FALSE;
 
-            (*p_dev_desc).eventEnv = empty_env().get();
+            (*p_dev_desc).eventEnv = Environment::empty().get();
             (*p_dev_desc).eventHelper = Some(device_driver_eventHelper::<T>);
 
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);

@@ -11,18 +11,18 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "pairlist!(x=1)");
         let r : Function = R!("function() 1").unwrap().try_into().unwrap();
         assert_eq!(format!("{:?}", r), "function () 1");
-        let r = global_env();
-        assert_eq!(format!("{:?}", r), "global_env()");
-        let r = empty_env();
-        assert_eq!(format!("{:?}", r), "empty_env()");
-        let r = base_env();
-        assert_eq!(format!("{:?}", r), "base_env()");
-        let r = Environment::new_with_parent(global_env());
+        let r = Environment::global();
+        assert_eq!(format!("{:?}", r), "Environment::global()");
+        let r = Environment::empty();
+        assert_eq!(format!("{:?}", r), "Environment::empty()");
+        let r = Environment::base();
+        assert_eq!(format!("{:?}", r), "Environment::base()");
+        let r = Environment::new_with_parent(Environment::global());
         assert_eq!(format!("{:?}", r), "<environment>");
         #[cfg(feature = "non-api")]
-        let r = Promise::from_parts(r!(1), global_env())?;
+        let r = Promise::from_parts(r!(1),  Environment::global())?;
         #[cfg(feature = "non-api")]
-        assert_eq!(format!("{:?}", r), "Promise { code: 1, environment: global_env() }");
+        assert_eq!(format!("{:?}", r), "Promise { code: 1, environment: Environment::global() }");
         let r : Language = lang!("x").try_into()?;
         assert_eq!(format!("{:?}", r), "lang!(sym!(x))");
         let r : Language = lang!("x", 1, 2).try_into()?;
