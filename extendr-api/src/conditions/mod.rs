@@ -39,21 +39,21 @@ pub fn format_warn_message(header: &str, body: &[&str]) -> String {
 #[macro_export]
 macro_rules! warn {
     ($msg:expr) => {{
-        let formatted = $crate::cnd::format_warn_message($msg, &[]);
+        let formatted = $crate::conditions::format_warn_message($msg, &[]);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         unsafe {
             $crate::Rf_warningcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
     }};
     ($msg:expr, $body:expr) => {{
-        let formatted = $crate::cnd::format_warn_message($msg, $body);
+        let formatted = $crate::conditions::format_warn_message($msg, $body);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         unsafe {
             $crate::Rf_warningcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
     }};
     ($msg:expr, $body:expr, $call:expr) => {{
-        let formatted = $crate::cnd::format_warn_message($msg, $body);
+        let formatted = $crate::conditions::format_warn_message($msg, $body);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         let call_robj = $call.call();
         unsafe {
@@ -70,7 +70,7 @@ macro_rules! warn {
 #[macro_export]
 macro_rules! abort {
     ($msg:expr) => {{
-        let formatted = $crate::cnd::format_cnd_message($msg, &[]);
+        let formatted = $crate::conditions::format_cnd_message($msg, &[]);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         unsafe {
             $crate::Rf_errorcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
@@ -78,7 +78,7 @@ macro_rules! abort {
     }};
 
     ($msg:expr, call = $call:expr) => {{
-        let formatted = $crate::cnd::format_cnd_message($msg, &[]);
+        let formatted = $crate::conditions::format_cnd_message($msg, &[]);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         let call_robj = $call.call();
         unsafe {
@@ -91,7 +91,7 @@ macro_rules! abort {
     }};
 
     ($msg:expr, $body:expr) => {{
-        let formatted = $crate::cnd::format_cnd_message($msg, $body);
+        let formatted = $crate::conditions::format_cnd_message($msg, $body);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         unsafe {
             $crate::Rf_errorcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
@@ -99,7 +99,7 @@ macro_rules! abort {
     }};
 
     ($msg:expr, $body:expr, $call:expr) => {{
-        let formatted = $crate::cnd::format_cnd_message($msg, $body);
+        let formatted = $crate::conditions::format_cnd_message($msg, $body);
         let c_msg = ::std::ffi::CString::new(formatted).unwrap();
         let call_robj = $call.call();
         unsafe {
