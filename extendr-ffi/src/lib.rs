@@ -322,8 +322,6 @@ extern "C" {
     #[doc = "Missing argument marker"]
     pub static R_MissingArg: SEXP;
     pub fn R_NamespaceEnvSpec(rho: SEXP) -> SEXP;
-    #[doc = "Registry for registered namespaces"]
-    pub static R_NamespaceRegistry: SEXP;
     #[doc = "Environment and Binding Features"]
     pub fn R_NewEnv(arg1: SEXP, arg2: ::std::os::raw::c_int, arg3: ::std::os::raw::c_int) -> SEXP;
     pub fn R_PackageEnvName(rho: SEXP) -> SEXP;
@@ -350,6 +348,7 @@ extern "C" {
     pub static R_Srcref: SEXP;
     pub fn R_tryEval(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
     pub fn R_tryEvalSilent(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
+    #[cfg(not(r_4_5))]
     #[doc = "Unbound marker"]
     pub static R_UnboundValue: SEXP;
     pub fn R_unif_index(arg1: f64) -> f64;
@@ -397,7 +396,6 @@ extern "C" {
     pub fn Rf_isEnvironment(s: SEXP) -> Rboolean;
     pub fn Rf_isExpression(s: SEXP) -> Rboolean;
     pub fn Rf_isFactor(arg1: SEXP) -> Rboolean;
-    pub fn Rf_isFrame(arg1: SEXP) -> Rboolean;
     pub fn Rf_isFunction(arg1: SEXP) -> Rboolean;
     pub fn Rf_isInteger(arg1: SEXP) -> Rboolean;
     pub fn Rf_isLanguage(arg1: SEXP) -> Rboolean;

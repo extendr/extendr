@@ -1,12 +1,11 @@
 [package]
 name = "extendr-ffi"
-description = "Barebone bindings to `libR` for use in extendr."
 version.workspace = true
-authors.workspace = true
 edition.workspace = true
 rust-version.workspace = true
-license.workspace = true
+description = "Barebone bindings to `libR` for use in extendr."
 repository.workspace = true
+license.workspace = true
 links = "R"
 
 [features]

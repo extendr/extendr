@@ -6,8 +6,8 @@ use extendr_ffi::{
     R_LastvalueSymbol, R_LevelsSymbol, R_MissingArg, R_ModeSymbol, R_NaRmSymbol, R_NameSymbol,
     R_NamesSymbol, R_NamespaceEnvSymbol, R_PackageSymbol, R_PreviousSymbol, R_QuoteSymbol,
     R_RowNamesSymbol, R_SeedsSymbol, R_SortListSymbol, R_SourceSymbol, R_SpecSymbol,
-    R_TripleColonSymbol, R_TspSymbol, R_UnboundValue, R_dot_Method, R_dot_defined,
-    R_dot_packageName, R_dot_target, PRINTNAME, TYPEOF,
+    R_TripleColonSymbol, R_TspSymbol, R_dot_Method, R_dot_defined, R_dot_packageName, R_dot_target,
+    PRINTNAME, TYPEOF,
 };
 /// Wrapper for creating symbol objects.
 ///
@@ -72,11 +72,6 @@ impl From<&str> for Symbol {
     fn from(name: &str) -> Self {
         Symbol::from_string(name)
     }
-}
-
-/// Unbound marker
-pub fn unbound_value() -> Symbol {
-    unsafe { Symbol::from_sexp(R_UnboundValue) }
 }
 
 /// Missing argument marker
@@ -234,7 +229,6 @@ mod test {
     #[test]
     fn test_constant_symbols() {
         test! {
-            assert!(unbound_value().is_symbol());
             assert!(missing_arg().is_symbol());
             assert!(base_symbol().is_symbol());
             assert!(brace_symbol().is_symbol());

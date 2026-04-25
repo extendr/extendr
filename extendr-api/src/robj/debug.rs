@@ -10,9 +10,11 @@ impl std::fmt::Debug for Symbol {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_missing_arg() {
             write!(f, "missing_arg()")
-        } else if self.is_unbound_value() {
-            write!(f, "unbound_value()")
         } else {
+            #[cfg(not(r_4_5))]
+            if self.is_unbound_value() {
+                return write!(f, "unbound_value()");
+            }
             write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
         }
     }

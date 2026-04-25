@@ -1,16 +1,15 @@
 [package]
 name = "extendr-engine"
-description = "Safe and user friendly bindings to the R programming language."
 version.workspace = true
-authors.workspace = true
 edition.workspace = true
 rust-version.workspace = true
-license.workspace = true
+description = "Safe and user friendly bindings to the R programming language."
 repository.workspace = true
+license.workspace = true
 
 [dependencies]
-extendr-ffi = { workspace = true }
 ctor = "0.6.0"
+extendr-ffi = { workspace = true }
 
 [features]
 default = []

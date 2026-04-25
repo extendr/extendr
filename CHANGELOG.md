@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 — 2026-04-16
 
 ### Added
 
@@ -15,9 +15,15 @@
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `TryFrom<Robj> for Vec<bool>`—an `Error::MustNotBeNA` is returned if an NA is present [[#864]](https://github.com/extendr/extendr/pull/864)
 - Added `impl From<&Vec<Robj>> for Robj` [[#864]](https://github.com/extendr/extendr/pull/864)
+- Struct-level docs are now carried into generated wrapper documentation [[#913]](https://github.com/extendr/extendr/pull/913)
+- Impl-level docs are now appended to the struct-level documentation block in generated wrapper docs [[#913]](https://github.com/extendr/extendr/pull/913)
+- fn-level docs in `impl` blocks are now emitted in generated R docs with roxygen-style sections [[#913]](https://github.com/extendr/extendr/pull/913)
 
 ### Changed
 
+- **Breaking**: Removed `is_unbound_value()` and `unbound_value()` as `R_UnboundValue` has been removed from the R-API [[#1067]](https://github.com/extendr/extendr/pull/1067)
+- **Breaking**: Removed `R_NamespaceRegistry` binding from extendr [[#1069]](https://github.com/extendr/extendr/pull/1069)
+- **Breaking**: MSRV has been bumped to 1.71
 - **Breaking**: `extendr_api::error::Result<>` has been removed from the prelude
 - **Deprecates** `List::from_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::from_hashmap()` with `List::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
 - **Deprecates** `List::into_hashmap()` in favor of the idiomatic `TryFrom` trait. replace `List::into_hashmap()` with `HashMap::<String, Robj>::try_from()` [[#982]](https://github.com/extendr/extendr/pull/982)
@@ -32,6 +38,8 @@
   Rust's memory model. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 
 ### Fixed
+
+- Panics raised in `#[extendr]` functions are now rethrown without prepending the `unwrap` message [[#1055]](https://github.com/extendr/extendr/pull/1055)
 
 ## 0.8.0
 

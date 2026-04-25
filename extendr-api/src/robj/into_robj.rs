@@ -68,7 +68,10 @@ where
     E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
-        res.unwrap().into()
+        match res {
+            Ok(val) => val.into(),
+            Err(err) => panic!("{}", err),
+        }
     }
 }
 

@@ -2,4 +2,9 @@
 *.so
 *.dll
 target
-Cargo.lock
+.cargo
+Makevars.win
+
+# want to commit the lock file since this is a test package only
+# this means overriding the top-level gitignore
+!rust/Cargo.lock
