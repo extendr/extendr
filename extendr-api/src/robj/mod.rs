@@ -387,7 +387,7 @@ impl Robj {
     /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
     /// }
     /// ```
-    pub fn as_integer_slice<'a>(&self) -> Option<&'a [i32]> {
+    pub fn as_integer_slice(&self) -> Option<&[i32]> {
         self.as_typed_slice()
     }
 
