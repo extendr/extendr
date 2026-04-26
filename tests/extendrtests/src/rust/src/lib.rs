@@ -2,6 +2,7 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod conditions;
 mod custom_errors;
 mod dataframe;
 mod errors;
@@ -387,4 +388,5 @@ extendr_module! {
     use to_unique_character;
     use custom_errors;
     use leak;
+    use conditions;
 }

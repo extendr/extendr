@@ -248,7 +248,7 @@ pub trait Types: GetSexp {
     ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
     ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
-    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+    ///     assert_eq!(Environment::new_with_parent(Environment::global()).rtype(), Rtype::Environment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
     ///     assert_eq!(Rstr::from_string("hello").rtype(), Rtype::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
@@ -711,7 +711,7 @@ pub trait Eval: GetSexp {
     /// }
     /// ```
     fn eval(&self) -> Result<Robj> {
-        self.eval_with_env(&global_env())
+        self.eval_with_env(&Environment::global())
     }
 
     /// Evaluate the expression in R and return an error or an R object.
@@ -720,7 +720,7 @@ pub trait Eval: GetSexp {
     /// test! {
     ///
     ///    let add = lang!("+", 1, 2);
-    ///    assert_eq!(add.eval_with_env(&global_env()).unwrap(), r!(3));
+    ///    assert_eq!(add.eval_with_env(&Environment::global()).unwrap(), r!(3));
     /// }
     /// ```
     fn eval_with_env(&self, env: &Environment) -> Result<Robj> {

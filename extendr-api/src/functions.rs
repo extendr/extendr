@@ -1,51 +1,9 @@
 use crate as extendr_api;
 use crate::*;
 use extendr_ffi::{
-    R_BaseEnv, R_BaseNamespace, R_BlankScalarString, R_BlankString, R_EmptyEnv, R_GetCurrentEnv,
-    R_GlobalEnv, R_NaString, R_NilValue, R_Srcref, R_dot_Generic,
+    R_BaseNamespace, R_BlankScalarString, R_BlankString, R_NaString, R_NilValue, R_Srcref,
+    R_dot_Generic,
 };
-
-#[cfg(feature = "non-api")]
-/// Get a global variable from global_env() and ancestors.
-/// If the result is a promise, evaulate the promise.
-///
-/// See also [global_var()].
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///    let iris = global_var(sym!(iris))?;
-///    assert_eq!(iris.len(), 5);
-/// }
-/// ```
-pub fn global_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    let key = key.into();
-    global_env().find_var(key)?.eval_promise()
-}
-
-#[cfg(feature = "non-api")]
-/// Get a local variable from current_env() and ancestors.
-///
-/// If the result is a promise, evaulate the promise.
-/// The result will come from the calling environment
-/// of an R function which will enable you to use variables
-/// from the caller.
-///
-/// See also [var!].
-///
-/// Note that outside of R, current_env() will be base_env()
-/// and cannot be modified.
-///
-/// ```rust,no_run
-/// use extendr_api::prelude::*;
-/// test! {
-///    current_env().set_local(sym!(my_var), 1);
-///    assert_eq!(local_var(sym!(my_var))?, r!(1));
-/// }
-/// ```
-pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
-    let key = key.into();
-    current_env().find_var(key)?.eval_promise()
-}
 
 /// Get a global function from global_env() and ancestors.
 /// ```
@@ -57,7 +15,7 @@ pub fn local_var<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// ```
 pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
     let key = key.into();
-    global_env().find_function(key)
+    Environment::global().find_function(key)
 }
 
 /// Find a namespace by name.
@@ -86,11 +44,12 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert!(current_env().is_environment());
+///    assert!(Environment::current().is_environment());
 /// }
 /// ```
+#[deprecated(since = "0.10.0", note = "Use `Environment::current()` instead")]
 pub fn current_env() -> Environment {
-    unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
+    Environment::current()
 }
 
 /// The "global" environment
@@ -98,17 +57,19 @@ pub fn current_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     global_env().set_local(sym!(x), "hello");
-///     assert_eq!(global_env().local(sym!(x)), Ok(r!("hello")));
+///     Environment::global().set_local(sym!(x), "hello");
+///     assert_eq!(Environment::global().local(sym!(x)), Ok(r!("hello")));
 /// }
 /// ```
+#[deprecated(since = "0.10.0", note = "Use `Environment::global()` instead")]
 pub fn global_env() -> Environment {
-    unsafe { Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
+    Environment::global()
 }
 
 /// An empty environment at the root of the environment tree
+#[deprecated(since = "0.10.0", note = "Use `Environment::empty()` instead")]
 pub fn empty_env() -> Environment {
-    unsafe { Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
+    Environment::empty()
 }
 
 /// Create a new environment
@@ -116,7 +77,7 @@ pub fn empty_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let env: Environment = new_env(global_env(), true, 10).try_into().unwrap();
+///     let env: Environment = new_env(Environment::global(), true, 10).try_into().unwrap();
 ///     env.set_local(sym!(x), "hello");
 ///     assert_eq!(env.local(sym!(x)), Ok(r!("hello")));
 /// }
@@ -140,8 +101,9 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
 }
 
 /// The base environment; formerly `R_NilValue`
+#[deprecated(since = "0.10.0", note = "Use `Environment::base()` instead")]
 pub fn base_env() -> Environment {
-    unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
+    Environment::base()
 }
 
 /// The namespace for base.
@@ -149,7 +111,7 @@ pub fn base_env() -> Environment {
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///    assert_eq!(base_namespace().parent().ok_or("no parent")?, global_env());
+///    assert_eq!(base_namespace().parent().ok_or("no parent")?, Environment::global());
 /// }
 /// ```
 pub fn base_namespace() -> Environment {
@@ -246,7 +208,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 /// ```
 pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
     single_threaded(|| {
-        let env = Environment::new_with_parent(global_env());
+        let env = Environment::new_with_parent(Environment::global());
         for (i, &v) in values.iter().enumerate() {
             let key = Symbol::from_string(format!("param.{}", i));
             env.set_local(key, v);

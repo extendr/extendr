@@ -25,10 +25,9 @@ Suggests:
     testthat,
     vctrs,
     lobstr,
-    rprojroot
-Remotes:
-    extendr/rextendr
+    rprojroot,
+    rlang
 Config/testthat/edition: 3
-Config/rextendr/version: 0.4.2.9000
-Depends: 
+Config/rextendr/version: 0.5.0
+Depends:
     R (>= 4.2)
