@@ -1,6 +1,40 @@
+//! # Condition objects
+//!
+//! In R, a condition is an S3 list with:
+//! - `message`: a character vector describing the condition
+//! - `call`: the call that triggered the condition, or `NULL`
+//! - a class attribute including `"condition"` and optionally `"error"`,
+//!   `"warning"`, or `"message"`
+//!
+//! rlang-style conditions may include a traceback, which is not yet supported here.
+//!
+//! ## Types
+//!
+//! This module provides four types:
+//!
+//! - [`ConditionKind`]: an enum discriminating the base R condition type
+//!   (`condition`, `message`, `warning`, `error`).
+//!
+//! - [`Condition`]: a Rust-native representation. Construct one with [`ConditionBuilder::default()`]. This is the primary type we encourage you to work with for its ergonomics due to its use of std types.
+//!
+//! - [`RCondition`]: a thin wrapper around a [`List`] that already exists in R
+//!   memory as a proper condition object. Use this when receiving or returning
+//!   condition objects at the R boundary.
+//!
+//! - [`ConditionBuilder`]: a builder for [`Condition`]. Create a builder with [`ConditionBuilder::default()`] to start, chain setters, and call `.build()` to produce a [`Condition`].
+//!
+//! ## Conversions
+//!
+//! | From \ To   | `List`  | `RCondition` | `Robj`  | `Condition` |
+//! |-------------|---------|--------------|---------|-------------|
+//! | `Condition` | `From`  | `From`       | `From`  | —           |
+//! | `List`      | —       | `From`       | blanket | `TryFrom`   |
+//! | `&List`     | —       | `From`       | —       | `TryFrom`   |
+//! | `RCondition`| `From`  | —            | `From`  | `TryFrom`   |
+//! | `Robj`      | —       | `TryFrom`    | —       | `TryFrom`   |
+//! | `&Robj`     | —       | `TryFrom`    | —       | `TryFrom`   |
 use crate::{
-    AsStrIter, Attributes, Environment, Error, IntoRobj, Language, List, Operators, Result, Robj,
-    Rstr, StrIter, Strings,
+    robj::Rinternals, Attributes, Error, IntoRobj, Language, List, Operators, Robj, Strings,
 };
 
 /// Discriminates the kind of R condition being constructed.
@@ -33,10 +67,10 @@ impl From<Condition> for List {
         let mut cnd = List::from_pairs([("message", msg), ("call", call_robj)]);
 
         let base_classes: &[&str] = match value.kind {
-            ConditionKind::Condition => &["simpleCondition", "condition"],
-            ConditionKind::Message => &["simpleMessage", "message", "condition"],
-            ConditionKind::Warning => &["simpleWarning", "warning", "condition"],
-            ConditionKind::Error => &["simpleError", "error", "condition"],
+            ConditionKind::Condition => &["condition"],
+            ConditionKind::Message => &["message", "condition"],
+            ConditionKind::Warning => &["warning", "condition"],
+            ConditionKind::Error => &["error", "condition"],
         };
 
         let mut class = value.class.unwrap_or_default();
@@ -59,13 +93,11 @@ impl From<Condition> for Robj {
     }
 }
 
-impl TryFrom<&Robj> for Condition {
+impl TryFrom<&List> for Condition {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
-        let list = List::try_from(value)?;
-
-        let message = Strings::try_from(list.dollar("message")?)?.into();
+    fn try_from(list: &List) -> std::result::Result<Self, Self::Error> {
+        let message: Vec<String> = Strings::try_from(list.dollar("message")?)?.into();
 
         let cls: Vec<String> = list
             .class()
@@ -99,12 +131,11 @@ impl TryFrom<&Robj> for Condition {
             _ => ConditionKind::Condition,
         };
 
-        // Strip the base classes to recover user-defined prefix classes
         let base_classes: &[&str] = match kind {
-            ConditionKind::Condition => &["simpleCondition", "condition"],
-            ConditionKind::Message => &["simpleMessage", "message", "condition"],
-            ConditionKind::Warning => &["simpleWarning", "warning", "condition"],
-            ConditionKind::Error => &["simpleError", "error", "condition"],
+            ConditionKind::Condition => &["condition"],
+            ConditionKind::Message => &["message", "condition"],
+            ConditionKind::Warning => &["warning", "condition"],
+            ConditionKind::Error => &["error", "condition"],
         };
         let user_class: Vec<String> = cls
             .iter()
@@ -117,10 +148,13 @@ impl TryFrom<&Robj> for Condition {
             Some(user_class)
         };
 
-        let call = list
-            .dollar("call")
-            .ok()
-            .and_then(|v| Language::try_from(&v).ok());
+        let call = list.dollar("call").ok().and_then(|v| {
+            if v.is_null() {
+                None
+            } else {
+                Language::try_from(&v).ok()
+            }
+        });
 
         Ok(Condition {
             message,
@@ -131,10 +165,82 @@ impl TryFrom<&Robj> for Condition {
     }
 }
 
+impl TryFrom<List> for Condition {
+    type Error = Error;
+
+    fn try_from(value: List) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(&value)
+    }
+}
+
+impl TryFrom<&Robj> for Condition {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(List::try_from(value)?)
+    }
+}
+
+impl TryFrom<Robj> for Condition {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(&value)
+    }
+}
+
 /// A wrapper around an R condition object (`Robj`).
 ///
 /// This represents an actual R condition list as it exists in R memory.
 pub struct RCondition(pub List);
+
+impl From<List> for RCondition {
+    fn from(value: List) -> Self {
+        RCondition(value)
+    }
+}
+
+impl From<&List> for RCondition {
+    fn from(value: &List) -> Self {
+        RCondition(value.clone())
+    }
+}
+
+impl From<RCondition> for List {
+    fn from(value: RCondition) -> Self {
+        value.0
+    }
+}
+
+impl From<RCondition> for Robj {
+    fn from(value: RCondition) -> Self {
+        Robj::from(value.0)
+    }
+}
+
+impl TryFrom<RCondition> for Condition {
+    type Error = Error;
+
+    fn try_from(value: RCondition) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(value.0)
+    }
+}
+
+impl TryFrom<&Robj> for RCondition {
+    type Error = Error;
+
+    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+        Ok(RCondition(List::try_from(value)?))
+    }
+}
+
+impl TryFrom<Robj> for RCondition {
+    type Error = Error;
+
+    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+        RCondition::try_from(&value)
+    }
+}
 
 /// Builder for constructing a [`Condition`].
 pub struct ConditionBuilder {
@@ -145,10 +251,6 @@ pub struct ConditionBuilder {
 }
 
 impl ConditionBuilder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn set_message(mut self, message: impl IntoIterator<Item = impl Into<String>>) -> Self {
         self.message = message.into_iter().map(|s| s.into()).collect();
         self
@@ -306,7 +408,12 @@ macro_rules! abort {
 
 #[cfg(test)]
 mod tests {
-    use crate::conditions::{ConditionBuilder, RCondition};
+    use extendr_engine::with_r;
+
+    use crate::{
+        conditions::{Condition, ConditionBuilder, ConditionKind, RCondition},
+        Attributes, List, Result, Robj,
+    };
 
     #[test]
     fn test_format_cnd_message_no_body() {
@@ -323,13 +430,113 @@ mod tests {
     }
 
     #[test]
-    fn test_cnd() {
-        let cnd = ConditionBuilder::new()
-            .set_kind(super::ConditionKind::Message)
-            .set_message(["this is a custom message"])
-            .set_class(["class1", "class2"])
-            .build();
+    fn roundtrip_with_class() -> Result<()> {
+        with_r(|| {
+            let cnd = ConditionBuilder::default()
+                .set_kind(ConditionKind::Message)
+                .set_message(["this is a custom message"])
+                .set_class(["class1", "class2"])
+                .build();
+            let c2 = Condition::try_from(RCondition::from(cnd.clone()))?;
+            assert_eq!(cnd, c2);
+            Ok(())
+        })
+    }
 
-        let rcnd = RCondition::from(cnd.clone());
+    #[test]
+    fn roundtrip_no_class() -> Result<()> {
+        with_r(|| {
+            let cnd = ConditionBuilder::default()
+                .set_kind(ConditionKind::Warning)
+                .set_message(["watch out"])
+                .build();
+            let c2 = Condition::try_from(RCondition::from(cnd.clone()))?;
+            assert_eq!(cnd, c2);
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn roundtrip_via_robj() -> Result<()> {
+        with_r(|| {
+            let cnd = ConditionBuilder::default()
+                .set_kind(ConditionKind::Error)
+                .set_message(["something failed"])
+                .set_class(["my_error"])
+                .build();
+            let robj = Robj::from(cnd.clone());
+            let c2 = Condition::try_from(robj)?;
+            assert_eq!(cnd, c2);
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn roundtrip_all_kinds() -> Result<()> {
+        with_r(|| {
+            for (kind, expected_base) in [
+                (ConditionKind::Condition, "condition"),
+                (ConditionKind::Message, "message"),
+                (ConditionKind::Warning, "warning"),
+                (ConditionKind::Error, "error"),
+            ] {
+                let cnd = ConditionBuilder::default()
+                    .set_kind(kind)
+                    .set_message(["msg"])
+                    .build();
+                let list = List::from(cnd);
+                let cls: Vec<_> = list.class().unwrap().collect();
+                assert!(cls.contains(&expected_base), "missing {expected_base}");
+                assert!(cls.contains(&"condition"), "missing condition");
+            }
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn err_not_a_condition() -> Result<()> {
+        with_r(|| {
+            let list = List::from_pairs([("message", Robj::from("oops"))]);
+            let result = Condition::try_from(&list);
+            assert!(result.is_err());
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn err_not_a_list() -> Result<()> {
+        with_r(|| {
+            let robj = Robj::from("just a string");
+            let result = Condition::try_from(&robj);
+            assert!(result.is_err());
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn err_ambiguous_kind() -> Result<()> {
+        with_r(|| {
+            let mut list =
+                List::from_pairs([("message", Robj::from("oops")), ("call", Robj::from(()))]);
+            list.set_class(&["error", "warning", "condition"]).unwrap();
+            let result = Condition::try_from(&list);
+            assert!(result.is_err());
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn roundtrip_rcondition_to_condition() -> Result<()> {
+        with_r(|| {
+            let cnd = ConditionBuilder::default()
+                .set_kind(ConditionKind::Error)
+                .set_message(["bad thing"])
+                .set_class(["my_err"])
+                .build();
+            let rcnd = RCondition::from(cnd.clone());
+            let c2 = Condition::try_from(rcnd)?;
+            assert_eq!(cnd, c2);
+            Ok(())
+        })
     }
 }
