@@ -6,7 +6,8 @@
 //! - a class attribute including `"condition"` and optionally `"error"`,
 //!   `"warning"`, or `"message"`
 //!
-//! rlang-style conditions may include a traceback, which is not yet supported here.
+//! rlang-style conditions may include additional fields (`trace`, `parent`) which
+//! are not represented in [`Condition`] and will be dropped on round-trip.
 //!
 //! ## Types
 //!
