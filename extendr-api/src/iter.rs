@@ -256,3 +256,21 @@ mod tests {
         })
     }
 }
+
+impl From<StrIter> for Vec<String> {
+    fn from(value: StrIter) -> Vec<String> {
+        value.map(|v| v.to_string()).collect()
+    }
+}
+
+impl From<Strings> for StrIter {
+    fn from(value: Strings) -> Self {
+        value.robj.as_str_iter().unwrap_or_default()
+    }
+}
+
+impl From<Strings> for Vec<String> {
+    fn from(value: Strings) -> Self {
+        StrIter::from(value).map(|s| s.to_string()).collect()
+    }
+}
