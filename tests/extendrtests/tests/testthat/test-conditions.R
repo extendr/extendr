@@ -40,7 +40,7 @@ test_that("condition_has_call detects call from rlang::current_call()", {
   expect_true(my_fn())
 })
 
-test_that("round-trip preserves message and call; rlang trace/parent are dropped", {
+test_that("round-trip preserves message and call", {
   skip_if_not_installed("rlang")
   my_fn <- function() {
     rlang::error_cnd(message = "oops", call = rlang::current_call())
@@ -49,8 +49,34 @@ test_that("round-trip preserves message and call; rlang trace/parent are dropped
   c2 <- roundtrip_condition(cnd)
   expect_identical(cnd$message, c2$message)
   expect_identical(cnd$call, c2$call)
-  expect_null(c2$trace)
-  expect_null(c2$parent)
+})
+
+test_that("round-trip preserves parent condition", {
+  skip_if_not_installed("rlang")
+  cnd <- rlang::error_cnd(
+    message = "hi",
+    parent = rlang::error_cnd(class = "b")
+  )
+  c2 <- roundtrip_condition(cnd)
+  expect_identical(cnd$message, c2$message)
+  expect_identical(cnd$parent$message, c2$parent$message)
+  expect_identical(class(cnd$parent), class(c2$parent))
+})
+
+test_that("round-trip preserves trace", {
+  skip_if_not_installed("rlang")
+  f <- function() g()
+  g <- function() h()
+  h <- function() rlang::trace_back()
+  cnd <- rlang::error_cnd(
+    message = "hi",
+    parent = rlang::error_cnd(class = "b"),
+    trace = f()
+  )
+  c2 <- roundtrip_condition(cnd)
+  expect_identical(cnd$message, c2$message)
+  expect_identical(cnd$parent$message, c2$parent$message)
+  expect_identical(class(cnd$trace), class(c2$trace))
 })
 
 test_that("condition_has_call returns FALSE when call is NULL", {

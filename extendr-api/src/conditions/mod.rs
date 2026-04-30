@@ -6,8 +6,8 @@
 //! - a class attribute including `"condition"` and optionally `"error"`,
 //!   `"warning"`, or `"message"`
 //!
-//! rlang-style conditions may include additional fields (`trace`, `parent`) which
-//! are not represented in [`Condition`] and will be dropped on round-trip.
+//! rlang-style conditions may include `trace` and `parent` fields, which are
+//! represented as `Option<List>` and `Option<RCondition>` respectively.
 //!
 //! ## Types
 //!
@@ -29,8 +29,8 @@
 //! | From \ To   | `List`  | `RCondition` | `Robj`  | `Condition` |
 //! |-------------|---------|--------------|---------|-------------|
 //! | `Condition` | `From`  | `From`       | `From`  | —           |
-//! | `List`      | —       | `From`       | blanket | `TryFrom`   |
-//! | `&List`     | —       | `From`       | —       | `TryFrom`   |
+//! | `List`      | —       | `TryFrom`    | blanket | `TryFrom`   |
+//! | `&List`     | —       | `TryFrom`    | —       | `TryFrom`   |
 //! | `RCondition`| `From`  | —            | `From`  | `TryFrom`   |
 //! | `Robj`      | —       | `TryFrom`    | —       | `TryFrom`   |
 //! | `&Robj`     | —       | `TryFrom`    | —       | `TryFrom`   |
@@ -57,6 +57,8 @@ pub struct Condition {
     pub kind: ConditionKind,
     pub class: Option<Vec<String>>,
     pub call: Option<Language>,
+    pub parent: Option<RCondition>,
+    pub trace: Option<List>,
 }
 
 impl From<Condition> for List {
@@ -64,8 +66,18 @@ impl From<Condition> for List {
         let msg = Strings::from_values(value.message).into_robj();
 
         let call_robj = value.call.map(|v| v.into()).unwrap_or(Robj::from(()));
+        let parent_robj = value
+            .parent
+            .map(|v| Robj::from(v.0))
+            .unwrap_or(Robj::from(()));
+        let trace_robj = value.trace.map(|v| Robj::from(v)).unwrap_or(Robj::from(()));
 
-        let mut cnd = List::from_pairs([("message", msg), ("call", call_robj)]);
+        let mut cnd = List::from_pairs([
+            ("message", msg),
+            ("trace", trace_robj),
+            ("parent", parent_robj),
+            ("call", call_robj),
+        ]);
 
         let base_classes: &[&str] = match value.kind {
             ConditionKind::Condition => &["condition"],
@@ -157,11 +169,29 @@ impl TryFrom<&List> for Condition {
             }
         });
 
+        let parent = list.dollar("parent").ok().and_then(|v| {
+            if v.is_null() {
+                None
+            } else {
+                List::try_from(&v).ok().map(RCondition)
+            }
+        });
+
+        let trace = list.dollar("trace").ok().and_then(|v| {
+            if v.is_null() {
+                None
+            } else {
+                List::try_from(&v).ok()
+            }
+        });
+
         Ok(Condition {
             message,
             kind,
             class,
             call,
+            parent,
+            trace,
         })
     }
 }
@@ -193,17 +223,24 @@ impl TryFrom<Robj> for Condition {
 /// A wrapper around an R condition object (`Robj`).
 ///
 /// This represents an actual R condition list as it exists in R memory.
+#[derive(Clone, PartialEq, Debug)]
 pub struct RCondition(pub List);
 
-impl From<List> for RCondition {
-    fn from(value: List) -> Self {
-        RCondition(value)
+impl TryFrom<List> for RCondition {
+    type Error = Error;
+
+    fn try_from(value: List) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(&value)?;
+        Ok(RCondition(value))
     }
 }
 
-impl From<&List> for RCondition {
-    fn from(value: &List) -> Self {
-        RCondition(value.clone())
+impl TryFrom<&List> for RCondition {
+    type Error = Error;
+
+    fn try_from(value: &List) -> std::result::Result<Self, Self::Error> {
+        Condition::try_from(value)?;
+        Ok(RCondition(value.clone()))
     }
 }
 
@@ -249,6 +286,8 @@ pub struct ConditionBuilder {
     kind: ConditionKind,
     class: Option<Vec<String>>,
     call: Option<Language>,
+    parent: Option<RCondition>,
+    trace: Option<List>,
 }
 
 impl ConditionBuilder {
@@ -272,12 +311,25 @@ impl ConditionBuilder {
         self
     }
 
+    pub fn set_parent(mut self, parent: impl Into<RCondition>) -> Self {
+        self.parent = Some(parent.into());
+        self
+    }
+
+    /// Set the trace field. The structure of the list is not validated.
+    pub fn set_trace(mut self, trace: List) -> Self {
+        self.trace = Some(trace);
+        self
+    }
+
     pub fn build(self) -> Condition {
         Condition {
             message: self.message,
             kind: self.kind,
             class: self.class,
             call: self.call,
+            parent: self.parent,
+            trace: self.trace,
         }
     }
 }
@@ -289,6 +341,8 @@ impl Default for ConditionBuilder {
             kind: ConditionKind::Condition,
             class: None,
             call: None,
+            parent: None,
+            trace: None,
         }
     }
 }
