@@ -4,6 +4,8 @@
 
 ### Added
 
+- `Condition`, `RCondition`, `ConditionKind`, and `ConditionBuilder` in `extendr_api::conditions` for creating, converting, and round-tripping R condition objects. `Condition` is the Rust-native representation; `RCondition` is the R-boundary type wrapping a validated `List`. Conversions between all four types are provided via `From`/`TryFrom`. <https://github.com/extendr/extendr/pull/1082>
+- `From<Strings> for Vec<String>` and `From<Strings> for StrIter` conversions. <https://github.com/extendr/extendr/pull/1082>
 - `stop()` is an alias for `throw_r_error()` 
 - `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`. <https://github.com/extendr/extendr/pull/1075>
 - `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()` <https://github.com/extendr/extendr/pull/1075>
