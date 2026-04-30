@@ -6,7 +6,7 @@
 //! - a class attribute including `"condition"` and optionally `"error"`,
 //!   `"warning"`, or `"message"`
 //!
-//! rlang-style conditions may include `trace` and `parent` fields, which are
+//! rlang conditions may include `trace` and `parent` fields, which are
 //! represented as `Option<List>` and `Option<RCondition>` respectively.
 //!
 //! ## Types
@@ -41,23 +41,36 @@ use crate::{
 /// Discriminates the kind of R condition being constructed.
 #[derive(Copy, Debug, Clone, PartialEq)]
 pub enum ConditionKind {
+    /// A generic condition. Base class: `"condition"`.
     Condition,
+    /// A message condition. Base classes: `"message"`, `"condition"`.
     Message,
+    /// A warning condition. Base classes: `"warning"`, `"condition"`.
     Warning,
+    /// An error condition. Base classes: `"error"`, `"condition"`.
     Error,
 }
 
 /// Rust-native representation of an R condition.
 ///
-/// Holds Rust types and is converted into an R condition list via
-/// `From<Condition> for Robj` or `From<Condition> for RCondition`.
+/// This is the primary type to work with. Construct one via
+/// [`ConditionBuilder::default()`] and convert it to R types via the
+/// `From`/`Into` impls. To read a condition from R, use `TryFrom<Robj>` or
+/// `TryFrom<List>`.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Condition {
+    /// The condition message. Corresponds to the `message` character vector in R.
     pub message: Vec<String>,
+    /// The base kind of condition, used to set the R class hierarchy.
     pub kind: ConditionKind,
+    /// User-defined subclasses prepended to the base classes. `None` means no
+    /// custom classes beyond those implied by `kind`.
     pub class: Option<Vec<String>>,
+    /// The call that triggered the condition, or `None` for `NULL`.
     pub call: Option<Language>,
+    /// An optional parent condition, used to chain conditions with rlang.
     pub parent: Option<RCondition>,
+    /// An optional traceback. The structure is not validated.
     pub trace: Option<List>,
 }
 
@@ -112,9 +125,9 @@ impl TryFrom<&List> for Condition {
     fn try_from(list: &List) -> std::result::Result<Self, Self::Error> {
         let message: Vec<String> = Strings::try_from(list.dollar("message")?)?.into();
 
-        let cls: Vec<String> = list
+        let cls = list
             .class()
-            .map(|inner| inner.map(|s| s.to_string()).collect())
+            .map(|inner| inner.map(|s| s.to_string()).collect::<Vec<_>>())
             .unwrap_or_default();
 
         if !cls.iter().any(|c| c == "condition") {
@@ -220,9 +233,11 @@ impl TryFrom<Robj> for Condition {
     }
 }
 
-/// A wrapper around an R condition object (`Robj`).
+/// A validated R condition object held as a [`List`].
 ///
-/// This represents an actual R condition list as it exists in R memory.
+/// Use this as a function argument or return type when exchanging condition
+/// objects with R. To inspect or modify fields, convert to [`Condition`] via
+/// `TryFrom`.
 #[derive(Clone, PartialEq, Debug)]
 pub struct RCondition(pub List);
 
@@ -268,7 +283,7 @@ impl TryFrom<&Robj> for RCondition {
     type Error = Error;
 
     fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
-        Ok(RCondition(List::try_from(value)?))
+        RCondition::try_from(List::try_from(value)?)
     }
 }
 
@@ -291,37 +306,45 @@ pub struct ConditionBuilder {
 }
 
 impl ConditionBuilder {
+    /// Set the condition message. Accepts any iterable of strings.
     pub fn set_message(mut self, message: impl IntoIterator<Item = impl Into<String>>) -> Self {
         self.message = message.into_iter().map(|s| s.into()).collect();
         self
     }
 
+    /// Set the condition kind, which determines the base R class hierarchy.
     pub fn set_kind(mut self, kind: ConditionKind) -> Self {
         self.kind = kind;
         self
     }
 
+    /// Set user-defined subclasses. These are prepended to the base classes
+    /// derived from [`ConditionKind`].
     pub fn set_class(mut self, class: impl IntoIterator<Item = impl Into<String>>) -> Self {
         self.class = Some(class.into_iter().map(|s| s.into()).collect());
         self
     }
 
+    /// Set the call associated with the condition.
     pub fn set_call(mut self, call: Language) -> Self {
         self.call = Some(call);
         self
     }
 
+    /// Set a parent condition. Accepts anything that converts into [`RCondition`],
+    /// including a [`Condition`].
     pub fn set_parent(mut self, parent: impl Into<RCondition>) -> Self {
         self.parent = Some(parent.into());
         self
     }
 
-    /// Set the trace field. The structure of the list is not validated.
+    /// Set the traceback. The structure of the list is not validated.
     pub fn set_trace(mut self, trace: List) -> Self {
         self.trace = Some(trace);
         self
     }
 
+    /// Consume the builder and produce a [`Condition`].
     pub fn build(self) -> Condition {
         Condition {
             message: self.message,
