@@ -251,6 +251,12 @@ must_see_drop_msg_r_error_heap <- function() .Call(wrap__must_see_drop_msg_r_err
 
 must_see_drop_msg_panic_heap <- function() .Call(wrap__must_see_drop_msg_panic_heap)
 
+roundtrip_condition <- function(x) .Call(wrap__roundtrip_condition, x)
+
+condition_message <- function(x) .Call(wrap__condition_message, x)
+
+condition_has_call <- function(x) .Call(wrap__condition_has_call, x)
+
 cnd_warn <- function(msg) .Call(wrap__cnd_warn, msg)
 
 cnd_warn_with_body <- function(msg, body) .Call(wrap__cnd_warn_with_body, msg, body)
