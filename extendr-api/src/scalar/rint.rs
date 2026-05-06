@@ -71,6 +71,12 @@ impl From<Rint> for Option<i32> {
     }
 }
 
+impl From<Rint> for i32 {
+    fn from(v: Rint) -> Self {
+        v.0
+    }
+}
+
 gen_sum_iter!(Rint);
 gen_partial_ord!(Rint, i32);
 
