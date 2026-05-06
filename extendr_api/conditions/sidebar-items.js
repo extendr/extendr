@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["format_cnd_message","format_warn_message"]};
+window.SIDEBAR_ITEMS = {"enum":["ConditionKind"],"fn":["format_cnd_message","format_warn_message"],"struct":["Condition","ConditionBuilder","RCondition"]};
