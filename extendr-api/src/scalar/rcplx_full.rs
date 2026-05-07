@@ -90,6 +90,12 @@ impl From<Rcplx> for Option<c64> {
     }
 }
 
+impl From<Rcplx> for c64 {
+    fn from(val: Rcplx) -> Self {
+        c64::new(val.re().0, val.im().0)
+    }
+}
+
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` is `NA_real_`.
 gen_trait_impl!(Rcplx, c64, |x: &Rcplx| x.0.re.is_na(), c64::na());

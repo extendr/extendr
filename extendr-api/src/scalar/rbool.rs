@@ -84,6 +84,12 @@ impl From<Rbool> for Option<bool> {
     }
 }
 
+impl From<Rbool> for bool {
+    fn from(v: Rbool) -> Self {
+        v.0 != 0
+    }
+}
+
 impl std::ops::Not for Rbool {
     type Output = Self;
 
