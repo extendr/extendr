@@ -1,11 +1,23 @@
 version: 2
 updates:
   - package-ecosystem: cargo
-    directories: 
+    directories:
       - "/"
       - "tests/extendrtests/src/rust/"
     schedule:
       interval: daily
+    # All optional deps of extendr-api are exposed in its public surface (via
+    # `optional/`, `conversions/`, scalar/Rcplx, derive macros). Bumping any
+    # of them is a breaking change for downstream R packages, so they need a
+    # deliberate multi-version feature-flag strategy rather than straight
+    # version bumps. Keep this list in sync with the `optional = true`
+    # entries in extendr-api/Cargo.toml.
+    ignore:
+      - dependency-name: "either"
+      - dependency-name: "faer"
+      - dependency-name: "ndarray"
+      - dependency-name: "num-complex"
+      - dependency-name: "serde"
 
   - package-ecosystem: github-actions
     directory: "/"
