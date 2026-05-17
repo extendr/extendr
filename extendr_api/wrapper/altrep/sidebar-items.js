@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["manifest"],"macro":["make_from_iterator","make_from_iterator_impl"],"struct":["Altrep"],"trait":["AltComplexImpl","AltIntegerImpl","AltListImpl","AltLogicalImpl","AltRawImpl","AltRealImpl","AltStringImpl","AltrepImpl"]};
+window.SIDEBAR_ITEMS = {"fn":["manifest"],"macro":[["make_from_iterator",1],["make_from_iterator_impl",1]],"struct":["Altrep"],"trait":["AltComplexImpl","AltIntegerImpl","AltListImpl","AltLogicalImpl","AltRawImpl","AltRealImpl","AltStringImpl","AltrepImpl"]};

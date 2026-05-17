@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ConversionError"],"macro":["impl_into_integerish"],"trait":["FloatToInt"]};
+window.SIDEBAR_ITEMS = {"enum":["ConversionError"],"macro":[["impl_into_integerish",1]],"trait":["FloatToInt"]};

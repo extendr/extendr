@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["impl_synonym_type"]};
+window.SIDEBAR_ITEMS = {"macro":[["impl_synonym_type",1]]};

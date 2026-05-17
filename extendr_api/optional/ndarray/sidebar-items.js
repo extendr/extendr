@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["make_array_view_1","make_array_view_2"]};
+window.SIDEBAR_ITEMS = {"macro":[["make_array_view_1",1],["make_array_view_2",1]]};

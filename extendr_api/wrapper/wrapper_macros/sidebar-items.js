@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["make_symbol","make_vector"],"macro":["make_conversions","make_getsexp"],"trait":["Conversions","SymPair"]};
+window.SIDEBAR_ITEMS = {"fn":["make_symbol","make_vector"],"macro":[["make_conversions",1],["make_getsexp",1]],"trait":["Conversions","SymPair"]};
