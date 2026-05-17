@@ -154,3 +154,11 @@ r-cmd-check *args:
 # Bump version
 bump version:
     cargo release version {{version}} --execute
+
+# Regenerate issues.md from open GitHub issues on origin (fail-soft if gh missing/offline)
+issues:
+    ./scripts/update-issues.sh
+
+# Regenerate OPEN-PR.md from open GitHub pull requests on origin (fail-soft if gh missing/offline)
+open-prs:
+    ./scripts/update-open-prs.sh
