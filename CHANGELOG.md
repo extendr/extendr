@@ -24,6 +24,7 @@
 ### Fixed
 
 - `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
+- `tests/extendrtests/src/Makevars.in` and `Makevars.win.in` now pass identical `RUSTFLAGS`, `@PANIC_EXPORTS@` (Unix), and `@PROFILE@` to both `cargo build --lib` and `cargo run --bin document`. Without this, the second invocation has a different cargo fingerprint and rebuilds every dependency from scratch on `R CMD INSTALL`. Paired with the upstream template fix in `rextendr#515`. <https://github.com/extendr/extendr/issues/1087>
 
 ## 0.9.0 — 2026-04-16
 

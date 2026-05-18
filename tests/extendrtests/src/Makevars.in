@@ -38,9 +38,12 @@ $(STATLIB):
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
 
+	# NOTE: env (RUSTFLAGS, @PANIC_EXPORTS@) and @PROFILE@ must match the
+	# `cargo build --lib` invocation above; otherwise cargo treats this as a
+	# fresh fingerprint and rebuilds every dependency from scratch (#1087).
 	export CARGO_HOME=$(CARGOTMP) && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	cargo run @CRAN_FLAGS@ --bin document --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
+	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS)" cargo run @CRAN_FLAGS@ --bin document @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);
