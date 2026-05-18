@@ -9,13 +9,8 @@ publish = false
 resolver = "2"
 
 [lib]
-crate-type = ["rlib", "staticlib"]
+crate-type = ["staticlib"]
 name = "extendrtests"
-
-[[bin]]
-bench = false
-name = "document"
-path = "document.rs"
 
 [dependencies]
 anyhow = "1"
