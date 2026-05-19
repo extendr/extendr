@@ -151,7 +151,7 @@ leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 #' Calculate Euclidean distance matrix
-#' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
+#' Test case adopted from <https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5>
 #' @param a : Matrix of real values or `NULL`
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
@@ -268,6 +268,8 @@ cnd_abort_with_body <- function(msg, body) .Call(wrap__cnd_abort_with_body, msg,
 cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_call, msg, call)
 
 throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
+
+sum_many_args_same_type <- function(x, y, z) .Call(wrap__sum_many_args_same_type, x, y, z)
 
 #' Class for testing (exported)
 #' @examples
