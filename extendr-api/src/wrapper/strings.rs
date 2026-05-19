@@ -192,6 +192,26 @@ impl TryFrom<&Strings> for BTreeSet<&str> {
     }
 }
 
+impl TryFrom<&Robj> for HashSet<&str> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> std::result::Result<Self, Self::Error> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))
+            .map(HashSet::from_iter)
+    }
+}
+
+impl TryFrom<&Robj> for BTreeSet<&str> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> std::result::Result<Self, Self::Error> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))
+            .map(BTreeSet::from_iter)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
