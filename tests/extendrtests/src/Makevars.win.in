@@ -4,7 +4,7 @@ TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/@LIBDIR@
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(CURDIR)/$(LIBDIR) -lextendrtests -lws2_32 -ladvapi32 -luserenv -lbcrypt -lntdll
-DOCUMENT_SHLIB = rust/document.dll
+DOCUMENT = rust/document.exe
 DOCUMENT_OBJ = rust/document.o
 
 all: $(SHLIB) rust_clean
@@ -38,10 +38,11 @@ $(STATLIB):
 	export LIBRARY_PATH="$(LIBRARY_PATH);$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --target=$(TARGET) --lib @PROFILE@ --manifest-path=rust/Cargo.toml --target-dir=$(TARGET_DIR)
 
-	# Generate R wrappers: cd rust/ so R CMD SHLIB doesn't see THIS Makevars.win and recurse.
-	cd rust && "$(R_HOME)/bin$(R_ARCH_BIN)/R" CMD SHLIB -o document.dll document.c $(PKG_LIBS)
-	"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" rust/document.R
-	rm -f $(DOCUMENT_SHLIB) $(DOCUMENT_OBJ)
+	# Generate R wrappers: build a tiny executable linked against the staticlib
+	# and run it to write ../R/extendr-wrappers.R.
+	$(CC) -o $(DOCUMENT) rust/document.c $(PKG_LIBS) -L"$(R_HOME)/bin$(R_ARCH)" -lR
+	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
+	rm -f $(DOCUMENT) $(DOCUMENT_OBJ)
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);
@@ -50,4 +51,4 @@ rust_clean: $(SHLIB)
 	rm -Rf $(CARGOTMP) $(VENDOR_DIR) @CLEAN_TARGET@
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) $(VENDOR_DIR) $(DOCUMENT_SHLIB) $(DOCUMENT_OBJ)
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) $(VENDOR_DIR) $(DOCUMENT) $(DOCUMENT_OBJ)
