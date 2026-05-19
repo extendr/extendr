@@ -110,7 +110,8 @@ impl List {
     where
         N: IntoIterator,
         N::IntoIter: ExactSizeIterator,
-        N::Item: ToVectorValue + AsRef<str>,
+        Robj: FromIterator<N::Item>,
+        N::Item: AsRef<str>,
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
         V::Item: Into<Robj>,
