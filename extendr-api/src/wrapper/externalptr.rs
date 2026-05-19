@@ -44,6 +44,12 @@ pub struct ExternalPtr<T> {
     _marker: std::marker::PhantomData<T>,
 }
 
+impl<T: std::hash::Hash + 'static> std::hash::Hash for ExternalPtr<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_ref().hash(state);
+    }
+}
+
 /// Manual implementation of `PartialEq`, because the constraint `T: PartialEq`
 /// is not necessary.
 impl<T> PartialEq for ExternalPtr<T> {

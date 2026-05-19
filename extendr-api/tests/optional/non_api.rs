@@ -1,4 +1,5 @@
 #![cfg(test)]
+use extendr_api::error::Result;
 use extendr_api::prelude::*;
 use extendr_engine::with_r;
 use std::result::Result;
