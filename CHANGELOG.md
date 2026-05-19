@@ -17,6 +17,7 @@
 
 ### Changed
 
+- Force symbol-based lookup of native entry points in packages built with extendr (`R_forceSymbols(TRUE)`); `.Call("wrap__…", …)` strings must now be replaced with the symbol form `.Call(wrap__…, …)`. <https://github.com/extendr/extendr/pull/1009>
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>

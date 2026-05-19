@@ -461,9 +461,11 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
         std::ptr::null(),
     );
 
-    // This seems to allow both symbols and strings,
+    // Force symbol-based lookup of C entry points (.Call(symbol, ...) instead of
+    // .Call("symbol", ...)) — skips R_FindSymbol's string scan. See:
+    // https://github.com/r-devel/r-svn/blob/trunk/src/main/Rdynload.c#L1185-L1201
     extendr_ffi::R_useDynamicSymbols(info, extendr_ffi::Rboolean::FALSE);
-    extendr_ffi::R_forceSymbols(info, extendr_ffi::Rboolean::FALSE);
+    extendr_ffi::R_forceSymbols(info, extendr_ffi::Rboolean::TRUE);
 }
 
 /// Type of R objects used by [Robj::rtype].
