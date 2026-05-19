@@ -8,11 +8,13 @@ This local clone uses a long-lived branch called **`main-claude`** as Claude's w
 
 - **All Claude-authored commits land on `main-claude`** (or on feature branches forked from `main-claude`). Never commit directly to `main`.
 - `main` stays in lockstep with `origin/main` (the real `extendr/extendr` upstream). It's only updated by `git pull` (or `git fetch && git merge --ff-only`) — Claude does not touch it.
-- When something on `main-claude` is ready to be proposed upstream, branch *off `main-claude`* with a descriptive name and open the PR against `extendr/extendr`'s `main` in the normal way.
+- **Feature branches that will become PRs MUST be forked from `main` (not `main-claude`)**, or rebased onto `origin/main` before they are pushed. `main-claude` carries this `CLAUDE.md`, scratch notes, and tooling files that must NOT appear in proposed upstream PRs.
+- Before opening or updating a PR, verify with `git log --oneline origin/main..HEAD` — every commit listed must be one you intended to propose. If `CLAUDE.md` or other helper commits show up, rebase onto `origin/main` with `git rebase --onto origin/main main-claude <branch>`.
 - To resync: `git switch main && git pull --ff-only && git switch main-claude && git merge main` (fast-forward where possible; otherwise rebase deliberately). Resolve any conflicts on `main-claude`.
 - If `git status` reports the current branch is `main`, switch back before doing any work: `git switch main-claude`.
+- The sibling `.rextendr/` clone uses the same `main-claude` / `main` separation. The same no-PR-pollution rule applies there.
 
-This separation exists so Claude's experimental commits, scratch notes, and tooling files (`issues.md`, `OPEN-PR.md`, `scripts/`, regenerated wrappers, etc.) can accumulate without contaminating the upstream-tracking branch.
+This separation exists so Claude's experimental commits, scratch notes, and tooling files (`issues.md`, `OPEN-PR.md`, `scripts/`, regenerated wrappers, etc.) can accumulate without contaminating the upstream-tracking branch — and so they never accidentally land in a PR.
 
 ## What's in this directory
 
