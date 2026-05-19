@@ -1,6 +1,6 @@
 use super::scalar::{c64, Rcplx};
 use super::*;
-use extendr_ffi::{dataptr, R_xlen_t, Rcomplex, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
+use extendr_ffi::{R_xlen_t, Rcomplex, COMPLEX, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
 use std::iter::FromIterator;
 
 /// An obscure `NA`-aware wrapper for R's complex vectors.
@@ -40,7 +40,7 @@ impl Complexes {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rcplx]) -> usize {
         unsafe {
-            let ptr: *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
+            let ptr = dest.as_mut_ptr().cast::<Rcomplex>();
             COMPLEX_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }
@@ -62,7 +62,7 @@ impl Deref for Complexes {
     /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rcplx;
+            let ptr = COMPLEX(self.get()).cast::<Rcplx>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -72,7 +72,7 @@ impl DerefMut for Complexes {
     /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rcplx;
+            let ptr = COMPLEX(self.get_mut()).cast::<Rcplx>();
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

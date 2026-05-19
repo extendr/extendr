@@ -132,14 +132,19 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// This function dereferences a raw SEXP pointer.
     /// The caller must ensure that `x` is a valid SEXP pointer.
     unsafe fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
+        // R returns a sentinel 0x1 pointer for zero-length vectors; use a safe dangling
+        // pointer instead to keep Rust slices well-defined.
+        if XLENGTH(x) == 0 {
+            return std::ptr::NonNull::<u8>::dangling().as_ptr();
+        }
         single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 let data2 = manifest(x);
                 R_set_altrep_data2(x, data2);
-                dataptr(data2) as *mut u8
+                dataptr(data2).cast::<u8>().cast_mut()
             } else {
-                dataptr(data2) as *mut u8
+                dataptr(data2).cast::<u8>().cast_mut()
             }
         })
     }
@@ -157,7 +162,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
                 std::ptr::null()
             } else {
-                dataptr(data2) as *const u8
+                dataptr(data2).cast::<u8>()
             }
         }
     }
@@ -527,18 +532,16 @@ impl Altrep {
         mutable: bool,
     ) -> Altrep {
         single_threaded(|| unsafe {
-            use std::os::raw::c_void;
-
             unsafe extern "C" fn finalizer<StateType: 'static>(x: SEXP) {
                 let state = R_ExternalPtrAddr(x);
-                let ptr = state as *mut StateType;
+                let ptr = state.cast::<StateType>();
                 drop(Box::from_raw(ptr));
             }
 
             let ptr: *mut StateType = Box::into_raw(Box::new(state));
             let tag = R_NilValue;
             let prot = R_NilValue;
-            let state = R_MakeExternalPtr(ptr as *mut c_void, tag, prot);
+            let state = R_MakeExternalPtr(ptr.cast(), tag, prot);
 
             // Use R_RegisterCFinalizerEx() and set onexit to 1 (TRUE) to invoke
             // the finalizer on a shutdown of the R session as well.
@@ -566,7 +569,7 @@ impl Altrep {
     pub(crate) fn get_state<StateType>(x: SEXP) -> &'static StateType {
         unsafe {
             let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
-            &*(state_ptr as *const StateType)
+            &*state_ptr.cast::<StateType>()
         }
     }
 
@@ -574,7 +577,7 @@ impl Altrep {
     pub(crate) fn get_state_mut<StateType>(x: SEXP) -> &'static mut StateType {
         unsafe {
             let state_ptr = R_ExternalPtrAddr(R_altrep_data1(x));
-            &mut *(state_ptr as *mut StateType)
+            &mut *state_ptr.cast::<StateType>()
         }
     }
 
@@ -656,13 +659,13 @@ impl Altrep {
             x: SEXP,
             writeable: Rboolean,
         ) -> *mut c_void {
-            <StateType>::dataptr(x, writeable != Rboolean::FALSE) as *mut c_void
+            <StateType>::dataptr(x, writeable != Rboolean::FALSE).cast()
         }
 
         unsafe extern "C" fn altvec_Dataptr_or_null<StateType: AltrepImpl + 'static>(
             x: SEXP,
         ) -> *const c_void {
-            <StateType>::dataptr_or_null(x) as *mut c_void
+            <StateType>::dataptr_or_null(x).cast()
         }
 
         unsafe extern "C" fn altvec_Extract_subset<StateType: AltrepImpl + 'static>(
@@ -757,7 +760,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rint, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf.cast::<Rint>(), n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -837,7 +840,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut f64,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rfloat, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf.cast::<Rfloat>(), n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -914,7 +917,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rbool, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf.cast::<Rbool>(), n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -1008,7 +1011,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut Rcomplex,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rcplx, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf.cast::<Rcplx>(), n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 

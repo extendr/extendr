@@ -1,7 +1,7 @@
 use super::scalar::Rfloat;
 use super::*;
 use extendr_ffi::{
-    dataptr, R_xlen_t, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
+    R_xlen_t, REAL, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
 };
 use std::iter::FromIterator;
 
@@ -45,7 +45,7 @@ impl Doubles {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
         unsafe {
-            let ptr: *mut f64 = dest.as_mut_ptr() as *mut f64;
+            let ptr = dest.as_mut_ptr().cast::<f64>();
             REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
         }
     }
@@ -76,7 +76,7 @@ impl Deref for Doubles {
     /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rfloat;
+            let ptr = REAL(self.get()).cast::<Rfloat>();
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
@@ -86,7 +86,7 @@ impl DerefMut for Doubles {
     /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rfloat;
+            let ptr = REAL(self.get_mut()).cast::<Rfloat>();
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }

@@ -72,12 +72,32 @@ use std::sync::Once;
 // Generates asciiz.
 macro_rules! cstr_mut {
     ($s: expr) => {
-        concat!($s, "\0").as_ptr() as *mut raw::c_char
+        concat!($s, "\0").as_ptr().cast::<raw::c_char>().cast_mut()
     };
 }
 
+#[cfg(all(target_os = "windows", target_arch = "x86"))]
+static mut R_ARGV: [*mut raw::c_char; 6] = [
+    cstr_mut!("R"),
+    cstr_mut!("--arch=i386"),
+    cstr_mut!("--slave"),
+    cstr_mut!("--no-save"),
+    cstr_mut!("--vanilla"),
+    std::ptr::null_mut(),
+];
+
+#[cfg(not(all(target_os = "windows", target_arch = "x86")))]
+static mut R_ARGV: [*mut raw::c_char; 5] = [
+    cstr_mut!("R"),
+    cstr_mut!("--slave"),
+    cstr_mut!("--no-save"),
+    cstr_mut!("--vanilla"),
+    std::ptr::null_mut(),
+];
+
 static START_R: Once = Once::new();
 
+#[allow(static_mut_refs)]
 pub fn start_r() {
     START_R.call_once(|| {
         unsafe {
@@ -92,10 +112,15 @@ pub fn start_r() {
 
             //let res = unsafe { Rf_initEmbeddedR(1, args.as_mut_ptr()) };
             // NOTE: R will crash if this is called twice in the same process.
-            Rf_initialize_R(
-                3,
-                [cstr_mut!("R"), cstr_mut!("--slave"), cstr_mut!("--no-save")].as_mut_ptr(),
-            );
+            #[cfg(all(target_os = "windows", target_arch = "x86"))]
+            {
+                Rf_initialize_R(5, R_ARGV.as_mut_ptr());
+            }
+
+            #[cfg(not(all(target_os = "windows", target_arch = "x86")))]
+            {
+                Rf_initialize_R(4, R_ARGV.as_mut_ptr());
+            }
 
             // In case you are curious.
             // Maybe 8MB is a bit small.
