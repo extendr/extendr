@@ -2,9 +2,14 @@
 // Makevars to write R/extendr-wrappers.R. NOT part of the final package .so.
 // See Makevars.in for how this is invoked.
 
+#include <stdio.h>
+
 extern int write__make_extendrtests_wrappers(const char *package_name, const char *out_path);
 
 int main(int argc, char **argv) {
-    if (argc != 3) return 2;
+    if (argc != 3) {
+        fprintf(stderr, "extendr document: expected 2 args (package_name, out_path), got %d\n", argc - 1);
+        return 2;
+    }
     return write__make_extendrtests_wrappers(argv[1], argv[2]);
 }

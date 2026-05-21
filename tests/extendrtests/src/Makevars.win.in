@@ -41,7 +41,11 @@ $(STATLIB):
 	# Generate R wrappers: build a tiny executable linked against the staticlib
 	# and run it to write ../R/extendr-wrappers.R.
 	$(CC) -o $(DOCUMENT) rust/document.c $(PKG_LIBS) -L"$(R_HOME)/bin$(R_ARCH)" -lR
-	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
+	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R || { \
+	  status=$$?; \
+	  echo "=== wrapper generation failed (exit $$status); see message above ===" >&2; \
+	  exit $$status; \
+	}
 	rm -f $(DOCUMENT) $(DOCUMENT_OBJ)
 
 	# Always clean up CARGOTMP
