@@ -14,6 +14,9 @@
 - `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
 - Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
 - Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
+- Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
+  This is part of the process of moving `document.rs` into `document.c` to avoid
+  issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
 
 ### Changed
 
