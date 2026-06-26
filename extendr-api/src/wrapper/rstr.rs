@@ -125,6 +125,16 @@ impl From<Option<String>> for Rstr {
     }
 }
 
+impl From<Option<&str>> for Rstr {
+    fn from(value: Option<&str>) -> Self {
+        if let Some(string_ref) = value {
+            Self::from(string_ref)
+        } else {
+            Self { robj: na_string() }
+        }
+    }
+}
+
 impl Deref for Rstr {
     type Target = str;
 
@@ -214,6 +224,13 @@ mod tests {
             let chr = r!(Rstr::from("xyz"));
             let x = chr.as_char().unwrap();
             assert_eq!(x.as_ref(), "xyz");
+        }
+    }
+
+    #[test]
+    fn test_rstr_from_str_ref() {
+        test! {
+            assert_eq!(Rstr::from(Some("value")), Rstr::from("value"));
         }
     }
 }

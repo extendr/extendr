@@ -14,6 +14,7 @@
 - `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
 - Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
 - Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
+- Implement `From<Option<&str>> for Rstr` <https://github.com/extendr/extendr/pull/1098>
 
 ### Changed
 
