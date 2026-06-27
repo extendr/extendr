@@ -1,7 +1,9 @@
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/@LIBDIR@
 STATLIB = $(LIBDIR)/libextendrtests.a
-PKG_LIBS = -L$(LIBDIR) -lextendrtests
+PKG_LIBS = -L$(CURDIR)/$(LIBDIR) -lextendrtests
+DOCUMENT_SHLIB = rust/document.so
+DOCUMENT_OBJ = rust/document.o
 
 all: $(SHLIB) rust_clean
 
@@ -38,9 +40,10 @@ $(STATLIB):
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
 
-	export CARGO_HOME=$(CARGOTMP) && \
-	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	cargo run @CRAN_FLAGS@ --bin document --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR) @TARGET@
+	# Generate R wrappers: cd rust/ so R CMD SHLIB doesn't see THIS Makevars and recurse.
+	cd rust && "$(R_HOME)/bin/R" CMD SHLIB -o document.so document.c $(PKG_LIBS)
+	"$(R_HOME)/bin/Rscript" rust/document.R
+	rm -f $(DOCUMENT_SHLIB) $(DOCUMENT_OBJ)
 
 	# Always clean up CARGOTMP
 	rm -Rf $(CARGOTMP);
@@ -49,4 +52,4 @@ rust_clean: $(SHLIB)
 	rm -Rf $(CARGOTMP) $(VENDOR_DIR) @CLEAN_TARGET@
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) $(VENDOR_DIR)
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) $(TARGET_DIR) $(VENDOR_DIR) $(DOCUMENT_SHLIB) $(DOCUMENT_OBJ)
