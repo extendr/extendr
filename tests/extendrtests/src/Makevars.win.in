@@ -38,8 +38,12 @@ $(STATLIB):
 	export LIBRARY_PATH="$(LIBRARY_PATH);$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --target=$(TARGET) --lib @PROFILE@ --manifest-path=rust/Cargo.toml --target-dir="$(TARGET_DIR)"
 
-	# Generate wrappers using linked C executable
-	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) @GC_SECTIONS@
+	# Generate wrappers using linked C executable. Unlike macOS/Linux, the
+	# windows-gnu staticlib emits a single `.text` section per codegen unit, so
+	# `--gc-sections` cannot dead-strip the R-calling wrappers and the helper
+	# fails to link R-less. Link `-lR` here instead; the helper only ever runs
+	# the R-free wrapper generator, so the R symbols are resolved but unused.
+	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) -L"$(R_HOME)/bin$(R_ARCH)" -lR
 	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
 	rm -f $(DOCUMENT)
 

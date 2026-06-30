@@ -25,7 +25,7 @@
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
-- **Breaking**: `metadata::Func` no longer has a `func_ptr` field and `register_call_methods` takes `&[CallMethod]`. Wrapper registration pointers are now emitted via generated `init__*` functions, so the metadata/wrapper-generation path no longer references R's C API and the build-time `document` helper generates wrappers without linking `-lR`. <https://github.com/extendr/extendr/pull/1102>
+- **Breaking**: `metadata::Func` no longer has a `func_ptr` field and `register_call_methods` takes `&[CallMethod]`. Wrapper registration pointers are now emitted via generated `r_init__*` functions, so the metadata/wrapper-generation path no longer references R's C API and the build-time `document` helper generates wrappers without linking `-lR` on macOS and Linux. (windows-gnu emits a single `.text` section per codegen unit, so the unused R-calling code cannot be dead-stripped and the helper still links `-lR` there.) <https://github.com/extendr/extendr/pull/1102>
 
 ### Fixed
 
