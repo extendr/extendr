@@ -32,6 +32,7 @@ use crate::extendr_options::ExtendrOptions;
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
+pub const INIT_PREFIX: &str = "init__";
 
 lazy_static::lazy_static! {
     static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
@@ -81,6 +82,7 @@ pub(crate) fn make_function_wrappers(
     let mod_name = sanitize_identifier(mod_name);
     let wrap_name = format_ident!("{}{}{}", WRAP_PREFIX, prefix, mod_name);
     let meta_name = format_ident!("{}{}{}", META_PREFIX, prefix, mod_name);
+    let init_name = format_ident!("{}{}{}", INIT_PREFIX, prefix, mod_name);
 
     let rust_name_str = format!("{}", rust_name);
     let c_name_str = format!("{}", mod_name);
@@ -288,7 +290,9 @@ pub(crate) fn make_function_wrappers(
         }
     ));
 
-    // Generate a function to push the metadata for a function.
+    let num_args = meta_args.len() as i32;
+
+    // Generate a function to push the (R-less) metadata for a function.
     wrappers.push(parse_quote!(
         #[allow(non_snake_case)]
         fn #meta_name(metadata: &mut Vec<extendr_api::metadata::Func>) {
@@ -302,9 +306,22 @@ pub(crate) fn make_function_wrappers(
                 mod_name: #c_name_str,
                 args: args,
                 return_type: #return_type_string,
-                func_ptr: #wrap_name as * const u8,
                 hidden: false,
                 invisible: #opts_invisible,
+            })
+        }
+    ));
+
+    // Generate a function to register the wrapper with R. This is the only
+    // place the wrapper's address is taken, so it is reachable from `R_init_*`
+    // but not from the wrapper-generation path, keeping that path R-free.
+    wrappers.push(parse_quote!(
+        #[allow(non_snake_case)]
+        fn #init_name(call_methods: &mut Vec<extendr_api::CallMethod>) {
+            call_methods.push(extendr_api::CallMethod {
+                call_symbol: std::ffi::CString::new(#wrap_name_str).unwrap(),
+                func_ptr: #wrap_name as * const u8,
+                num_args: #num_args,
             })
         }
     ));

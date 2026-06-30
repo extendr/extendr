@@ -39,6 +39,21 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         .map(|id| format_ident!("get_{}_metadata", id))
         .collect::<Vec<Ident>>();
 
+    // Registration counterparts to the `meta__*` functions above. These are the
+    // only functions that take wrapper addresses, so they are reachable from
+    // `R_init_*` but not from the metadata/wrapper-generation path.
+    let get_module_call_methods = format_ident!("get_{}_call_methods", modname);
+    let fninitnames = fnnames
+        .iter()
+        .map(|id| format_ident!("{}{}", wrappers::INIT_PREFIX, id));
+    let implinitnames = implnames
+        .iter()
+        .map(|id| format_ident!("{}{}", wrappers::INIT_PREFIX, wrappers::type_name(id)));
+    let useinitnames = usenames
+        .iter()
+        .map(|id| format_ident!("get_{}_call_methods", id))
+        .collect::<Vec<Ident>>();
+
     TokenStream::from(quote! {
         #[no_mangle]
         #[allow(non_snake_case)]
@@ -63,7 +78,6 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 c_name: #wrap_module_metadata_name_str,
                 args: Vec::new(),
                 return_type: "Metadata",
-                func_ptr: #wrap_module_metadata_name as * const u8,
                 hidden: true,
                 invisible: None,
             });
@@ -82,7 +96,6 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 c_name: #wrap_make_module_wrappers_string,
                 args,
                 return_type: "String",
-                func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
                 invisible: None,
             });
@@ -155,10 +168,34 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             }
         }
 
+        #[allow(non_snake_case)]
+        pub fn #get_module_call_methods(call_methods: &mut Vec<extendr_api::CallMethod>) {
+            // Pushes a CallMethod (with the wrapper's address) per function/impl.
+            #( #fninitnames(call_methods); )*
+            #( #implinitnames(call_methods); )*
+
+            // Extends with the submodules' call methods.
+            #( #usenames::#useinitnames(call_methods); )*
+
+            // The two hidden functions: metadata access and wrapper generator.
+            call_methods.push(extendr_api::CallMethod {
+                call_symbol: std::ffi::CString::new(#wrap_module_metadata_name_str).unwrap(),
+                func_ptr: #wrap_module_metadata_name as * const u8,
+                num_args: 0,
+            });
+            call_methods.push(extendr_api::CallMethod {
+                call_symbol: std::ffi::CString::new(#wrap_make_module_wrappers_string).unwrap(),
+                func_ptr: #wrap_make_module_wrappers as * const u8,
+                num_args: 2,
+            });
+        }
+
         #[no_mangle]
         #[allow(non_snake_case, clippy::not_unsafe_ptr_arg_deref)]
         pub extern "C" fn #module_init_name(info: * mut extendr_api::DllInfo) {
-            unsafe { extendr_api::register_call_methods(info, #module_metadata_name()) };
+            let mut call_methods = Vec::new();
+            #get_module_call_methods(&mut call_methods);
+            unsafe { extendr_api::register_call_methods(info, &call_methods) };
         }
     })
 }

@@ -285,6 +285,7 @@ pub(crate) fn extendr_impl(
     let self_ty_name = wrappers::type_name(self_ty);
     let prefix = format!("{}__", self_ty_name);
     let mut method_meta_names = Vec::new();
+    let mut method_init_names = Vec::new();
 
     // Now we get struct level docs but I think it's nice to let impl level docs too
     // that way a user can add a impl-related docstring locally, without having to bloat the struct docs
@@ -367,6 +368,12 @@ pub(crate) fn extendr_impl(
                 self_ty_name,
                 method.sig.ident
             ));
+            method_init_names.push(format_ident!(
+                "{}{}__{}",
+                wrappers::INIT_PREFIX,
+                self_ty_name,
+                method.sig.ident
+            ));
             wrappers::make_function_wrappers(
                 opts,
                 &mut wrappers,
@@ -379,6 +386,7 @@ pub(crate) fn extendr_impl(
     }
 
     let meta_name = format_ident!("{}{}", wrappers::META_PREFIX, self_ty_name);
+    let init_name = format_ident!("{}{}", wrappers::INIT_PREFIX, self_ty_name);
 
     let expanded = TokenStream::from(quote! {
         // The impl itself copied from the source.
@@ -396,6 +404,11 @@ pub(crate) fn extendr_impl(
                 name: #self_ty_name,
                 methods,
             });
+        }
+
+        #[allow(non_snake_case)]
+        fn #init_name(call_methods: &mut Vec<extendr_api::CallMethod>) {
+            #( #method_init_names(call_methods); )*
         }
     });
 

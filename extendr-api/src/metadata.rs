@@ -25,8 +25,6 @@ pub struct Func {
     pub c_name: &'static str,
     pub args: Vec<Arg>,
     pub return_type: &'static str,
-    #[into_list(ignore)]
-    pub func_ptr: *const u8,
     pub hidden: bool,
     pub invisible: Option<bool>,
 }
