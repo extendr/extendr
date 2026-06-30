@@ -302,7 +302,9 @@ pub(crate) fn make_function_wrappers(
                 mod_name: #c_name_str,
                 args: args,
                 return_type: #return_type_string,
-                func_ptr: #wrap_name as * const u8,
+                func_ptr: unsafe { *std::ptr::from_ref(&#wrap_name) }
+                    as *const ()
+                    as *const u8,
                 hidden: false,
                 invisible: #opts_invisible,
             })

@@ -170,7 +170,10 @@ pub trait Slices: GetSexp {
     /// Creating this slice will also instantiate an Altrep objects.
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = dataptr(self.get()) as *const T;
+        if len == 0 {
+            return &[];
+        }
+        let data = dataptr(self.get()).cast::<T>();
         std::slice::from_raw_parts(data, len)
     }
 
@@ -183,7 +186,10 @@ pub trait Slices: GetSexp {
     /// Not all objects (especially not list and strings) support this.
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
-        let data = dataptr(self.get_mut()) as *mut T;
+        if len == 0 {
+            return &mut [];
+        }
+        let data = dataptr(self.get_mut()).cast::<T>().cast_mut();
         std::slice::from_raw_parts_mut(data, len)
     }
 }
@@ -726,7 +732,7 @@ pub trait Eval: GetSexp {
     fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
-            let res = R_tryEval(self.get(), env.get(), &mut error as *mut raw::c_int);
+            let res = R_tryEval(self.get(), env.get(), std::ptr::from_mut(&mut error));
             if error != 0 {
                 Err(Error::EvalError(Robj::from_sexp(self.get())))
             } else {
@@ -790,7 +796,7 @@ macro_rules! make_typed_slice {
                                 return Some(&[])
                             }
                             // otherwise get the slice
-                            let ptr = $fn(self.get()) as *const $type;
+                            let ptr = $fn(self.get()).cast::<$type>();
                             Some(std::slice::from_raw_parts(ptr, self.len()))
                         }
                     }
@@ -805,7 +811,7 @@ macro_rules! make_typed_slice {
                             if self.is_empty() {
                                 return Some(&mut []);
                             }
-                            let ptr = $fn(self.get_mut()) as *mut $type;
+                            let ptr = $fn(self.get_mut()).cast::<$type>();
 
                             Some(std::slice::from_raw_parts_mut(ptr, self.len()))
 
@@ -824,7 +830,30 @@ make_typed_slice!(Rint, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
 make_typed_slice!(Rfloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
-make_typed_slice!(Rstr, STRING_PTR_RO, STRSXP);
+
+// TODO: had to expand `make_typed_slice!(Rstr, STRING_PTR_RO, STRSXP)`
+// as we don't have a way to specific a mutability constraint via `AsTypedSlice`.
+
+impl<'a> AsTypedSlice<'a, Rstr> for Robj
+where
+    Self: 'a,
+{
+    fn as_typed_slice(&self) -> Option<&'a [Rstr]> {
+        match self.sexptype() {
+            STRSXP => unsafe {
+                if self.is_empty() {
+                    return Some(&[]);
+                }
+                let ptr = STRING_PTR_RO(self.get()).cast::<Rstr>();
+                Some(std::slice::from_raw_parts(ptr, self.len()))
+            },
+            _ => None,
+        }
+    }
+    fn as_typed_slice_mut(&mut self) -> Option<&'a mut [Rstr]> {
+        None
+    }
+}
 make_typed_slice!(c64, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
