@@ -415,10 +415,7 @@ pub struct CallMethod {
     pub num_args: i32,
 }
 
-unsafe fn make_method_def(
-    rmethods: &mut Vec<extendr_ffi::R_CallMethodDef>,
-    method: &CallMethod,
-) {
+unsafe fn make_method_def(rmethods: &mut Vec<extendr_ffi::R_CallMethodDef>, method: &CallMethod) {
     rmethods.push(extendr_ffi::R_CallMethodDef {
         name: method.call_symbol.as_ptr(),
         fun: Some(std::mem::transmute::<
