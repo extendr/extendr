@@ -70,6 +70,16 @@ cfg <- if (is_debug) "debug" else "release"
   ""
 )
 
+# Dead-strip the build-time `document` helper when linking it. It only needs
+# the R-less wrapper generator, but lives in the same staticlib object as the
+# R-calling wrappers; stripping unreachable code drops their R API symbols so
+# the helper links without `-lR`. The flag spelling differs by linker.
+.gc_sections <- if (identical(Sys.info()[["sysname"]], "Darwin")) {
+  "-Wl,-dead_strip"
+} else {
+  "-Wl,--gc-sections"
+}
+
 # read in the Makevars.in file checking
 is_windows <- .Platform[["OS.type"]] == "windows"
 
@@ -102,7 +112,8 @@ new_txt <- gsub("@CRAN_FLAGS@", .cran_flags, mv_txt) |>
   gsub("@CLEAN_TARGET@", .clean_targets, x = _) |>
   gsub("@LIBDIR@", .libdir, x = _) |>
   gsub("@TARGET@", .target, x = _) |>
-  gsub("@PANIC_EXPORTS@", .panic_exports, x = _)
+  gsub("@PANIC_EXPORTS@", .panic_exports, x = _) |>
+  gsub("@GC_SECTIONS@", .gc_sections, x = _)
 
 message("Writing `", mv_ofp, "`.")
 con <- file(mv_ofp, open = "wb")

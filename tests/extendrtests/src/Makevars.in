@@ -3,7 +3,7 @@ LIBDIR = $(TARGET_DIR)/@LIBDIR@
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
 DOCUMENT = rust/document
-DOCUMENT_OBJ = rust/document.o
+DOCUMENT_SRC = rust/document.c
 
 all: $(SHLIB) rust_clean
 
@@ -40,9 +40,9 @@ $(STATLIB):
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir="$(TARGET_DIR)" @TARGET@
 
-	$(CC) -o $(DOCUMENT) rust/document.c $(PKG_LIBS) -L"$(R_HOME)/lib$(R_ARCH)" -lR
+	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) @GC_SECTIONS@
 	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
-	rm -f $(DOCUMENT) $(DOCUMENT_OBJ)
+	rm -f $(DOCUMENT)
 
 	# Always clean up CARGOTMP
 	rm -Rf "$(CARGOTMP)";
@@ -51,4 +51,4 @@ rust_clean: $(SHLIB)
 	rm -Rf "$(CARGOTMP)" "$(VENDOR_DIR)" @CLEAN_TARGET@
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) "$(TARGET_DIR)" "$(VENDOR_DIR)" $(DOCUMENT) $(DOCUMENT_OBJ)
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) "$(TARGET_DIR)" "$(VENDOR_DIR)" $(DOCUMENT)
