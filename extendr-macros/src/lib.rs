@@ -27,17 +27,17 @@
 // #[allow(non_snake_case)]
 // pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 //     let mut call_methods = Vec::new();
-//     init__hello(info, &mut call_methods);
+//     r_init__hello(info, &mut call_methods);
 //     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
 // }
 // ```
 //
-// The module also generates the `init__` functions that provide metadata
+// The module also generates the `r_init__` functions that provide metadata
 // to R to register the wrappers.
 //
 // ```rust,ignore
 // #[allow(non_snake_case)]
-// fn init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
+// fn r_init__hello(info: *mut extendr_api::DllInfo, call_methods: &mut Vec<extendr_api::CallMethod>) {
 //     call_methods.push(extendr_api::CallMethod {
 //         call_symbol: std::ffi::CString::new("wrap__hello").unwrap(),
 //         func_ptr: wrap__hello as *const u8,
@@ -127,7 +127,7 @@ pub fn extendr(attr: TokenStream, item: TokenStream) -> TokenStream {
 /// #[allow(non_snake_case)]
 /// pub extern "C" fn R_init_hello_extendr(info: *mut extendr_api::DllInfo) {
 ///     let mut call_methods = Vec::new();
-///     init__hello(info, &mut call_methods);
+///     r_init__hello(info, &mut call_methods);
 ///     unsafe { extendr_api::register_call_methods(info, call_methods.as_ref()) };
 /// }
 /// ```

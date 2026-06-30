@@ -32,7 +32,7 @@ use crate::extendr_options::ExtendrOptions;
 
 pub const META_PREFIX: &str = "meta__";
 pub const WRAP_PREFIX: &str = "wrap__";
-pub const INIT_PREFIX: &str = "init__";
+pub const INIT_PREFIX: &str = "r_init__";
 
 lazy_static::lazy_static! {
     static ref STRUCT_DOCS: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
