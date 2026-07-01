@@ -45,7 +45,7 @@ $(STATLIB):
 	# symbols. They are never called (dead code), so `--noinhibit-exec` writes
 	# the executable anyway with them left unresolved; running it immediately
 	# Generate wrappers using a linked C executable.
-	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) -Wl,--noinhibit-exec || true
+	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) -Wl,--noinhibit-exec 2>/dev/null || true
 	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
 	rm -f $(DOCUMENT)
 
