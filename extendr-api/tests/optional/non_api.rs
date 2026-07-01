@@ -62,8 +62,8 @@ fn non_api_rinternals_promise() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn non_api_getsexp_rtype() -> Result<(), Box<dyn std::error::Error>> {
     with_r(|| {
-        assert_eq!(r!(Primitive::from_string("if")).rtype(), Rtype::Special);
-        assert_eq!(r!(Primitive::from_string("+")).rtype(), Rtype::Builtin);
+        assert_eq!(r!(Primitive::from_string("if")).rtype(), RType::Special);
+        assert_eq!(r!(Primitive::from_string("+")).rtype(), RType::Builtin);
         Ok(())
     })
 }

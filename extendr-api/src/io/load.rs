@@ -1,5 +1,5 @@
 use super::PstreamFormat;
-use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
+use crate::{catch_r_error, error::Error, error::Result, robj::RObj};
 use extendr_ffi::{R_NilValue, R_Unserialize, R_inpstream_st, R_inpstream_t, SEXP};
 use std::io::Read;
 
@@ -15,7 +15,7 @@ pub trait Load {
         path: &P,
         format: PstreamFormat,
         hook: Option<ReadHook>,
-    ) -> Result<Robj> {
+    ) -> Result<RObj> {
         let mut reader = std::fs::File::open(path)
             .map_err(|_| Error::Other(format!("could not open file {:?}", path.as_ref())))?;
         Self::from_reader(&mut reader, format, hook)
@@ -27,7 +27,7 @@ pub trait Load {
         reader: &mut R,
         format: PstreamFormat,
         hook: Option<ReadHook>,
-    ) -> Result<Robj> {
+    ) -> Result<RObj> {
         unsafe extern "C" fn inchar<R: Read>(arg1: R_inpstream_t) -> ::std::os::raw::c_int {
             let reader = &mut *((*arg1).data as *mut R);
             let buf: &mut [u8] = &mut [0_u8];
@@ -68,11 +68,11 @@ pub trait Load {
         };
 
         Ok(unsafe {
-            Robj::from_sexp(catch_r_error(move || {
+            RObj::from_sexp(catch_r_error(move || {
                 R_Unserialize(&mut state as R_inpstream_t)
             })?)
         })
     }
 }
 
-impl Load for Robj {}
+impl Load for RObj {}

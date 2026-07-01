@@ -4,14 +4,14 @@
 
 /// Convert a rust expression to an R object.
 ///
-/// Shorthand for `Robj::from(x)`.
+/// Shorthand for `RObj::from(x)`.
 ///
 /// Example:
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
 /// let fred = r!(1);
-/// assert_eq!(fred, Robj::from(1));
+/// assert_eq!(fred, RObj::from(1));
 ///
 /// let int_array = r!([1, 2, 3]);
 /// assert_eq!(int_array.len(), 3);
@@ -29,7 +29,7 @@
 #[macro_export]
 macro_rules! r {
     ($e: expr) => {
-        extendr_api::Robj::from($e)
+        extendr_api::RObj::from($e)
     };
 }
 
@@ -58,7 +58,7 @@ macro_rules! var {
 #[macro_export]
 macro_rules! sym {
     ($($tokens: tt)*) => {
-        Robj::from(Symbol::from_string(stringify!($($tokens)*)))
+        RObj::from(Symbol::from_string(stringify!($($tokens)*)))
     };
 }
 

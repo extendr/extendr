@@ -93,7 +93,7 @@ impl Wrapper {
 #[extendr]
 fn externalptr_use_ref_manually() -> ExternalPtr<i32> {
     let extptr = ExternalPtr::new(1);
-    let robj: Robj = extptr.into();
+    let robj: RObj = extptr.into();
     let extptr2: &ExternalPtr<i32> = (&robj).try_into().unwrap();
     extptr2.clone()
 }
@@ -104,7 +104,7 @@ fn create_numeric_externalptr(x: Doubles) -> ExternalPtr<Doubles> {
 }
 
 #[extendr]
-fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> Rint {
+fn sum_integer_externalptr(x: ExternalPtr<Integers>) -> RInt {
     x.iter().sum()
 }
 

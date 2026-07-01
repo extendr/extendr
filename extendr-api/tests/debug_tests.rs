@@ -7,7 +7,7 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "()");
         let r : Symbol = sym!("xyz").try_into().unwrap();
         assert_eq!(format!("{:?}", r), "sym!(\"xyz\")");
-        let r : Pairlist = pairlist!(x=1);
+        let r : PairList = pairlist!(x=1);
         assert_eq!(format!("{:?}", r), "pairlist!(x=1)");
         let r : Function = R!("function() 1").unwrap().try_into().unwrap();
         assert_eq!(format!("{:?}", r), "function () 1");
@@ -31,7 +31,7 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"+\\\")\"");
         let r : Primitive  = R!("`if`")?.try_into()?;
         assert_eq!(format!("{:?}", r), "\".Primitive(\\\"if\\\")\"");
-        let r = Rstr::from("xyz");
+        let r = RStr::from("xyz");
         assert_eq!(format!("{:?}", r), "\"xyz\"");
         let r : Logicals = Logicals::from_values([TRUE]);
         assert_eq!(format!("{:?}", r), "TRUE");
@@ -70,15 +70,15 @@ fn test_debug_scalar() {
     test! {
         let test_data = vec![(true, "TRUE"), (false, "FALSE")];
         for (val, dbg_str) in test_data {
-            assert_eq!(format!("{:?}", Rbool::from(val)), dbg_str);
+            assert_eq!(format!("{:?}", RBool::from(val)), dbg_str);
         }
-        assert_eq!(format!("{:?}", Rbool::na()), "NA_LOGICAL");
+        assert_eq!(format!("{:?}", RBool::na()), "NA_LOGICAL");
 
         let test_data = vec![42, -42, 0];
         for val in test_data {
-            assert_eq!(format!("{:?}", Rint::from(val)), format!("{:?}", val),);
+            assert_eq!(format!("{:?}", RInt::from(val)), format!("{:?}", val),);
         }
-        assert_eq!(format!("{:?}", Rint::na()), "NA_INTEGER");
+        assert_eq!(format!("{:?}", RInt::na()), "NA_INTEGER");
 
         let test_data = vec![
             42.,
@@ -91,9 +91,9 @@ fn test_debug_scalar() {
             -4.141592653589793,
         ];
         for val in test_data {
-            assert_eq!(format!("{:?}", Rfloat::from(val)), format!("{:?}", val));
+            assert_eq!(format!("{:?}", RFloat::from(val)), format!("{:?}", val));
         }
-        assert_eq!(format!("{:?}", Rfloat::na()), "NA_REAL");
+        assert_eq!(format!("{:?}", RFloat::na()), "NA_REAL");
 
         let test_data = vec![
             (42., 42., "42.0 + 42.0i"),
@@ -103,15 +103,15 @@ fn test_debug_scalar() {
             (0., 0., "0.0 + 0.0i"),
         ];
         for (re, im, dbg_str) in test_data {
-            assert_eq!(format!("{:?}", Rcplx::new(re, im)), dbg_str);
+            assert_eq!(format!("{:?}", RCplx::new(re, im)), dbg_str);
         }
-        assert_eq!(format!("{:?}", Rcplx::na()), "NA_COMPLEX");
+        assert_eq!(format!("{:?}", RCplx::na()), "NA_COMPLEX");
 
         let test_data = vec!["Hello", "World"];
         for str in test_data {
-            assert_eq!(format!("{:?}", Rstr::from(str)), format!("{:?}", str));
+            assert_eq!(format!("{:?}", RStr::from(str)), format!("{:?}", str));
         }
-        assert_eq!(format!("{:?}", Rstr::na()), "NA_CHARACTER");
+        assert_eq!(format!("{:?}", RStr::na()), "NA_CHARACTER");
     }
 }
 
@@ -125,23 +125,23 @@ fn test_debug_vectors() {
 
         let r: Integers = Integers::new(1);
         assert_eq!(format!("{:?}", r), "0");
-        let r: Integers = Integers::from_values([Rint::from(0), Rint::from(0), Rint::na()]);
+        let r: Integers = Integers::from_values([RInt::from(0), RInt::from(0), RInt::na()]);
         assert_eq!(format!("{:?}", r), "[0, 0, NA_INTEGER]");
 
         let r: Doubles = Doubles::new(1);
         assert_eq!(format!("{:?}", r), "0.0");
-        let r: Doubles = Doubles::from_values([Rfloat::from(0.0), Rfloat::from(0.0), Rfloat::na()]);
+        let r: Doubles = Doubles::from_values([RFloat::from(0.0), RFloat::from(0.0), RFloat::na()]);
         assert_eq!(format!("{:?}", r), "[0.0, 0.0, NA_REAL]");
 
         let r: Strings = Strings::from_values(["xyz"]);
         assert_eq!(format!("{:?}", r), "\"xyz\"");
-        let r: Strings = Strings::from_values([Rstr::from("xyz"), Rstr::from("abc"), Rstr::na()]);
+        let r: Strings = Strings::from_values([RStr::from("xyz"), RStr::from("abc"), RStr::na()]);
         assert_eq!(format!("{:?}", r), "[\"xyz\", \"abc\", NA_CHARACTER]");
 
-        let r: Complexes = Complexes::from_values([Rcplx::new(42.0, -42.0)]);
+        let r: Complexes = Complexes::from_values([RCplx::new(42.0, -42.0)]);
         assert_eq!(format!("{:?}", r), "42.0 - 42.0i");
         let r: Complexes =
-            Complexes::from_values([Rcplx::new(42.0, -42.0), Rcplx::new(0.0, 0.0), Rcplx::na()]);
+            Complexes::from_values([RCplx::new(42.0, -42.0), RCplx::new(0.0, 0.0), RCplx::na()]);
         assert_eq!(format!("{:?}", r), "[42.0 - 42.0i, 0.0 + 0.0i, NA_COMPLEX]");
     }
 }

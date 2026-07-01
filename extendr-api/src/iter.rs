@@ -22,7 +22,7 @@ pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 /// ```
 #[derive(Clone)]
 pub struct StrIter {
-    vector: Robj,
+    vector: RObj,
     i: usize,
     len: usize,
     levels: SEXP,
@@ -128,30 +128,30 @@ macro_rules! impl_iter_debug {
 }
 
 impl_iter_debug!(ListIter);
-impl_iter_debug!(PairlistIter);
+impl_iter_debug!(PairListIter);
 impl_iter_debug!(StrIter);
 impl_iter_debug!(EnvIter);
 
-// Lets us create a StrIter from an Robj, e.g. Strings or a factor
-impl TryFrom<&Robj> for StrIter {
+// Lets us create a StrIter from an RObj, e.g. Strings or a factor
+impl TryFrom<&RObj> for StrIter {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> Result<Self> {
+    fn try_from(value: &RObj) -> Result<Self> {
         value
             .as_str_iter()
             .ok_or_else(|| Error::ExpectedString(value.clone()))
     }
 }
 
-impl TryFrom<Robj> for StrIter {
+impl TryFrom<RObj> for StrIter {
     type Error = Error;
 
-    fn try_from(value: Robj) -> Result<Self> {
+    fn try_from(value: RObj) -> Result<Self> {
         (&value).try_into()
     }
 }
 
-pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
+pub trait AsStrIter: GetSexp + Types + Length + Attributes + RInternals {
     /// Get an iterator over a string vector.
     /// Returns None if the object is not a string vector
     /// but works for factors.
@@ -160,7 +160,7 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let obj = Robj::from(vec!["a", "b", "c"]);
+    ///     let obj = RObj::from(vec!["a", "b", "c"]);
     ///     assert_eq!(obj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
     ///
     ///     let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
@@ -169,13 +169,13 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     ///
-    ///     let obj = Robj::from(vec![Some("a"), Some("b"), None]);
+    ///     let obj = RObj::from(vec![Some("a"), Some("b"), None]);
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
-    ///     let obj = Robj::from(vec!["a", "b", <&str>::na()]);
+    ///     let obj = RObj::from(vec!["a", "b", <&str>::na()]);
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, true]);
     ///
-    ///     let obj = Robj::from(vec!["a", "b", "NA"]);
+    ///     let obj = RObj::from(vec!["a", "b", "NA"]);
     ///     assert_eq!(obj.as_str_iter().unwrap().map(|s| s.is_na()).collect::<Vec<_>>(), vec![false, false, false]);
     /// }
     /// ```
@@ -217,7 +217,7 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     }
 }
 
-impl AsStrIter for Robj {}
+impl AsStrIter for RObj {}
 
 #[cfg(test)]
 mod tests {

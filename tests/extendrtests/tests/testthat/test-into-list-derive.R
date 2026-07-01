@@ -36,7 +36,7 @@ test_that("IntoList derive works with List field", {
   expect_equal(result$data, list(x = 1, y = 2, z = 3))
 })
 
-test_that("IntoList derive works with Robj field", {
+test_that("IntoList derive works with RObj field", {
   result <- make_with_robj()
 
   expect_true(is.list(result))
@@ -142,7 +142,7 @@ test_that("IntoList derive works with function metadata example", {
   expect_equal(result$doc, "Example function documentation")
   expect_equal(result$rust_name, "example_fn")
   expect_equal(result$r_name, "exampleFn")
-  expect_equal(result$return_type, "Robj")
+  expect_equal(result$return_type, "RObj")
   expect_equal(result$num_args, 3L)
   expect_equal(result$is_hidden, FALSE)
 
@@ -177,7 +177,7 @@ test_that("IntoList derive works with all R types in one struct", {
   expect_true(is.list(result$list_field))
   expect_equal(result$list_field, list(x = 1))
 
-  # Verify Robj field
+  # Verify RObj field
   expect_equal(result$robj_field, 42)
 
   # Verify Function field

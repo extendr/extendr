@@ -34,18 +34,18 @@ pub enum Nullable<T> {
     Null,
 }
 
-impl TryFrom<Robj> for Nullable<()> {
+impl TryFrom<RObj> for Nullable<()> {
     type Error = Error;
 
-    fn try_from(value: Robj) -> Result<Self> {
+    fn try_from(value: RObj) -> Result<Self> {
         Self::try_from(&value)
     }
 }
 
-impl TryFrom<&Robj> for Nullable<()> {
+impl TryFrom<&RObj> for Nullable<()> {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> Result<Self> {
+    fn try_from(value: &RObj) -> Result<Self> {
         if value.is_null() {
             Ok(Self::Null)
         } else {
@@ -54,9 +54,9 @@ impl TryFrom<&Robj> for Nullable<()> {
     }
 }
 
-impl<T> TryFrom<Robj> for Nullable<T>
+impl<T> TryFrom<RObj> for Nullable<T>
 where
-    T: TryFrom<Robj, Error = Error>,
+    T: TryFrom<RObj, Error = Error>,
 {
     type Error = Error;
 
@@ -72,7 +72,7 @@ where
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
     /// ```
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         if robj.is_null() {
             Ok(Nullable::Null)
         } else {
@@ -81,9 +81,9 @@ where
     }
 }
 
-impl<'a, T> TryFrom<&'a Robj> for Nullable<T>
+impl<'a, T> TryFrom<&'a RObj> for Nullable<T>
 where
-    T: TryFrom<&'a Robj, Error = Error>,
+    T: TryFrom<&'a RObj, Error = Error>,
 {
     type Error = Error;
 
@@ -99,7 +99,7 @@ where
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
     /// ```
-    fn try_from(robj: &'a Robj) -> Result<Self> {
+    fn try_from(robj: &'a RObj) -> Result<Self> {
         if robj.is_null() {
             Ok(Nullable::Null)
         } else {
@@ -108,9 +108,9 @@ where
     }
 }
 
-impl<T> From<Nullable<T>> for Robj
+impl<T> From<Nullable<T>> for RObj
 where
-    T: Into<Robj>,
+    T: Into<RObj>,
 {
     /// Convert a rust object to NULL or another type.
     /// ```
@@ -130,7 +130,7 @@ where
 
 impl<T> From<Nullable<T>> for Option<T>
 where
-    T: TryFrom<Robj, Error = Error>,
+    T: TryFrom<RObj, Error = Error>,
 {
     /// Convert a Nullable type into Option
     /// ```
@@ -150,7 +150,7 @@ where
 
 impl<'a, T> From<&'a Nullable<T>> for Option<&'a T>
 where
-    T: TryFrom<Robj, Error = Error>,
+    T: TryFrom<RObj, Error = Error>,
 {
     /// Convert a Nullable reference type into Option containing reference
     /// ```
@@ -170,7 +170,7 @@ where
 
 impl<T> From<Option<T>> for Nullable<T>
 where
-    T: Into<Robj>,
+    T: Into<RObj>,
 {
     /// Convert an Option into Nullable type
     /// ```
@@ -192,14 +192,14 @@ where
 
 impl<T> Nullable<T>
 where
-    T: TryFrom<Robj, Error = Error>,
+    T: TryFrom<RObj, Error = Error>,
 {
     /// Convert Nullable R object into `Option`
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(Nullable::<Rint>::Null.into_option(), None);
-    ///     assert_eq!(Nullable::<Rint>::NotNull(Rint::from(42)).into_option(), Some(Rint::from(42)));
+    ///     assert_eq!(Nullable::<RInt>::Null.into_option(), None);
+    ///     assert_eq!(Nullable::<RInt>::NotNull(RInt::from(42)).into_option(), Some(RInt::from(42)));
     /// }
     /// ```
     pub fn into_option(self) -> Option<T> {
@@ -212,8 +212,8 @@ impl<T> Nullable<T> {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(Nullable::<Rfloat>::Null.map(|x| x.abs()), Nullable::<Rfloat>::Null);
-    ///     assert_eq!(Nullable::<Rfloat>::NotNull(Rfloat::from(42.0)).map(|x| x.abs()), Nullable::<Rfloat>::NotNull(Rfloat::from(42.0)));
+    ///     assert_eq!(Nullable::<RFloat>::Null.map(|x| x.abs()), Nullable::<RFloat>::Null);
+    ///     assert_eq!(Nullable::<RFloat>::NotNull(RFloat::from(42.0)).map(|x| x.abs()), Nullable::<RFloat>::NotNull(RFloat::from(42.0)));
     /// }
     /// ```
     pub fn map<F, U>(self, f: F) -> Nullable<U>

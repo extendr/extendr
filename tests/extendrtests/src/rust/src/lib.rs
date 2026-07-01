@@ -86,22 +86,22 @@ fn double_vec(x: Vec<f64>) -> Vec<f64> {
 
 // NA-related tests
 #[extendr]
-fn try_rfloat_na() -> Rfloat {
-    Rfloat::na()
+fn try_rfloat_na() -> RFloat {
+    RFloat::na()
 }
 
 #[extendr]
-fn try_rint_na() -> Rint {
-    Rint::na()
+fn try_rint_na() -> RInt {
+    RInt::na()
 }
 
 #[extendr]
-fn check_rfloat_na(x: Rfloat) -> bool {
+fn check_rfloat_na(x: RFloat) -> bool {
     x.is_na()
 }
 
 #[extendr]
-fn check_rint_na(x: Rint) -> bool {
+fn check_rint_na(x: RInt) -> bool {
     x.is_na()
 }
 
@@ -114,17 +114,17 @@ fn check_rint_na(x: Rint) -> bool {
 
 // Vector wrappers
 #[extendr]
-fn get_doubles_element(x: Doubles, i: i32) -> Rfloat {
+fn get_doubles_element(x: Doubles, i: i32) -> RFloat {
     x.elt(i as usize)
 }
 
 #[extendr]
-fn get_integers_element(x: Integers, i: i32) -> Rint {
+fn get_integers_element(x: Integers, i: i32) -> RInt {
     x.elt(i as usize)
 }
 
 #[extendr]
-fn get_logicals_element(x: Logicals, i: i32) -> Rbool {
+fn get_logicals_element(x: Logicals, i: i32) -> RBool {
     x.elt(i as usize)
 }
 
@@ -144,7 +144,7 @@ fn complexes_square(input: Complexes) -> Complexes {
     let mut result = Complexes::new(input.len());
 
     for (x, y) in result.iter_mut().zip(input.iter()) {
-        *x = Rcplx::new((y.re() * y.re()).0, 0.0);
+        *x = RCplx::new((y.re() * y.re()).0, 0.0);
     }
 
     result
@@ -176,13 +176,13 @@ fn logicals_not(input: Logicals) -> Logicals {
 
 // Deprecated default syntax
 //#[extendr]
-//fn check_default_deprecated(#[default = "NULL"] x: Robj) -> bool {
+//fn check_default_deprecated(#[default = "NULL"] x: RObj) -> bool {
 //    x.is_null()
 //}
 
 // New default syntax
 #[extendr]
-fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
+fn check_default(#[extendr(default = "NULL")] x: RObj) -> bool {
     x.is_null()
 }
 
@@ -216,7 +216,7 @@ fn get_default_value(#[extendr(default = "42")] x: i32) -> i32 {
 }
 
 #[extendr]
-fn add_5_if_not_null(x: Nullable<Rint>) -> Nullable<Rint> {
+fn add_5_if_not_null(x: Nullable<RInt>) -> Nullable<RInt> {
     x.map(|y| y + 5)
 }
 
@@ -258,7 +258,7 @@ impl MyClass {
     }
 
     // https://github.com/extendr/extendr/issues/431
-    fn restore_from_robj(robj: Robj) -> Self {
+    fn restore_from_robj(robj: RObj) -> Self {
         let res: ExternalPtr<MyClass> = robj.try_into().unwrap();
         Self { a: res.a }
     }

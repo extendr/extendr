@@ -21,14 +21,14 @@ use extendr_ffi::Rcomplex;
 /// Example usage:
 ///
 /// ```rust,ignore
-/// impl_synonym_type(Rint, i32);
+/// impl_synonym_type(RInt, i32);
 /// ```
 ///
 /// The example here implements
 ///
-/// `impl ToVectorValue for Rint`,
+/// `impl ToVectorValue for RInt`,
 ///
-/// this entails that `Rint` would be stored in `R` exactly
+/// this entails that `RInt` would be stored in `R` exactly
 /// as `i32`.
 ///
 macro_rules! impl_synonym_type {
@@ -82,7 +82,7 @@ macro_rules! impl_synonym_type {
         }
     };
 }
-impl_synonym_type!(Rfloat, f64);
-impl_synonym_type!(&Rfloat, f64);
-impl_synonym_type!(Rint, i32);
-impl_synonym_type!(&Rint, i32);
+impl_synonym_type!(RFloat, f64);
+impl_synonym_type!(&RFloat, f64);
+impl_synonym_type!(RInt, i32);
+impl_synonym_type!(&RInt, i32);

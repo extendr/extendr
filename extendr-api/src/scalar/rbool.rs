@@ -2,35 +2,35 @@ use crate::scalar::macros::*;
 use crate::*;
 use std::convert::TryFrom;
 
-/// `Rbool` is a wrapper for `i32` in the context of an R's logical vector.
+/// `RBool` is a wrapper for `i32` in the context of an R's logical vector.
 ///
-/// `Rbool` can have a value of `0`, `1` or `i32::MIN`.
+/// `RBool` can have a value of `0`, `1` or `i32::MIN`.
 ///
 /// The value `i32::MIN` is used as `NA`.
 ///
-/// `Rbool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
+/// `RBool` has the same footprint as an `i32` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
 #[readonly::make]
-pub struct Rbool(pub i32);
+pub struct RBool(pub i32);
 
-impl Rbool {
+impl RBool {
     pub fn new(val: i32) -> Self {
-        Rbool(val)
+        RBool(val)
     }
 
-    /// Return a `true` `Rbool`.
-    pub const fn true_value() -> Rbool {
-        Rbool(1)
+    /// Return a `true` `RBool`.
+    pub const fn true_value() -> RBool {
+        RBool(1)
     }
 
-    /// Return a `false` `Rbool`.
-    pub const fn false_value() -> Rbool {
-        Rbool(0)
+    /// Return a `false` `RBool`.
+    pub const fn false_value() -> RBool {
+        RBool(0)
     }
 
-    /// Return a `NA` `Rbool`.
-    pub const fn na_value() -> Rbool {
-        Rbool(i32::MIN)
+    /// Return a `NA` `RBool`.
+    pub const fn na_value() -> RBool {
+        RBool(i32::MIN)
     }
 
     /// Return `true` if this triboolean is `true` but not `NA`.
@@ -43,39 +43,39 @@ impl Rbool {
         self.0 == 0 && !self.is_na()
     }
 
-    /// Convert this `Rbool` to a bool. Note `NA` will be true.
+    /// Convert this `RBool` to a bool. Note `NA` will be true.
     pub fn to_bool(&self) -> bool {
         self.0 != 0
     }
 
-    /// Convert this construct a `Rbool` from a rust boolean.
+    /// Convert this construct a `RBool` from a rust boolean.
     pub fn from_bool(val: bool) -> Self {
-        Rbool(val as i32)
+        RBool(val as i32)
     }
 }
 
-gen_trait_impl!(Rbool, bool, |x: &Rbool| x.0 == i32::MIN, i32::MIN);
-gen_from_primitive!(Rbool, i32);
-gen_partial_ord!(Rbool, bool);
+gen_trait_impl!(RBool, bool, |x: &RBool| x.0 == i32::MIN, i32::MIN);
+gen_from_primitive!(RBool, i32);
+gen_partial_ord!(RBool, bool);
 
-impl From<bool> for Rbool {
+impl From<bool> for RBool {
     fn from(v: bool) -> Self {
-        Rbool(i32::from(v))
+        RBool(i32::from(v))
     }
 }
 
-impl From<Option<bool>> for Rbool {
+impl From<Option<bool>> for RBool {
     fn from(v: Option<bool>) -> Self {
         if let Some(v) = v {
-            Rbool::from(v)
+            RBool::from(v)
         } else {
-            Rbool::na()
+            RBool::na()
         }
     }
 }
 
-impl From<Rbool> for Option<bool> {
-    fn from(v: Rbool) -> Self {
+impl From<RBool> for Option<bool> {
+    fn from(v: RBool) -> Self {
         if v.0.is_na() {
             None
         } else {
@@ -84,27 +84,27 @@ impl From<Rbool> for Option<bool> {
     }
 }
 
-impl From<Rbool> for bool {
-    fn from(v: Rbool) -> Self {
+impl From<RBool> for bool {
+    fn from(v: RBool) -> Self {
         v.0 != 0
     }
 }
 
-impl std::ops::Not for Rbool {
+impl std::ops::Not for RBool {
     type Output = Self;
 
     fn not(self) -> Self::Output {
         if self.is_na() {
-            Rbool::na()
+            RBool::na()
         } else if self.is_true() {
-            Rbool::false_value()
+            RBool::false_value()
         } else {
-            Rbool::true_value()
+            RBool::true_value()
         }
     }
 }
 
-impl std::fmt::Debug for Rbool {
+impl std::fmt::Debug for RBool {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -120,12 +120,12 @@ impl std::fmt::Debug for Rbool {
     }
 }
 
-impl TryFrom<&Robj> for Rbool {
+impl TryFrom<&RObj> for RBool {
     type Error = Error;
 
-    /// Convert an `LGLSXP` object into a `Rbool` (tri-state boolean).
+    /// Convert an `LGLSXP` object into a `RBool` (tri-state boolean).
     /// Use `value.is_na()` to detect NA values.
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if let Some(v) = robj.as_logical_slice() {
             match v.len() {
                 0 => Err(Error::ExpectedNonZeroLength(robj.clone())),
@@ -137,3 +137,6 @@ impl TryFrom<&Robj> for Rbool {
         }
     }
 }
+
+#[deprecated(note = "Use RBool instead", since = "0.9.0")]
+pub type Rbool = RBool;

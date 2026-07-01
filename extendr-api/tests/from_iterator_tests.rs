@@ -19,7 +19,7 @@ fn protect_lim2(n: i32) -> List {
 // #[extendr]
 fn prot_strs(n: i32) -> Strings {
     let n = n as usize;
-    (0..n).map(|_| Rstr::from("val")).collect::<Strings>()
+    (0..n).map(|_| RStr::from("val")).collect::<Strings>()
 }
 
 #[test]
@@ -61,7 +61,7 @@ fn test_with_gc_torture_strings() {
         let qq_r_character_vec: Strings = question_quote.into_iter().collect();
         R!("gctorture(on = FALSE)")?;
         // Strings::from_values is the same as `.collect`.
-        let qq_directly = Strings::try_from(&Robj::from(question_quote)).unwrap();
+        let qq_directly = Strings::try_from(&RObj::from(question_quote)).unwrap();
         assert_eq!(qq_r_character_vec, qq_directly);
     );
 }

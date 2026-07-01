@@ -4,7 +4,7 @@ use std::convert::Infallible;
 
 use crate::conversions::try_into_int::ConversionError;
 use crate::robj::Types;
-use crate::{throw_r_error, Robj};
+use crate::{throw_r_error, RObj};
 use extendr_ffi::ParseStatus;
 
 /// Throw an R error if a result is an error.
@@ -30,63 +30,63 @@ pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
 
 #[derive(Debug, PartialEq)]
 pub enum Error {
-    Panic(Robj),
-    NotFound(Robj),
-    EvalError(Robj),
+    Panic(RObj),
+    NotFound(RObj),
+    EvalError(RObj),
     ParseError {
         status: ParseStatus,
-        code: Robj,
+        code: RObj,
     },
-    NamesLengthMismatch(Robj),
+    NamesLengthMismatch(RObj),
 
-    ExpectedNull(Robj),
-    ExpectedSymbol(Robj),
-    ExpectedPairlist(Robj),
-    ExpectedFunction(Robj),
-    ExpectedEnvironment(Robj),
-    ExpectedPromise(Robj),
-    ExpectedLanguage(Robj),
-    ExpectedSpecial(Robj),
-    ExpectedBuiltin(Robj),
-    ExpectedRstr(Robj),
-    ExpectedLogical(Robj),
-    ExpectedInteger(Robj),
-    ExpectedReal(Robj),
-    ExpectedComplex(Robj),
-    ExpectedString(Robj),
-    ExpectedDot(Robj),
-    ExpectedAny(Robj),
-    ExpectedList(Robj),
-    ExpectedExpression(Robj),
-    ExpectedBytecode(Robj),
-    ExpectedExternalPtr(Robj),
-    ExpectedWeakRef(Robj),
-    ExpectedRaw(Robj),
-    ExpectedS4(Robj),
-    ExpectedPrimitive(Robj),
+    ExpectedNull(RObj),
+    ExpectedSymbol(RObj),
+    ExpectedPairList(RObj),
+    ExpectedFunction(RObj),
+    ExpectedEnvironment(RObj),
+    ExpectedPromise(RObj),
+    ExpectedLanguage(RObj),
+    ExpectedSpecial(RObj),
+    ExpectedBuiltin(RObj),
+    ExpectedRStr(RObj),
+    ExpectedLogical(RObj),
+    ExpectedInteger(RObj),
+    ExpectedReal(RObj),
+    ExpectedComplex(RObj),
+    ExpectedString(RObj),
+    ExpectedDot(RObj),
+    ExpectedAny(RObj),
+    ExpectedList(RObj),
+    ExpectedExpression(RObj),
+    ExpectedBytecode(RObj),
+    ExpectedExternalPtr(RObj),
+    ExpectedWeakRef(RObj),
+    ExpectedRaw(RObj),
+    ExpectedS4(RObj),
+    ExpectedPrimitive(RObj),
 
-    ExpectedScalar(Robj),
-    ExpectedVector(Robj),
-    ExpectedMatrix(Robj),
-    ExpectedMatrix3D(Robj),
-    ExpectedMatrix4D(Robj),
-    ExpectedMatrix5D(Robj),
-    ExpectedNumeric(Robj),
-    ExpectedAltrep(Robj),
-    ExpectedDataframe(Robj),
+    ExpectedScalar(RObj),
+    ExpectedVector(RObj),
+    ExpectedMatrix(RObj),
+    ExpectedMatrix3D(RObj),
+    ExpectedMatrix4D(RObj),
+    ExpectedMatrix5D(RObj),
+    ExpectedNumeric(RObj),
+    ExpectedAltrep(RObj),
+    ExpectedDataFrame(RObj),
 
-    OutOfRange(Robj),
-    MustNotBeNA(Robj),
-    ExpectedWholeNumber(Robj, ConversionError),
-    ExpectedNonZeroLength(Robj),
+    OutOfRange(RObj),
+    MustNotBeNA(RObj),
+    ExpectedWholeNumber(RObj, ConversionError),
+    ExpectedNonZeroLength(RObj),
     ExpectedLength(usize),
-    OutOfLimits(Robj),
-    TypeMismatch(Robj),
-    NamespaceNotFound(Robj),
-    NoGraphicsDevices(Robj),
+    OutOfLimits(RObj),
+    TypeMismatch(RObj),
+    NamespaceNotFound(RObj),
+    NoGraphicsDevices(RObj),
 
-    ExpectedExternalPtrType(Robj, String),
-    ExpectedExternalNonNullPtr(Robj),
+    ExpectedExternalPtrType(RObj, String),
+    ExpectedExternalNonNullPtr(RObj),
     ExpectedExternalPtrReference,
     Other(String),
 
@@ -121,7 +121,7 @@ impl std::fmt::Display for Error {
 
             Error::ExpectedNull(robj) => write!(f, "Expected Null got {:?}", robj.rtype()),
             Error::ExpectedSymbol(robj) => write!(f, "Expected Symbol got {:?}", robj.rtype()),
-            Error::ExpectedPairlist(robj) => write!(f, "Expected Pairlist got {:?}", robj.rtype()),
+            Error::ExpectedPairList(robj) => write!(f, "Expected PairList got {:?}", robj.rtype()),
             Error::ExpectedFunction(robj) => write!(f, "Expected Function got {:?}", robj.rtype()),
             Error::ExpectedEnvironment(robj) => {
                 write!(f, "Expected Environment got {:?}", robj.rtype())
@@ -130,8 +130,8 @@ impl std::fmt::Display for Error {
             Error::ExpectedLanguage(robj) => write!(f, "Expected Language got {:?}", robj.rtype()),
             Error::ExpectedSpecial(robj) => write!(f, "Expected Special got {:?}", robj.rtype()),
             Error::ExpectedBuiltin(robj) => write!(f, "Expected Builtin got {:?}", robj.rtype()),
-            Error::ExpectedRstr(robj) => {
-                write!(f, "Expected Rstr got {:?}", robj.rtype())
+            Error::ExpectedRStr(robj) => {
+                write!(f, "Expected RStr got {:?}", robj.rtype())
             }
             Error::ExpectedLogical(robj) => write!(f, "Expected Logicals got {:?}", robj.rtype()),
             Error::ExpectedInteger(robj) => write!(f, "Expected Integers got {:?}", robj.rtype()),
@@ -163,8 +163,8 @@ impl std::fmt::Display for Error {
             Error::ExpectedMatrix5D(robj) => write!(f, "Expected Matrix5D, got {:?}", robj.rtype()),
             Error::ExpectedNumeric(robj) => write!(f, "Expected Numeric, got {:?}", robj.rtype()),
             Error::ExpectedAltrep(robj) => write!(f, "Expected Altrep, got {:?}", robj.rtype()),
-            Error::ExpectedDataframe(robj) => {
-                write!(f, "Expected Dataframe, got {:?}", robj.rtype())
+            Error::ExpectedDataFrame(robj) => {
+                write!(f, "Expected DataFrame, got {:?}", robj.rtype())
             }
 
             Error::OutOfRange(_robj) => write!(f, "Out of range."),

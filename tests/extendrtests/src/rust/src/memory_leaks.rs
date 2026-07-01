@@ -11,23 +11,23 @@ fn leak_arg2_try_implicit_doubles(_y: Doubles, x: Doubles) -> String {
 }
 
 #[extendr]
-fn leak_unwrap_strings(x: Robj) -> String {
+fn leak_unwrap_strings(x: RObj) -> String {
     let x = x.as_string_vector().ok_or("ERROR").unwrap();
     x.len().to_string()
 }
 
 #[extendr]
-fn leak_unwrap_doubles(x: Robj) -> String {
+fn leak_unwrap_doubles(x: RObj) -> String {
     x.as_real_vector().ok_or("ERROR").unwrap().len().to_string()
 }
 
 #[extendr]
-fn leak_positive_control(x: Robj) {
+fn leak_positive_control(x: RObj) {
     std::mem::forget(x);
 }
 
 #[extendr]
-fn leak_negative_control(x: Robj) {
+fn leak_negative_control(x: RObj) {
     drop(x)
 }
 

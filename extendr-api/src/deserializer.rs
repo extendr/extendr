@@ -2,10 +2,10 @@
 //!
 use crate::error::{Error, Result};
 use crate::na::CanBeNA;
-use crate::robj::{Attributes, Length, Robj, Types};
-use crate::scalar::{Rbool, Rfloat, Rint};
-use crate::wrapper::{Doubles, Integers, List, Logicals, Rstr, Strings};
-use crate::Rany;
+use crate::robj::{Attributes, Length, RObj, Types};
+use crate::scalar::{RBool, RFloat, RInt};
+use crate::wrapper::{Doubles, Integers, List, Logicals, RStr, Strings};
+use crate::RAny;
 use serde::de::{
     Deserialize, DeserializeSeed, Deserializer, EnumAccess, MapAccess, SeqAccess, VariantAccess,
     Visitor,
@@ -14,7 +14,7 @@ use serde::forward_to_deserialize_any;
 use std::convert::TryFrom;
 
 /// Convert any R object to a Deserialize object.
-pub fn from_robj<'de, T>(robj: &'de Robj) -> Result<T>
+pub fn from_robj<'de, T>(robj: &'de RObj) -> Result<T>
 where
     T: Deserialize<'de>,
 {
@@ -34,7 +34,7 @@ impl serde::de::Error for Error {
 
 // Convert unnamed lists to sequences.
 struct ListGetter<'a> {
-    list: &'a [Robj],
+    list: &'a [RObj],
 }
 
 impl<'de> SeqAccess<'de> for ListGetter<'de> {
@@ -56,8 +56,8 @@ impl<'de> SeqAccess<'de> for ListGetter<'de> {
 
 // Convert named lists to maps.
 struct NamedListGetter<'a> {
-    keys: &'a [Rstr],
-    values: &'a [Robj],
+    keys: &'a [RStr],
+    values: &'a [RObj],
 }
 
 impl<'de> MapAccess<'de> for NamedListGetter<'de> {
@@ -91,8 +91,8 @@ struct SliceGetter<'a, E> {
     list: &'a [E],
 }
 
-// Allow us to use Integers and Rint.
-impl<'de> Deserializer<'de> for Rint {
+// Allow us to use Integers and RInt.
+impl<'de> Deserializer<'de> for RInt {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -113,8 +113,8 @@ impl<'de> Deserializer<'de> for Rint {
     }
 }
 
-// Allow us to use Doubles and Rfloat.
-impl<'de> Deserializer<'de> for Rfloat {
+// Allow us to use Doubles and RFloat.
+impl<'de> Deserializer<'de> for RFloat {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -135,8 +135,8 @@ impl<'de> Deserializer<'de> for Rfloat {
     }
 }
 
-// Allow us to use Logicals and Rbool.
-impl<'de> Deserializer<'de> for Rbool {
+// Allow us to use Logicals and RBool.
+impl<'de> Deserializer<'de> for RBool {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -158,7 +158,7 @@ impl<'de> Deserializer<'de> for Rbool {
 }
 
 // Decode identifiers from the "names" attribute of lists.
-impl<'de> Deserializer<'de> for &'de Rstr {
+impl<'de> Deserializer<'de> for &'de RStr {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -187,7 +187,7 @@ impl<'de> Deserializer<'de> for &'de Rstr {
 }
 
 // Get the variant name and content of an enum.
-impl<'de> EnumAccess<'de> for &'de Robj {
+impl<'de> EnumAccess<'de> for &'de RObj {
     type Error = Error;
     type Variant = Self;
 
@@ -196,11 +196,11 @@ impl<'de> EnumAccess<'de> for &'de Robj {
         V: DeserializeSeed<'de>,
     {
         match self.as_any() {
-            Rany::Strings(s) if s.len() == 1 => {
+            RAny::Strings(s) if s.len() == 1 => {
                 let variant = seed.deserialize(self)?;
                 Ok((variant, self))
             }
-            Rany::List(list) if list.len() == 1 => {
+            RAny::List(list) if list.len() == 1 => {
                 if let Some(keys) = self.get_attrib(crate::wrapper::symbol::names_symbol()) {
                     if let Ok(keys) = Strings::try_from(keys) {
                         let keys = keys.as_slice();
@@ -217,7 +217,7 @@ impl<'de> EnumAccess<'de> for &'de Robj {
 }
 
 // Decode enum variants of various kinds.
-impl<'de> VariantAccess<'de> for &'de Robj {
+impl<'de> VariantAccess<'de> for &'de RObj {
     type Error = Error;
 
     fn unit_variant(self) -> Result<()> {
@@ -268,8 +268,8 @@ where
     }
 }
 
-// Given an Robj, generate a value of many kinds.
-impl<'de> Deserializer<'de> for &'de Robj {
+// Given an RObj, generate a value of many kinds.
+impl<'de> Deserializer<'de> for &'de RObj {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -278,30 +278,30 @@ impl<'de> Deserializer<'de> for &'de Robj {
     {
         let len = self.len();
         match self.as_any() {
-            Rany::Null(_) => self.deserialize_unit(visitor),
-            Rany::Integers(_v) => {
+            RAny::Null(_) => self.deserialize_unit(visitor),
+            RAny::Integers(_v) => {
                 if len == 1 {
                     self.deserialize_i32(visitor)
                 } else {
                     self.deserialize_seq(visitor)
                 }
             }
-            Rany::Doubles(_v) => {
+            RAny::Doubles(_v) => {
                 if len == 1 {
                     self.deserialize_f64(visitor)
                 } else {
                     self.deserialize_seq(visitor)
                 }
             }
-            Rany::Logicals(_v) => {
+            RAny::Logicals(_v) => {
                 if len == 1 {
                     self.deserialize_bool(visitor)
                 } else {
                     self.deserialize_seq(visitor)
                 }
             }
-            Rany::List(_v) => self.deserialize_seq(visitor),
-            Rany::Strings(_v) => {
+            RAny::List(_v) => self.deserialize_seq(visitor),
+            RAny::Strings(_v) => {
                 if len == 1 {
                     self.deserialize_str(visitor)
                 } else {
@@ -319,7 +319,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        if let Rany::Null(_) = self.as_any() {
+        if let RAny::Null(_) = self.as_any() {
             visitor.visit_unit()
         } else {
             Err(Error::ExpectedNull(self.clone()))
@@ -449,7 +449,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        if let Rany::Raw(val) = self.as_any() {
+        if let RAny::Raw(val) = self.as_any() {
             visitor.visit_bytes(val.as_slice())
         } else {
             Err(Error::ExpectedRaw(self.clone()))
@@ -460,7 +460,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        if let Rany::Raw(val) = self.as_any() {
+        if let RAny::Raw(val) = self.as_any() {
             visitor.visit_byte_buf(val.as_slice().to_owned())
         } else {
             Err(Error::ExpectedRaw(self.clone()))
@@ -471,7 +471,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
     where
         V: Visitor<'de>,
     {
-        if let Rany::Null(_) = self.as_any() {
+        if let RAny::Null(_) = self.as_any() {
             visitor.visit_none()
         } else if self.is_na() {
             visitor.visit_none()
@@ -518,25 +518,25 @@ impl<'de> Deserializer<'de> for &'de Robj {
         V: Visitor<'de>,
     {
         match self.as_any() {
-            Rany::List(val) => {
+            RAny::List(val) => {
                 let lg = ListGetter {
                     list: val.as_slice(),
                 };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Integers(val) => {
+            RAny::Integers(val) => {
                 let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Doubles(val) => {
+            RAny::Doubles(val) => {
                 let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Logicals(val) => {
+            RAny::Logicals(val) => {
                 let lg = SliceGetter { list: val };
                 Ok(visitor.visit_seq(lg)?)
             }
-            Rany::Strings(_val) => {
+            RAny::Strings(_val) => {
                 // Grubby hack that will go away once PRs are merged.
                 // use std::convert::TryInto;
                 // let val : Strings = val.clone().try_into().unwrap();
@@ -553,7 +553,7 @@ impl<'de> Deserializer<'de> for &'de Robj {
         V: Visitor<'de>,
     {
         match self.as_any() {
-            Rany::List(val) => {
+            RAny::List(val) => {
                 if let Some(keys) = self.get_attrib(crate::wrapper::symbol::names_symbol()) {
                     if let Ok(keys) = Strings::try_from(keys) {
                         let keys = keys.as_slice();
@@ -609,10 +609,10 @@ impl<'de> Deserializer<'de> for &'de Robj {
     }
 }
 
-struct RintVisitor;
+struct RIntVisitor;
 
-impl<'de> Visitor<'de> for RintVisitor {
-    type Value = Rint;
+impl<'de> Visitor<'de> for RIntVisitor {
+    type Value = RInt;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         formatter.write_str("an integer between -2^31+1 and 2^31")
@@ -629,23 +629,23 @@ impl<'de> Visitor<'de> for RintVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rint::na())
+        Ok(RInt::na())
     }
 }
 
-impl<'de> Deserialize<'de> for Rint {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Rint, D::Error>
+impl<'de> Deserialize<'de> for RInt {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<RInt, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_i32(RintVisitor)
+        deserializer.deserialize_i32(RIntVisitor)
     }
 }
 
-struct RfloatVisitor;
+struct RFloatVisitor;
 
-impl<'de> Visitor<'de> for RfloatVisitor {
-    type Value = Rfloat;
+impl<'de> Visitor<'de> for RFloatVisitor {
+    type Value = RFloat;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         formatter.write_str("a floating point value")
@@ -662,23 +662,23 @@ impl<'de> Visitor<'de> for RfloatVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rfloat::na())
+        Ok(RFloat::na())
     }
 }
 
-impl<'de> Deserialize<'de> for Rfloat {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Rfloat, D::Error>
+impl<'de> Deserialize<'de> for RFloat {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<RFloat, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_f64(RfloatVisitor)
+        deserializer.deserialize_f64(RFloatVisitor)
     }
 }
 
-struct RboolVisitor;
+struct RBoolVisitor;
 
-impl<'de> Visitor<'de> for RboolVisitor {
-    type Value = Rbool;
+impl<'de> Visitor<'de> for RBoolVisitor {
+    type Value = RBool;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         formatter.write_str("a boolean point value")
@@ -695,26 +695,26 @@ impl<'de> Visitor<'de> for RboolVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rbool::na())
+        Ok(RBool::na())
     }
 }
 
-impl<'de> Deserialize<'de> for Rbool {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Rbool, D::Error>
+impl<'de> Deserialize<'de> for RBool {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<RBool, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_bool(RboolVisitor)
+        deserializer.deserialize_bool(RBoolVisitor)
     }
 }
 
-struct RobjVisitor;
+struct RObjVisitor;
 
-impl<'de> Visitor<'de> for RobjVisitor {
-    type Value = Robj;
+impl<'de> Visitor<'de> for RObjVisitor {
+    type Value = RObj;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("a value convertable to a Robj")
+        formatter.write_str("a value convertable to a RObj")
     }
 
     fn visit_bool<E>(self, value: bool) -> std::result::Result<Self::Value, E>
@@ -771,7 +771,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(RObj::from(()))
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -787,7 +787,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     {
         // All sequences get converted to lists at the moment.
         // We could check the first element and then assume the rest are the sme.
-        let mut values: Vec<Robj> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        let mut values: Vec<RObj> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
         while let Some(value) = seq.next_element()? {
             values.push(value);
         }
@@ -799,7 +799,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
         M: MapAccess<'de>,
     {
         let mut keys: Vec<&str> = Vec::with_capacity(access.size_hint().unwrap_or(8));
-        let mut values: Vec<Robj> = Vec::with_capacity(access.size_hint().unwrap_or(8));
+        let mut values: Vec<RObj> = Vec::with_capacity(access.size_hint().unwrap_or(8));
 
         while let Some((key, value)) = access.next_entry()? {
             keys.push(key);
@@ -814,7 +814,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(RObj::from(()))
     }
 
     fn visit_newtype_struct<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -835,12 +835,12 @@ impl<'de> Visitor<'de> for RobjVisitor {
     }
 }
 
-impl<'de> Deserialize<'de> for Robj {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Robj, D::Error>
+impl<'de> Deserialize<'de> for RObj {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<RObj, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_any(RobjVisitor)
+        deserializer.deserialize_any(RObjVisitor)
     }
 }
 
@@ -879,7 +879,7 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Integers::from_values([Rint::na()]))
+        Ok(Integers::from_values([RInt::na()]))
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -893,7 +893,7 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         A: SeqAccess<'de>,
     {
-        let mut values: Vec<Rint> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        let mut values: Vec<RInt> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
         while let Some(value) = seq.next_element()? {
             values.push(value);
         }
@@ -904,7 +904,7 @@ impl<'de> Visitor<'de> for IntegersVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Integers::from_values([Rint::na()]))
+        Ok(Integers::from_values([RInt::na()]))
     }
 }
 
@@ -951,7 +951,7 @@ impl<'de> Visitor<'de> for DoublesVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([Rfloat::na()]))
+        Ok(Doubles::from_values([RFloat::na()]))
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -965,7 +965,7 @@ impl<'de> Visitor<'de> for DoublesVisitor {
     where
         A: SeqAccess<'de>,
     {
-        let mut values: Vec<Rfloat> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        let mut values: Vec<RFloat> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
         while let Some(value) = seq.next_element()? {
             values.push(value);
         }
@@ -976,7 +976,7 @@ impl<'de> Visitor<'de> for DoublesVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Doubles::from_values([Rfloat::na()]))
+        Ok(Doubles::from_values([RFloat::na()]))
     }
 }
 
@@ -1009,7 +1009,7 @@ impl<'de> Visitor<'de> for LogicalsVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Logicals::from_values([Rbool::na()]))
+        Ok(Logicals::from_values([RBool::na()]))
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -1023,7 +1023,7 @@ impl<'de> Visitor<'de> for LogicalsVisitor {
     where
         A: SeqAccess<'de>,
     {
-        let mut values: Vec<Rbool> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        let mut values: Vec<RBool> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
         while let Some(value) = seq.next_element()? {
             values.push(value);
         }
@@ -1034,7 +1034,7 @@ impl<'de> Visitor<'de> for LogicalsVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Logicals::from_values([Rbool::na()]))
+        Ok(Logicals::from_values([RBool::na()]))
     }
 }
 
@@ -1081,7 +1081,7 @@ impl<'de> Visitor<'de> for StringsVisitor {
     where
         A: SeqAccess<'de>,
     {
-        let mut values: Vec<Rstr> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
+        let mut values: Vec<RStr> = Vec::with_capacity(seq.size_hint().unwrap_or(8));
         while let Some(value) = seq.next_element()? {
             values.push(value);
         }
@@ -1105,13 +1105,13 @@ impl<'de> Deserialize<'de> for Strings {
     }
 }
 
-struct RstrVisitor;
+struct RStrVisitor;
 
-impl<'de> Visitor<'de> for RstrVisitor {
-    type Value = Rstr;
+impl<'de> Visitor<'de> for RStrVisitor {
+    type Value = RStr;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("a value convertable to Rstr")
+        formatter.write_str("a value convertable to RStr")
     }
 
     fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
@@ -1125,7 +1125,7 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::na())
+        Ok(RStr::na())
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -1139,15 +1139,15 @@ impl<'de> Visitor<'de> for RstrVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Rstr::na())
+        Ok(RStr::na())
     }
 }
 
-impl<'de> Deserialize<'de> for Rstr {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Rstr, D::Error>
+impl<'de> Deserialize<'de> for RStr {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<RStr, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_any(RstrVisitor)
+        deserializer.deserialize_any(RStrVisitor)
     }
 }

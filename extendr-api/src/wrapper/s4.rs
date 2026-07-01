@@ -32,7 +32,7 @@ use extendr_ffi::{R_do_slot, R_do_slot_assign, R_has_slot};
 
 #[derive(PartialEq, Clone)]
 pub struct S4 {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl S4 {
@@ -49,7 +49,7 @@ impl S4 {
     ///     let class = S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
     /// }
     /// ```
-    pub fn set_class(name: &str, representation: Pairlist, contains: Robj) -> Result<S4> {
+    pub fn set_class(name: &str, representation: PairList, contains: RObj) -> Result<S4> {
         use crate as extendr_api;
         let res = R!(r#"setClass({{name}}, {{representation}}, {{contains}})"#)?;
         res.try_into()
@@ -84,15 +84,15 @@ impl S4 {
     ///     assert_eq!(robj.get_slot("xyz").unwrap().len(), 0);
     /// }
     /// ```
-    pub fn get_slot<'a, N>(&self, name: N) -> Option<Robj>
+    pub fn get_slot<'a, N>(&self, name: N) -> Option<RObj>
     where
         Self: 'a,
-        Robj: From<N> + 'a,
+        RObj: From<N> + 'a,
     {
-        let name = Robj::from(name);
+        let name = RObj::from(name);
         unsafe {
             if R_has_slot(self.get(), name.get()) != 0 {
-                Some(Robj::from_sexp(R_do_slot(self.get(), name.get())))
+                Some(RObj::from_sexp(R_do_slot(self.get(), name.get())))
             } else {
                 None
             }
@@ -116,8 +116,8 @@ impl S4 {
     /// ```
     pub fn set_slot<N, V>(&mut self, name: N, value: V) -> Result<S4>
     where
-        N: Into<Robj>,
-        V: Into<Robj>,
+        N: Into<RObj>,
+        V: Into<RObj>,
     {
         let name = name.into();
         let value = value.into();
@@ -142,9 +142,9 @@ impl S4 {
     pub fn has_slot<'a, N>(&self, name: N) -> bool
     where
         Self: 'a,
-        Robj: From<N> + 'a,
+        RObj: From<N> + 'a,
     {
-        let name = Robj::from(name);
+        let name = RObj::from(name);
         unsafe { R_has_slot(self.get(), name.get()) != 0 }
     }
 }
@@ -192,7 +192,7 @@ impl std::fmt::Debug for S4 {
     }
 }
 
-impl From<Option<S4>> for Robj {
+impl From<Option<S4>> for RObj {
     fn from(value: Option<S4>) -> Self {
         match value {
             None => nil_value(),

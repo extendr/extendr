@@ -30,15 +30,15 @@ use std::{any::Any, fmt::Debug};
 /// test! {
 ///     let extptr = ExternalPtr::new(1);
 ///     assert_eq!(*extptr, 1);
-///     let robj : Robj = extptr.into();
+///     let robj : RObj = extptr.into();
 ///     let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
 ///     assert_eq!(*extptr2, 1);
 /// }
 /// ```
 #[repr(transparent)]
 pub struct ExternalPtr<T> {
-    /// This is the contained Robj.
-    pub(crate) robj: Robj,
+    /// This is the contained RObj.
+    pub(crate) robj: RObj,
 
     /// This is a zero-length object that holds the type of the object.
     _marker: std::marker::PhantomData<T>,
@@ -71,13 +71,13 @@ impl<T> robj::GetSexp for ExternalPtr<T> {
         self.robj.get_mut()
     }
 
-    /// Get a reference to a Robj for this type.
-    fn as_robj(&self) -> &Robj {
+    /// Get a reference to a RObj for this type.
+    fn as_robj(&self) -> &RObj {
         &self.robj
     }
 
-    /// Get a mutable reference to a Robj for this type.
-    fn as_robj_mut(&mut self) -> &mut Robj {
+    /// Get a mutable reference to a RObj for this type.
+    fn as_robj_mut(&mut self) -> &mut RObj {
         &mut self.robj
     }
 }
@@ -95,7 +95,7 @@ impl<T> Attributes for ExternalPtr<T> {}
 impl<T> Conversions for ExternalPtr<T> {}
 
 /// find_var() etc.
-impl<T> Rinternals for ExternalPtr<T> {}
+impl<T> RInternals for ExternalPtr<T> {}
 
 /// as_typed_slice_raw() etc.
 impl<T> Slices for ExternalPtr<T> {}
@@ -106,14 +106,14 @@ impl<T> Operators for ExternalPtr<T> {}
 impl<T: 'static> Deref for ExternalPtr<T> {
     type Target = T;
 
-    /// This allows us to treat the Robj as if it is the type T.
+    /// This allows us to treat the RObj as if it is the type T.
     fn deref(&self) -> &Self::Target {
         self.addr()
     }
 }
 
 impl<T: 'static> DerefMut for ExternalPtr<T> {
-    /// This allows us to treat the Robj as if it is the mutable type T.
+    /// This allows us to treat the RObj as if it is the mutable type T.
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.addr_mut()
     }
@@ -136,10 +136,10 @@ impl<T: 'static> ExternalPtr<T> {
             // into_raw() converts the box to a malloced pointer.
             let robj = {
                 let boxed_ptr = Box::into_raw(boxed);
-                let prot = Robj::from(());
-                let type_name: Robj = std::any::type_name::<T>().into();
+                let prot = RObj::from(());
+                let type_name: RObj = std::any::type_name::<T>().into();
 
-                Robj::from_sexp(single_threaded(|| {
+                RObj::from_sexp(single_threaded(|| {
                     R_MakeExternalPtr(boxed_ptr.cast(), type_name.get(), prot.get())
                 }))
             };
@@ -174,13 +174,13 @@ impl<T: 'static> ExternalPtr<T> {
     // TODO: make a constructor for references?
 
     /// Get the "tag" of an external pointer. This is the type name in the common case.
-    pub fn tag(&self) -> Robj {
-        unsafe { Robj::from_sexp(R_ExternalPtrTag(self.robj.get())) }
+    pub fn tag(&self) -> RObj {
+        unsafe { RObj::from_sexp(R_ExternalPtrTag(self.robj.get())) }
     }
 
     /// Get the "protected" field of an external pointer. This is NULL in the common case.
-    pub fn protected(&self) -> Robj {
-        unsafe { Robj::from_sexp(R_ExternalPtrProtected(self.robj.get())) }
+    pub fn protected(&self) -> RObj {
+        unsafe { RObj::from_sexp(R_ExternalPtrProtected(self.robj.get())) }
     }
 
     /// Get the "address" field of an external pointer.
@@ -236,10 +236,10 @@ impl<T: 'static> ExternalPtr<T> {
     }
 }
 
-impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
+impl<T: 'static> TryFrom<&RObj> for &ExternalPtr<T> {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> Result<Self> {
+    fn try_from(value: &RObj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
@@ -260,14 +260,14 @@ impl<T: 'static> TryFrom<&Robj> for &ExternalPtr<T> {
             ));
         }
 
-        unsafe { Ok(std::mem::transmute::<&Robj, &ExternalPtr<T>>(value)) }
+        unsafe { Ok(std::mem::transmute::<&RObj, &ExternalPtr<T>>(value)) }
     }
 }
 
-impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
+impl<T: 'static> TryFrom<&mut RObj> for &mut ExternalPtr<T> {
     type Error = Error;
 
-    fn try_from(value: &mut Robj) -> Result<Self> {
+    fn try_from(value: &mut RObj) -> Result<Self> {
         if !value.is_external_pointer() {
             return Err(Error::ExpectedExternalPtr(value.clone()));
         }
@@ -288,34 +288,34 @@ impl<T: 'static> TryFrom<&mut Robj> for &mut ExternalPtr<T> {
             ));
         }
 
-        unsafe { Ok(std::mem::transmute::<&mut Robj, &mut ExternalPtr<T>>(value)) }
+        unsafe { Ok(std::mem::transmute::<&mut RObj, &mut ExternalPtr<T>>(value)) }
     }
 }
 
-impl<T: 'static> TryFrom<&Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<&RObj> for ExternalPtr<T> {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let result: &Self = robj.try_into()?;
         Ok(result.clone())
     }
 }
 
-impl<T: 'static> TryFrom<Robj> for ExternalPtr<T> {
+impl<T: 'static> TryFrom<RObj> for ExternalPtr<T> {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         <ExternalPtr<T>>::try_from(&robj)
     }
 }
 
-impl<T> From<ExternalPtr<T>> for Robj {
+impl<T> From<ExternalPtr<T>> for RObj {
     fn from(val: ExternalPtr<T>) -> Self {
         val.robj
     }
 }
 
-impl<T> From<Option<ExternalPtr<T>>> for Robj {
+impl<T> From<Option<ExternalPtr<T>>> for RObj {
     fn from(value: Option<ExternalPtr<T>>) -> Self {
         match value {
             None => nil_value(),

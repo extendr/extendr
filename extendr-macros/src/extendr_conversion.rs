@@ -66,9 +66,9 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
 
     let conversion_impls = quote! {
         // Output conversion function for this type.
-        impl TryFrom<&Robj> for &#self_ty {
+        impl TryFrom<&RObj> for &#self_ty {
             type Error = extendr_api::Error;
-            fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+            fn try_from(robj: &RObj) -> extendr_api::Result<Self> {
                 use extendr_api::ExternalPtr;
                 unsafe {
                     let external_ptr: &ExternalPtr<#self_ty> = robj.try_into()?;
@@ -78,9 +78,9 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
         }
 
         // Input conversion function for a mutable reference to this type.
-        impl TryFrom<&mut Robj> for &mut #self_ty {
+        impl TryFrom<&mut RObj> for &mut #self_ty {
             type Error = extendr_api::Error;
-            fn try_from(robj: &mut Robj) -> extendr_api::Result<Self> {
+            fn try_from(robj: &mut RObj) -> extendr_api::Result<Self> {
                 use extendr_api::ExternalPtr;
                 unsafe {
                     let external_ptr: &mut ExternalPtr<#self_ty> = robj.try_into()?;
@@ -96,7 +96,7 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
         #conversion_impls
 
         // Output conversion function for this type.
-        impl From<#self_ty> for Robj {
+        impl From<#self_ty> for RObj {
             fn from(value: #self_ty) -> Self {
                 use extendr_api::ExternalPtr;
                 unsafe {

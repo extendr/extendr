@@ -6,13 +6,13 @@ use extendr_ffi::{
 };
 
 #[derive(PartialEq, Clone)]
-pub struct Pairlist {
-    pub(crate) robj: Robj,
+pub struct PairList {
+    pub(crate) robj: RObj,
 }
 
-impl Pairlist {
+impl PairList {
     pub fn new() -> Self {
-        let robj = Robj::from(());
+        let robj = RObj::from(());
         Self { robj }
     }
 
@@ -21,11 +21,11 @@ impl Pairlist {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let pairs = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let pairlist = Pairlist::from_pairs(pairs);
+    ///     let pairlist = PairList::from_pairs(pairs);
     ///     assert_eq!(pairlist.len(), 100);
     ///
     ///     // Use "" to indicate the absense of the name
-    ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
+    ///     let unnamed_pairlist = PairList::from_pairs([("", "a"), ("", "b")]);
     ///     assert_eq!(call!("names", unnamed_pairlist)?, r!(NULL));
     ///     let unnamed_pairlist_r = R!(r#"pairlist("a", "b")"#)?.as_pairlist().unwrap();
     ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
@@ -49,8 +49,8 @@ impl Pairlist {
                     SET_TAG(res, name.get());
                 }
             }
-            let res = Pairlist {
-                robj: Robj::from_sexp(res),
+            let res = PairList {
+                robj: RObj::from_sexp(res),
             };
             Rf_unprotect(num_protects);
             res
@@ -62,14 +62,14 @@ impl Pairlist {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let pairs = (0..100).map(|i| (format!("n{}", i), i));
-    ///     let pairlist = Pairlist::from_pairs(pairs);
+    ///     let pairlist = PairList::from_pairs(pairs);
     ///     assert_eq!(pairlist.iter().count(), 100);
     ///     assert_eq!(pairlist.iter().nth(50), Some(("n50", r!(50))));
     /// }
     /// ```
-    pub fn iter(&self) -> PairlistIter {
+    pub fn iter(&self) -> PairListIter {
         unsafe {
-            PairlistIter {
+            PairListIter {
                 robj: self.robj.clone(),
                 list_elem: self.robj.get(),
             }
@@ -80,12 +80,12 @@ impl Pairlist {
         self.iter().map(|(tag, _)| tag)
     }
 
-    pub fn values(&self) -> impl Iterator<Item = Robj> {
+    pub fn values(&self) -> impl Iterator<Item = RObj> {
         self.iter().map(|(_, robj)| robj)
     }
 }
 
-impl Default for wrapper::pairlist::Pairlist {
+impl Default for wrapper::pairlist::PairList {
     fn default() -> Self {
         Self::new()
     }
@@ -96,24 +96,24 @@ impl Default for wrapper::pairlist::Pairlist {
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let pairs = (0..100).map(|i| (format!("n{}", i), i));
-///     let pairlist = Pairlist::from_pairs(pairs);
+///     let pairlist = PairList::from_pairs(pairs);
 ///     assert_eq!(pairlist.iter().count(), 100);
 ///     assert_eq!(pairlist.iter().nth(50), Some(("n50", r!(50))));
 /// }
 /// ```
 #[derive(Clone)]
-pub struct PairlistIter {
-    pub(crate) robj: Robj,
+pub struct PairListIter {
+    pub(crate) robj: RObj,
     pub(crate) list_elem: SEXP,
 }
 
-impl Default for PairlistIter {
+impl Default for PairListIter {
     fn default() -> Self {
-        PairlistIter::new()
+        PairListIter::new()
     }
 }
 
-impl PairlistIter {
+impl PairListIter {
     /// Make an empty pairlist iterator.
     pub fn new() -> Self {
         unsafe {
@@ -125,11 +125,11 @@ impl PairlistIter {
     }
 }
 
-impl Iterator for PairlistIter {
+impl Iterator for PairListIter {
     // Note: The static is bad here, but we await RFC 1598
     // to do this properly. Howevere, symbols live forever.
     // https://github.com/rust-lang/rfcs/blob/master/text/1598-generic_associated_types.md
-    type Item = (&'static str, Robj);
+    type Item = (&'static str, RObj);
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
@@ -138,7 +138,7 @@ impl Iterator for PairlistIter {
                 None
             } else {
                 let tag = TAG(sexp);
-                let value = Robj::from_sexp(CAR(sexp));
+                let value = RObj::from_sexp(CAR(sexp));
                 self.list_elem = CDR(sexp);
                 if TYPEOF(tag) == SEXPTYPE::SYMSXP {
                     // printname is always a CHARSXP
@@ -153,9 +153,9 @@ impl Iterator for PairlistIter {
     }
 }
 
-impl IntoIterator for Pairlist {
-    type IntoIter = PairlistIter;
-    type Item = (&'static str, Robj);
+impl IntoIterator for PairList {
+    type IntoIter = PairListIter;
+    type Item = (&'static str, RObj);
 
     /// Convert a PairList into an interator, consuming the pairlist.
     /// ```
@@ -169,7 +169,7 @@ impl IntoIterator for Pairlist {
     fn into_iter(self) -> Self::IntoIter {
         unsafe {
             let sexp = self.robj.get();
-            PairlistIter {
+            PairListIter {
                 robj: self.robj,
                 list_elem: sexp,
             }
@@ -177,33 +177,33 @@ impl IntoIterator for Pairlist {
     }
 }
 
-impl TryFrom<&Robj> for PairlistIter {
+impl TryFrom<&RObj> for PairListIter {
     type Error = Error;
 
-    /// You can pass a PairlistIter to a function.
-    fn try_from(robj: &Robj) -> Result<Self> {
-        let pairlist: Pairlist = robj.try_into()?;
+    /// You can pass a PairListIter to a function.
+    fn try_from(robj: &RObj) -> Result<Self> {
+        let pairlist: PairList = robj.try_into()?;
         Ok(pairlist.into_iter())
     }
 }
 
-impl From<PairlistIter> for Robj {
-    /// You can return a PairlistIter from a function.
-    fn from(iter: PairlistIter) -> Self {
+impl From<PairListIter> for RObj {
+    /// You can return a PairListIter from a function.
+    fn from(iter: PairListIter) -> Self {
         iter.robj
     }
 }
 
-impl From<()> for Pairlist {
+impl From<()> for PairList {
     /// Construct a NULL pairlist (which is a NULL).
     fn from(_: ()) -> Self {
-        Pairlist {
-            robj: Robj::from(()),
+        PairList {
+            robj: RObj::from(()),
         }
     }
 }
 
-impl std::fmt::Debug for Pairlist {
+impl std::fmt::Debug for PairList {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -216,3 +216,9 @@ impl std::fmt::Debug for Pairlist {
         Ok(())
     }
 }
+
+#[deprecated(note = "Use PairList instead", since = "0.9.0")]
+pub type Pairlist = PairList;
+
+#[deprecated(note = "Use PairListIter instead", since = "0.9.0")]
+pub type PairlistIter = PairListIter;

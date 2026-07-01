@@ -6,7 +6,7 @@ fn test_externalptr() {
     test! {
         let extptr = ExternalPtr::new(1);
         assert_eq!(*extptr, 1);
-        let robj : Robj = extptr.into();
+        let robj : RObj = extptr.into();
         let extptr2 : ExternalPtr<i32> = robj.try_into().unwrap();
         assert_eq!(*extptr2, 1);
     }

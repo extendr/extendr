@@ -13,7 +13,7 @@ use extendr_ffi::{R_NilValue, Rf_lcons, Rf_protect, Rf_unprotect};
 /// Note: You can use the [lang!] macro for this.
 #[derive(PartialEq, Clone)]
 pub struct Language {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Language {
@@ -21,7 +21,7 @@ impl Language {
     where
         T: IntoIterator,
         T::IntoIter: DoubleEndedIterator,
-        T::Item: Into<Robj>,
+        T::Item: Into<RObj>,
     {
         single_threaded(|| unsafe {
             let mut res = R_NilValue;
@@ -31,15 +31,15 @@ impl Language {
                 res = Rf_protect(Rf_lcons(val, res));
                 num_protected += 2;
             }
-            let robj = Robj::from_sexp(res);
+            let robj = RObj::from_sexp(res);
             Rf_unprotect(num_protected);
             Language { robj }
         })
     }
 
-    pub fn iter(&self) -> PairlistIter {
+    pub fn iter(&self) -> PairListIter {
         unsafe {
-            PairlistIter {
+            PairListIter {
                 robj: self.robj.clone(),
                 list_elem: self.robj.get(),
             }
@@ -50,7 +50,7 @@ impl Language {
         self.iter().map(|(tag, _)| tag)
     }
 
-    pub fn values(&self) -> impl Iterator<Item = Robj> {
+    pub fn values(&self) -> impl Iterator<Item = RObj> {
         self.iter().map(|(_, robj)| robj)
     }
 }

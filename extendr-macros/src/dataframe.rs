@@ -11,14 +11,14 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
     quote! {
         impl extendr_api::wrapper::IntoDataFrameRow<#structname> for Vec<#structname>
         {
-            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::Dataframe<#structname>> {
+            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::DataFrame<#structname>> {
                 #(let mut #a = Vec::with_capacity(self.len());)*
                 for val in self {
                     #(#a.push(val.#a);)*
                 }
                 let caller = extendr_api::functions::eval_string("data.frame")?;
-                let res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[
-                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                let res = caller.call(extendr_api::wrapper::PairList::from_pairs(&[
+                    #((stringify!(#a), extendr_api::robj::RObj::from(#a))),*
                 ]))?;
                 res.try_into()
             }
@@ -29,14 +29,14 @@ fn parse_struct(input: &DeriveInput, datastruct: &DataStruct) -> TokenStream {
             I : ExactSizeIterator<Item=#structname>,
         {
             /// Thanks to RFC 2451, we need to wrap a generic iterator in a tuple!
-            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::Dataframe<#structname>> {
+            fn into_dataframe(self) -> extendr_api::Result<extendr_api::wrapper::DataFrame<#structname>> {
                 #(let mut #a = Vec::with_capacity(self.0.len());)*
                 for val in self.0 {
                     #(#a.push(val.#a);)*
                 }
                 let caller = extendr_api::functions::eval_string("data.frame")?;
-                let res = caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[
-                    #((stringify!(#a), extendr_api::robj::Robj::from(#a))),*
+                let res = caller.call(extendr_api::wrapper::PairList::from_pairs(&[
+                    #((stringify!(#a), extendr_api::robj::RObj::from(#a))),*
                 ]))?;
                 res.try_into()
             }

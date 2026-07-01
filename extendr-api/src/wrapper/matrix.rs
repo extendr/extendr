@@ -1,5 +1,5 @@
 //! Wrappers for matrices with deferred arithmetic.
-use self::robj::{AsTypedSlice, Robj};
+use self::robj::{AsTypedSlice, RObj};
 use super::*;
 use crate::throw_r_error;
 use extendr_ffi::{
@@ -29,8 +29,8 @@ use std::ops::{Index, IndexMut};
 /// ```
 #[derive(Debug, PartialEq)]
 pub struct RArray<T, const NDIM: usize> {
-    /// Owning Robj (probably should be a Pin).
-    robj: Robj,
+    /// Owning RObj (probably should be a Pin).
+    robj: RObj,
 
     /// Data type of the n-array
     _data: std::marker::PhantomData<T>,
@@ -38,7 +38,7 @@ pub struct RArray<T, const NDIM: usize> {
 
 impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dimnames(&self) -> List {
-        unsafe { List::try_from(Robj::from_sexp(Rf_GetArrayDimnames(self.get()))).unwrap() }
+        unsafe { List::try_from(RObj::from_sexp(Rf_GetArrayDimnames(self.get()))).unwrap() }
     }
 
     /// Get the dimension vector of the array.
@@ -77,8 +77,8 @@ impl<T, const NDIM: usize> RArray<T, NDIM> {
     /// Set the dimensions of an array.
     ///
     /// Equivalent to `dim<-`
-    pub fn set_dim(&mut self, dim: Robj) {
-        // TODO: ensure that Robj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
+    pub fn set_dim(&mut self, dim: RObj) {
+        // TODO: ensure that RObj is LGLSXP, INTSXP, REALSXP, CPLXSXP, STRSXP, RAWSXP
         // or NilValue
         let _ = unsafe { Rf_dimgets(self.get_mut(), dim.get()) };
     }
@@ -95,12 +95,12 @@ pub type RMatrix5D<T> = RArray<T, 5>;
 impl<T, const NDIM: usize> RArray<T, NDIM>
 where
     T: ToVectorValue,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     pub fn new_array(dim: [usize; NDIM]) -> Self {
         let sexptype = T::sexptype();
         let len = dim.iter().product();
-        let mut robj = Robj::alloc_vector(sexptype, len);
+        let mut robj = RObj::alloc_vector(sexptype, len);
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
     }
@@ -109,14 +109,14 @@ where
 impl<T> RMatrix<T>
 where
     T: ToVectorValue,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with arbitrary entries. To initialize a matrix containing only `NA`
     /// values, use [`RMatrix::new_with_na`].
     pub fn new(nrow: usize, ncol: usize) -> Self {
         let sexptype = T::sexptype();
-        let matrix = Robj::alloc_matrix(sexptype, nrow as _, ncol as _);
+        let matrix = RObj::alloc_matrix(sexptype, nrow as _, ncol as _);
         RArray::from_parts(matrix)
     }
 }
@@ -124,7 +124,7 @@ where
 impl<T> RMatrix<T>
 where
     T: ToVectorValue + CanBeNA,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Returns an [`RMatrix`] with dimensions according to `nrow` and `ncol`,
     /// with all entries set to `NA`.
@@ -153,7 +153,7 @@ impl<T> RMatrix<T> {
             match TYPEOF(maybe_colnames) {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
-                    let colnames = Robj::from_sexp(maybe_colnames);
+                    let colnames = RObj::from_sexp(maybe_colnames);
                     Strings::try_from(colnames).ok()
                 }
                 _ => unreachable!(
@@ -168,7 +168,7 @@ impl<T> RMatrix<T> {
             match TYPEOF(maybe_rownames) {
                 SEXPTYPE::NILSXP => None,
                 SEXPTYPE::STRSXP => {
-                    let rownames = Robj::from_sexp(maybe_rownames);
+                    let rownames = RObj::from_sexp(maybe_rownames);
                     Strings::try_from(rownames).ok()
                 }
                 _ => unreachable!(
@@ -210,9 +210,9 @@ impl<T, const NDIM: usize> Offset<[usize; NDIM]> for RArray<T, NDIM> {
 
 impl<T, const NDIM: usize> RArray<T, NDIM>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
-    pub fn from_parts(robj: Robj) -> Self {
+    pub fn from_parts(robj: RObj) -> Self {
         Self {
             robj,
             _data: std::marker::PhantomData,
@@ -243,7 +243,7 @@ where
 impl<T> RColumn<T>
 where
     T: ToVectorValue,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
@@ -262,7 +262,7 @@ where
 impl<T> RMatrix<T>
 where
     T: ToVectorValue,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Create a new matrix wrapper.
     ///
@@ -305,7 +305,7 @@ where
 impl<T> RMatrix3D<T>
 where
     T: ToVectorValue,
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     pub fn new_matrix3d<F: Clone + FnMut(usize, usize, usize) -> T>(
         nrows: usize,
@@ -343,13 +343,13 @@ where
     }
 }
 
-impl<T> TryFrom<&Robj> for RColumn<T>
+impl<T> TryFrom<&RObj> for RColumn<T>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
             Ok(RArray::from_parts(robj.clone()))
         } else {
@@ -358,13 +358,13 @@ where
     }
 }
 
-impl<T> TryFrom<&Robj> for RMatrix<T>
+impl<T> TryFrom<&RObj> for RMatrix<T>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if !robj.is_matrix() {
             Err(Error::ExpectedMatrix(robj.clone()))
         } else if let Some(_slice) = robj.as_typed_slice() {
@@ -384,13 +384,13 @@ where
     }
 }
 
-impl<T> TryFrom<&Robj> for RMatrix3D<T>
+impl<T> TryFrom<&RObj> for RMatrix3D<T>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
             if let Some(dim) = robj.dim() {
                 if dim.len() != 3 {
@@ -407,13 +407,13 @@ where
     }
 }
 
-impl<T> TryFrom<&Robj> for RMatrix4D<T>
+impl<T> TryFrom<&RObj> for RMatrix4D<T>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
             if let Some(dim) = robj.dim() {
                 if dim.len() != 4 {
@@ -430,13 +430,13 @@ where
     }
 }
 
-impl<T> TryFrom<&Robj> for RMatrix5D<T>
+impl<T> TryFrom<&RObj> for RMatrix5D<T>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         if let Some(_slice) = robj.as_typed_slice() {
             if let Some(dim) = robj.dim() {
                 if dim.len() != 5 {
@@ -456,24 +456,24 @@ where
 macro_rules! impl_try_from_robj_ref {
     ($($type : tt)*) => {
         $(
-            impl<T> TryFrom<Robj> for $type<T>
+            impl<T> TryFrom<RObj> for $type<T>
             where
-                Robj: for<'a> AsTypedSlice<'a, T>,
+                RObj: for<'a> AsTypedSlice<'a, T>,
             {
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: RObj) -> Result<Self> {
                     <$type<T>>::try_from(&robj)
                 }
             }
 
-            impl<T> TryFrom<&Robj> for Option<$type<T>>
+            impl<T> TryFrom<&RObj> for Option<$type<T>>
             where
-                Robj: for<'a> AsTypedSlice<'a, T>,
+                RObj: for<'a> AsTypedSlice<'a, T>,
             {
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> Result<Self> {
+                fn try_from(robj: &RObj) -> Result<Self> {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {
@@ -482,13 +482,13 @@ macro_rules! impl_try_from_robj_ref {
                 }
             }
 
-            impl<T> TryFrom<Robj> for Option<$type<T>>
+            impl<T> TryFrom<RObj> for Option<$type<T>>
             where
-                Robj: for<'a> AsTypedSlice<'a, T>,
+                RObj: for<'a> AsTypedSlice<'a, T>,
             {
                 type Error = Error;
 
-                fn try_from(robj: Robj) -> Result<Self> {
+                fn try_from(robj: RObj) -> Result<Self> {
                     <Option::<$type<T>>>::try_from(&robj)
                 }
             }
@@ -504,8 +504,8 @@ impl_try_from_robj_ref!(
     RMatrix5D
 );
 
-impl<T, const DIM: usize> From<RArray<T, DIM>> for Robj {
-    /// Convert a column, matrix or matrix3d to an Robj.
+impl<T, const DIM: usize> From<RArray<T, DIM>> for RObj {
+    /// Convert a column, matrix or matrix3d to an RObj.
     fn from(array: RArray<T, DIM>) -> Self {
         array.robj
     }
@@ -514,31 +514,31 @@ impl<T, const DIM: usize> From<RArray<T, DIM>> for Robj {
 pub trait MatrixConversions: GetSexp {
     fn as_column<E>(&self) -> Option<RColumn<E>>
     where
-        Robj: for<'a> AsTypedSlice<'a, E>,
+        RObj: for<'a> AsTypedSlice<'a, E>,
     {
         <RColumn<E>>::try_from(self.as_robj()).ok()
     }
 
     fn as_matrix<E>(&self) -> Option<RMatrix<E>>
     where
-        Robj: for<'a> AsTypedSlice<'a, E>,
+        RObj: for<'a> AsTypedSlice<'a, E>,
     {
         <RMatrix<E>>::try_from(self.as_robj()).ok()
     }
 
     fn as_matrix3d<E>(&self) -> Option<RMatrix3D<E>>
     where
-        Robj: for<'a> AsTypedSlice<'a, E>,
+        RObj: for<'a> AsTypedSlice<'a, E>,
     {
         <RMatrix3D<E>>::try_from(self.as_robj()).ok()
     }
 }
 
-impl MatrixConversions for Robj {}
+impl MatrixConversions for RObj {}
 
 impl<T, const NDIM: usize> Index<[usize; NDIM]> for RArray<T, NDIM>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     type Output = T;
 
@@ -577,7 +577,7 @@ where
 
 impl<T, const NDIM: usize> IndexMut<[usize; NDIM]> for RArray<T, NDIM>
 where
-    Robj: for<'a> AsTypedSlice<'a, T>,
+    RObj: for<'a> AsTypedSlice<'a, T>,
 {
     /// Zero-based mutable indexing for DIM-dimensional arrays.
     ///
@@ -613,7 +613,7 @@ where
 }
 
 impl<T, const NDIM: usize> Deref for RArray<T, NDIM> {
-    type Target = Robj;
+    type Target = RObj;
 
     fn deref(&self) -> &Self::Target {
         &self.robj
@@ -626,7 +626,7 @@ impl<T, const NDIM: usize> DerefMut for RArray<T, NDIM> {
     }
 }
 
-impl<T, const NDIM: usize> From<Option<RArray<T, NDIM>>> for Robj {
+impl<T, const NDIM: usize> From<Option<RArray<T, NDIM>>> for RObj {
     fn from(value: Option<RArray<T, NDIM>>) -> Self {
         match value {
             None => nil_value(),
@@ -643,7 +643,7 @@ mod tests {
     use crate as extendr_api;
     use extendr_engine::with_r;
     use extendr_ffi::Rf_PrintValue;
-    use prelude::{Rcplx, Rfloat, Rint};
+    use prelude::{RCplx, RFloat, RInt};
 
     #[test]
     fn test_empty_matrix_new() -> std::result::Result<(), Box<dyn Error>> {
@@ -651,28 +651,28 @@ mod tests {
             // These are arbitrarily filled. We cannot create assertions for them.
             // let m: RMatrix<Rbyte> = RMatrix::new(5, 2); //   Error: Error: unimplemented type 'char' in 'eval'
             // unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rbool> = RMatrix::new(5, 2);
+            let m: RMatrix<RBool> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rint> = RMatrix::new(5, 2);
+            let m: RMatrix<RInt> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rfloat> = RMatrix::new(5, 2);
+            let m: RMatrix<RFloat> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rcplx> = RMatrix::new(5, 2);
+            let m: RMatrix<RCplx> = RMatrix::new(5, 2);
             unsafe { Rf_PrintValue(m.get()) };
             rprintln!();
 
             // let m: RMatrix<Rbyte> = RMatrix::new_with_na(10, 2); // not possible!
             // unsafe { Rf_PrintValue(m.get()) };
-            let m: RMatrix<Rbool> = RMatrix::new_with_na(10, 2);
+            let m: RMatrix<RBool> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA, 10, 2)").unwrap(), m.into_robj());
 
-            let m: RMatrix<Rint> = RMatrix::new_with_na(10, 2);
+            let m: RMatrix<RInt> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA_integer_, 10, 2)").unwrap(), m.into_robj());
 
-            let m: RMatrix<Rfloat> = RMatrix::new_with_na(10, 2);
+            let m: RMatrix<RFloat> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA_real_, 10, 2)").unwrap(), m.into_robj());
 
-            let m: RMatrix<Rcplx> = RMatrix::new_with_na(10, 2);
+            let m: RMatrix<RCplx> = RMatrix::new_with_na(10, 2);
             assert_eq!(R!("matrix(NA_complex_, 10, 2)").unwrap(), m.into_robj());
             Ok(())
         })
@@ -739,20 +739,20 @@ mod tests {
     #[test]
     fn test_rmatrix_with_rstr() {
         test! {
-            // Test creating a matrix of strings using Rstr
+            // Test creating a matrix of strings using RStr
             let string_data = ["a", "b", "c", "d", "e", "f"];
-            let matrix: RMatrix<Rstr> = RMatrix::new_matrix(2, 3, |r, c| {
+            let matrix: RMatrix<RStr> = RMatrix::new_matrix(2, 3, |r, c| {
                 let idx = c * 2 + r;
-                Rstr::from(string_data[idx])
+                RStr::from(string_data[idx])
             });
 
             assert_eq!(matrix.nrows(), 2);
             assert_eq!(matrix.ncols(), 3);
 
-            // Verify the matrix can be converted to Robj
-            let robj: Robj = matrix.into();
+            // Verify the matrix can be converted to RObj
+            let robj: RObj = matrix.into();
             assert_eq!(robj.is_matrix(), true);
-            assert_eq!(robj.rtype(), Rtype::Strings);
+            assert_eq!(robj.rtype(), RType::Strings);
         }
     }
 }

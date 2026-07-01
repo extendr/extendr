@@ -21,7 +21,7 @@ use extendr_ffi::{
 ///
 #[derive(PartialEq, Clone)]
 pub struct Symbol {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Symbol {
@@ -37,7 +37,7 @@ impl Symbol {
     pub fn from_string<S: AsRef<str>>(val: S) -> Self {
         let val = val.as_ref();
         Symbol {
-            robj: unsafe { Robj::from_sexp(make_symbol(val)) },
+            robj: unsafe { RObj::from_sexp(make_symbol(val)) },
         }
     }
 
@@ -47,7 +47,7 @@ impl Symbol {
             assert!(TYPEOF(sexp) == SEXPTYPE::SYMSXP);
         }
         Symbol {
-            robj: unsafe { Robj::from_sexp(sexp) },
+            robj: unsafe { RObj::from_sexp(sexp) },
         }
     }
 

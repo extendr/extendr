@@ -2,13 +2,13 @@
 
 use crate::error::{Error, Result};
 use crate::na::CanBeNA;
-use crate::robj::{Attributes, GetSexp, Length, Rinternals, Types};
-use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::robj::{Attributes, GetSexp, Length, RInternals, Types};
+use crate::scalar::{RBool, RFloat, RInt};
 use crate::wrapper::{
-    Doubles, Environment, Expressions, Function, Integers, Language, Logicals, Pairlist, Primitive,
-    Promise, Raw, Rstr, Symbol, S4,
+    Doubles, Environment, Expressions, Function, Integers, Language, Logicals, PairList, Primitive,
+    Promise, RStr, Raw, Symbol, S4,
 };
-use crate::{List, Rany, Robj};
+use crate::{List, RAny, RObj};
 use serde::{ser, Serialize};
 
 impl ser::Error for Error {
@@ -17,49 +17,49 @@ impl ser::Error for Error {
     }
 }
 
-struct RobjSerializer {
-    robj: Option<Robj>,
+struct RObjSerializer {
+    robj: Option<RObj>,
 }
 
 struct SerializeSeq<'a> {
-    values: Vec<Robj>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<RObj>,
+    parent: &'a mut RObjSerializer,
 }
 
 struct SerializeTuple<'a> {
-    values: Vec<Robj>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<RObj>,
+    parent: &'a mut RObjSerializer,
 }
 
 struct SerializeTupleStruct<'a> {
-    values: Vec<Robj>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<RObj>,
+    parent: &'a mut RObjSerializer,
 }
 
 struct SerializeTupleVariant<'a> {
-    values: Vec<Robj>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<RObj>,
+    parent: &'a mut RObjSerializer,
     variant: String,
 }
 
 struct SerializeMap<'a> {
-    values: Vec<(String, Robj)>,
+    values: Vec<(String, RObj)>,
     key: String,
-    parent: &'a mut RobjSerializer,
+    parent: &'a mut RObjSerializer,
 }
 
 struct SerializeStruct<'a> {
-    values: Vec<(String, Robj)>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<(String, RObj)>,
+    parent: &'a mut RObjSerializer,
 }
 
 struct SerializeStructVariant<'a> {
-    values: Vec<(String, Robj)>,
-    parent: &'a mut RobjSerializer,
+    values: Vec<(String, RObj)>,
+    parent: &'a mut RObjSerializer,
     variant: String,
 }
 
-/// Convert a serializable object to a Robj.
+/// Convert a serializable object to a RObj.
 ///
 /// Requires the "serde" feature.
 ///
@@ -86,24 +86,24 @@ struct SerializeStructVariant<'a> {
 ///     };
 ///
 ///     let expected = list!(int=1, seq=list!("a", "b"));
-///     assert_eq!(to_robj(&test).unwrap(), Robj::from(expected));
+///     assert_eq!(to_robj(&test).unwrap(), RObj::from(expected));
 /// }
 /// ```
-pub fn to_robj<T>(value: &T) -> Result<Robj>
+pub fn to_robj<T>(value: &T) -> Result<RObj>
 where
     T: Serialize,
 {
-    let mut serializer = RobjSerializer { robj: None };
+    let mut serializer = RObjSerializer { robj: None };
 
     value.serialize(&mut serializer)?;
     Ok(serializer.robj.unwrap())
 }
 
-impl<'a> ser::Serializer for &'a mut RobjSerializer {
-    // The output type produced by this `RobjSerializer` during successful
+impl<'a> ser::Serializer for &'a mut RObjSerializer {
+    // The output type produced by this `RObjSerializer` during successful
     // serialization. Most serializers that produce text or binary output should
     // set `Ok = ()` and serialize into an `io::Write` or buffer contained
-    // within the `RobjSerializer` instance, as happens here. Serializers that build
+    // within the `RObjSerializer` instance, as happens here. Serializers that build
     // in-memory data structures may be simplified by using `Ok` to propagate
     // the data structure around.
     type Ok = ();
@@ -114,7 +114,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
     // Associated types for keeping track of additional state while serializing
     // compound data structures like sequences and maps. In this case no
     // additional state is required beyond what is already stored in the
-    // RobjSerializer struct.
+    // RObjSerializer struct.
     type SerializeSeq = self::SerializeSeq<'a>;
     type SerializeTuple = self::SerializeTuple<'a>;
     type SerializeTupleStruct = self::SerializeTupleStruct<'a>;
@@ -123,93 +123,93 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
     type SerializeStruct = self::SerializeStruct<'a>;
     type SerializeStructVariant = self::SerializeStructVariant<'a>;
 
-    /// Map a bool to a Robj.
+    /// Map a bool to a RObj.
     fn serialize_bool(self, v: bool) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a i8 to a Robj.
+    /// Map a i8 to a RObj.
     fn serialize_i8(self, v: i8) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a i16 to a Robj.
+    /// Map a i16 to a RObj.
     fn serialize_i16(self, v: i16) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a i32 to a Robj.
+    /// Map a i32 to a RObj.
     fn serialize_i32(self, v: i32) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a i64 to a Robj.
+    /// Map a i64 to a RObj.
     fn serialize_i64(self, v: i64) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a u8 to a Robj.
+    /// Map a u8 to a RObj.
     fn serialize_u8(self, v: u8) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a u16 to a Robj.
+    /// Map a u16 to a RObj.
     fn serialize_u16(self, v: u16) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a u32 to a Robj.
+    /// Map a u32 to a RObj.
     fn serialize_u32(self, v: u32) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a u64 to a Robj.
+    /// Map a u64 to a RObj.
     fn serialize_u64(self, v: u64) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a f32 to a Robj.
+    /// Map a f32 to a RObj.
     fn serialize_f32(self, v: f32) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a f64 to a Robj.
+    /// Map a f64 to a RObj.
     fn serialize_f64(self, v: f64) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
-    /// Map a char to a Robj string.
+    /// Map a char to a RObj string.
     fn serialize_char(self, v: char) -> Result<()> {
-        self.robj = Some(Robj::from(v.to_string()));
+        self.robj = Some(RObj::from(v.to_string()));
         Ok(())
     }
 
-    /// Map a string slice to a Robj string.
+    /// Map a string slice to a RObj string.
     fn serialize_str(self, v: &str) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
     /// Raw objects.
     fn serialize_bytes(self, v: &[u8]) -> Result<()> {
-        self.robj = Some(Robj::from(v));
+        self.robj = Some(RObj::from(v));
         Ok(())
     }
 
     /// None of an option is NULL.
     fn serialize_none(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(RObj::from(()));
         Ok(())
     }
 
@@ -224,7 +224,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
     // In Serde, unit means an anonymous value containing no data. Map this to
     // R as `NULL`.
     fn serialize_unit(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(RObj::from(()));
         Ok(())
     }
 
@@ -242,7 +242,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<()> {
-        self.robj = Some(Robj::from(variant));
+        self.robj = Some(RObj::from(variant));
         Ok(())
     }
 
@@ -547,7 +547,7 @@ impl ser::Serialize for S4 {
     }
 }
 
-impl ser::Serialize for Pairlist {
+impl ser::Serialize for PairList {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -673,7 +673,7 @@ impl ser::Serialize for Doubles {
     }
 }
 
-impl ser::Serialize for Rstr {
+impl ser::Serialize for RStr {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -695,7 +695,7 @@ impl ser::Serialize for Raw {
     }
 }
 
-impl ser::Serialize for Rint {
+impl ser::Serialize for RInt {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -708,7 +708,7 @@ impl ser::Serialize for Rint {
     }
 }
 
-impl ser::Serialize for Rfloat {
+impl ser::Serialize for RFloat {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -721,7 +721,7 @@ impl ser::Serialize for Rfloat {
     }
 }
 
-impl ser::Serialize for Rbool {
+impl ser::Serialize for RBool {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
@@ -734,37 +734,37 @@ impl ser::Serialize for Rbool {
     }
 }
 
-impl ser::Serialize for Robj {
+impl ser::Serialize for RObj {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
     {
         match self.as_any() {
-            Rany::Null(_) => serializer.serialize_unit(),
-            Rany::Symbol(value) => value.serialize(serializer),
-            Rany::Pairlist(value) => value.serialize(serializer),
-            Rany::Function(value) => value.serialize(serializer),
-            Rany::Environment(value) => value.serialize(serializer),
-            Rany::Promise(value) => value.serialize(serializer),
-            Rany::Language(value) => value.serialize(serializer),
-            Rany::Special(value) => value.serialize(serializer),
-            Rany::Builtin(value) => value.serialize(serializer),
-            Rany::Rstr(value) => value.serialize(serializer),
-            Rany::Logicals(value) => value.serialize(serializer),
-            Rany::Integers(value) => value.serialize(serializer),
-            Rany::Doubles(value) => value.serialize(serializer),
-            Rany::Complexes(_complex) => serializer.serialize_unit(),
-            Rany::Strings(value) => value.serialize(serializer),
-            Rany::Dot(_dot) => serializer.serialize_unit(),
-            Rany::Any(_any) => serializer.serialize_unit(),
-            Rany::List(value) => value.serialize(serializer),
-            Rany::Expressions(value) => value.serialize(serializer),
-            Rany::Bytecode(_bytecode) => serializer.serialize_unit(),
-            Rany::ExternalPtr(_externalptr) => serializer.serialize_unit(),
-            Rany::WeakRef(_weakref) => serializer.serialize_unit(),
-            Rany::Raw(value) => value.serialize(serializer),
-            Rany::S4(value) => value.serialize(serializer),
-            Rany::Unknown(_unknown) => serializer.serialize_unit(),
+            RAny::Null(_) => serializer.serialize_unit(),
+            RAny::Symbol(value) => value.serialize(serializer),
+            RAny::PairList(value) => value.serialize(serializer),
+            RAny::Function(value) => value.serialize(serializer),
+            RAny::Environment(value) => value.serialize(serializer),
+            RAny::Promise(value) => value.serialize(serializer),
+            RAny::Language(value) => value.serialize(serializer),
+            RAny::Special(value) => value.serialize(serializer),
+            RAny::Builtin(value) => value.serialize(serializer),
+            RAny::RStr(value) => value.serialize(serializer),
+            RAny::Logicals(value) => value.serialize(serializer),
+            RAny::Integers(value) => value.serialize(serializer),
+            RAny::Doubles(value) => value.serialize(serializer),
+            RAny::Complexes(_complex) => serializer.serialize_unit(),
+            RAny::Strings(value) => value.serialize(serializer),
+            RAny::Dot(_dot) => serializer.serialize_unit(),
+            RAny::Any(_any) => serializer.serialize_unit(),
+            RAny::List(value) => value.serialize(serializer),
+            RAny::Expressions(value) => value.serialize(serializer),
+            RAny::Bytecode(_bytecode) => serializer.serialize_unit(),
+            RAny::ExternalPtr(_externalptr) => serializer.serialize_unit(),
+            RAny::WeakRef(_weakref) => serializer.serialize_unit(),
+            RAny::Raw(value) => value.serialize(serializer),
+            RAny::S4(value) => value.serialize(serializer),
+            RAny::Unknown(_unknown) => serializer.serialize_unit(),
         }
     }
 }

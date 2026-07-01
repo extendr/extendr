@@ -3,8 +3,8 @@
 
 #[test]
 fn test_try_from() {
-    use extendr_api::scalar::{Rbool, Rcplx, Rfloat, Rint};
-    use extendr_api::{r, test, Robj, TryFrom};
+    use extendr_api::scalar::{RBool, RCplx, RFloat, RInt};
+    use extendr_api::{r, test, RObj, TryFrom};
 
     macro_rules! test_matrix {
         (
@@ -28,16 +28,16 @@ fn test_try_from() {
             assert!(i64::try_from(&robj).is_ok() == $int_ok);
             assert!(f32::try_from(&robj).is_ok() == $float_ok);
             assert!(f64::try_from(&robj).is_ok() == $float_ok);
-            assert!(Rint::try_from(&robj).is_ok() == $int_ok);
-            assert!(Rfloat::try_from(&robj).is_ok() == $float_ok);
-            assert!(Rcplx::try_from(&robj).is_ok() == $cplx_ok);
-            assert!(Rbool::try_from(&robj).is_ok() == $bool_ok);
+            assert!(RInt::try_from(&robj).is_ok() == $int_ok);
+            assert!(RFloat::try_from(&robj).is_ok() == $float_ok);
+            assert!(RCplx::try_from(&robj).is_ok() == $cplx_ok);
+            assert!(RBool::try_from(&robj).is_ok() == $bool_ok);
             assert!(bool::try_from(&robj).is_ok() == $bool_ok);
             assert!(<&str>::try_from(&robj).is_ok() == $str_ok);
             assert!(String::try_from(&robj).is_ok() == $str_ok);
             assert!(<&[i32]>::try_from(&robj).is_ok() == $int_slice_ok);
             assert!(<&[f64]>::try_from(&robj).is_ok() == $float_slice_ok);
-            assert!(<Robj>::try_from($value).is_ok() == true);
+            assert!(<RObj>::try_from($value).is_ok() == true);
         };
     }
 

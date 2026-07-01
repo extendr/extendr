@@ -13,14 +13,14 @@ use extendr_ffi::{
 ///     assert_eq!(ls.is_function(), true);
 /// }
 /// ```
-pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
+pub fn global_function<K: Into<RObj>>(key: K) -> Result<RObj> {
     let key = key.into();
     Environment::global().find_function(key)
 }
 
 /// Find a namespace by name.
 ///
-/// See also [`Robj::double_colon`].
+/// See also [`RObj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -28,8 +28,8 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 ///    assert_eq!(find_namespace("stats").is_ok(), true);
 /// }
 /// ```
-/// [`Robj::double_colon`]: Operators::double_colon
-pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
+/// [`RObj::double_colon`]: Operators::double_colon
+pub fn find_namespace<K: Into<RObj>>(key: K) -> Result<Environment> {
     let key = key.into();
     let res = single_threaded(|| call!(".getNamespace", key.clone()));
     if let Ok(res) = res {
@@ -87,7 +87,7 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
     use extendr_ffi::R_NewEnv;
     single_threaded(|| unsafe {
         let env = R_NewEnv(parent.robj.get(), hash as i32, capacity);
-        Robj::from_sexp(env).try_into().unwrap()
+        RObj::from_sexp(env).try_into().unwrap()
     })
 }
 
@@ -115,37 +115,37 @@ pub fn base_env() -> Environment {
 /// }
 /// ```
 pub fn base_namespace() -> Environment {
-    unsafe { Robj::from_sexp(R_BaseNamespace).try_into().unwrap() }
+    unsafe { RObj::from_sexp(R_BaseNamespace).try_into().unwrap() }
 }
 
 /// Current srcref, for debuggers
-pub fn srcref() -> Robj {
-    unsafe { Robj::from_sexp(R_Srcref) }
+pub fn srcref() -> RObj {
+    unsafe { RObj::from_sexp(R_Srcref) }
 }
 
 /// The nil object
-pub fn nil_value() -> Robj {
-    unsafe { Robj::from_sexp(R_NilValue) }
+pub fn nil_value() -> RObj {
+    unsafe { RObj::from_sexp(R_NilValue) }
 }
 
 /// ".Generic"
-pub fn dot_generic() -> Robj {
-    unsafe { Robj::from_sexp(R_dot_Generic) }
+pub fn dot_generic() -> RObj {
+    unsafe { RObj::from_sexp(R_dot_Generic) }
 }
 
 /// NA_STRING as a CHARSXP
-pub fn na_string() -> Robj {
-    unsafe { Robj::from_sexp(R_NaString) }
+pub fn na_string() -> RObj {
+    unsafe { RObj::from_sexp(R_NaString) }
 }
 
 /// "" as a CHARSXP
-pub fn blank_string() -> Robj {
-    unsafe { Robj::from_sexp(R_BlankString) }
+pub fn blank_string() -> RObj {
+    unsafe { RObj::from_sexp(R_BlankString) }
 }
 
 /// "" as a STRSXP
-pub fn blank_scalar_string() -> Robj {
-    unsafe { Robj::from_sexp(R_BlankScalarString) }
+pub fn blank_scalar_string() -> RObj {
+    unsafe { RObj::from_sexp(R_BlankScalarString) }
 }
 
 /// Parse a string into an R executable object
@@ -170,10 +170,10 @@ pub fn parse(code: &str) -> Result<Expressions> {
 ///    assert_eq!(res, r!(3.));
 /// }
 /// ```
-pub fn eval_string(code: &str) -> Result<Robj> {
+pub fn eval_string(code: &str) -> Result<RObj> {
     single_threaded(|| {
         let expr = Expressions::from_str(code)?;
-        let mut res = Robj::from(());
+        let mut res = RObj::from(());
         if let Some(expr) = expr.as_expressions() {
             for lang in expr.values() {
                 res = lang.eval()?
@@ -194,7 +194,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 ///    assert_eq!(res, r!(3.));
 /// }
 /// ```
-pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
+pub fn eval_string_with_params(code: &str, values: &[&RObj]) -> Result<RObj> {
     single_threaded(|| {
         let env = Environment::new_with_parent(Environment::global());
         for (i, &v) in values.iter().enumerate() {
@@ -203,7 +203,7 @@ pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
         }
 
         let expr = Expressions::from_str(code)?;
-        let mut res = Robj::from(());
+        let mut res = RObj::from(());
         if let Some(expr) = expr.as_expressions() {
             for lang in expr.values() {
                 res = lang.eval_with_env(&env)?

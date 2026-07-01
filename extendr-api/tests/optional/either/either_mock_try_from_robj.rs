@@ -3,10 +3,10 @@ use extendr_api::{error::Result, prelude::*};
 #[derive(Debug, PartialEq)]
 struct Success {}
 
-impl TryFrom<&Robj> for Success {
+impl TryFrom<&RObj> for Success {
     type Error = Error;
 
-    fn try_from(_: &Robj) -> Result<Self> {
+    fn try_from(_: &RObj) -> Result<Self> {
         Ok(Success {})
     }
 }
@@ -14,10 +14,10 @@ impl TryFrom<&Robj> for Success {
 #[derive(Debug, PartialEq)]
 struct Failure {}
 
-impl TryFrom<&Robj> for Failure {
+impl TryFrom<&RObj> for Failure {
     type Error = Error;
 
-    fn try_from(_: &Robj) -> Result<Self> {
+    fn try_from(_: &RObj) -> Result<Self> {
         Err(Error::Other(String::new()))
     }
 }
@@ -27,8 +27,8 @@ fn try_from_one_match() {
     test! {
         let robj = r!(());
 
-        let left_match = <Either<Success, Failure> as TryFrom<&Robj>>::try_from(&robj);
-        let right_match = <Either<Failure, Success> as TryFrom<&Robj>>::try_from(&robj);
+        let left_match = <Either<Success, Failure> as TryFrom<&RObj>>::try_from(&robj);
+        let right_match = <Either<Failure, Success> as TryFrom<&RObj>>::try_from(&robj);
 
         assert_eq!(left_match, Ok(Left(Success{})));
         assert_eq!(right_match, Ok(Right(Success{})));
@@ -40,7 +40,7 @@ fn try_from_both_match_return_left() {
     test! {
         let robj = r!(());
 
-        let both_match = <Either<Success, Success> as TryFrom<&Robj>>::try_from(&robj);
+        let both_match = <Either<Success, Success> as TryFrom<&RObj>>::try_from(&robj);
 
         assert_eq!(both_match, Ok(Left(Success{})));
     }
@@ -51,7 +51,7 @@ fn try_from_none_match_return_error() {
     test! {
         let robj = r!(());
 
-        let none_match = <Either<Failure, Failure> as TryFrom<&Robj>>::try_from(&robj);
+        let none_match = <Either<Failure, Failure> as TryFrom<&RObj>>::try_from(&robj);
 
         assert_eq!(
             none_match,

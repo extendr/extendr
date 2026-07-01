@@ -6,9 +6,9 @@ use std::collections::{HashMap, HashSet};
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-/// Deserialize from a Robj.
+/// Deserialize from a RObj.
 ///
-/// Like JSON, we can use a Robj as a storage format.
+/// Like JSON, we can use a RObj as a storage format.
 ///
 /// For example if creating vectors from a RDS file or returning a structure
 /// or just doing a conversion.
@@ -31,11 +31,11 @@ fn test_deserialize_robj() {
         assert_eq!(from_robj::<Int>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
-        struct RInt(Rint);
-        assert_eq!(from_robj::<RInt>(&r!(1)), Ok(RInt(1.into())));
-        assert_eq!(from_robj::<RInt>(&r!(1.0)), Ok(RInt(1.into())));
-        assert_eq!(from_robj::<RInt>(&r!(Rint::na())).is_err(), true);
-        assert_eq!(from_robj::<RInt>(&r!(NULL)).is_err(), true);
+        struct RInt1(RInt);
+        assert_eq!(from_robj::<RInt1>(&r!(1)), Ok(RInt1(1.into())));
+        assert_eq!(from_robj::<RInt1>(&r!(1.0)), Ok(RInt1(1.into())));
+        assert_eq!(from_robj::<RInt1>(&r!(RInt::na())).is_err(), true);
+        assert_eq!(from_robj::<RInt1>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Float(f64);
@@ -44,11 +44,11 @@ fn test_deserialize_robj() {
         assert_eq!(from_robj::<Float>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
-        struct RFloat(Rfloat);
-        assert_eq!(from_robj::<RFloat>(&r!(1)), Ok(RFloat(1.0.into())));
-        assert_eq!(from_robj::<RFloat>(&r!(1.0)), Ok(RFloat(1.0.into())));
-        assert_eq!(from_robj::<RFloat>(&r!(Rfloat::na())).is_err(), true);
-        assert_eq!(from_robj::<RFloat>(&r!(NULL)).is_err(), true);
+        struct RFloat1(RFloat);
+        assert_eq!(from_robj::<RFloat1>(&r!(1)), Ok(RFloat1(1.0.into())));
+        assert_eq!(from_robj::<RFloat1>(&r!(1.0)), Ok(RFloat1(1.0.into())));
+        assert_eq!(from_robj::<RFloat1>(&r!(RFloat::na())).is_err(), true);
+        assert_eq!(from_robj::<RFloat1>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Bool(bool);
@@ -57,11 +57,11 @@ fn test_deserialize_robj() {
         assert_eq!(from_robj::<Bool>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
-        struct RBool(Rbool);
-        assert_eq!(from_robj::<RBool>(&r!(TRUE)), Ok(RBool(TRUE)));
-        assert_eq!(from_robj::<RBool>(&r!(FALSE)), Ok(RBool(FALSE)));
-        assert_eq!(from_robj::<RBool>(&r!(Rbool::na())).is_err(), true);
-        assert_eq!(from_robj::<RBool>(&r!(NULL)).is_err(), true);
+        struct RBool1(RBool);
+        assert_eq!(from_robj::<RBool1>(&r!(TRUE)), Ok(RBool1(TRUE)));
+        assert_eq!(from_robj::<RBool1>(&r!(FALSE)), Ok(RBool1(FALSE)));
+        assert_eq!(from_robj::<RBool1>(&r!(RBool::na())).is_err(), true);
+        assert_eq!(from_robj::<RBool1>(&r!(NULL)).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct VInt(Vec<i32>);
@@ -127,20 +127,20 @@ fn test_deserialize_robj() {
         let expected = Enum::Struct { a: 1 };
         assert_eq!(expected, from_robj(&j).unwrap());
 
-        // Many things will generate a Robj.
-        // But note that the original Robj will not be copied verbatim.
-        // The Deserialize trait for Robj can also be used to generate
-        // JSON and other formats for Robj.
+        // Many things will generate a RObj.
+        // But note that the original RObj will not be copied verbatim.
+        // The Deserialize trait for RObj can also be used to generate
+        // JSON and other formats for RObj.
         #[derive(Deserialize, PartialEq, Debug)]
-        struct MyRobj(Robj);
-        assert_eq!(from_robj::<MyRobj>(&r!(TRUE)), Ok(MyRobj(r!(TRUE))));
-        assert_eq!(from_robj::<MyRobj>(&r!(1)), Ok(MyRobj(r!(1))));
-        assert_eq!(from_robj::<MyRobj>(&r!(1.0)), Ok(MyRobj(r!(1.0))));
-        assert_eq!(from_robj::<MyRobj>(&r!("xyz")), Ok(MyRobj(r!("xyz"))));
+        struct MyRObj(RObj);
+        assert_eq!(from_robj::<MyRObj>(&r!(TRUE)), Ok(MyRObj(r!(TRUE))));
+        assert_eq!(from_robj::<MyRObj>(&r!(1)), Ok(MyRObj(r!(1))));
+        assert_eq!(from_robj::<MyRObj>(&r!(1.0)), Ok(MyRObj(r!(1.0))));
+        assert_eq!(from_robj::<MyRObj>(&r!("xyz")), Ok(MyRObj(r!("xyz"))));
 
         // Sequences are always converted to lists.
-        assert_eq!(from_robj::<MyRobj>(&r!([TRUE, FALSE])), Ok(MyRobj(r!(list!(TRUE, FALSE)))));
-        assert_eq!(from_robj::<MyRobj>(&r!([1, 2])), Ok(MyRobj(r!(list!(1, 2)))));
+        assert_eq!(from_robj::<MyRObj>(&r!([TRUE, FALSE])), Ok(MyRObj(r!(list!(TRUE, FALSE)))));
+        assert_eq!(from_robj::<MyRObj>(&r!([1, 2])), Ok(MyRObj(r!(list!(1, 2)))));
 
         // If you use a wrapper type, conversions are more specific.
         #[derive(Deserialize, PartialEq, Debug)]

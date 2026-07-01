@@ -1,4 +1,4 @@
-use super::scalar::Rint;
+use super::scalar::RInt;
 use super::*;
 use extendr_ffi::{
     dataptr, R_xlen_t, INTEGER_GET_REGION, INTEGER_IS_SORTED, INTEGER_NO_NA, SET_INTEGER_ELT,
@@ -14,19 +14,19 @@ use std::iter::FromIterator;
 ///     let mut vec = (0..5).collect::<Integers>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10);
 ///     assert_eq!(vec.elt(0), 10);
-///     let sum = vec.iter().sum::<Rint>();
+///     let sum = vec.iter().sum::<RInt>();
 ///     assert_eq!(sum, 60);
 /// }
 /// ```
 #[derive(PartialEq, Clone)]
 pub struct Integers {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 use extendr_ffi::SEXPTYPE::INTSXP;
 macros::gen_vector_wrapper_impl!(
     vector_type: Integers, // Implements for
-    scalar_type: Rint,     // Element type
+    scalar_type: RInt,     // Element type
     primitive_type: i32,   // Raw element type
     r_prefix: INTEGER,     // `R` functions prefix
     SEXP: INTSXP,          // `SEXP`
@@ -44,7 +44,7 @@ macros::gen_from_iterator_impl!(
 
 impl Integers {
     /// Get a region of elements from the vector.
-    pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
+    pub fn get_region(&self, index: usize, dest: &mut [RInt]) -> usize {
         unsafe {
             let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
             INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
@@ -52,19 +52,19 @@ impl Integers {
     }
 
     /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
-    pub fn is_sorted(&self) -> Rbool {
+    pub fn is_sorted(&self) -> RBool {
         unsafe { INTEGER_IS_SORTED(self.get()).into() }
     }
 
     /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
-    pub fn no_na(&self) -> Rbool {
+    pub fn no_na(&self) -> RBool {
         unsafe { INTEGER_NO_NA(self.get()).into() }
     }
 }
 
 // TODO: this should be a trait.
 impl Integers {
-    pub fn set_elt(&mut self, index: usize, val: Rint) {
+    pub fn set_elt(&mut self, index: usize, val: RInt) {
         single_threaded(|| unsafe {
             SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.0);
         })
@@ -72,22 +72,22 @@ impl Integers {
 }
 
 impl Deref for Integers {
-    type Target = [Rint];
+    type Target = [RInt];
 
-    /// Treat Integers as if it is a slice, like `Vec<Rint>`
+    /// Treat Integers as if it is a slice, like `Vec<RInt>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rint;
+            let ptr = dataptr(self.get()) as *const RInt;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
 }
 
 impl DerefMut for Integers {
-    /// Treat Integers as if it is a mutable slice, like `Vec<Rint>`
+    /// Treat Integers as if it is a mutable slice, like `Vec<RInt>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rint;
+            let ptr = dataptr(self.get_mut()) as *mut RInt;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -137,7 +137,7 @@ mod tests {
     fn iter() {
         test! {
             let vec = Integers::from_values(0..3);
-            assert_eq!(vec.iter().sum::<Rint>(), 3);
+            assert_eq!(vec.iter().sum::<RInt>(), 3);
         }
     }
 
@@ -180,7 +180,7 @@ mod tests {
     fn new_with_na() {
         test! {
             let vec = Integers::new_with_na(10);
-            let manual_vec = (0..10).map(|_| Rint::na()).collect::<Integers>();
+            let manual_vec = (0..10).map(|_| RInt::na()).collect::<Integers>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }
@@ -190,7 +190,7 @@ mod tests {
     fn test_vec_i32_integers_conversion() {
         test! {
             let int_vec = vec![3,4,0,-2];
-            let int_vec_robj: Robj = int_vec.clone().into();
+            let int_vec_robj: RObj = int_vec.clone().into();
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
     }

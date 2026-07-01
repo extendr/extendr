@@ -14,7 +14,7 @@ pub fn list(item: TokenStream) -> TokenStream {
     } else {
         let values: Vec<proc_macro2::TokenStream> = nv
             .iter()
-            .map(|(_n, v)| quote!( extendr_api::Robj::from(#v) ))
+            .map(|(_n, v)| quote!( extendr_api::RObj::from(#v) ))
             .collect();
         if nv.iter().any(|(n, _v)| !n.is_empty()) {
             let names: Vec<proc_macro2::TokenStream> =

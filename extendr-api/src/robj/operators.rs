@@ -3,9 +3,9 @@ use crate::*;
 use extendr_ffi::Rf_lcons;
 use std::ops::{Add, Div, Mul, Sub};
 ///////////////////////////////////////////////////////////////
-/// The following impls add operators to Robj.
+/// The following impls add operators to RObj.
 ///
-pub trait Operators: Rinternals {
+pub trait Operators: RInternals {
     /// Do the equivalent of x$y
     /// ```
     /// use extendr_api::prelude::*;
@@ -16,7 +16,7 @@ pub trait Operators: Rinternals {
     /// assert_eq!(env.dollar("b").unwrap(), r!(2));
     /// }
     /// ```
-    fn dollar<T>(&self, symbol: T) -> Result<Robj>
+    fn dollar<T>(&self, symbol: T) -> Result<RObj>
     where
         T: AsRef<str>,
     {
@@ -33,9 +33,9 @@ pub trait Operators: Rinternals {
     /// assert_eq!(vec.slice(2..=3).unwrap(), r!([20, 30]));
     /// }
     /// ```
-    fn slice<T>(&self, rhs: T) -> Result<Robj>
+    fn slice<T>(&self, rhs: T) -> Result<RObj>
     where
-        T: Into<Robj>,
+        T: Into<RObj>,
     {
         call!("`[`", self.as_robj(), rhs.into())
     }
@@ -49,9 +49,9 @@ pub trait Operators: Rinternals {
     /// assert_eq!(vec.index(2..=3).is_err(), true);
     /// }
     /// ```
-    fn index<T>(&self, rhs: T) -> Result<Robj>
+    fn index<T>(&self, rhs: T) -> Result<RObj>
     where
-        T: Into<Robj>,
+        T: Into<RObj>,
     {
         call!("`[[`", self.as_robj(), rhs.into())
     }
@@ -66,9 +66,9 @@ pub trait Operators: Rinternals {
     ///     assert_eq!(tilde.inherits("formula"), true);
     /// }
     /// ```
-    fn tilde<T>(&self, rhs: T) -> Result<Robj>
+    fn tilde<T>(&self, rhs: T) -> Result<RObj>
     where
-        T: Into<Robj>,
+        T: Into<RObj>,
     {
         call!("`~`", self.as_robj(), rhs.into())
     }
@@ -83,9 +83,9 @@ pub trait Operators: Rinternals {
     ///     assert_eq!(base_list.is_function(), true);
     /// }
     /// ```
-    fn double_colon<T>(&self, rhs: T) -> Result<Robj>
+    fn double_colon<T>(&self, rhs: T) -> Result<RObj>
     where
-        T: Into<Robj>,
+        T: Into<RObj>,
     {
         call!("`::`", self.as_robj(), rhs.into())
     }
@@ -99,10 +99,10 @@ pub trait Operators: Rinternals {
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```
-    fn call(&self, args: Pairlist) -> Result<Robj> {
+    fn call(&self, args: PairList) -> Result<RObj> {
         if self.is_function() {
             single_threaded(|| unsafe {
-                let call = Robj::from_sexp(Rf_lcons(self.get(), args.get()));
+                let call = RObj::from_sexp(Rf_lcons(self.get(), args.get()));
                 call.eval()
             })
         } else {
@@ -111,11 +111,11 @@ pub trait Operators: Rinternals {
     }
 }
 
-impl<Rhs> Add<Rhs> for Robj
+impl<Rhs> Add<Rhs> for RObj
 where
-    Rhs: Into<Robj>,
+    Rhs: Into<RObj>,
 {
-    type Output = Robj;
+    type Output = RObj;
 
     /// Add two R objects, consuming the left hand side.
     /// panics on error.
@@ -139,15 +139,15 @@ where
     /// }
     /// ```
     fn add(self, rhs: Rhs) -> Self::Output {
-        call!("`+`", self, rhs.into()).expect("Robj add failed")
+        call!("`+`", self, rhs.into()).expect("RObj add failed")
     }
 }
 
-impl<Rhs> Sub<Rhs> for Robj
+impl<Rhs> Sub<Rhs> for RObj
 where
-    Rhs: Into<Robj>,
+    Rhs: Into<RObj>,
 {
-    type Output = Robj;
+    type Output = RObj;
 
     /// Subtract two R objects, consuming the left hand side.
     /// panics on error.
@@ -171,15 +171,15 @@ where
     /// }
     /// ```
     fn sub(self, rhs: Rhs) -> Self::Output {
-        call!("`-`", self, rhs.into()).expect("Robj subtract failed")
+        call!("`-`", self, rhs.into()).expect("RObj subtract failed")
     }
 }
 
-impl<Rhs> Mul<Rhs> for Robj
+impl<Rhs> Mul<Rhs> for RObj
 where
-    Rhs: Into<Robj>,
+    Rhs: Into<RObj>,
 {
-    type Output = Robj;
+    type Output = RObj;
 
     /// Multiply two R objects, consuming the left hand side.
     /// panics on error.
@@ -203,15 +203,15 @@ where
     /// }
     /// ```
     fn mul(self, rhs: Rhs) -> Self::Output {
-        call!("`*`", self, rhs.into()).expect("Robj multiply failed")
+        call!("`*`", self, rhs.into()).expect("RObj multiply failed")
     }
 }
 
-impl<Rhs> Div<Rhs> for Robj
+impl<Rhs> Div<Rhs> for RObj
 where
-    Rhs: Into<Robj>,
+    Rhs: Into<RObj>,
 {
-    type Output = Robj;
+    type Output = RObj;
 
     /// Divide two R objects, consuming the left hand side.
     /// panics on error.
@@ -235,15 +235,15 @@ where
     /// }
     /// ```
     fn div(self, rhs: Rhs) -> Self::Output {
-        call!("`/`", self, rhs.into()).expect("Robj divide failed")
+        call!("`/`", self, rhs.into()).expect("RObj divide failed")
     }
 }
 
-impl Operators for Robj {}
+impl Operators for RObj {}
 
 // Calls are still experimental.
 //
-// impl<Args> Fn(Args) for Robj
+// impl<Args> Fn(Args) for RObj
 // {
 //     extern "rust-call" fn call(&self, args: Args) -> Self::Output {
 

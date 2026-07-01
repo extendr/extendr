@@ -1,4 +1,4 @@
-use super::scalar::{c64, Rcplx};
+use super::scalar::{c64, RCplx};
 use super::*;
 use extendr_ffi::{dataptr, R_xlen_t, Rcomplex, COMPLEX_GET_REGION, SEXPTYPE::CPLXSXP};
 use std::iter::FromIterator;
@@ -15,12 +15,12 @@ use std::iter::FromIterator;
 /// ```
 #[derive(PartialEq, Clone)]
 pub struct Complexes {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 macros::gen_vector_wrapper_impl!(
     vector_type: Complexes,
-    scalar_type: Rcplx,
+    scalar_type: RCplx,
     primitive_type: c64,
     r_prefix: COMPLEX,
     SEXP: CPLXSXP,
@@ -31,14 +31,14 @@ macros::gen_vector_wrapper_impl!(
 macros::gen_from_iterator_impl!(
     vector_type: Complexes,
     collect_from_type: c64,
-    underlying_type: Rcplx,
+    underlying_type: RCplx,
     SEXP: CPLXSXP,
-    assignment: |dest: &mut Rcplx, val: c64| *dest = val.into()
+    assignment: |dest: &mut RCplx, val: c64| *dest = val.into()
 );
 
 impl Complexes {
     /// Get a region of elements from the vector.
-    pub fn get_region(&self, index: usize, dest: &mut [Rcplx]) -> usize {
+    pub fn get_region(&self, index: usize, dest: &mut [RCplx]) -> usize {
         unsafe {
             let ptr: *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
             COMPLEX_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
@@ -49,7 +49,7 @@ impl Complexes {
 // There is no SET_COMPLEX_ELT
 //
 // impl Complexes {
-//     pub fn set_elt(&mut self, index: usize, val: Rcplx) {
+//     pub fn set_elt(&mut self, index: usize, val: RCplx) {
 //         unsafe {
 //             SET_COMPLEX_ELT(self.get(), index as R_xlen_t, val.inner());
 //         }
@@ -57,22 +57,22 @@ impl Complexes {
 // }
 
 impl Deref for Complexes {
-    type Target = [Rcplx];
+    type Target = [RCplx];
 
-    /// Treat Complexes as if it is a slice, like `Vec<Rcplx>`
+    /// Treat Complexes as if it is a slice, like `Vec<RCplx>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rcplx;
+            let ptr = dataptr(self.get()) as *const RCplx;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
 }
 
 impl DerefMut for Complexes {
-    /// Treat Complexes as if it is a mutable slice, like `Vec<Rcplx>`
+    /// Treat Complexes as if it is a mutable slice, like `Vec<RCplx>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rcplx;
+            let ptr = dataptr(self.get_mut()) as *mut RCplx;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -115,7 +115,7 @@ mod tests {
         use crate::na::CanBeNA;
         test! {
             let vec = Complexes::new_with_na(10);
-            let manual_vec = (0..10).map(|_| Rcplx::na()).collect::<Complexes>();
+            let manual_vec = (0..10).map(|_| RCplx::na()).collect::<Complexes>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }

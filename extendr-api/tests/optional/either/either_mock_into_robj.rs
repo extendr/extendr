@@ -3,7 +3,7 @@ use extendr_api::prelude::*;
 #[derive(Debug, PartialEq)]
 struct Mock {}
 
-impl From<Mock> for Robj {
+impl From<Mock> for RObj {
     fn from(_: Mock) -> Self {
         r!(())
     }
@@ -11,7 +11,7 @@ impl From<Mock> for Robj {
 
 struct NotExecutedMock {}
 
-impl From<NotExecutedMock> for Robj {
+impl From<NotExecutedMock> for RObj {
     fn from(_: NotExecutedMock) -> Self {
         unreachable!()
     }
@@ -21,12 +21,12 @@ impl From<NotExecutedMock> for Robj {
 fn into_robj() {
     test! {
         let left : Either<Mock, NotExecutedMock> = Left(Mock{});
-        let robj : Robj = left.into();
+        let robj : RObj = left.into();
 
         assert_eq!(r!(()), robj);
 
         let right : Either<NotExecutedMock, Mock> = Right(Mock{});
-        let robj : Robj = right.into();
+        let robj : RObj = right.into();
 
         assert_eq!(r!(()), robj);
     }

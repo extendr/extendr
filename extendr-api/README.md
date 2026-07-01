@@ -21,8 +21,8 @@ The [API documentation on doc.rs](https://docs.rs/extendr-api/latest/extendr_api
 
 ## Overview
 
-See `Robj` for much of the content of this crate.
-`Robj` provides a safe wrapper for the R object type.
+See `RObj` for much of the content of this crate.
+`RObj` provides a safe wrapper for the R object type.
 
 Use attributes and macros to export to R.
 
@@ -49,7 +49,7 @@ In R:
 result <- fred(1)
 ```
 
-`Robj` is a wrapper for R objects.
+`RObj` is a wrapper for R objects.
 The `r!()` and `R!()` macros let you build R objects
 using Rust and R syntax respectively.
 
@@ -251,7 +251,7 @@ extendr-api has some optional features behind these feature gates:
 * `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 * `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 
-extendr-api has different encodings (conversions) of a `Result<T,E>` into an `Robj`.
+extendr-api has different encodings (conversions) of a `Result<T,E>` into an `RObj`.
 In below `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
 Likewise `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 extendr-api

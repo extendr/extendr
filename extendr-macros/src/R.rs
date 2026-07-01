@@ -28,7 +28,7 @@ pub fn R(item: TokenStream, expand_params: bool) -> TokenStream {
                         expressions.len(),
                         &src[start + 2 + end + 2..]
                     );
-                    expressions.push(parse_quote!(&extendr_api::Robj::from(#param)));
+                    expressions.push(parse_quote!(&extendr_api::RObj::from(#param)));
                 } else {
                     return quote!(compile_error!("Not a valid rust expression."));
                 }
@@ -82,7 +82,7 @@ mod test {
             format!(
                 "{}",
                 quote!({
-                    let params = &[&extendr_api::Robj::from(1)];
+                    let params = &[&extendr_api::RObj::from(1)];
                     extendr_api::functions::eval_string_with_params("a <-  param.0 ", params)
                 })
             )

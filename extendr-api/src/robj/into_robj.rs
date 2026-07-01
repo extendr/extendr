@@ -27,21 +27,21 @@ pub(crate) fn str_to_character(s: &str) -> SEXP {
     }
 }
 
-/// Convert a null to an Robj.
-impl From<()> for Robj {
+/// Convert a null to an RObj.
+impl From<()> for RObj {
     fn from(_: ()) -> Self {
         // Note: we do not need to protect this.
-        unsafe { Robj::from_sexp(R_NilValue) }
+        unsafe { RObj::from_sexp(R_NilValue) }
     }
 }
 
-/// Convert a [`Result`] to an [`Robj`].
+/// Convert a [`Result`] to an [`RObj`].
 ///
 /// To use the `?`-operator, an extendr-function must return either [`extendr_api::error::Result`] or [`std::result::Result`].
 /// Use of `panic!` in extendr is discouraged due to memory leakage.
 ///
 /// Alternative behaviors enabled by feature toggles:
-/// extendr-api supports different conversions from [`Result<T,E>`] into `Robj`.
+/// extendr-api supports different conversions from [`Result<T,E>`] into `RObj`.
 /// Below, `x_ok` represents an R variable on R side which was returned from rust via `T::into_robj()` or similar.
 /// Likewise, `x_err` was returned to R side from rust via `E::into_robj()` or similar.
 /// extendr-api
@@ -62,9 +62,9 @@ impl From<()> for Robj {
 ///
 /// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(not(any(feature = "result_list", feature = "result_condition")))]
-impl<T, E> From<std::result::Result<T, E>> for Robj
+impl<T, E> From<std::result::Result<T, E>> for RObj
 where
-    T: Into<Robj>,
+    T: Into<RObj>,
     E: std::fmt::Debug + std::fmt::Display,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
@@ -75,17 +75,17 @@ where
     }
 }
 
-/// Convert a [`Result`] to an [`Robj`]. Return either `Ok` value or `Err` value wrapped in an
+/// Convert a [`Result`] to an [`RObj`]. Return either `Ok` value or `Err` value wrapped in an
 /// error condition. This allows using `?` operator in functions
-/// and returning [`Result<T>`] without panicking on `Err`. `T` must implement [`IntoRobj`].
+/// and returning [`Result<T>`] without panicking on `Err`. `T` must implement [`IntoRObj`].
 ///
 /// Returns `Ok` value as is. Returns `Err` wrapped in an R error condition. The `Err` is placed in
 /// $value field of the condition, and its message is set to 'extendr_err'
 #[cfg(all(feature = "result_condition", not(feature = "result_list")))]
-impl<T, E> From<std::result::Result<T, E>> for Robj
+impl<T, E> From<std::result::Result<T, E>> for RObj
 where
-    T: Into<Robj>,
-    E: Into<Robj>,
+    T: Into<RObj>,
+    E: Into<RObj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         use crate as extendr_api;
@@ -108,10 +108,10 @@ where
 ///
 /// [`extendr_api::error::Result`]: crate::error::Result
 #[cfg(feature = "result_list")]
-impl<T, E> From<std::result::Result<T, E>> for Robj
+impl<T, E> From<std::result::Result<T, E>> for RObj
 where
-    T: Into<Robj>,
-    E: Into<Robj>,
+    T: Into<RObj>,
+    E: Into<RObj>,
 {
     fn from(res: std::result::Result<T, E>) -> Self {
         use crate as extendr_api;
@@ -132,8 +132,8 @@ where
     }
 }
 
-// string conversions from Error trait to Robj and String
-impl From<Error> for Robj {
+// string conversions from Error trait to RObj and String
+impl From<Error> for RObj {
     fn from(res: Error) -> Self {
         res.to_string().into()
     }
@@ -144,28 +144,28 @@ impl From<Error> for String {
     }
 }
 
-/// Convert an Robj reference into a borrowed Robj.
-impl From<&Robj> for Robj {
+/// Convert an RObj reference into a borrowed RObj.
+impl From<&RObj> for RObj {
     // Note: we should probably have a much better reference
     // mechanism as double-free or underprotection is a distinct possibility.
-    fn from(val: &Robj) -> Self {
-        unsafe { Robj::from_sexp(val.get()) }
+    fn from(val: &RObj) -> Self {
+        unsafe { RObj::from_sexp(val.get()) }
     }
 }
 
 /// This is an extension trait to provide a convenience method `into_robj()`.
 ///
-/// Defer to `From<T> for Robj`-impls if you have custom types.
+/// Defer to `From<T> for RObj`-impls if you have custom types.
 ///
-pub trait IntoRobj {
-    fn into_robj(self) -> Robj;
+pub trait IntoRObj {
+    fn into_robj(self) -> RObj;
 }
 
-impl<T> IntoRobj for T
+impl<T> IntoRObj for T
 where
-    Robj: From<T>,
+    RObj: From<T>,
 {
-    fn into_robj(self) -> Robj {
+    fn into_robj(self) -> RObj {
         self.into()
     }
 }
@@ -294,7 +294,7 @@ macro_rules! impl_complex_tvv {
 }
 
 impl_complex_tvv!(c64);
-impl_complex_tvv!(Rcplx);
+impl_complex_tvv!(RCplx);
 impl_complex_tvv!((f64, f64));
 
 macro_rules! impl_integer_tvv {
@@ -410,7 +410,7 @@ macro_rules! impl_str_tvv {
 impl_str_tvv! {&str}
 impl_str_tvv! {String}
 
-impl ToVectorValue for Rstr {
+impl ToVectorValue for RStr {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::STRSXP
     }
@@ -423,7 +423,7 @@ impl ToVectorValue for Rstr {
     }
 }
 
-impl ToVectorValue for &Rstr {
+impl ToVectorValue for &RStr {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::STRSXP
     }
@@ -436,7 +436,7 @@ impl ToVectorValue for &Rstr {
     }
 }
 
-impl ToVectorValue for Option<Rstr> {
+impl ToVectorValue for Option<RStr> {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::STRSXP
     }
@@ -453,35 +453,35 @@ impl ToVectorValue for Option<Rstr> {
     }
 }
 
-impl TryFrom<&Robj> for Rstr {
+impl TryFrom<&RObj> for RStr {
     type Error = crate::Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let sexptype = robj.sexptype();
         if let SEXPTYPE::STRSXP = sexptype {
             if robj.len() == 1 {
                 let strs = Strings::try_from(robj)?;
                 Ok(strs.elt(0))
             } else {
-                Err(Error::ExpectedRstr(robj.clone()))
+                Err(Error::ExpectedRStr(robj.clone()))
             }
         } else if let SEXPTYPE::CHARSXP = sexptype {
-            Ok(Rstr { robj: robj.clone() })
+            Ok(RStr { robj: robj.clone() })
         } else {
-            Err(Error::ExpectedRstr(robj.clone()))
+            Err(Error::ExpectedRStr(robj.clone()))
         }
     }
 }
 
-impl TryFrom<Robj> for Rstr {
+impl TryFrom<RObj> for RStr {
     type Error = crate::Error;
 
-    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: RObj) -> std::result::Result<Self, Self::Error> {
         Self::try_from(&value)
     }
 }
 
-impl GetSexp for Rstr {
+impl GetSexp for RStr {
     unsafe fn get(&self) -> SEXP {
         self.robj.get()
     }
@@ -490,22 +490,22 @@ impl GetSexp for Rstr {
         self.robj.get_mut()
     }
 
-    fn as_robj(&self) -> &Robj {
+    fn as_robj(&self) -> &RObj {
         &self.robj
     }
 
-    fn as_robj_mut(&mut self) -> &mut Robj {
+    fn as_robj_mut(&mut self) -> &mut RObj {
         &mut self.robj
     }
 }
 
 // These traits all derive from GetSexp with default implementations
-impl Length for Rstr {}
-impl Types for Rstr {}
-impl Conversions for Rstr {}
-impl Rinternals for Rstr {}
-impl Slices for Rstr {}
-impl Operators for Rstr {}
+impl Length for RStr {}
+impl Types for RStr {}
+impl Conversions for RStr {}
+impl RInternals for RStr {}
+impl Slices for RStr {}
+impl Operators for RStr {}
 
 impl ToVectorValue for bool {
     fn sexptype() -> SEXPTYPE {
@@ -533,7 +533,7 @@ impl ToVectorValue for &bool {
     }
 }
 
-impl ToVectorValue for Rbool {
+impl ToVectorValue for RBool {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::LGLSXP
     }
@@ -546,7 +546,7 @@ impl ToVectorValue for Rbool {
     }
 }
 
-impl ToVectorValue for &Rbool {
+impl ToVectorValue for &RBool {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::LGLSXP
     }
@@ -573,7 +573,7 @@ impl ToVectorValue for Option<bool> {
     }
 }
 
-impl<T> From<&Option<T>> for Robj
+impl<T> From<&Option<T>> for RObj
 where
     Option<T>: ToVectorValue + Clone,
 {
@@ -583,7 +583,7 @@ where
 }
 
 // Not thread safe.
-fn fixed_size_collect<I>(iter: I, len: usize) -> Robj
+fn fixed_size_collect<I>(iter: I, len: usize) -> RObj
 where
     I: Iterator,
     I: Sized,
@@ -593,7 +593,7 @@ where
         // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
         if sexptype != SEXPTYPE::NILSXP {
-            let res = Robj::alloc_vector(sexptype, len);
+            let res = RObj::alloc_vector(sexptype, len);
             let sexp = res.get();
             match sexptype {
                 SEXPTYPE::REALSXP => {
@@ -637,14 +637,14 @@ where
             }
             res
         } else {
-            Robj::from(())
+            RObj::from(())
         }
     })
 }
 
-/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
-pub trait RobjItertools: Iterator {
-    /// Convert a wide range of iterators to Robj.
+/// Extensions to iterators for R objects including [RObjIterTools::collect_robj()].
+pub trait RObjIterTools: Iterator {
+    /// Convert a wide range of iterators to RObj.
     /// ```
     /// use extendr_api::prelude::*;
     ///
@@ -666,7 +666,7 @@ pub trait RobjItertools: Iterator {
     /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
     /// }
     /// ```
-    fn collect_robj(self) -> Robj
+    fn collect_robj(self) -> RObj
     where
         Self: Iterator,
         Self: Sized,
@@ -694,7 +694,7 @@ pub trait RobjItertools: Iterator {
         Self: Iterator,
         Self: Sized,
         Self::Item: ToVectorValue,
-        Robj: for<'a> AsTypedSlice<'a, Self::Item>,
+        RObj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
         let mut vector = self.collect_robj();
         let prod = dims.iter().product::<usize>();
@@ -714,10 +714,10 @@ pub trait RobjItertools: Iterator {
 }
 
 // Thanks to *pretzelhammer* on stackoverflow for this.
-impl<T> RobjItertools for T where T: Iterator {}
+impl<T> RObjIterTools for T where T: Iterator {}
 
 // Scalars which are ToVectorValue
-impl<T> From<T> for Robj
+impl<T> From<T> for RObj
 where
     T: ToVectorValue,
 {
@@ -728,9 +728,9 @@ where
 
 macro_rules! impl_from_as_iterator {
     ($t: ty) => {
-        impl<T> From<$t> for Robj
+        impl<T> From<$t> for RObj
         where
-            $t: RobjItertools,
+            $t: RObjIterTools,
             <$t as Iterator>::Item: ToVectorValue,
             T: ToVectorValue,
         {
@@ -741,9 +741,9 @@ macro_rules! impl_from_as_iterator {
     };
 }
 
-// impl<T> From<Range<T>> for Robj
+// impl<T> From<Range<T>> for RObj
 // where
-//     Range<T> : RobjItertools,
+//     Range<T> : RObjIterTools,
 //     <Range<T> as Iterator>::Item: ToVectorValue,
 //     T : ToVectorValue
 // {
@@ -752,7 +752,7 @@ macro_rules! impl_from_as_iterator {
 //     }
 // } //
 
-impl<T, const N: usize> From<[T; N]> for Robj
+impl<T, const N: usize> From<[T; N]> for RObj
 where
     T: ToVectorValue,
 {
@@ -761,7 +761,7 @@ where
     }
 }
 
-impl<'a, T, const N: usize> From<&'a [T; N]> for Robj
+impl<'a, T, const N: usize> From<&'a [T; N]> for RObj
 where
     Self: 'a,
     &'a T: ToVectorValue + 'a,
@@ -771,7 +771,7 @@ where
     }
 }
 
-impl<'a, T, const N: usize> From<&'a mut [T; N]> for Robj
+impl<'a, T, const N: usize> From<&'a mut [T; N]> for RObj
 where
     Self: 'a,
     &'a mut T: ToVectorValue + 'a,
@@ -781,21 +781,21 @@ where
     }
 }
 
-impl<T: ToVectorValue + Clone> From<&Vec<T>> for Robj {
+impl<T: ToVectorValue + Clone> From<&Vec<T>> for RObj {
     fn from(value: &Vec<T>) -> Self {
         let len = value.len();
         fixed_size_collect(value.iter().cloned(), len)
     }
 }
 
-impl<T: ToVectorValue> From<Vec<T>> for Robj {
+impl<T: ToVectorValue> From<Vec<T>> for RObj {
     fn from(value: Vec<T>) -> Self {
         let len = value.len();
         fixed_size_collect(value.into_iter(), len)
     }
 }
 
-impl<'a, T> From<&'a [T]> for Robj
+impl<'a, T> From<&'a [T]> for RObj
 where
     Self: 'a,
     T: 'a,
@@ -809,15 +809,15 @@ where
 impl_from_as_iterator! {Range<T>}
 impl_from_as_iterator! {RangeInclusive<T>}
 
-impl From<Vec<Robj>> for Robj {
-    /// Convert a vector of Robj into a list.
-    fn from(val: Vec<Robj>) -> Self {
+impl From<Vec<RObj>> for RObj {
+    /// Convert a vector of RObj into a list.
+    fn from(val: Vec<RObj>) -> Self {
         Self::from(&val)
     }
 }
 
-impl From<&Vec<Robj>> for Robj {
-    fn from(val: &Vec<Robj>) -> Self {
+impl From<&Vec<RObj>> for RObj {
+    fn from(val: &Vec<RObj>) -> Self {
         List::from_values(val.iter()).into()
     }
 }
@@ -831,12 +831,12 @@ mod test {
     fn test_vec_rint_to_robj() {
         test! {
             let int_vec = vec![3,4,0,-2];
-            let int_vec_robj: Robj = int_vec.clone().into();
+            let int_vec_robj: RObj = int_vec.clone().into();
             // unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
             assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
 
-            let rint_vec = vec![Rint::from(3), Rint::from(4), Rint::from(0), Rint::from(-2)];
-            let rint_vec_robj: Robj = rint_vec.into();
+            let rint_vec = vec![RInt::from(3), RInt::from(4), RInt::from(0), RInt::from(-2)];
+            let rint_vec_robj: RObj = rint_vec.into();
             // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
             assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);
         }
@@ -848,7 +848,7 @@ mod test {
             // Check that collect_rarray works the same as R's matrix() function
             let rmat = (1i32..=16).collect_rarray([4, 4]);
             assert!(rmat.is_ok());
-            assert_eq!(Robj::from(rmat), R!("matrix(1:16, nrow=4)").unwrap());
+            assert_eq!(RObj::from(rmat), R!("matrix(1:16, nrow=4)").unwrap());
         }
     }
 
@@ -858,7 +858,7 @@ mod test {
             // Check that collect_rarray works the same as R's array() function
             let rmat = (1i32..=16).collect_rarray([2, 4, 2]);
             assert!(rmat.is_ok());
-            assert_eq!(Robj::from(rmat), R!("array(1:16, dim=c(2, 4, 2))").unwrap());
+            assert_eq!(RObj::from(rmat), R!("array(1:16, dim=c(2, 4, 2))").unwrap());
         }
     }
 

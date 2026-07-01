@@ -20,13 +20,22 @@ use extendr_ffi::{
     SEXPTYPE::*, STRING_ELT, STRING_PTR_RO, TYPEOF, XLENGTH,
 };
 
-use crate::scalar::{Rbool, Rfloat, Rint};
+use crate::scalar::{RBool, RFloat, RInt};
 use crate::*;
 pub use into_robj::*;
+
+#[deprecated(note = "Use IntoRObj instead", since = "0.9.0")]
+pub use into_robj::IntoRObj as IntoRobj;
+#[deprecated(note = "Use RObjIterTools instead", since = "0.9.0")]
+pub use into_robj::RObjIterTools as RobjItertools;
+
 pub use iter::*;
 pub use operators::Operators;
-use prelude::{c64, Rcplx};
-pub use rinternals::Rinternals;
+use prelude::{c64, RCplx};
+pub use rinternals::RInternals;
+
+#[deprecated(note = "Use RInternals instead", since = "0.9.0")]
+pub use rinternals::RInternals as Rinternals;
 
 mod debug;
 mod into_robj;
@@ -46,7 +55,7 @@ mod tests;
 /// test! {
 ///     // Different ways of making integer scalar 1.
 ///     let non_na : Option<i32> = Some(1);
-///     let a : Robj = vec![1].into();
+///     let a : RObj = vec![1].into();
 ///     let b = r!(1);
 ///     let c = r!(vec![1]);
 ///     let d = r!(non_na);
@@ -57,7 +66,7 @@ mod tests;
 ///     assert_eq!(a, e);
 ///
 ///     // Different ways of making boolean scalar TRUE.
-///     let a : Robj = true.into();
+///     let a : RObj = true.into();
 ///     let b = r!(TRUE);
 ///     assert_eq!(a, b);
 ///
@@ -80,7 +89,7 @@ mod tests;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let a : Robj = r!(vec![1., 2., 3., 4.]);
+///     let a : RObj = r!(vec![1., 2., 3., 4.]);
 ///     let b : Vec<f64> = a.as_real_vector().unwrap();
 ///     assert_eq!(a.len(), 4);
 ///     assert_eq!(b, vec![1., 2., 3., 4.]);
@@ -107,19 +116,22 @@ mod tests;
 /// is true.
 ///
 #[repr(transparent)]
-pub struct Robj {
+pub struct RObj {
     inner: SEXP,
 }
 
-impl Clone for Robj {
+#[deprecated(note = "Use RObj instead", since = "0.9.0")]
+pub type Robj = RObj;
+
+impl Clone for RObj {
     fn clone(&self) -> Self {
-        unsafe { Robj::from_sexp(self.get()) }
+        unsafe { RObj::from_sexp(self.get()) }
     }
 }
 
-impl Default for Robj {
+impl Default for RObj {
     fn default() -> Self {
-        Robj::from(())
+        RObj::from(())
     }
 }
 
@@ -136,14 +148,14 @@ pub trait GetSexp {
     /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     unsafe fn get_mut(&mut self) -> SEXP;
 
-    /// Get a reference to a Robj for this type.
-    fn as_robj(&self) -> &Robj;
+    /// Get a reference to a RObj for this type.
+    fn as_robj(&self) -> &RObj;
 
-    /// Get a mutable reference to a Robj for this type.
-    fn as_robj_mut(&mut self) -> &mut Robj;
+    /// Get a mutable reference to a RObj for this type.
+    fn as_robj_mut(&mut self) -> &mut RObj;
 }
 
-impl GetSexp for Robj {
+impl GetSexp for RObj {
     unsafe fn get(&self) -> SEXP {
         self.inner
     }
@@ -152,11 +164,11 @@ impl GetSexp for Robj {
         self.inner
     }
 
-    fn as_robj(&self) -> &Robj {
+    fn as_robj(&self) -> &RObj {
         unsafe { std::mem::transmute(&self.inner) }
     }
 
-    fn as_robj_mut(&mut self) -> &mut Robj {
+    fn as_robj_mut(&mut self) -> &mut RObj {
         unsafe { std::mem::transmute(&mut self.inner) }
     }
 }
@@ -188,7 +200,7 @@ pub trait Slices: GetSexp {
     }
 }
 
-impl Slices for Robj {}
+impl Slices for RObj {}
 
 pub trait Length: GetSexp {
     /// Get the extended length of the object.
@@ -196,7 +208,7 @@ pub trait Length: GetSexp {
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    /// let a : Robj = r!(vec![1., 2., 3., 4.]);
+    /// let a : RObj = r!(vec![1., 2., 3., 4.]);
     /// assert_eq!(a.len(), 4);
     /// }
     /// ```
@@ -204,12 +216,12 @@ pub trait Length: GetSexp {
         unsafe { Rf_xlength(self.get()) as usize }
     }
 
-    /// Returns `true` if the `Robj` contains no elements.
+    /// Returns `true` if the `RObj` contains no elements.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///
-    /// let a : Robj = r!(vec![0.; 0]); // length zero of numeric vector
+    /// let a : RObj = r!(vec![0.; 0]); // length zero of numeric vector
     /// assert_eq!(a.is_empty(), true);
     /// }
     /// ```
@@ -218,9 +230,9 @@ pub trait Length: GetSexp {
     }
 }
 
-impl Length for Robj {}
+impl Length for RObj {}
 
-impl Robj {
+impl RObj {
     /// # Safety
     ///
     /// This function dereferences a raw SEXP pointer.
@@ -228,7 +240,7 @@ impl Robj {
     pub unsafe fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
-            Robj { inner: sexp }
+            RObj { inner: sexp }
         })
     }
 }
@@ -244,106 +256,106 @@ pub trait Types: GetSexp {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(r!(NULL).rtype(), Rtype::Null);
-    ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
-    ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
-    ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
-    ///     assert_eq!(Environment::new_with_parent(Environment::global()).rtype(), Rtype::Environment);
-    ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
-    ///     assert_eq!(Rstr::from_string("hello").rtype(), Rtype::Rstr);
-    ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
-    ///     assert_eq!(r!(1).rtype(), Rtype::Integers);
-    ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
-    ///     assert_eq!(r!("1").rtype(), Rtype::Strings);
-    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), Rtype::List);
-    ///     assert_eq!(Expressions::from_str("x + y")?.rtype(), Rtype::Expressions);
-    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), Rtype::Raw);
+    ///     assert_eq!(r!(NULL).rtype(), RType::Null);
+    ///     assert_eq!(sym!(xyz).rtype(), RType::Symbol);
+    ///     assert_eq!(r!(PairList::from_pairs(vec![("a", r!(1))])).rtype(), RType::PairList);
+    ///     assert_eq!(R!("function() {}")?.rtype(), RType::Function);
+    ///     assert_eq!(Environment::new_with_parent(Environment::global()).rtype(), RType::Environment);
+    ///     assert_eq!(lang!("+", 1, 2).rtype(), RType::Language);
+    ///     assert_eq!(RStr::from_string("hello").rtype(), RType::RStr);
+    ///     assert_eq!(r!(TRUE).rtype(), RType::Logicals);
+    ///     assert_eq!(r!(1).rtype(), RType::Integers);
+    ///     assert_eq!(r!(1.0).rtype(), RType::Doubles);
+    ///     assert_eq!(r!("1").rtype(), RType::Strings);
+    ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), RType::List);
+    ///     assert_eq!(Expressions::from_str("x + y")?.rtype(), RType::Expressions);
+    ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), RType::Raw);
     /// }
     /// ```
-    fn rtype(&self) -> Rtype {
+    fn rtype(&self) -> RType {
         use SEXPTYPE::*;
         match self.sexptype() {
-            NILSXP => Rtype::Null,
-            SYMSXP => Rtype::Symbol,
-            LISTSXP => Rtype::Pairlist,
-            CLOSXP => Rtype::Function,
-            ENVSXP => Rtype::Environment,
-            PROMSXP => Rtype::Promise,
-            LANGSXP => Rtype::Language,
-            SPECIALSXP => Rtype::Special,
-            BUILTINSXP => Rtype::Builtin,
-            CHARSXP => Rtype::Rstr,
-            LGLSXP => Rtype::Logicals,
-            INTSXP => Rtype::Integers,
-            REALSXP => Rtype::Doubles,
-            CPLXSXP => Rtype::Complexes,
-            STRSXP => Rtype::Strings,
-            DOTSXP => Rtype::Dot,
-            ANYSXP => Rtype::Any,
-            VECSXP => Rtype::List,
-            EXPRSXP => Rtype::Expressions,
-            BCODESXP => Rtype::Bytecode,
-            EXTPTRSXP => Rtype::ExternalPtr,
-            WEAKREFSXP => Rtype::WeakRef,
-            RAWSXP => Rtype::Raw,
+            NILSXP => RType::Null,
+            SYMSXP => RType::Symbol,
+            LISTSXP => RType::PairList,
+            CLOSXP => RType::Function,
+            ENVSXP => RType::Environment,
+            PROMSXP => RType::Promise,
+            LANGSXP => RType::Language,
+            SPECIALSXP => RType::Special,
+            BUILTINSXP => RType::Builtin,
+            CHARSXP => RType::RStr,
+            LGLSXP => RType::Logicals,
+            INTSXP => RType::Integers,
+            REALSXP => RType::Doubles,
+            CPLXSXP => RType::Complexes,
+            STRSXP => RType::Strings,
+            DOTSXP => RType::Dot,
+            ANYSXP => RType::Any,
+            VECSXP => RType::List,
+            EXPRSXP => RType::Expressions,
+            BCODESXP => RType::Bytecode,
+            EXTPTRSXP => RType::ExternalPtr,
+            WEAKREFSXP => RType::WeakRef,
+            RAWSXP => RType::Raw,
             #[cfg(not(use_objsxp))]
-            S4SXP => Rtype::S4,
+            S4SXP => RType::S4,
             #[cfg(use_objsxp)]
-            OBJSXP => Rtype::S4,
-            _ => Rtype::Unknown,
+            OBJSXP => RType::S4,
+            _ => RType::Unknown,
         }
     }
 
-    fn as_any(&self) -> Rany<'_> {
+    fn as_any(&self) -> RAny<'_> {
         use SEXPTYPE::*;
         unsafe {
             match self.sexptype() {
-                NILSXP => Rany::Null(self.as_robj()),
-                SYMSXP => Rany::Symbol(std::mem::transmute::<&Robj, &Symbol>(self.as_robj())),
-                LISTSXP => Rany::Pairlist(std::mem::transmute::<&Robj, &Pairlist>(self.as_robj())),
-                CLOSXP => Rany::Function(std::mem::transmute::<&Robj, &Function>(self.as_robj())),
+                NILSXP => RAny::Null(self.as_robj()),
+                SYMSXP => RAny::Symbol(std::mem::transmute::<&RObj, &Symbol>(self.as_robj())),
+                LISTSXP => RAny::PairList(std::mem::transmute::<&RObj, &PairList>(self.as_robj())),
+                CLOSXP => RAny::Function(std::mem::transmute::<&RObj, &Function>(self.as_robj())),
                 ENVSXP => {
-                    Rany::Environment(std::mem::transmute::<&Robj, &Environment>(self.as_robj()))
+                    RAny::Environment(std::mem::transmute::<&RObj, &Environment>(self.as_robj()))
                 }
-                PROMSXP => Rany::Promise(std::mem::transmute::<&Robj, &Promise>(self.as_robj())),
-                LANGSXP => Rany::Language(std::mem::transmute::<&Robj, &Language>(self.as_robj())),
+                PROMSXP => RAny::Promise(std::mem::transmute::<&RObj, &Promise>(self.as_robj())),
+                LANGSXP => RAny::Language(std::mem::transmute::<&RObj, &Language>(self.as_robj())),
                 SPECIALSXP => {
-                    Rany::Special(std::mem::transmute::<&Robj, &Primitive>(self.as_robj()))
+                    RAny::Special(std::mem::transmute::<&RObj, &Primitive>(self.as_robj()))
                 }
                 BUILTINSXP => {
-                    Rany::Builtin(std::mem::transmute::<&Robj, &Primitive>(self.as_robj()))
+                    RAny::Builtin(std::mem::transmute::<&RObj, &Primitive>(self.as_robj()))
                 }
-                CHARSXP => Rany::Rstr(std::mem::transmute::<&Robj, &Rstr>(self.as_robj())),
-                LGLSXP => Rany::Logicals(std::mem::transmute::<&Robj, &Logicals>(self.as_robj())),
-                INTSXP => Rany::Integers(std::mem::transmute::<&Robj, &Integers>(self.as_robj())),
-                REALSXP => Rany::Doubles(std::mem::transmute::<&Robj, &Doubles>(self.as_robj())),
+                CHARSXP => RAny::RStr(std::mem::transmute::<&RObj, &RStr>(self.as_robj())),
+                LGLSXP => RAny::Logicals(std::mem::transmute::<&RObj, &Logicals>(self.as_robj())),
+                INTSXP => RAny::Integers(std::mem::transmute::<&RObj, &Integers>(self.as_robj())),
+                REALSXP => RAny::Doubles(std::mem::transmute::<&RObj, &Doubles>(self.as_robj())),
                 CPLXSXP => {
-                    Rany::Complexes(std::mem::transmute::<&Robj, &Complexes>(self.as_robj()))
+                    RAny::Complexes(std::mem::transmute::<&RObj, &Complexes>(self.as_robj()))
                 }
-                STRSXP => Rany::Strings(std::mem::transmute::<&Robj, &Strings>(self.as_robj())),
-                DOTSXP => Rany::Dot(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
-                ANYSXP => Rany::Any(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
-                VECSXP => Rany::List(std::mem::transmute::<&Robj, &List>(self.as_robj())),
+                STRSXP => RAny::Strings(std::mem::transmute::<&RObj, &Strings>(self.as_robj())),
+                DOTSXP => RAny::Dot(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
+                ANYSXP => RAny::Any(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
+                VECSXP => RAny::List(std::mem::transmute::<&RObj, &List>(self.as_robj())),
                 EXPRSXP => {
-                    Rany::Expressions(std::mem::transmute::<&Robj, &Expressions>(self.as_robj()))
+                    RAny::Expressions(std::mem::transmute::<&RObj, &Expressions>(self.as_robj()))
                 }
-                BCODESXP => Rany::Bytecode(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
-                EXTPTRSXP => Rany::ExternalPtr(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
-                WEAKREFSXP => Rany::WeakRef(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
-                RAWSXP => Rany::Raw(std::mem::transmute::<&Robj, &Raw>(self.as_robj())),
+                BCODESXP => RAny::Bytecode(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
+                EXTPTRSXP => RAny::ExternalPtr(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
+                WEAKREFSXP => RAny::WeakRef(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
+                RAWSXP => RAny::Raw(std::mem::transmute::<&RObj, &Raw>(self.as_robj())),
                 #[cfg(not(use_objsxp))]
-                S4SXP => Rany::S4(std::mem::transmute(self.as_robj())),
+                S4SXP => RAny::S4(std::mem::transmute(self.as_robj())),
                 #[cfg(use_objsxp)]
-                OBJSXP => Rany::S4(std::mem::transmute::<&Robj, &S4>(self.as_robj())),
-                _ => Rany::Unknown(std::mem::transmute::<&Robj, &Robj>(self.as_robj())),
+                OBJSXP => RAny::S4(std::mem::transmute::<&RObj, &S4>(self.as_robj())),
+                _ => RAny::Unknown(std::mem::transmute::<&RObj, &RObj>(self.as_robj())),
             }
         }
     }
 }
 
-impl Types for Robj {}
+impl Types for RObj {}
 
-impl Robj {
+impl RObj {
     /// Is this object is an `NA` scalar?
     /// Works for character, integer and numeric types.
     ///
@@ -370,7 +382,7 @@ impl Robj {
                     REALSXP => R_IsNA(*(REAL(sexp))) != 0,
                     CPLXSXP => R_IsNA((*COMPLEX(sexp)).r) != 0,
                     // a character vector contains `CHARSXP`, and thus you
-                    // seldom have `Robj`'s that are `CHARSXP` themselves
+                    // seldom have `RObj`'s that are `CHARSXP` themselves
                     CHARSXP => sexp == extendr_ffi::R_NaString,
                     _ => false,
                 }
@@ -391,7 +403,7 @@ impl Robj {
         self.as_typed_slice()
     }
 
-    /// Convert an [`Robj`] into [`Integers`].
+    /// Convert an [`RObj`] into [`Integers`].
     pub fn as_integers(&self) -> Option<Integers> {
         self.clone().try_into().ok()
     }
@@ -411,7 +423,7 @@ impl Robj {
     }
 
     /// Get a read-only reference to the content of a logical vector
-    /// using the tri-state [Rbool]. Returns None if not a logical vector.
+    /// using the tri-state [RBool]. Returns None if not a logical vector.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -419,12 +431,12 @@ impl Robj {
     ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE]);
     /// }
     /// ```
-    pub fn as_logical_slice(&self) -> Option<&[Rbool]> {
+    pub fn as_logical_slice(&self) -> Option<&[RBool]> {
         self.as_typed_slice()
     }
 
-    /// Get a `Vec<Rbool>` copied from the object
-    /// using the tri-state [`Rbool`].
+    /// Get a `Vec<RBool>` copied from the object
+    /// using the tri-state [`RBool`].
     /// Returns `None` if not a logical vector.
     ///
     /// ```
@@ -434,7 +446,7 @@ impl Robj {
     ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE]);
     /// }
     /// ```
-    pub fn as_logical_vector(&self) -> Option<Vec<Rbool>> {
+    pub fn as_logical_vector(&self) -> Option<Vec<RBool>> {
         self.as_logical_slice().map(|value| value.to_vec())
     }
 
@@ -452,13 +464,13 @@ impl Robj {
     ///     assert_eq!(num_na, 1);
     /// }
     /// ```
-    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Rbool>> {
+    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &RBool>> {
         self.as_logical_slice().map(|slice| slice.iter())
     }
 
     /// Get a read-only reference to the content of a double vector.
     /// Note: the slice may contain NaN or NA values.
-    /// We may introduce a "Real" type to handle this like the Rbool type.
+    /// We may introduce a "Real" type to handle this like the RBool type.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -569,9 +581,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from("xyz");
+    ///    let robj1 = RObj::from("xyz");
     ///    assert_eq!(robj1.as_string_vector(), Some(vec!["xyz".to_string()]));
-    ///    let robj2 = Robj::from(1);
+    ///    let robj2 = RObj::from(1);
     ///    assert_eq!(robj2.as_string_vector(), None);
     /// }
     /// ```
@@ -585,9 +597,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from("xyz");
+    ///    let robj1 = RObj::from("xyz");
     ///    assert_eq!(robj1.as_str_vector(), Some(vec!["xyz"]));
-    ///    let robj2 = Robj::from(1);
+    ///    let robj2 = RObj::from(1);
     ///    assert_eq!(robj2.as_str_vector(), None);
     /// }
     /// ```
@@ -599,8 +611,8 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from("xyz");
-    ///    let robj2 = Robj::from(1);
+    ///    let robj1 = RObj::from("xyz");
+    ///    let robj2 = RObj::from(1);
     ///    assert_eq!(robj1.as_str(), Some("xyz"));
     ///    assert_eq!(robj2.as_str(), None);
     /// }
@@ -627,9 +639,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from("xyz");
-    ///    let robj2 = Robj::from(1);
-    ///    let robj3 = Robj::from(NA_INTEGER);
+    ///    let robj1 = RObj::from("xyz");
+    ///    let robj2 = RObj::from(1);
+    ///    let robj3 = RObj::from(NA_INTEGER);
     ///    assert_eq!(robj1.as_integer(), None);
     ///    assert_eq!(robj2.as_integer(), Some(1));
     ///    assert_eq!(robj3.as_integer(), None);
@@ -646,9 +658,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(1);
-    ///    let robj2 = Robj::from(1.);
-    ///    let robj3 = Robj::from(NA_REAL);
+    ///    let robj1 = RObj::from(1);
+    ///    let robj2 = RObj::from(1.);
+    ///    let robj3 = RObj::from(NA_REAL);
     ///    assert_eq!(robj1.as_real(), None);
     ///    assert_eq!(robj2.as_real(), Some(1.));
     ///    assert_eq!(robj3.as_real(), None);
@@ -665,9 +677,9 @@ impl Robj {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(TRUE);
-    ///    let robj2 = Robj::from(1.);
-    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    let robj1 = RObj::from(TRUE);
+    ///    let robj2 = RObj::from(1.);
+    ///    let robj3 = RObj::from(NA_LOGICAL);
     ///    assert_eq!(robj1.as_bool(), Some(true));
     ///    assert_eq!(robj2.as_bool(), None);
     ///    assert_eq!(robj3.as_bool(), None);
@@ -680,19 +692,19 @@ impl Robj {
         }
     }
 
-    /// Get a scalar boolean as a tri-boolean [Rbool] value.
+    /// Get a scalar boolean as a tri-boolean [RBool] value.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let robj1 = Robj::from(TRUE);
-    ///    let robj2 = Robj::from([TRUE, FALSE]);
-    ///    let robj3 = Robj::from(NA_LOGICAL);
+    ///    let robj1 = RObj::from(TRUE);
+    ///    let robj2 = RObj::from([TRUE, FALSE]);
+    ///    let robj3 = RObj::from(NA_LOGICAL);
     ///    assert_eq!(robj1.as_logical(), Some(TRUE));
     ///    assert_eq!(robj2.as_logical(), None);
     ///    assert_eq!(robj3.as_logical().unwrap().is_na(), true);
     /// }
     /// ```
-    pub fn as_logical(&self) -> Option<Rbool> {
+    pub fn as_logical(&self) -> Option<RBool> {
         match self.as_logical_slice() {
             Some(slice) if slice.len() == 1 => Some(slice[0]),
             _ => None,
@@ -710,7 +722,7 @@ pub trait Eval: GetSexp {
     ///    assert_eq!(add.eval().unwrap(), r!(3));
     /// }
     /// ```
-    fn eval(&self) -> Result<Robj> {
+    fn eval(&self) -> Result<RObj> {
         self.eval_with_env(&Environment::global())
     }
 
@@ -723,14 +735,14 @@ pub trait Eval: GetSexp {
     ///    assert_eq!(add.eval_with_env(&Environment::global()).unwrap(), r!(3));
     /// }
     /// ```
-    fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
+    fn eval_with_env(&self, env: &Environment) -> Result<RObj> {
         single_threaded(|| unsafe {
             let mut error: raw::c_int = 0;
             let res = R_tryEval(self.get(), env.get(), &mut error as *mut raw::c_int);
             if error != 0 {
-                Err(Error::EvalError(Robj::from_sexp(self.get())))
+                Err(Error::EvalError(RObj::from_sexp(self.get())))
             } else {
-                Ok(Robj::from_sexp(res))
+                Ok(RObj::from_sexp(res))
             }
         })
     }
@@ -743,19 +755,19 @@ pub trait Eval: GetSexp {
     ///    assert_eq!(bad.eval_blind(), r!(NULL));
     /// }
     /// ```
-    fn eval_blind(&self) -> Robj {
+    fn eval_blind(&self) -> RObj {
         let res = self.eval();
         if let Ok(robj) = res {
             robj
         } else {
-            Robj::from(())
+            RObj::from(())
         }
     }
 }
 
-impl Eval for Robj {}
+impl Eval for RObj {}
 
-/// Generic access to typed slices in an Robj.
+/// Generic access to typed slices in an RObj.
 pub trait AsTypedSlice<'a, T>
 where
     Self: 'a,
@@ -777,7 +789,7 @@ where
 
 macro_rules! make_typed_slice {
     ($type: ty, $fn: tt, $($sexp: tt),* ) => {
-        impl<'a> AsTypedSlice<'a, $type> for Robj
+        impl<'a> AsTypedSlice<'a, $type> for RObj
         where
             Self : 'a,
         {
@@ -818,15 +830,15 @@ macro_rules! make_typed_slice {
     }
 }
 
-make_typed_slice!(Rbool, INTEGER, LGLSXP);
+make_typed_slice!(RBool, INTEGER, LGLSXP);
 make_typed_slice!(i32, INTEGER, INTSXP);
-make_typed_slice!(Rint, INTEGER, INTSXP);
+make_typed_slice!(RInt, INTEGER, INTSXP);
 make_typed_slice!(f64, REAL, REALSXP);
-make_typed_slice!(Rfloat, REAL, REALSXP);
+make_typed_slice!(RFloat, REAL, REALSXP);
 make_typed_slice!(u8, RAW, RAWSXP);
-make_typed_slice!(Rstr, STRING_PTR_RO, STRSXP);
+make_typed_slice!(RStr, STRING_PTR_RO, STRSXP);
 make_typed_slice!(c64, COMPLEX, CPLXSXP);
-make_typed_slice!(Rcplx, COMPLEX, CPLXSXP);
+make_typed_slice!(RCplx, COMPLEX, CPLXSXP);
 make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 
 /// Provides access to the attributes of an R object.
@@ -835,7 +847,7 @@ make_typed_slice!(Rcomplex, COMPLEX, CPLXSXP);
 ///
 #[allow(non_snake_case)]
 pub trait Attributes: Types + Length {
-    /// Get a specific attribute as a borrowed `Robj` if it exists.
+    /// Get a specific attribute as a borrowed `RObj` if it exists.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -844,17 +856,17 @@ pub trait Attributes: Types + Length {
     ///    assert_eq!(robj.get_attrib(sym!(xyz)), Some(r!(1)));
     /// }
     /// ```
-    fn get_attrib<'a, N>(&self, name: N) -> Option<Robj>
+    fn get_attrib<'a, N>(&self, name: N) -> Option<RObj>
     where
         Self: 'a,
-        Robj: From<N> + 'a,
+        RObj: From<N> + 'a,
     {
-        let name = Robj::from(name);
+        let name = RObj::from(name);
         if self.sexptype() == SEXPTYPE::CHARSXP {
             None
         } else {
             // FIXME: this attribute does not need protection
-            let res = unsafe { Robj::from_sexp(Rf_getAttrib(self.get(), name.get())) };
+            let res = unsafe { RObj::from_sexp(Rf_getAttrib(self.get(), name.get())) };
             if res.is_null() {
                 None
             } else {
@@ -867,9 +879,9 @@ pub trait Attributes: Types + Length {
     fn has_attrib<'a, N>(&self, name: N) -> bool
     where
         Self: 'a,
-        Robj: From<N> + 'a,
+        RObj: From<N> + 'a,
     {
-        let name = Robj::from(name);
+        let name = RObj::from(name);
         if self.sexptype() == SEXPTYPE::CHARSXP {
             false
         } else {
@@ -891,8 +903,8 @@ pub trait Attributes: Types + Length {
     /// ```
     fn set_attrib<N, V>(&mut self, name: N, value: V) -> Result<&mut Self>
     where
-        N: Into<Robj>,
-        V: Into<Robj>,
+        N: Into<RObj>,
+        V: Into<RObj>,
     {
         let name = name.into();
         let value = value.into();
@@ -1067,32 +1079,32 @@ pub trait Attributes: Types + Length {
     }
 }
 
-impl Attributes for Robj {}
+impl Attributes for RObj {}
 
 /// Compare equality with integer slices.
-impl PartialEq<[i32]> for Robj {
+impl PartialEq<[i32]> for RObj {
     fn eq(&self, rhs: &[i32]) -> bool {
         self.as_integer_slice() == Some(rhs)
     }
 }
 
 /// Compare equality with slices of double.
-impl PartialEq<[f64]> for Robj {
+impl PartialEq<[f64]> for RObj {
     fn eq(&self, rhs: &[f64]) -> bool {
         self.as_real_slice() == Some(rhs)
     }
 }
 
 /// Compare equality with strings.
-impl PartialEq<str> for Robj {
+impl PartialEq<str> for RObj {
     fn eq(&self, rhs: &str) -> bool {
         self.as_str() == Some(rhs)
     }
 }
 
-/// Compare equality with two Robjs.
-impl PartialEq<Robj> for Robj {
-    fn eq(&self, rhs: &Robj) -> bool {
+/// Compare equality with two RObjs.
+impl PartialEq<RObj> for RObj {
+    fn eq(&self, rhs: &RObj) -> bool {
         unsafe {
             if self.get() == rhs.get() {
                 return true;
@@ -1105,7 +1117,7 @@ impl PartialEq<Robj> for Robj {
 }
 
 /// Release any owned objects.
-impl Drop for Robj {
+impl Drop for RObj {
     fn drop(&mut self) {
         unsafe {
             ownership::unprotect(self.inner);

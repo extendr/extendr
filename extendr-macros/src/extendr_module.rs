@@ -98,7 +98,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         #[allow(non_snake_case)]
         pub extern "C" fn #wrap_module_metadata_name() -> extendr_api::SEXP {
             use extendr_api::GetSexp;
-            unsafe { extendr_api::Robj::from(#module_metadata_name()).get() }
+            unsafe { extendr_api::RObj::from(#module_metadata_name()).get() }
         }
 
         #[no_mangle]
@@ -110,13 +110,13 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             unsafe {
                 use extendr_api::robj::*;
                 use extendr_api::GetSexp;
-                let robj = Robj::from_sexp(use_symbols_sexp);
+                let robj = RObj::from_sexp(use_symbols_sexp);
                 let use_symbols: bool = <bool>::try_from(&robj).unwrap();
 
-                let robj = Robj::from_sexp(package_name_sexp);
+                let robj = RObj::from_sexp(package_name_sexp);
                 let package_name: &str = <&str>::try_from(&robj).unwrap();
 
-                extendr_api::Robj::from(
+                extendr_api::RObj::from(
                     #module_metadata_name()
                         .make_r_wrappers(
                             use_symbols,

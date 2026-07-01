@@ -136,9 +136,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     extendr_module::extendr_module(item)
 }
 
-/// Create a Pairlist R object from a list of name-value pairs.
+/// Create a PairList R object from a list of name-value pairs.
 /// ```rust,ignore
-///     assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+///     assert_eq!(pairlist!(a=1, 2, 3), PairList::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
 /// ```
 #[proc_macro]
 pub fn pairlist(item: TokenStream) -> TokenStream {
@@ -200,7 +200,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
     R::R(item.into(), false).into()
 }
 
-/// Derives an implementation of `TryFrom<Robj> for Struct` and `TryFrom<&Robj> for Struct` on this struct.
+/// Derives an implementation of `TryFrom<RObj> for Struct` and `TryFrom<&RObj> for Struct` on this struct.
 ///
 /// This allows any R object supporting the `$` operator (generally a list or an
 /// environment) to be converted into that struct, as long as the corresponding fields on the R object are
@@ -227,7 +227,7 @@ pub fn Rraw(item: TokenStream) -> TokenStream {
 /// # Ok::<(), extendr_api::Error>(())
 /// ```
 ///
-/// See [`IntoRobj`] for converting arbitrary Rust types into R type by using
+/// See [`IntoRObj`] for converting arbitrary Rust types into R type by using
 /// R's list / `List`.
 ///
 #[proc_macro_derive(TryFromList)]
@@ -238,7 +238,7 @@ pub fn derive_try_from_list(item: TokenStream) -> TokenStream {
     }
 }
 
-/// Derives an implementation of `From<Struct> for Robj` and `From<&Struct> for Robj` on this struct.
+/// Derives an implementation of `From<Struct> for RObj` and `From<&Struct> for RObj` on this struct.
 ///
 /// This allows the struct to be converted to a named list in R,
 /// where the list names correspond to the field names of the Rust struct.
@@ -257,7 +257,7 @@ pub fn derive_try_from_list(item: TokenStream) -> TokenStream {
 ///     a: u32,
 ///     b: String
 /// }
-/// let converted: Robj = Foo {
+/// let converted: RObj = Foo {
 ///     a: 5,
 ///     b: String::from("bar")
 /// }.into();
@@ -276,7 +276,7 @@ pub fn derive_try_from_list(item: TokenStream) -> TokenStream {
 ///
 /// # Details
 ///
-/// Note, the `From<Struct> for Robj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
+/// Note, the `From<Struct> for RObj` behaviour is different from what is obtained by applying the standard `#[extendr]` macro
 /// to an `impl` block. The `#[extendr]` behaviour returns to R a **pointer** to Rust memory, and generates wrapper functions for calling
 /// Rust functions on that pointer. The implementation from `#[derive(IntoList)]` actually converts the Rust structure
 /// into a native R list, which allows manipulation and access to internal fields, but it's a one-way conversion,
@@ -292,12 +292,12 @@ pub fn derive_into_list(item: TokenStream) -> TokenStream {
 /// Deprecated: Use [`IntoList`] instead.
 ///
 /// This is an alias for `IntoList` maintained for backward compatibility.
-/// `IntoRobj` is too generic - this macro specifically creates a named list from a struct.
+/// `IntoRObj` is too generic - this macro specifically creates a named list from a struct.
 #[deprecated(
     since = "0.8.1",
-    note = "Use `IntoList` instead. `IntoRobj` is too generic - this specifically creates a named list."
+    note = "Use `IntoList` instead. `IntoRObj` is too generic - this specifically creates a named list."
 )]
-#[proc_macro_derive(IntoRobj, attributes(into_robj))]
+#[proc_macro_derive(IntoRObj, attributes(into_robj))]
 pub fn derive_into_robj(item: TokenStream) -> TokenStream {
     match list_struct::derive_into_list(item) {
         Ok(result) => result,
@@ -364,13 +364,13 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         });
 
         TokenStream::from(quote! {
-            impl<#(#types),*> TryFrom<&Robj> for (#(#types,)*)
+            impl<#(#types),*> TryFrom<&RObj> for (#(#types,)*)
             where
-                #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*
+                #(#types: for<'a> TryFrom<&'a RObj, Error = extendr_api::Error>),*
             {
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                fn try_from(robj: &RObj) -> extendr_api::Result<Self> {
                     let list: List = robj.try_into()?;
                     if list.len() != #n {
                         return Err(Error::ExpectedLength(#n));
@@ -384,12 +384,12 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
             // TODO: the following impls are borrowed from `impl_try_from_robj`
             // find a way to reuse that code, possibly
 
-            impl<#(#types),*> TryFrom<&Robj> for Option<(#(#types,)*)>
+            impl<#(#types),*> TryFrom<&RObj> for Option<(#(#types,)*)>
             where
-            #(#types: for<'a> TryFrom<&'a Robj, Error = extendr_api::Error>),*{
+            #(#types: for<'a> TryFrom<&'a RObj, Error = extendr_api::Error>),*{
                 type Error = Error;
 
-                fn try_from(robj: &Robj) -> extendr_api::Result<Self> {
+                fn try_from(robj: &RObj) -> extendr_api::Result<Self> {
                     if robj.is_null() || robj.is_na() {
                         Ok(None)
                     } else {

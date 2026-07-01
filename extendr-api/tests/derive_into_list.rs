@@ -24,7 +24,7 @@ mod tests {
                 d: String::from("hello"),
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             // Check that the list has the correct fields
@@ -51,7 +51,7 @@ mod tests {
                 bools: vec![true, false, true],
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             // Verify individual fields
@@ -80,16 +80,16 @@ mod tests {
     fn test_into_list_with_robj_types() {
         test! {
             #[derive(IntoList, Debug)]
-            struct WithRobjTypes {
+            struct WithRObjTypes {
                 doubles: Doubles,
                 logicals: Logicals,
                 strings: Strings,
                 raw: Raw,
                 list: List,
-                robj: Robj,
+                robj: RObj,
             }
 
-            let rust_struct = WithRobjTypes {
+            let rust_struct = WithRObjTypes {
                 doubles: Doubles::from_values([1.0, 2.0, 3.0]),
                 logicals: Logicals::from_values([true, false, true]),
                 strings: Strings::from_values(["hello", "world"]),
@@ -98,7 +98,7 @@ mod tests {
                 robj: r!(42),
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -144,7 +144,7 @@ mod tests {
                 func: R!("sum").unwrap().try_into().unwrap(),
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -160,24 +160,24 @@ mod tests {
     fn test_into_list_with_pairlist() {
         test! {
             #[derive(IntoList, Debug)]
-            struct WithPairlist {
-                data: Pairlist,
+            struct WithPairList {
+                data: PairList,
                 count: i32,
             }
 
-            let rust_struct = WithPairlist {
+            let rust_struct = WithPairList {
                 data: pairlist!(a = 1, b = 2),
                 count: 2,
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
             assert_eq!(list.len(), 2);
 
             // Verify pairlist field
-            let pairlist: Pairlist = list.elt(0).unwrap().try_into().unwrap();
+            let pairlist: PairList = list.elt(0).unwrap().try_into().unwrap();
             assert_eq!(pairlist.len(), 2);
         }
     }
@@ -199,7 +199,7 @@ mod tests {
                 name: String::from("my_env"),
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -237,7 +237,7 @@ mod tests {
             assert_eq!(rust_struct.internal_ptr, std::ptr::null());
             assert_eq!(rust_struct.private_data, vec![1, 2, 3]);
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -277,7 +277,7 @@ mod tests {
             }
 
             let inner = Inner { x: 10, y: 20.5 };
-            let inner_as_robj: Robj = inner.into();
+            let inner_as_robj: RObj = inner.into();
             let inner_as_list: List = inner_as_robj.try_into().unwrap();
 
             let outer = Outer {
@@ -285,7 +285,7 @@ mod tests {
                 data: inner_as_list,
             };
 
-            let r_list: Robj = outer.into();
+            let r_list: RObj = outer.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -314,7 +314,7 @@ mod tests {
             let rust_struct = SimpleStruct { value: 100 };
 
             // Test conversion from reference
-            let r_list: Robj = (&rust_struct).into();
+            let r_list: RObj = (&rust_struct).into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -322,7 +322,7 @@ mod tests {
             assert_eq!(value, 100);
 
             // Test conversion from owned value
-            let r_list2: Robj = rust_struct.into();
+            let r_list2: RObj = rust_struct.into();
             assert!(r_list2.is_list());
             assert_eq!(r_list, r_list2);
         }
@@ -337,7 +337,7 @@ mod tests {
                 arg_type: String,
             }
 
-            impl From<&MyArg> for Robj {
+            impl From<&MyArg> for RObj {
                 fn from(arg: &MyArg) -> Self {
                     list!(name = &arg.name, arg_type = &arg.arg_type).into()
                 }
@@ -350,7 +350,7 @@ mod tests {
                 mod_name: &'static str,
                 r_name: &'static str,
                 c_name: &'static str,
-                args: Vec<Robj>,
+                args: Vec<RObj>,
                 return_type: &'static str,
                 #[into_list(ignore)]
                 func_ptr: *const u8,
@@ -369,12 +369,12 @@ mod tests {
                 r_name: "testFn",
                 c_name: "wrap__test_fn",
                 args: args.iter().map(|a| a.into()).collect(),
-                return_type: "Robj",
+                return_type: "RObj",
                 func_ptr: std::ptr::null(),
                 hidden: false,
             };
 
-            let r_list: Robj = func.into();
+            let r_list: RObj = func.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();
@@ -410,7 +410,7 @@ mod tests {
                 empty_list: list!(),
             };
 
-            let r_list: Robj = rust_struct.into();
+            let r_list: RObj = rust_struct.into();
             assert!(r_list.is_list());
 
             let list = List::try_from(&r_list).unwrap();

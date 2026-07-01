@@ -1,6 +1,6 @@
 use super::*;
 use extendr_ffi::*;
-use prelude::{Rbool, Rcplx, Rfloat, Rint};
+use prelude::{RBool, RCplx, RFloat, RInt};
 
 macro_rules! make_from_iterator_impl {
     ($impl : ident, $scalar_type : ident) => {
@@ -38,7 +38,7 @@ macro_rules! make_from_iterator {
             Iter::Item: Into<$scalar_type>,
         {
             let class = Altrep::$make_class::<Iter>(std::any::type_name::<Iter>(), "extendr");
-            let robj: Robj = Altrep::from_state_and_class(iter, class, false).into();
+            let robj: RObj = Altrep::from_state_and_class(iter, class, false).into();
             Altrep { robj }
         }
     };
@@ -46,7 +46,7 @@ macro_rules! make_from_iterator {
 
 #[derive(PartialEq, Clone)]
 pub struct Altrep {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 /// Rust trait for implementing ALTREP.
@@ -61,12 +61,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Access to a raw SEXP pointer can cause undefined behaviour and is not thread safe.
     /// Note that we use a thread lock to ensure this doesn't occur.
     unsafe fn unserialize_ex(
-        class: Robj,
-        state: Robj,
-        attributes: Robj,
+        class: RObj,
+        state: RObj,
+        attributes: RObj,
         obj_flags: i32,
         levels: i32,
-    ) -> Robj {
+    ) -> RObj {
         use extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
         let res = Self::unserialize(class, state);
         if !res.is_null() {
@@ -81,31 +81,31 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     }
 
     /// Simplified constructor that is called when loading an Altrep object from a file.
-    fn unserialize(_class: Robj, _state: Robj) -> Robj {
+    fn unserialize(_class: RObj, _state: RObj) -> RObj {
         // We plan to hadle this via Serde by November.
         ().into()
     }
 
     /// Fetch the state of this object when writing to a file.
-    fn serialized_state(_x: SEXP) -> Robj {
+    fn serialized_state(_x: SEXP) -> RObj {
         // We plan to hadle this via Serde by November.
         ().into()
     }
 
     /// Duplicate this object, possibly duplicating attributes.
     /// Currently this manifests the array but preserves the original object.
-    fn duplicate_ex(x: SEXP, deep: bool) -> Robj {
+    fn duplicate_ex(x: SEXP, deep: bool) -> RObj {
         Self::duplicate(x, deep)
     }
 
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
-    fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        unsafe { Robj::from_sexp(manifest(x)) }
+    fn duplicate(x: SEXP, _deep: bool) -> RObj {
+        unsafe { RObj::from_sexp(manifest(x)) }
     }
 
     /// Coerce this object into some other type, if possible.
-    fn coerce(_x: SEXP, _ty: Rtype) -> Robj {
+    fn coerce(_x: SEXP, _ty: RType) -> RObj {
         ().into()
     }
 
@@ -114,7 +114,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         &self,
         _pre: i32,
         _deep: bool,
-        _pvec: i32, // _inspect_subtree: fn(robj: Robj, pre: i32, deep: i32, pvec: i32),
+        _pvec: i32, // _inspect_subtree: fn(robj: RObj, pre: i32, deep: i32, pvec: i32),
     ) -> bool {
         rprintln!("{:?}", self);
         true
@@ -163,10 +163,10 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     }
 
     /// Implement subsetting (eg. `x[10:19]`) for this Altrep vector.
-    fn extract_subset(_x: Robj, _indx: Robj, _call: Robj) -> Robj {
+    fn extract_subset(_x: RObj, _indx: RObj, _call: RObj) -> RObj {
         // only available in later versions of R.
         // x.extract_subset(indx, call)
-        Robj::from(())
+        RObj::from(())
     }
 }
 
@@ -224,10 +224,10 @@ pub trait AltIntegerImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Rint;
+    fn elt(&self, _index: usize) -> RInt;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Rint]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [RInt]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -241,9 +241,9 @@ pub trait AltIntegerImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
-    fn is_sorted(&self) -> Rbool {
-        Rbool::na()
+    /// Return TRUE if this vector is sorted, FALSE if not and RBool::na() if unknown.
+    fn is_sorted(&self) -> RBool {
+        RBool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -253,7 +253,7 @@ pub trait AltIntegerImpl: AltrepImpl {
 
     /// Return the sum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn sum(&self, remove_nas: bool) -> Robj {
+    fn sum(&self, remove_nas: bool) -> RObj {
         let (tot, _min, _max, nas, _len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 {
             NA_INTEGER.into()
@@ -264,7 +264,7 @@ pub trait AltIntegerImpl: AltrepImpl {
 
     /// Return the minimum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn min(&self, remove_nas: bool) -> Robj {
+    fn min(&self, remove_nas: bool) -> RObj {
         let (_tot, min, _max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
             NA_INTEGER.into()
@@ -275,7 +275,7 @@ pub trait AltIntegerImpl: AltrepImpl {
 
     /// Return the maximum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn max(&self, remove_nas: bool) -> Robj {
+    fn max(&self, remove_nas: bool) -> RObj {
         let (_tot, _min, max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
             NA_INTEGER.into()
@@ -305,10 +305,10 @@ pub trait AltRealImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Rfloat;
+    fn elt(&self, _index: usize) -> RFloat;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Rfloat]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [RFloat]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -322,9 +322,9 @@ pub trait AltRealImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
-    fn is_sorted(&self) -> Rbool {
-        Rbool::na()
+    /// Return TRUE if this vector is sorted, FALSE if not and RBool::na() if unknown.
+    fn is_sorted(&self) -> RBool {
+        RBool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -334,7 +334,7 @@ pub trait AltRealImpl: AltrepImpl {
 
     /// Return the sum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn sum(&self, remove_nas: bool) -> Robj {
+    fn sum(&self, remove_nas: bool) -> RObj {
         let (tot, _min, _max, nas, _len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 {
             NA_REAL.into()
@@ -345,7 +345,7 @@ pub trait AltRealImpl: AltrepImpl {
 
     /// Return the minimum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn min(&self, remove_nas: bool) -> Robj {
+    fn min(&self, remove_nas: bool) -> RObj {
         let (_tot, min, _max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
             NA_REAL.into()
@@ -356,7 +356,7 @@ pub trait AltRealImpl: AltrepImpl {
 
     /// Return the maximum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn max(&self, remove_nas: bool) -> Robj {
+    fn max(&self, remove_nas: bool) -> RObj {
         let (_tot, _min, max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
             NA_REAL.into()
@@ -382,10 +382,10 @@ pub trait AltLogicalImpl: AltrepImpl {
     }
 
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Rbool;
+    fn elt(&self, _index: usize) -> RBool;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Rbool]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [RBool]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -399,9 +399,9 @@ pub trait AltLogicalImpl: AltrepImpl {
         }
     }
 
-    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
-    fn is_sorted(&self) -> Rbool {
-        Rbool::na()
+    /// Return TRUE if this vector is sorted, FALSE if not and RBool::na() if unknown.
+    fn is_sorted(&self) -> RBool {
+        RBool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -411,10 +411,10 @@ pub trait AltLogicalImpl: AltrepImpl {
 
     /// Return the sum of the elements in this vector.
     /// If remove_nas is true, skip and NA values.
-    fn sum(&self, remove_nas: bool) -> Robj {
+    fn sum(&self, remove_nas: bool) -> RObj {
         let (tot, _min, _max, nas, len) = self.tot_min_max_nas();
         if !remove_nas && nas != 0 || remove_nas && nas == len {
-            Rbool::na().into()
+            RBool::na().into()
         } else {
             tot.into()
         }
@@ -443,10 +443,10 @@ pub trait AltRawImpl: AltrepImpl {
 
 pub trait AltComplexImpl: AltrepImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Rcplx;
+    fn elt(&self, _index: usize) -> RCplx;
 
     /// Get a multiple elements from this vector.
-    fn get_region(&self, index: usize, data: &mut [Rcplx]) -> usize {
+    fn get_region(&self, index: usize, data: &mut [RCplx]) -> usize {
         let len = self.length();
         if index > len {
             0
@@ -462,21 +462,21 @@ pub trait AltComplexImpl: AltrepImpl {
 }
 
 // Implement the trait methods for iterators
-make_from_iterator_impl!(AltIntegerImpl, Rint);
-make_from_iterator_impl!(AltLogicalImpl, Rbool);
-make_from_iterator_impl!(AltRealImpl, Rfloat);
-make_from_iterator_impl!(AltComplexImpl, Rcplx);
+make_from_iterator_impl!(AltIntegerImpl, RInt);
+make_from_iterator_impl!(AltLogicalImpl, RBool);
+make_from_iterator_impl!(AltRealImpl, RFloat);
+make_from_iterator_impl!(AltComplexImpl, RCplx);
 
 pub trait AltStringImpl {
     /// Get a single element from this vector.
-    fn elt(&self, _index: usize) -> Rstr;
+    fn elt(&self, _index: usize) -> RStr;
 
     /// Set a single element in this vector.
-    fn set_elt(&mut self, _index: usize, _value: Rstr) {}
+    fn set_elt(&mut self, _index: usize, _value: RStr) {}
 
-    /// Return TRUE if this vector is sorted, FALSE if not and Rbool::na() if unknown.
-    fn is_sorted(&self) -> Rbool {
-        Rbool::na()
+    /// Return TRUE if this vector is sorted, FALSE if not and RBool::na() if unknown.
+    fn is_sorted(&self) -> RBool {
+        RBool::na()
     }
 
     /// Return true if this vector does not contain NAs.
@@ -488,28 +488,28 @@ pub trait AltStringImpl {
 #[cfg(use_r_altlist)]
 pub trait AltListImpl {
     /// Get a single element from this vector
-    /// a single element of a list can be any Robj
-    fn elt(&self, _index: usize) -> Robj;
+    /// a single element of a list can be any RObj
+    fn elt(&self, _index: usize) -> RObj;
 
     /// Set a single element in this list.
-    fn set_elt(&mut self, _index: usize, _value: Robj) {}
+    fn set_elt(&mut self, _index: usize, _value: RObj) {}
 }
 
 impl Altrep {
     /// Safely implement R_altrep_data1, R_altrep_data2.
     /// When implementing Altrep classes, this gets the metadata.
-    pub fn data(&self) -> (Robj, Robj) {
+    pub fn data(&self) -> (RObj, RObj) {
         unsafe {
             (
-                Robj::from_sexp(R_altrep_data1(self.robj.get())),
-                Robj::from_sexp(R_altrep_data1(self.robj.get())),
+                RObj::from_sexp(R_altrep_data1(self.robj.get())),
+                RObj::from_sexp(R_altrep_data1(self.robj.get())),
             )
         }
     }
 
     /// Safely (relatively!) implement R_set_altrep_data1, R_set_altrep_data2.
     /// When implementing Altrep classes, this sets the metadata.
-    pub fn set_data(&mut self, values: (Robj, Robj)) {
+    pub fn set_data(&mut self, values: (RObj, RObj)) {
         unsafe {
             R_set_altrep_data1(self.robj.get(), values.0.get());
             R_set_altrep_data2(self.robj.get(), values.1.get());
@@ -517,13 +517,13 @@ impl Altrep {
     }
 
     /// Safely implement ALTREP_CLASS.
-    pub fn class(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(ALTREP_CLASS(self.robj.get())) })
+    pub fn class(&self) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(ALTREP_CLASS(self.robj.get())) })
     }
 
     pub fn from_state_and_class<StateType: 'static>(
         state: StateType,
-        class: Robj,
+        class: RObj,
         mutable: bool,
     ) -> Altrep {
         single_threaded(|| unsafe {
@@ -552,7 +552,7 @@ impl Altrep {
             }
 
             Altrep {
-                robj: Robj::from_sexp(sexp),
+                robj: RObj::from_sexp(sexp),
             }
         })
     }
@@ -578,7 +578,7 @@ impl Altrep {
         }
     }
 
-    fn altrep_class<StateType: AltrepImpl + 'static>(ty: Rtype, name: &str, base: &str) -> Robj {
+    fn altrep_class<StateType: AltrepImpl + 'static>(ty: RType, name: &str, base: &str) -> RObj {
         #![allow(non_snake_case)]
         #![allow(unused_variables)]
         use std::os::raw::c_int;
@@ -593,9 +593,9 @@ impl Altrep {
             levs: c_int,
         ) -> SEXP {
             <StateType>::unserialize_ex(
-                Robj::from_sexp(class),
-                Robj::from_sexp(state),
-                Robj::from_sexp(attr),
+                RObj::from_sexp(class),
+                RObj::from_sexp(state),
+                RObj::from_sexp(attr),
                 objf,
                 levs,
             )
@@ -606,7 +606,7 @@ impl Altrep {
             class: SEXP,
             state: SEXP,
         ) -> SEXP {
-            <StateType>::unserialize(Robj::from_sexp(class), Robj::from_sexp(state)).get()
+            <StateType>::unserialize(RObj::from_sexp(class), RObj::from_sexp(state)).get()
         }
 
         unsafe extern "C" fn altrep_Serialized_state<StateType: AltrepImpl + 'static>(
@@ -671,9 +671,9 @@ impl Altrep {
             call: SEXP,
         ) -> SEXP {
             <StateType>::extract_subset(
-                Robj::from_sexp(x),
-                Robj::from_sexp(indx),
-                Robj::from_sexp(call),
+                RObj::from_sexp(x),
+                RObj::from_sexp(indx),
+                RObj::from_sexp(call),
             )
             .get()
         }
@@ -683,26 +683,26 @@ impl Altrep {
             let csbase = std::ffi::CString::new(base).unwrap();
 
             let class_ptr = match ty {
-                Rtype::Integers => {
+                RType::Integers => {
                     R_make_altinteger_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                Rtype::Doubles => {
+                RType::Doubles => {
                     R_make_altreal_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                Rtype::Logicals => {
+                RType::Logicals => {
                     R_make_altlogical_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                Rtype::Raw => {
+                RType::Raw => {
                     R_make_altraw_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                Rtype::Complexes => {
+                RType::Complexes => {
                     R_make_altcomplex_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
-                Rtype::Strings => {
+                RType::Strings => {
                     R_make_altstring_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
                 #[cfg(use_r_altlist)]
-                Rtype::List => {
+                RType::List => {
                     R_make_altlist_class(csname.as_ptr(), csbase.as_ptr(), std::ptr::null_mut())
                 }
                 _ => panic!("expected Altvec compatible type"),
@@ -728,7 +728,7 @@ impl Altrep {
             );
             R_set_altvec_Extract_subset_method(class_ptr, Some(altvec_Extract_subset::<StateType>));
 
-            Robj::from_sexp(class_ptr.ptr)
+            RObj::from_sexp(class_ptr.ptr)
         }
     }
 
@@ -736,12 +736,12 @@ impl Altrep {
     pub fn make_altinteger_class<StateType: AltrepImpl + AltIntegerImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Integers, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Integers, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altinteger_Elt<StateType: AltIntegerImpl + 'static>(
@@ -757,7 +757,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rint, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut RInt, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -816,12 +816,12 @@ impl Altrep {
     pub fn make_altreal_class<StateType: AltrepImpl + AltRealImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Doubles, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Doubles, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altreal_Elt<StateType: AltRealImpl + 'static>(
@@ -837,7 +837,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut f64,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rfloat, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut RFloat, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -893,12 +893,12 @@ impl Altrep {
     pub fn make_altlogical_class<StateType: AltrepImpl + AltLogicalImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Logicals, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Logicals, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altlogical_Elt<StateType: AltLogicalImpl + 'static>(
@@ -914,7 +914,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut c_int,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rbool, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut RBool, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -953,11 +953,11 @@ impl Altrep {
     pub fn make_altraw_class<StateType: AltrepImpl + AltRawImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Raw, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Raw, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altraw_Elt<StateType: AltRawImpl + 'static>(
@@ -988,11 +988,11 @@ impl Altrep {
     pub fn make_altcomplex_class<StateType: AltrepImpl + AltComplexImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Complexes, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Complexes, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altcomplex_Elt<StateType: AltComplexImpl + 'static>(
@@ -1008,7 +1008,7 @@ impl Altrep {
                 n: R_xlen_t,
                 buf: *mut Rcomplex,
             ) -> R_xlen_t {
-                let slice = std::slice::from_raw_parts_mut(buf as *mut Rcplx, n as usize);
+                let slice = std::slice::from_raw_parts_mut(buf as *mut RCplx, n as usize);
                 Altrep::get_state::<StateType>(x).get_region(i as usize, slice) as R_xlen_t
             }
 
@@ -1023,12 +1023,12 @@ impl Altrep {
     pub fn make_altstring_class<StateType: AltrepImpl + AltStringImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
         use std::os::raw::c_int;
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::Strings, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::Strings, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altstring_Elt<StateType: AltStringImpl + 'static>(
@@ -1044,7 +1044,7 @@ impl Altrep {
                 v: SEXP,
             ) {
                 Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+                    .set_elt(i as usize, RObj::from_sexp(v).try_into().unwrap())
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(
@@ -1072,11 +1072,11 @@ impl Altrep {
     pub fn make_altlist_class<StateType: AltrepImpl + AltListImpl + 'static>(
         name: &str,
         base: &str,
-    ) -> Robj {
+    ) -> RObj {
         #![allow(non_snake_case)]
 
         single_threaded(|| unsafe {
-            let class = Altrep::altrep_class::<StateType>(Rtype::List, name, base);
+            let class = Altrep::altrep_class::<StateType>(RType::List, name, base);
             let class_ptr = R_altrep_class_t { ptr: class.get() };
 
             unsafe extern "C" fn altlist_Elt<StateType: AltListImpl + 'static>(
@@ -1091,7 +1091,7 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, Robj::from_sexp(v))
+                Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, RObj::from_sexp(v))
             }
 
             R_set_altlist_Elt_method(class_ptr, Some(altlist_Elt::<StateType>));
@@ -1104,28 +1104,28 @@ impl Altrep {
         make_altinteger_from_iterator,
         make_altinteger_class,
         AltIntegerImpl,
-        Rint,
+        RInt,
         i32
     );
     make_from_iterator!(
         make_altlogical_from_iterator,
         make_altlogical_class,
         AltLogicalImpl,
-        Rbool,
+        RBool,
         i32
     );
     make_from_iterator!(
         make_altreal_from_iterator,
         make_altreal_class,
         AltRealImpl,
-        Rfloat,
+        RFloat,
         f64
     );
     make_from_iterator!(
         make_altcomplex_from_iterator,
         make_altcomplex_class,
         AltComplexImpl,
-        Rcplx,
+        RCplx,
         c64
     );
 }

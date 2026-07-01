@@ -2,18 +2,18 @@ use ::extendr_api::io::Load;
 
 #[test]
 fn test_save() {
-    use extendr_api::{io::PstreamFormat, io::Save, test, Robj};
+    use extendr_api::{io::PstreamFormat, io::Save, test, RObj};
     test! {
         let mut w = Vec::new();
-        Robj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_ascii_format, 3, None)?;
+        RObj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_ascii_format, 3, None)?;
         assert!(w[0] == b'A');
 
         let mut w = Vec::new();
-        Robj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_binary_format, 3, None)?;
+        RObj::from(1).to_writer(&mut w, PstreamFormat::R_pstream_binary_format, 3, None)?;
         assert!(w[0] == b'B');
 
         // let path : std::path::PathBuf = "/tmp/1".into();
-        // Robj::from(1).save(&path, PstreamFormat::AsciiFormat, 3, None)?;
+        // RObj::from(1).save(&path, PstreamFormat::AsciiFormat, 3, None)?;
         // let s = std::fs::read(path).unwrap();
         // assert!(s.starts_with(b"A\n"));
     }
@@ -21,7 +21,7 @@ fn test_save() {
 
 #[test]
 fn test_load() {
-    use extendr_api::{io::PstreamFormat, test, Robj};
+    use extendr_api::{io::PstreamFormat, test, RObj};
     test! {
         let text = r#"A
 3
@@ -34,13 +34,13 @@ UTF-8
 1
 "#;
         // let mut w = Vec::new();
-        // Robj::from(1_i32).to_writer(&mut w, PstreamFormat::AsciiFormat, 3, None)?;
+        // RObj::from(1_i32).to_writer(&mut w, PstreamFormat::AsciiFormat, 3, None)?;
         // assert!(w[0] == b'A');
         // println!("{}", String::from_utf8(w.clone()).unwrap());
 
         let mut c = std::io::Cursor::new(text);
 
-        let res = Robj::from_reader(&mut c, PstreamFormat::R_pstream_ascii_format, None);
-        assert_eq!(res, Ok(Robj::from(1_i32)));
+        let res = RObj::from_reader(&mut c, PstreamFormat::R_pstream_ascii_format, None);
+        assert_eq!(res, Ok(RObj::from(1_i32)));
     }
 }

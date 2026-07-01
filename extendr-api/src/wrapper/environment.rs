@@ -5,7 +5,7 @@ use extendr_ffi::{
 };
 #[derive(PartialEq, Clone)]
 pub struct Environment {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Environment {
@@ -76,29 +76,29 @@ impl Environment {
 
     /// Get the current evaluation environment.
     pub fn current() -> Self {
-        unsafe { Robj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
+        unsafe { RObj::from_sexp(R_GetCurrentEnv()).try_into().unwrap() }
     }
 
     /// Get the global environment.
     pub fn global() -> Self {
-        unsafe { Robj::from_sexp(R_GlobalEnv).try_into().unwrap() }
+        unsafe { RObj::from_sexp(R_GlobalEnv).try_into().unwrap() }
     }
 
     /// Get the base environment.
     pub fn base() -> Self {
-        unsafe { Robj::from_sexp(R_BaseEnv).try_into().unwrap() }
+        unsafe { RObj::from_sexp(R_BaseEnv).try_into().unwrap() }
     }
 
     /// Get the empty environment.
     pub fn empty() -> Self {
-        unsafe { Robj::from_sexp(R_EmptyEnv).try_into().unwrap() }
+        unsafe { RObj::from_sexp(R_EmptyEnv).try_into().unwrap() }
     }
 
     /// Get the call associated with this environment.
     /// Mimics rlang's `frame_call()`: evaluates `sys.frames()` in `self`, finds the matching
     /// frame index, then returns `sys.call(i)`.
     /// Returns `None` if not called from a function frame or if the call cannot be determined.
-    pub fn call(&self) -> Option<Robj> {
+    pub fn call(&self) -> Option<RObj> {
         use crate::robj::Eval;
         // Evaluate sys.frames() in self to get the call stack visible from that frame
         // sys.frames() returns a pairlist of all active frames
@@ -131,7 +131,7 @@ impl Environment {
     pub fn parent(&self) -> Option<Environment> {
         unsafe {
             let sexp = self.robj.get();
-            let robj = Robj::from_sexp(get_parent_env(sexp));
+            let robj = RObj::from_sexp(get_parent_env(sexp));
             robj.try_into().ok()
         }
     }
@@ -172,8 +172,8 @@ impl Environment {
     /// Iterate over an environment.
     pub fn iter(&self) -> EnvIter {
         unsafe {
-            let hashtab = Robj::from_sexp(extendr_ffi::HASHTAB(self.get()));
-            let frame = Robj::from_sexp(extendr_ffi::FRAME(self.get()));
+            let hashtab = RObj::from_sexp(extendr_ffi::HASHTAB(self.get()));
+            let frame = RObj::from_sexp(extendr_ffi::FRAME(self.get()));
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),
@@ -182,7 +182,7 @@ impl Environment {
             } else {
                 EnvIter {
                     hash_table: hashtab.as_list().unwrap().values(),
-                    pairlist: PairlistIter::new(),
+                    pairlist: PairListIter::new(),
                 }
             }
         }
@@ -212,7 +212,7 @@ impl Environment {
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
     /// ```
-    pub fn set_local<K: Into<Robj>, V: Into<Robj>>(&self, key: K, value: V) {
+    pub fn set_local<K: Into<RObj>, V: Into<RObj>>(&self, key: K, value: V) {
         let key = key.into();
         let value = value.into();
         if key.is_symbol() {
@@ -231,10 +231,10 @@ impl Environment {
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
     /// ```
-    pub fn local<K: Into<Robj>>(&self, key: K) -> Result<Robj> {
+    pub fn local<K: Into<RObj>>(&self, key: K) -> Result<RObj> {
         let key = key.into();
         if key.is_symbol() {
-            unsafe { Ok(Robj::from_sexp(get_var_in_frame(self.get(), key.get()))) }
+            unsafe { Ok(RObj::from_sexp(get_var_in_frame(self.get(), key.get()))) }
         } else {
             Err(Error::NotFound(key))
         }
@@ -246,11 +246,11 @@ impl Environment {
 #[derive(Clone)]
 pub struct EnvIter {
     hash_table: ListIter,
-    pairlist: PairlistIter,
+    pairlist: PairListIter,
 }
 
 impl Iterator for EnvIter {
-    type Item = (&'static str, Robj);
+    type Item = (&'static str, RObj);
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {

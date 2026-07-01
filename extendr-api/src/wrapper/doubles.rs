@@ -1,4 +1,4 @@
-use super::scalar::Rfloat;
+use super::scalar::RFloat;
 use super::*;
 use extendr_ffi::{
     dataptr, R_xlen_t, REAL_GET_REGION, REAL_IS_SORTED, REAL_NO_NA, SET_REAL_ELT, SEXPTYPE::REALSXP,
@@ -14,18 +14,18 @@ use std::iter::FromIterator;
 ///     let mut vec = (0..5).map(|i| (i as f64)).collect::<Doubles>();
 ///     vec.iter_mut().for_each(|v| *v = *v + 10.0);
 ///     assert_eq!(vec.elt(0), 10.0);
-///     let sum = vec.iter().sum::<Rfloat>();
+///     let sum = vec.iter().sum::<RFloat>();
 ///     assert_eq!(sum, 60.0);
 /// }
 /// ```
 #[derive(PartialEq, Clone)]
 pub struct Doubles {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 macros::gen_vector_wrapper_impl!(
     vector_type: Doubles,
-    scalar_type: Rfloat,
+    scalar_type: RFloat,
     primitive_type: f64,
     r_prefix: REAL,
     SEXP: REALSXP,
@@ -43,7 +43,7 @@ macros::gen_from_iterator_impl!(
 
 impl Doubles {
     /// Get a region of elements from the vector.
-    pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
+    pub fn get_region(&self, index: usize, dest: &mut [RFloat]) -> usize {
         unsafe {
             let ptr: *mut f64 = dest.as_mut_ptr() as *mut f64;
             REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
@@ -51,19 +51,19 @@ impl Doubles {
     }
 
     /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
-    pub fn is_sorted(&self) -> Rbool {
+    pub fn is_sorted(&self) -> RBool {
         unsafe { REAL_IS_SORTED(self.get()).into() }
     }
 
     /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
-    pub fn no_na(&self) -> Rbool {
+    pub fn no_na(&self) -> RBool {
         unsafe { REAL_NO_NA(self.get()).into() }
     }
 }
 
 // TODO: this should be a trait.
 impl Doubles {
-    pub fn set_elt(&mut self, index: usize, val: Rfloat) {
+    pub fn set_elt(&mut self, index: usize, val: RFloat) {
         single_threaded(|| unsafe {
             SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val.0);
         })
@@ -71,22 +71,22 @@ impl Doubles {
 }
 
 impl Deref for Doubles {
-    type Target = [Rfloat];
+    type Target = [RFloat];
 
-    /// Treat Doubles as if it is a slice, like `Vec<Rfloat>`
+    /// Treat Doubles as if it is a slice, like `Vec<RFloat>`
     fn deref(&self) -> &Self::Target {
         unsafe {
-            let ptr = dataptr(self.get()) as *const Rfloat;
+            let ptr = dataptr(self.get()) as *const RFloat;
             std::slice::from_raw_parts(ptr, self.len())
         }
     }
 }
 
 impl DerefMut for Doubles {
-    /// Treat Doubles as if it is a mutable slice, like `Vec<Rfloat>`
+    /// Treat Doubles as if it is a mutable slice, like `Vec<RFloat>`
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
-            let ptr = dataptr(self.get_mut()) as *mut Rfloat;
+            let ptr = dataptr(self.get_mut()) as *mut RFloat;
             std::slice::from_raw_parts_mut(ptr, self.len())
         }
     }
@@ -129,7 +129,7 @@ mod tests {
         use crate::na::CanBeNA;
         test! {
             let vec = Doubles::new_with_na(10);
-            let manual_vec = (0..10).map(|_| Rfloat::na()).collect::<Doubles>();
+            let manual_vec = (0..10).map(|_| RFloat::na()).collect::<Doubles>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }

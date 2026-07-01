@@ -1,7 +1,7 @@
 //! Wrappers are lightweight proxies for references to R datatypes.
-//! They do not contain an Robj (see array.rs for an example of this).
+//! They do not contain an RObj (see array.rs for an example of this).
 
-use crate::robj::{GetSexp, Rinternals};
+use crate::robj::{GetSexp, RInternals};
 use crate::*;
 
 pub mod altrep;
@@ -29,6 +29,9 @@ pub mod strings;
 pub mod symbol;
 pub mod wrapper_macros;
 
+pub use self::rstr::RStr;
+
+#[deprecated(note = "Use RStr instead", since = "0.9.0")]
 pub use self::rstr::Rstr;
 #[cfg(use_r_altlist)]
 pub use altrep::AltListImpl;
@@ -37,7 +40,10 @@ pub use altrep::{
     AltrepImpl,
 };
 pub use complexes::Complexes;
-pub use dataframe::{Dataframe, IntoDataFrameRow};
+pub use dataframe::{DataFrame, IntoDataFrameRow};
+
+#[deprecated(note = "Use DataFrame instead", since = "0.9.0")]
+pub use dataframe::Dataframe;
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
@@ -49,7 +55,12 @@ pub use list::{FromList, List, ListIter};
 pub use logicals::Logicals;
 pub use matrix::{MatrixConversions, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D};
 pub use nullable::Nullable;
-pub use pairlist::{Pairlist, PairlistIter};
+pub use pairlist::{PairList, PairListIter};
+
+#[deprecated(note = "Use PairList instead", since = "0.9.0")]
+pub use pairlist::Pairlist;
+#[deprecated(note = "Use PairListIter instead", since = "0.9.0")]
+pub use pairlist::PairlistIter;
 pub use primitive::Primitive;
 pub use promise::Promise;
 pub use raw::Raw;

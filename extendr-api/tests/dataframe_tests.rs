@@ -7,8 +7,8 @@ fn test_derive_into_dataframe() {
 
         #[derive(Debug, IntoDataFrameRow)]
         struct MyStruct {
-            x: Rint,
-            y: Rstr,
+            x: RInt,
+            y: RStr,
         }
 
         let v = vec![MyStruct { x: 0.into(), y: "abc".into() }, MyStruct { x: 1.into(), y: "xyz".into() }];
@@ -37,8 +37,8 @@ fn test_into_robj_dataframe() {
 
         #[derive(Clone, Debug, IntoDataFrameRow)]
         struct MyStruct {
-            x: Rint,
-            y: Rstr,
+            x: RInt,
+            y: RStr,
         }
 
         let v = vec![MyStruct { x: 0.into(), y: "abc".into() }, MyStruct { x: 1.into(), y: "xyz".into() }];
@@ -58,22 +58,22 @@ struct Row {
 }
 
 #[extendr]
-fn dataframe_conversion(_data_frame: Dataframe<Row>) -> Robj {
+fn dataframe_conversion(_data_frame: DataFrame<Row>) -> RObj {
     vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
 }
 
 #[extendr]
-fn dataframe_conversion_try_from(_data_frame: Dataframe<Row>) -> Robj {
+fn dataframe_conversion_try_from(_data_frame: DataFrame<Row>) -> RObj {
     vec![Row { name: 42 }].into_dataframe().unwrap().into_robj()
 }
 
 #[extendr]
-fn return_dataframe(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+fn return_dataframe(_data_frame: DataFrame<Row>) -> DataFrame<Row> {
     vec![Row { name: 42 }].into_dataframe().unwrap()
 }
 
 #[extendr]
-fn return_dataframe_try_from(_data_frame: Dataframe<Row>) -> Dataframe<Row> {
+fn return_dataframe_try_from(_data_frame: DataFrame<Row>) -> DataFrame<Row> {
     vec![Row { name: 42 }].into_dataframe().unwrap()
 }
 
@@ -87,7 +87,7 @@ fn test_storing_external_ptr_as_row() {
     impl Row {}
 
     #[extendr]
-    fn use_dataframe_exptr(data_frame: Dataframe<Row>) -> Dataframe<Row> {
+    fn use_dataframe_exptr(data_frame: DataFrame<Row>) -> DataFrame<Row> {
         data_frame
     }
 }
@@ -103,12 +103,12 @@ fn test_dataframe_row_and_externalptr() {
     impl RowAndExptr {}
 
     #[extendr]
-    fn use_dataframe_exptr2(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+    fn use_dataframe_exptr2(data_frame: DataFrame<RowAndExptr>) -> DataFrame<RowAndExptr> {
         data_frame
     }
 
     #[extendr]
-    fn use_dataframe_exptr3(data_frame: Dataframe<RowAndExptr>) -> Dataframe<RowAndExptr> {
+    fn use_dataframe_exptr3(data_frame: DataFrame<RowAndExptr>) -> DataFrame<RowAndExptr> {
         data_frame
     }
 }

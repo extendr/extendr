@@ -3,8 +3,8 @@
 //! This library aims to provide an interface that will be familiar to
 //! first-time users of Rust or indeed any compiled language.
 //!
-//! See [`Robj`] for much of the content of this crate.
-//! [`Robj`] provides a safe wrapper for the R object type.
+//! See [`RObj`] for much of the content of this crate.
+//! [`RObj`] provides a safe wrapper for the R object type.
 //!
 //! ## Examples
 //!
@@ -31,7 +31,7 @@
 //! result <- fred(1)
 //! ```
 //!
-//! [`Robj`] is a wrapper for R objects.
+//! [`RObj`] is a wrapper for R objects.
 //! The [`r!`] and `R!` macros let you build R objects
 //! using Rust and R syntax respectively.
 //! ```
@@ -324,7 +324,7 @@ pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
-pub use robj::Robj;
+pub use robj::RObj;
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
 pub use std::ops::DerefMut;
@@ -359,15 +359,15 @@ pub use wrapper::*;
 pub use extendr_macros::*;
 
 use extendr_ffi::SEXPTYPE;
-use scalar::Rbool;
+use scalar::RBool;
 
 //////////////////////////////////////////////////
 
 /// TRUE value eg. `r!(TRUE)`
-pub const TRUE: Rbool = Rbool::true_value();
+pub const TRUE: RBool = RBool::true_value();
 
 /// FALSE value eg. `r!(FALSE)`
-pub const FALSE: Rbool = Rbool::false_value();
+pub const FALSE: RBool = RBool::false_value();
 
 /// NULL value eg. `r!(NULL)`
 pub const NULL: () = ();
@@ -382,7 +382,7 @@ pub const NA_REAL: Option<f64> = None;
 pub const NA_STRING: Option<&str> = None;
 
 /// NA value for logical. `r!(NA_LOGICAL)`
-pub const NA_LOGICAL: Rbool = Rbool::na_value();
+pub const NA_LOGICAL: RBool = RBool::na_value();
 
 /// This is needed for the generation of wrappers.
 #[doc(hidden)]
@@ -467,19 +467,19 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
     extendr_ffi::R_forceSymbols(info, extendr_ffi::Rboolean::FALSE);
 }
 
-/// Type of R objects used by [Robj::rtype].
+/// Type of R objects used by [RObj::rtype].
 #[derive(Debug, PartialEq)]
-pub enum Rtype {
+pub enum RType {
     Null,        // NILSXP
     Symbol,      // SYMSXP
-    Pairlist,    // LISTSXP
+    PairList,    // LISTSXP
     Function,    // CLOSXP
     Environment, // ENVSXP
     Promise,     // PROMSXP
     Language,    // LANGSXP
     Special,     // SPECIALSXP
     Builtin,     // BUILTINSXP
-    Rstr,        // CHARSXP
+    RStr,        // CHARSXP
     Logicals,    // LGLSXP
     Integers,    // INTSXP
     Doubles,     // REALSXP
@@ -497,105 +497,111 @@ pub enum Rtype {
     Unknown,
 }
 
+#[deprecated(note = "Use RType instead", since = "0.9.0")]
+pub type Rtype = RType;
+
 /// Enum use to unpack R objects into their specialist wrappers.
-// Todo: convert all Robj types to wrappers.
+// Todo: convert all RObj types to wrappers.
 // Note: this only works if the wrappers are all just SEXPs.
 #[derive(Debug, PartialEq)]
-pub enum Rany<'a> {
-    Null(&'a Robj),               // NILSXP
+pub enum RAny<'a> {
+    Null(&'a RObj),               // NILSXP
     Symbol(&'a Symbol),           // SYMSXP
-    Pairlist(&'a Pairlist),       // LISTSXP
+    PairList(&'a PairList),       // LISTSXP
     Function(&'a Function),       // CLOSXP
     Environment(&'a Environment), // ENVSXP
     Promise(&'a Promise),         // PROMSXP
     Language(&'a Language),       // LANGSXP
     Special(&'a Primitive),       // SPECIALSXP
     Builtin(&'a Primitive),       // BUILTINSXP
-    Rstr(&'a Rstr),               // CHARSXP
+    RStr(&'a RStr),               // CHARSXP
     Logicals(&'a Logicals),       // LGLSXP
     Integers(&'a Integers),       // INTSXP
     Doubles(&'a Doubles),         // REALSXP
     Complexes(&'a Complexes),     // CPLXSXP
     Strings(&'a Strings),         // STRSXP
-    Dot(&'a Robj),                // DOTSXP
-    Any(&'a Robj),                // ANYSXP
+    Dot(&'a RObj),                // DOTSXP
+    Any(&'a RObj),                // ANYSXP
     List(&'a List),               // VECSXP
     Expressions(&'a Expressions), // EXPRSXP
-    Bytecode(&'a Robj),           // BCODESXP
-    ExternalPtr(&'a Robj),        // EXTPTRSXP
-    WeakRef(&'a Robj),            // WEAKREFSXP
+    Bytecode(&'a RObj),           // BCODESXP
+    ExternalPtr(&'a RObj),        // EXTPTRSXP
+    WeakRef(&'a RObj),            // WEAKREFSXP
     Raw(&'a Raw),                 // RAWSXP
     S4(&'a S4),                   // S4SXP
-    Unknown(&'a Robj),
+    Unknown(&'a RObj),
 }
 
-/// Convert extendr's Rtype to R's SEXPTYPE.
+#[deprecated(note = "Use RAny instead", since = "0.9.0")]
+pub type Rany<'a> = RAny<'a>;
+
+/// Convert extendr's RType to R's SEXPTYPE.
 /// Panics if the type is Unknown.
-pub fn rtype_to_sxp(rtype: Rtype) -> SEXPTYPE {
+pub fn rtype_to_sxp(rtype: RType) -> SEXPTYPE {
     use extendr_ffi::SEXPTYPE;
     match rtype {
-        Rtype::Null => SEXPTYPE::NILSXP,
-        Rtype::Symbol => SEXPTYPE::SYMSXP,
-        Rtype::Pairlist => SEXPTYPE::LISTSXP,
-        Rtype::Function => SEXPTYPE::CLOSXP,
-        Rtype::Environment => SEXPTYPE::ENVSXP,
-        Rtype::Promise => SEXPTYPE::PROMSXP,
-        Rtype::Language => SEXPTYPE::LANGSXP,
-        Rtype::Special => SEXPTYPE::SPECIALSXP,
-        Rtype::Builtin => SEXPTYPE::BUILTINSXP,
-        Rtype::Rstr => SEXPTYPE::CHARSXP,
-        Rtype::Logicals => SEXPTYPE::LGLSXP,
-        Rtype::Integers => SEXPTYPE::INTSXP,
-        Rtype::Doubles => SEXPTYPE::REALSXP,
-        Rtype::Complexes => SEXPTYPE::CPLXSXP,
-        Rtype::Strings => SEXPTYPE::STRSXP,
-        Rtype::Dot => SEXPTYPE::DOTSXP,
-        Rtype::Any => SEXPTYPE::ANYSXP,
-        Rtype::List => SEXPTYPE::VECSXP,
-        Rtype::Expressions => SEXPTYPE::EXPRSXP,
-        Rtype::Bytecode => SEXPTYPE::BCODESXP,
-        Rtype::ExternalPtr => SEXPTYPE::EXTPTRSXP,
-        Rtype::WeakRef => SEXPTYPE::WEAKREFSXP,
-        Rtype::Raw => SEXPTYPE::RAWSXP,
+        RType::Null => SEXPTYPE::NILSXP,
+        RType::Symbol => SEXPTYPE::SYMSXP,
+        RType::PairList => SEXPTYPE::LISTSXP,
+        RType::Function => SEXPTYPE::CLOSXP,
+        RType::Environment => SEXPTYPE::ENVSXP,
+        RType::Promise => SEXPTYPE::PROMSXP,
+        RType::Language => SEXPTYPE::LANGSXP,
+        RType::Special => SEXPTYPE::SPECIALSXP,
+        RType::Builtin => SEXPTYPE::BUILTINSXP,
+        RType::RStr => SEXPTYPE::CHARSXP,
+        RType::Logicals => SEXPTYPE::LGLSXP,
+        RType::Integers => SEXPTYPE::INTSXP,
+        RType::Doubles => SEXPTYPE::REALSXP,
+        RType::Complexes => SEXPTYPE::CPLXSXP,
+        RType::Strings => SEXPTYPE::STRSXP,
+        RType::Dot => SEXPTYPE::DOTSXP,
+        RType::Any => SEXPTYPE::ANYSXP,
+        RType::List => SEXPTYPE::VECSXP,
+        RType::Expressions => SEXPTYPE::EXPRSXP,
+        RType::Bytecode => SEXPTYPE::BCODESXP,
+        RType::ExternalPtr => SEXPTYPE::EXTPTRSXP,
+        RType::WeakRef => SEXPTYPE::WEAKREFSXP,
+        RType::Raw => SEXPTYPE::RAWSXP,
         #[cfg(not(use_objsxp))]
-        Rtype::S4 => SEXPTYPE::S4SXP,
+        RType::S4 => SEXPTYPE::S4SXP,
         #[cfg(use_objsxp)]
-        Rtype::S4 => SEXPTYPE::OBJSXP,
-        Rtype::Unknown => panic!("attempt to use Unknown Rtype"),
+        RType::S4 => SEXPTYPE::OBJSXP,
+        RType::Unknown => panic!("attempt to use Unknown RType"),
     }
 }
 
-/// Convert R's SEXPTYPE to extendr's Rtype.
-pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
+/// Convert R's SEXPTYPE to extendr's RType.
+pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> RType {
     match sxptype {
-        SEXPTYPE::NILSXP => Rtype::Null,
-        SEXPTYPE::SYMSXP => Rtype::Symbol,
-        SEXPTYPE::LISTSXP => Rtype::Pairlist,
-        SEXPTYPE::CLOSXP => Rtype::Function,
-        SEXPTYPE::ENVSXP => Rtype::Environment,
-        SEXPTYPE::PROMSXP => Rtype::Promise,
-        SEXPTYPE::LANGSXP => Rtype::Language,
-        SEXPTYPE::SPECIALSXP => Rtype::Special,
-        SEXPTYPE::BUILTINSXP => Rtype::Builtin,
-        SEXPTYPE::CHARSXP => Rtype::Rstr,
-        SEXPTYPE::LGLSXP => Rtype::Logicals,
-        SEXPTYPE::INTSXP => Rtype::Integers,
-        SEXPTYPE::REALSXP => Rtype::Doubles,
-        SEXPTYPE::CPLXSXP => Rtype::Complexes,
-        SEXPTYPE::STRSXP => Rtype::Strings,
-        SEXPTYPE::DOTSXP => Rtype::Dot,
-        SEXPTYPE::ANYSXP => Rtype::Any,
-        SEXPTYPE::VECSXP => Rtype::List,
-        SEXPTYPE::EXPRSXP => Rtype::Expressions,
-        SEXPTYPE::BCODESXP => Rtype::Bytecode,
-        SEXPTYPE::EXTPTRSXP => Rtype::ExternalPtr,
-        SEXPTYPE::WEAKREFSXP => Rtype::WeakRef,
-        SEXPTYPE::RAWSXP => Rtype::Raw,
+        SEXPTYPE::NILSXP => RType::Null,
+        SEXPTYPE::SYMSXP => RType::Symbol,
+        SEXPTYPE::LISTSXP => RType::PairList,
+        SEXPTYPE::CLOSXP => RType::Function,
+        SEXPTYPE::ENVSXP => RType::Environment,
+        SEXPTYPE::PROMSXP => RType::Promise,
+        SEXPTYPE::LANGSXP => RType::Language,
+        SEXPTYPE::SPECIALSXP => RType::Special,
+        SEXPTYPE::BUILTINSXP => RType::Builtin,
+        SEXPTYPE::CHARSXP => RType::RStr,
+        SEXPTYPE::LGLSXP => RType::Logicals,
+        SEXPTYPE::INTSXP => RType::Integers,
+        SEXPTYPE::REALSXP => RType::Doubles,
+        SEXPTYPE::CPLXSXP => RType::Complexes,
+        SEXPTYPE::STRSXP => RType::Strings,
+        SEXPTYPE::DOTSXP => RType::Dot,
+        SEXPTYPE::ANYSXP => RType::Any,
+        SEXPTYPE::VECSXP => RType::List,
+        SEXPTYPE::EXPRSXP => RType::Expressions,
+        SEXPTYPE::BCODESXP => RType::Bytecode,
+        SEXPTYPE::EXTPTRSXP => RType::ExternalPtr,
+        SEXPTYPE::WEAKREFSXP => RType::WeakRef,
+        SEXPTYPE::RAWSXP => RType::Raw,
         #[cfg(not(use_objsxp))]
-        SEXPTYPE::S4SXP => Rtype::S4,
+        SEXPTYPE::S4SXP => RType::S4,
         #[cfg(use_objsxp)]
-        SEXPTYPE::OBJSXP => Rtype::S4,
-        _ => Rtype::Unknown,
+        SEXPTYPE::OBJSXP => RType::S4,
+        _ => RType::Unknown,
     }
 }
 
@@ -657,8 +663,8 @@ mod tests {
     }
 
     #[extendr]
-    pub fn robjtype(a: Robj) {
-        assert_eq!(a, Robj::from(1))
+    pub fn robjtype(a: RObj) {
+        assert_eq!(a, RObj::from(1))
     }
 
     #[extendr]
@@ -722,7 +728,7 @@ mod tests {
     }
 
     #[extendr]
-    pub fn bool_slice(x: &[Rbool]) -> &[Rbool] {
+    pub fn bool_slice(x: &[RBool]) -> &[RBool] {
         x
     }
 
@@ -800,47 +806,47 @@ mod tests {
             // Call the exported functions through their generated C wrappers.
             unsafe {
                 wrap__inttypes(
-                    Robj::from(1).get(),
-                    Robj::from(2).get(),
-                    Robj::from(3).get(),
-                    Robj::from(4).get(),
-                    Robj::from(5).get(),
-                    Robj::from(6).get(),
-                    Robj::from(7).get(),
-                    Robj::from(8).get(),
+                    RObj::from(1).get(),
+                    RObj::from(2).get(),
+                    RObj::from(3).get(),
+                    RObj::from(4).get(),
+                    RObj::from(5).get(),
+                    RObj::from(6).get(),
+                    RObj::from(7).get(),
+                    RObj::from(8).get(),
                 );
                 wrap__inttypes(
-                    Robj::from(1.).get(),
-                    Robj::from(2.).get(),
-                    Robj::from(3.).get(),
-                    Robj::from(4.).get(),
-                    Robj::from(5.).get(),
-                    Robj::from(6.).get(),
-                    Robj::from(7.).get(),
-                    Robj::from(8.).get(),
+                    RObj::from(1.).get(),
+                    RObj::from(2.).get(),
+                    RObj::from(3.).get(),
+                    RObj::from(4.).get(),
+                    RObj::from(5.).get(),
+                    RObj::from(6.).get(),
+                    RObj::from(7.).get(),
+                    RObj::from(8.).get(),
                 );
-                wrap__floattypes(Robj::from(1.).get(), Robj::from(2.).get());
-                wrap__floattypes(Robj::from(1).get(), Robj::from(2).get());
-                wrap__strtypes(Robj::from("abc").get(), Robj::from("def").get());
+                wrap__floattypes(RObj::from(1.).get(), RObj::from(2.).get());
+                wrap__floattypes(RObj::from(1).get(), RObj::from(2).get());
+                wrap__strtypes(RObj::from("abc").get(), RObj::from("def").get());
                 wrap__vectortypes(
-                    Robj::from(&[1, 2, 3] as &[i32]).get(),
-                    Robj::from(&[4., 5., 6.] as &[f64]).get(),
+                    RObj::from(&[1, 2, 3] as &[i32]).get(),
+                    RObj::from(&[4., 5., 6.] as &[f64]).get(),
                 );
-                wrap__robjtype(Robj::from(1).get());
+                wrap__robjtype(RObj::from(1).get());
 
                 // General integer types.
-                assert_eq!(Robj::from_sexp(wrap__return_u8()), Robj::from(123_u8));
-                assert_eq!(Robj::from_sexp(wrap__return_u16()), Robj::from(123));
-                assert_eq!(Robj::from_sexp(wrap__return_u32()), Robj::from(123.));
-                assert_eq!(Robj::from_sexp(wrap__return_u64()), Robj::from(123.));
-                assert_eq!(Robj::from_sexp(wrap__return_i8()), Robj::from(123));
-                assert_eq!(Robj::from_sexp(wrap__return_i16()), Robj::from(123));
-                assert_eq!(Robj::from_sexp(wrap__return_i32()), Robj::from(123));
-                assert_eq!(Robj::from_sexp(wrap__return_i64()), Robj::from(123.));
+                assert_eq!(RObj::from_sexp(wrap__return_u8()), RObj::from(123_u8));
+                assert_eq!(RObj::from_sexp(wrap__return_u16()), RObj::from(123));
+                assert_eq!(RObj::from_sexp(wrap__return_u32()), RObj::from(123.));
+                assert_eq!(RObj::from_sexp(wrap__return_u64()), RObj::from(123.));
+                assert_eq!(RObj::from_sexp(wrap__return_i8()), RObj::from(123));
+                assert_eq!(RObj::from_sexp(wrap__return_i16()), RObj::from(123));
+                assert_eq!(RObj::from_sexp(wrap__return_i32()), RObj::from(123));
+                assert_eq!(RObj::from_sexp(wrap__return_i64()), RObj::from(123.));
 
                 // Floating point types.
-                assert_eq!(Robj::from_sexp(wrap__return_f32()), Robj::from(123.));
-                assert_eq!(Robj::from_sexp(wrap__return_f64()), Robj::from(123.));
+                assert_eq!(RObj::from_sexp(wrap__return_f32()), RObj::from(123.));
+                assert_eq!(RObj::from_sexp(wrap__return_f64()), RObj::from(123.));
             }
         }
     }
@@ -865,51 +871,51 @@ mod tests {
                 // pub fn f64_slice(x: &[f64]) -> &[f64] { x }
 
                 let robj = r!([1., 2., 3.]);
-                assert_eq!(Robj::from_sexp(wrap__f64_slice(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__f64_slice(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn i32_slice(x: &[i32]) -> &[i32] { x }
 
                 let robj = r!([1, 2, 3]);
-                assert_eq!(Robj::from_sexp(wrap__i32_slice(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__i32_slice(robj.get())), robj);
 
                 // #[extendr]
-                // pub fn bool_slice(x: &[Rbool]) -> &[Rbool] { x }
+                // pub fn bool_slice(x: &[RBool]) -> &[RBool] { x }
 
                 let robj = r!([TRUE, FALSE, TRUE]);
-                assert_eq!(Robj::from_sexp(wrap__bool_slice(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__bool_slice(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn f64_iter(x: Doubles) -> Doubles { x }
 
                 let robj = r!([1., 2., 3.]);
-                assert_eq!(Robj::from_sexp(wrap__f64_iter(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__f64_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn i32_iter(x: Integers) -> Integers { x }
 
                 let robj = r!([1, 2, 3]);
-                assert_eq!(Robj::from_sexp(wrap__i32_iter(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__i32_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn bool_iter(x: Logicals) -> Logicals { x }
 
                 // TODO: reinstate this test.
                 // let robj = r!([TRUE, FALSE, TRUE]);
-                // assert_eq!(Robj::from_sexp(wrap__bool_iter(robj.get())), robj);
+                // assert_eq!(RObj::from_sexp(wrap__bool_iter(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn symbol(x: Symbol) -> Symbol { x }
 
                 let robj = sym!(fred);
-                assert_eq!(Robj::from_sexp(wrap__symbol(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__symbol(robj.get())), robj);
 
                 // #[extendr]
                 // pub fn matrix(x: Matrix<&[f64]>) -> Matrix<&[f64]> { x }
 
                 let m = RMatrix::new_matrix(1, 2, |r, c| if r == c {1.0} else {0.});
                 let robj = r!(m);
-                assert_eq!(Robj::from_sexp(wrap__matrix(robj.get())), robj);
+                assert_eq!(RObj::from_sexp(wrap__matrix(robj.get())), robj);
             }
         }
     }
@@ -959,7 +965,7 @@ mod tests {
             assert_eq!(metadata.impls[0].methods.len(), 3);
 
             // R interface
-            let robj = unsafe { Robj::from_sexp(wrap__get_my_module_metadata()) };
+            let robj = unsafe { RObj::from_sexp(wrap__get_my_module_metadata()) };
             let functions = robj.dollar("functions").unwrap();
             let impls = robj.dollar("impls").unwrap();
             assert_eq!(functions.len(), 3);
@@ -970,12 +976,12 @@ mod tests {
     #[test]
     fn pairlist_macro_works() {
         test! {
-            assert_eq!(pairlist!(1, 2, 3), Pairlist::from_pairs(&[("", 1), ("", 2), ("", 3)]));
-            assert_eq!(pairlist!(a=1, 2, 3), Pairlist::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
-            assert_eq!(pairlist!(1, b=2, 3), Pairlist::from_pairs(&[("", 1), ("b", 2), ("", 3)]));
-            assert_eq!(pairlist!(a=1, b=2, c=3), Pairlist::from_pairs(&[("a", 1), ("b", 2), ("c", 3)]));
-            assert_eq!(pairlist!(a=NULL), Pairlist::from_pairs(&[("a", ())]));
-            assert_eq!(pairlist!(), Pairlist::from(()));
+            assert_eq!(pairlist!(1, 2, 3), PairList::from_pairs(&[("", 1), ("", 2), ("", 3)]));
+            assert_eq!(pairlist!(a=1, 2, 3), PairList::from_pairs(&[("a", 1), ("", 2), ("", 3)]));
+            assert_eq!(pairlist!(1, b=2, 3), PairList::from_pairs(&[("", 1), ("b", 2), ("", 3)]));
+            assert_eq!(pairlist!(a=1, b=2, c=3), PairList::from_pairs(&[("a", 1), ("b", 2), ("c", 3)]));
+            assert_eq!(pairlist!(a=NULL), PairList::from_pairs(&[("a", ())]));
+            assert_eq!(pairlist!(), PairList::from(()));
         }
     }
 

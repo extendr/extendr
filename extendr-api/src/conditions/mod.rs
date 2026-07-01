@@ -26,16 +26,16 @@
 //!
 //! ## Conversions
 //!
-//! | From \ To   | `List`  | `RCondition` | `Robj`  | `Condition` |
+//! | From \ To   | `List`  | `RCondition` | `RObj`  | `Condition` |
 //! |-------------|---------|--------------|---------|-------------|
 //! | `Condition` | `From`  | `From`       | `From`  | —           |
 //! | `List`      | —       | `TryFrom`    | blanket | `TryFrom`   |
 //! | `&List`     | —       | `TryFrom`    | —       | `TryFrom`   |
 //! | `RCondition`| `From`  | —            | `From`  | `TryFrom`   |
-//! | `Robj`      | —       | `TryFrom`    | —       | `TryFrom`   |
-//! | `&Robj`     | —       | `TryFrom`    | —       | `TryFrom`   |
+//! | `RObj`      | —       | `TryFrom`    | —       | `TryFrom`   |
+//! | `&RObj`     | —       | `TryFrom`    | —       | `TryFrom`   |
 use crate::{
-    robj::Rinternals, Attributes, Error, IntoRobj, Language, List, Operators, Robj, Strings,
+    robj::RInternals, Attributes, Error, IntoRObj, Language, List, Operators, RObj, Strings,
 };
 
 /// Discriminates the kind of R condition being constructed.
@@ -55,7 +55,7 @@ pub enum ConditionKind {
 ///
 /// This is the primary type to work with. Construct one via
 /// [`ConditionBuilder::default()`] and convert it to R types via the
-/// `From`/`Into` impls. To read a condition from R, use `TryFrom<Robj>` or
+/// `From`/`Into` impls. To read a condition from R, use `TryFrom<RObj>` or
 /// `TryFrom<List>`.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Condition {
@@ -78,12 +78,12 @@ impl From<Condition> for List {
     fn from(value: Condition) -> Self {
         let msg = Strings::from_values(value.message).into_robj();
 
-        let call_robj = value.call.map(|v| v.into()).unwrap_or(Robj::from(()));
+        let call_robj = value.call.map(|v| v.into()).unwrap_or(RObj::from(()));
         let parent_robj = value
             .parent
-            .map(|v| Robj::from(v.0))
-            .unwrap_or(Robj::from(()));
-        let trace_robj = value.trace.map(|v| Robj::from(v)).unwrap_or(Robj::from(()));
+            .map(|v| RObj::from(v.0))
+            .unwrap_or(RObj::from(()));
+        let trace_robj = value.trace.map(|v| RObj::from(v)).unwrap_or(RObj::from(()));
 
         let mut cnd = List::from_pairs([
             ("message", msg),
@@ -113,9 +113,9 @@ impl From<Condition> for RCondition {
     }
 }
 
-impl From<Condition> for Robj {
+impl From<Condition> for RObj {
     fn from(value: Condition) -> Self {
-        Robj::from(List::from(value))
+        RObj::from(List::from(value))
     }
 }
 
@@ -217,18 +217,18 @@ impl TryFrom<List> for Condition {
     }
 }
 
-impl TryFrom<&Robj> for Condition {
+impl TryFrom<&RObj> for Condition {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: &RObj) -> std::result::Result<Self, Self::Error> {
         Condition::try_from(List::try_from(value)?)
     }
 }
 
-impl TryFrom<Robj> for Condition {
+impl TryFrom<RObj> for Condition {
     type Error = Error;
 
-    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: RObj) -> std::result::Result<Self, Self::Error> {
         Condition::try_from(&value)
     }
 }
@@ -265,9 +265,9 @@ impl From<RCondition> for List {
     }
 }
 
-impl From<RCondition> for Robj {
+impl From<RCondition> for RObj {
     fn from(value: RCondition) -> Self {
-        Robj::from(value.0)
+        RObj::from(value.0)
     }
 }
 
@@ -279,18 +279,18 @@ impl TryFrom<RCondition> for Condition {
     }
 }
 
-impl TryFrom<&Robj> for RCondition {
+impl TryFrom<&RObj> for RCondition {
     type Error = Error;
 
-    fn try_from(value: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: &RObj) -> std::result::Result<Self, Self::Error> {
         RCondition::try_from(List::try_from(value)?)
     }
 }
 
-impl TryFrom<Robj> for RCondition {
+impl TryFrom<RObj> for RCondition {
     type Error = Error;
 
-    fn try_from(value: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: RObj) -> std::result::Result<Self, Self::Error> {
         RCondition::try_from(&value)
     }
 }
@@ -490,7 +490,7 @@ mod tests {
 
     use crate::{
         conditions::{Condition, ConditionBuilder, ConditionKind, RCondition},
-        Attributes, List, Result, Robj,
+        Attributes, List, RObj, Result,
     };
 
     #[test]
@@ -542,7 +542,7 @@ mod tests {
                 .set_message(["something failed"])
                 .set_class(["my_error"])
                 .build();
-            let robj = Robj::from(cnd.clone());
+            let robj = RObj::from(cnd.clone());
             let c2 = Condition::try_from(robj)?;
             assert_eq!(cnd, c2);
             Ok(())
@@ -574,7 +574,7 @@ mod tests {
     #[test]
     fn err_not_a_condition() -> Result<()> {
         with_r(|| {
-            let list = List::from_pairs([("message", Robj::from("oops"))]);
+            let list = List::from_pairs([("message", RObj::from("oops"))]);
             let result = Condition::try_from(&list);
             assert!(result.is_err());
             Ok(())
@@ -584,7 +584,7 @@ mod tests {
     #[test]
     fn err_not_a_list() -> Result<()> {
         with_r(|| {
-            let robj = Robj::from("just a string");
+            let robj = RObj::from("just a string");
             let result = Condition::try_from(&robj);
             assert!(result.is_err());
             Ok(())
@@ -595,7 +595,7 @@ mod tests {
     fn err_ambiguous_kind() -> Result<()> {
         with_r(|| {
             let mut list =
-                List::from_pairs([("message", Robj::from("oops")), ("call", Robj::from(()))]);
+                List::from_pairs([("message", RObj::from("oops")), ("call", RObj::from(()))]);
             list.set_class(&["error", "warning", "condition"]).unwrap();
             let result = Condition::try_from(&list);
             assert!(result.is_err());

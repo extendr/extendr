@@ -25,6 +25,7 @@
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+- **Deprecates** several non-idiomatic struct and trait names in favor of standard Rust naming conventions. The old names remain as deprecated aliases <https://github.com/extendr/extendr/pull/1103>
 
 ### Fixed
 

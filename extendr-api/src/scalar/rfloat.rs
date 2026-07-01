@@ -1,4 +1,4 @@
-use crate::prelude::Rint;
+use crate::prelude::RInt;
 use crate::scalar::macros::*;
 use crate::*;
 use std::cmp::Ordering::*;
@@ -6,16 +6,16 @@ use std::convert::TryFrom;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 use std::ops::{AddAssign, DivAssign, MulAssign, SubAssign};
 
-/// `Rfloat` is a wrapper for `f64` in the context of an R's integer vector.
+/// `RFloat` is a wrapper for `f64` in the context of an R's integer vector.
 ///
-/// `Rfloat` has a special `NA` value, obtained from R headers via `R_NaReal`.
+/// `RFloat` has a special `NA` value, obtained from R headers via `R_NaReal`.
 ///
-/// `Rfloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
+/// `RFloat` has the same footprint as an `f64` value allowing us to use it in zero copy slices.
 #[repr(transparent)]
 #[readonly::make]
-pub struct Rfloat(pub f64);
+pub struct RFloat(pub f64);
 
-impl Rfloat {
+impl RFloat {
     pub fn is_nan(&self) -> bool {
         self.0.is_nan()
     }
@@ -31,21 +31,21 @@ impl Rfloat {
     pub fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
-    pub fn abs(&self) -> Rfloat {
+    pub fn abs(&self) -> RFloat {
         self.0.abs().into()
     }
-    pub fn sqrt(&self) -> Rfloat {
+    pub fn sqrt(&self) -> RFloat {
         self.0.sqrt().into()
     }
 
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert!(Rfloat::na().min(Rfloat::default()).is_na());    
-    ///     assert!(Rfloat::default().min(Rfloat::na()).is_na());
-    ///     assert_eq!(Rfloat::default().min(Rfloat::default()), Rfloat::default());
-    ///     assert_eq!(Rfloat::from(1).min(Rfloat::from(2)), Rfloat::from(1));    
-    ///     assert_eq!(Rfloat::from(2).min(Rfloat::from(1)), Rfloat::from(1));    
+    ///     assert!(RFloat::na().min(RFloat::default()).is_na());    
+    ///     assert!(RFloat::default().min(RFloat::na()).is_na());
+    ///     assert_eq!(RFloat::default().min(RFloat::default()), RFloat::default());
+    ///     assert_eq!(RFloat::from(1).min(RFloat::from(2)), RFloat::from(1));    
+    ///     assert_eq!(RFloat::from(2).min(RFloat::from(1)), RFloat::from(1));    
     /// }
     /// ```
     pub fn min(&self, other: Self) -> Self {
@@ -59,11 +59,11 @@ impl Rfloat {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert!(Rfloat::na().max(Rfloat::default()).is_na());    
-    ///     assert!(Rfloat::default().max(Rfloat::na()).is_na());
-    ///     assert_eq!(Rfloat::default().max(Rfloat::default()), Rfloat::default());
-    ///     assert_eq!(Rfloat::from(1).max(Rfloat::from(2)), Rfloat::from(2));    
-    ///     assert_eq!(Rfloat::from(2).max(Rfloat::from(1)), Rfloat::from(2));    
+    ///     assert!(RFloat::na().max(RFloat::default()).is_na());    
+    ///     assert!(RFloat::default().max(RFloat::na()).is_na());
+    ///     assert_eq!(RFloat::default().max(RFloat::default()), RFloat::default());
+    ///     assert_eq!(RFloat::from(1).max(RFloat::from(2)), RFloat::from(2));    
+    ///     assert_eq!(RFloat::from(2).max(RFloat::from(1)), RFloat::from(2));    
     /// }
     /// ```
     pub fn max(&self, other: Self) -> Self {
@@ -77,11 +77,11 @@ impl Rfloat {
 
 // `NA_real_` is a `NaN` with specific bit representation.
 // Check that underlying `f64` is `NA_real_`.
-gen_trait_impl!(Rfloat, f64, |x: &Rfloat| x.0.is_na(), f64::na());
-gen_from_primitive!(Rfloat, f64);
+gen_trait_impl!(RFloat, f64, |x: &RFloat| x.0.is_na(), f64::na());
+gen_from_primitive!(RFloat, f64);
 
-impl From<Rfloat> for Option<f64> {
-    fn from(v: Rfloat) -> Self {
+impl From<RFloat> for Option<f64> {
+    fn from(v: RFloat) -> Self {
         if v.is_na() {
             None
         } else {
@@ -90,107 +90,107 @@ impl From<Rfloat> for Option<f64> {
     }
 }
 
-impl From<Rfloat> for f64 {
-    fn from(v: Rfloat) -> Self {
+impl From<RFloat> for f64 {
+    fn from(v: RFloat) -> Self {
         v.0
     }
 }
 
-gen_sum_iter!(Rfloat);
-gen_partial_ord!(Rfloat, f64);
+gen_sum_iter!(RFloat);
+gen_partial_ord!(RFloat, f64);
 
 // Generate binary ops for +, -, * and /
 gen_binop!(
-    Rfloat,
+    RFloat,
     f64,
     Add,
     |lhs: f64, rhs: f64| Some(lhs + rhs),
-    "Add two Rfloat values or an option of f64."
+    "Add two RFloat values or an option of f64."
 );
 gen_binop!(
-    Rfloat,
+    RFloat,
     f64,
     Sub,
     |lhs: f64, rhs: f64| Some(lhs - rhs),
-    "Subtract two Rfloat values or an option of f64."
+    "Subtract two RFloat values or an option of f64."
 );
 gen_binop!(
-    Rfloat,
+    RFloat,
     f64,
     Mul,
     |lhs: f64, rhs: f64| Some(lhs * rhs),
-    "Multiply two Rfloat values or an option of f64."
+    "Multiply two RFloat values or an option of f64."
 );
 gen_binop!(
-    Rfloat,
+    RFloat,
     f64,
     Div,
     |lhs: f64, rhs: f64| Some(lhs / rhs),
-    "Divide two Rfloat values or an option of f64."
+    "Divide two RFloat values or an option of f64."
 );
 gen_binopassign!(
-    Rfloat,
+    RFloat,
     f64,
     AddAssign,
     |lhs: f64, rhs: f64| Some(lhs + rhs),
-    "Add two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+    "Add two RFloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
 gen_binopassign!(
-    Rfloat,
+    RFloat,
     f64,
     SubAssign,
     |lhs: f64, rhs: f64| Some(lhs - rhs),
-    "Subtract two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+    "Subtract two RFloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
 gen_binopassign!(
-    Rfloat,
+    RFloat,
     f64,
     MulAssign,
     |lhs: f64, rhs: f64| Some(lhs * rhs),
-    "Multiply two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+    "Multiply two RFloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
 gen_binopassign!(
-    Rfloat,
+    RFloat,
     f64,
     DivAssign,
     |lhs: f64, rhs: f64| Some(lhs / rhs),
-    "Divide two Rfloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
+    "Divide two RFloat values or an option of f64, modifying the left-hand side in place. Overflows to NA."
 );
 
 // Generate unary ops for -, !
-gen_unop!(Rfloat, Neg, |lhs: f64| Some(-lhs), "Negate a Rfloat value.");
+gen_unop!(RFloat, Neg, |lhs: f64| Some(-lhs), "Negate a RFloat value.");
 
-impl From<i32> for Rfloat {
+impl From<i32> for RFloat {
     fn from(value: i32) -> Self {
-        Rfloat::from(value as f64)
+        RFloat::from(value as f64)
     }
 }
 
-impl From<Rint> for Rfloat {
-    fn from(value: Rint) -> Self {
+impl From<RInt> for RFloat {
+    fn from(value: RInt) -> Self {
         if value.is_na() {
-            Rfloat::na()
+            RFloat::na()
         } else {
-            Rfloat::from(value.0)
+            RFloat::from(value.0)
         }
     }
 }
 
-impl TryFrom<&Robj> for Rfloat {
+impl TryFrom<&RObj> for RFloat {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let f64_val: Result<f64> = robj.try_into();
         match f64_val {
-            Ok(val) => Ok(Rfloat::from(val)),
+            Ok(val) => Ok(RFloat::from(val)),
             // TODO: Currently this results in an extra protection of robj
-            Err(Error::MustNotBeNA(_)) => Ok(Rfloat::na()),
+            Err(Error::MustNotBeNA(_)) => Ok(RFloat::na()),
             Err(e) => Err(e),
         }
     }
 }
 
-impl std::fmt::Debug for Rfloat {
+impl std::fmt::Debug for RFloat {
     /// Debug format.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_na() {
@@ -200,3 +200,6 @@ impl std::fmt::Debug for Rfloat {
         }
     }
 }
+
+#[deprecated(note = "Use RFloat instead", since = "0.9.0")]
+pub type Rfloat = RFloat;

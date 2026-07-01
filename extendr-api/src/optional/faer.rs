@@ -1,6 +1,6 @@
 use faer::{mat, Mat, MatRef};
 
-use crate::scalar::Rfloat;
+use crate::scalar::RFloat;
 use crate::*;
 
 /// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not `NA` aware.
@@ -10,7 +10,7 @@ impl From<Mat<f64>> for RMatrix<f64> {
     }
 }
 
-impl From<Mat<f64>> for Robj {
+impl From<Mat<f64>> for RObj {
     fn from(value: Mat<f64>) -> Self {
         RMatrix::<f64>::from(value).into()
     }
@@ -18,29 +18,29 @@ impl From<Mat<f64>> for Robj {
 
 /// Convert a `faer::Mat<f64>` into an `RMatrix<f64>` which is not `NA` aware.
 impl From<MatRef<'_, f64>> for RMatrix<f64> {
-    /// Convert a faer `MatRef<f64>` into [`Robj`][robj]
-    /// [robj]: crate::Robj.
+    /// Convert a faer `MatRef<f64>` into [`RObj`][robj]
+    /// [robj]: crate::RObj.
     fn from(value: MatRef<'_, f64>) -> Self {
         RMatrix::new_matrix(value.nrows(), value.ncols(), |i, j| value.read(i, j))
     }
 }
 
-impl From<MatRef<'_, f64>> for Robj {
+impl From<MatRef<'_, f64>> for RObj {
     fn from(value: MatRef<'_, f64>) -> Self {
         RMatrix::<f64>::from(value).into_robj()
     }
 }
 
-impl From<Mat<f64>> for RMatrix<Rfloat> {
+impl From<Mat<f64>> for RMatrix<RFloat> {
     fn from(value: Mat<f64>) -> Self {
         RMatrix::new_matrix(value.nrows(), value.ncols(), |i, j| value.read(i, j).into())
     }
 }
 
-impl From<MatRef<'_, f64>> for RMatrix<Rfloat> {
+impl From<MatRef<'_, f64>> for RMatrix<RFloat> {
     fn from(value: MatRef<f64>) -> Self {
         RMatrix::new_matrix(value.nrows(), value.ncols(), |i, j| {
-            Rfloat::from(value.read(i, j))
+            RFloat::from(value.read(i, j))
         })
     }
 }
@@ -64,10 +64,10 @@ impl From<&'_ RMatrix<f64>> for MatRef<'_, f64> {
     }
 }
 
-impl TryFrom<&Robj> for Mat<f64> {
+impl TryFrom<&RObj> for Mat<f64> {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let rmat = &RMatrix::<f64>::try_from(robj)?;
         let nrow = rmat.nrows();
         let ncol = rmat.ncols();
@@ -81,10 +81,10 @@ impl TryFrom<&Robj> for Mat<f64> {
     }
 }
 
-impl TryFrom<&'_ Robj> for MatRef<'_, f64> {
+impl TryFrom<&'_ RObj> for MatRef<'_, f64> {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let rmat = &RMatrix::<f64>::try_from(robj)?;
         let nrows = rmat.nrows();
         let ncols = rmat.ncols();
@@ -98,18 +98,18 @@ impl TryFrom<&'_ Robj> for MatRef<'_, f64> {
     }
 }
 
-impl TryFrom<Robj> for Mat<f64> {
+impl TryFrom<RObj> for Mat<f64> {
     type Error = crate::Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         Self::try_from(&robj)
     }
 }
 
-impl TryFrom<Robj> for MatRef<'_, f64> {
+impl TryFrom<RObj> for MatRef<'_, f64> {
     type Error = crate::Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         Self::try_from(&robj)
     }
 }
@@ -224,7 +224,7 @@ mod test {
             let a = Mat::<f64>::from_fn(4, 3, |i, j| values[i][j]);
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let b = Mat::<f64>::try_from(&Robj::from(rmatrix));
+            let b = Mat::<f64>::try_from(&RObj::from(rmatrix));
             assert_eq!(a, b.expect("matrix to be converted"));
         }
     }
@@ -242,7 +242,7 @@ mod test {
             let a = mat.as_ref();
 
             let rmatrix = RMatrix::new_matrix(4, 3, |i, j| values[i][j]);
-            let robj = Robj::from(rmatrix);
+            let robj = RObj::from(rmatrix);
             let b = MatRef::<f64>::try_from(&robj);
             assert_eq!(a, b.expect("matrix to be converted"));
         }

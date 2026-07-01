@@ -31,7 +31,7 @@ pub fn call(item: TokenStream) -> TokenStream {
     // as in the pairlist macro.
     let call = parse_macro_input!(item as Call);
 
-    // Convert the pairs into tuples of ("name", Robj::from(value))
+    // Convert the pairs into tuples of ("name", RObj::from(value))
     let pairs = call
         .pairs
         .iter()
@@ -40,11 +40,11 @@ pub fn call(item: TokenStream) -> TokenStream {
                 if let Expr::Path(ExprPath { path, .. }) = &**left {
                     if let Some(ident) = path.get_ident() {
                         let s = ident.to_string();
-                        return parse_quote!( (#s, extendr_api::Robj::from(#right)) );
+                        return parse_quote!( (#s, extendr_api::RObj::from(#right)) );
                     }
                 }
             }
-            parse_quote!( ("", extendr_api::Robj::from(#e)) )
+            parse_quote!( ("", extendr_api::RObj::from(#e)) )
         })
         .collect::<Vec<Expr>>();
 
@@ -52,15 +52,15 @@ pub fn call(item: TokenStream) -> TokenStream {
     let caller = &call.caller;
     let caller = quote!(extendr_api::functions::eval_string(#caller));
 
-    // Use the "call" method of Robj to call the function or primitive.
+    // Use the "call" method of RObj to call the function or primitive.
     // This will error if the object is not callable.
     let res = if pairs.is_empty() {
         quote!(
-            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::new()))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::PairList::new()))
         )
     } else {
         quote!(
-            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])))
+            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::PairList::from_pairs(&[# ( #pairs ),*])))
         )
     };
 

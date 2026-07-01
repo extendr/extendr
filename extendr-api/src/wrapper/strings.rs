@@ -7,7 +7,7 @@ use std::iter::FromIterator;
 
 #[derive(PartialEq, Clone)]
 pub struct Strings {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Default for Strings {
@@ -27,13 +27,13 @@ impl Strings {
     /// }
     /// ```
     pub fn new(size: usize) -> Strings {
-        let robj = Robj::alloc_vector(SEXPTYPE::STRSXP, size);
+        let robj = RObj::alloc_vector(SEXPTYPE::STRSXP, size);
         Self { robj }
     }
 
     /// Constructs a new vector of size `len` with `NA` values
     pub fn new_with_na(len: usize) -> Strings {
-        let iter = (0..len).map(|_| Rstr::na());
+        let iter = (0..len).map(|_| RStr::na());
         Strings::from_values(iter)
     }
     /// Wrapper for creating string vector (STRSXP) objects.
@@ -54,7 +54,7 @@ impl Strings {
         single_threaded(|| unsafe {
             let values = values.into_iter();
             let maxlen = values.len();
-            let mut robj = Robj::alloc_vector(SEXPTYPE::STRSXP, maxlen);
+            let mut robj = RObj::alloc_vector(SEXPTYPE::STRSXP, maxlen);
             let sexp = robj.get_mut();
             for (i, v) in values.into_iter().take(maxlen).enumerate() {
                 let v = v.as_ref();
@@ -66,21 +66,21 @@ impl Strings {
     }
 
     /// This is a relatively expensive operation, so use a variable if using this in a loop.
-    pub fn as_slice<'a>(&self) -> &'a [Rstr] {
+    pub fn as_slice<'a>(&self) -> &'a [RStr] {
         unsafe {
-            let data = STRING_PTR_RO(self.robj.get()) as *const Rstr;
+            let data = STRING_PTR_RO(self.robj.get()) as *const RStr;
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }
     }
 
     /// Get an element in a string vector.
-    pub fn elt(&self, i: usize) -> Rstr {
+    pub fn elt(&self, i: usize) -> RStr {
         if i >= self.len() {
-            Rstr::na()
+            RStr::na()
         } else {
             unsafe {
-                Robj::from_sexp(STRING_ELT(self.get(), i as R_xlen_t))
+                RObj::from_sexp(STRING_ELT(self.get(), i as R_xlen_t))
                     .try_into()
                     .unwrap()
             }
@@ -88,7 +88,7 @@ impl Strings {
     }
 
     /// Set a single element of this string vector.
-    pub fn set_elt(&mut self, i: usize, e: Rstr) {
+    pub fn set_elt(&mut self, i: usize, e: RStr) {
         single_threaded(|| unsafe {
             if i < self.len() {
                 SET_STRING_ELT(self.robj.get_mut(), i as isize, e.get());
@@ -97,17 +97,17 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(&self) -> impl Iterator<Item = &Rstr> {
+    pub fn iter(&self) -> impl Iterator<Item = &RStr> {
         self.as_slice().iter()
     }
 
     /// Return `TRUE` if the vector is sorted, `FALSE` if not, or `NA_BOOL` if unknown.
-    pub fn is_sorted(&self) -> Rbool {
+    pub fn is_sorted(&self) -> RBool {
         unsafe { STRING_IS_SORTED(self.get()).into() }
     }
 
     /// Return `TRUE` if the vector has no `NA`s, `FALSE` if any, or `NA_BOOL` if unknown.
-    pub fn no_na(&self) -> Rbool {
+    pub fn no_na(&self) -> RBool {
         unsafe { STRING_NO_NA(self.get()).into() }
     }
 }
@@ -141,7 +141,7 @@ where
 }
 
 impl Deref for Strings {
-    type Target = [Rstr];
+    type Target = [RStr];
 
     fn deref(&self) -> &Self::Target {
         self.as_slice()
@@ -158,7 +158,7 @@ impl std::fmt::Debug for Strings {
     }
 }
 
-impl From<Option<Strings>> for Robj {
+impl From<Option<Strings>> for RObj {
     fn from(value: Option<Strings>) -> Self {
         match value {
             Some(value_strings) => value_strings.into(),
@@ -186,7 +186,7 @@ mod tests {
         use crate::na::CanBeNA;
         test! {
             let vec = Strings::new_with_na(10);
-            let manual_vec = (0..10).map(|_| Rstr::na()).collect::<Strings>();
+            let manual_vec = (0..10).map(|_| RStr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
         }

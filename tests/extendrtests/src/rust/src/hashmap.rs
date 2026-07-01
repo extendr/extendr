@@ -3,12 +3,12 @@ use std::collections::HashMap;
 
 #[extendr]
 fn test_try_from_hm(x: List) -> Result<List> {
-    let hm = HashMap::<String, Robj>::try_from(x)?;
+    let hm = HashMap::<String, RObj>::try_from(x)?;
     hm.try_into()
 }
 
 #[extendr]
-fn test_hm_string(mut x: HashMap<String, Robj>) -> List {
+fn test_hm_string(mut x: HashMap<String, RObj>) -> List {
     x.insert("inserted_value".to_string(), List::new(0).into());
     x.try_into().unwrap()
 }
@@ -24,10 +24,10 @@ struct Point {
     y: f64,
 }
 
-impl TryFrom<Robj> for Point {
+impl TryFrom<RObj> for Point {
     type Error = Error;
 
-    fn try_from(value: Robj) -> Result<Self> {
+    fn try_from(value: RObj) -> Result<Self> {
         let inner_vec = Doubles::try_from(value)?;
         let x = inner_vec[0].0;
         let y = inner_vec[1].0;
@@ -41,9 +41,9 @@ impl From<Point> for Doubles {
     }
 }
 
-impl From<Point> for Robj {
+impl From<Point> for RObj {
     fn from(value: Point) -> Self {
-        Robj::from(Doubles::from(value))
+        RObj::from(Doubles::from(value))
     }
 }
 #[extendr]

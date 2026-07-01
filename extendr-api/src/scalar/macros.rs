@@ -13,29 +13,29 @@
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_unop!(Rint, Neg, |lhs: i32| Some(-lhs), "Doc Comment");
+/// gen_unop!(RInt, Neg, |lhs: i32| Some(-lhs), "Doc Comment");
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
 ///
-/// - `impl Neg for Rint`
-/// - `impl Neg for &Rint`
+/// - `impl Neg for RInt`
+/// - `impl Neg for &RInt`
 macro_rules! gen_unop {
     ($type : ty, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
-        // impl Neg for Rint {
-        //      type Output = Rint;
+        // impl Neg for RInt {
+        //      type Output = RInt;
         //
         //      /// Doc Comment
         //      fn neg(self) -> Self::Output {
         //          if let Some(lhs) = self.into() {
         //              let f = |lhs: i32| Some(-lhs);
         //              if let Some(res) = f(lhs) {
-        //                  return Rint::from(res);
+        //                  return RInt::from(res);
         //              }
         //          }
-        //          Rint::na()
+        //          RInt::na()
         //      }
         impl $opname for $type {
             type Output = $type;
@@ -58,18 +58,18 @@ macro_rules! gen_unop {
 
         // The 'example usage' expands to...
         //
-        // impl Neg for &Rint {
-        //      type Output = Rint;
+        // impl Neg for &RInt {
+        //      type Output = RInt;
         //
         //      /// Doc Comment
         //      fn neg(self) -> Self::Output {
         //          if let Some(lhs) = (*self).into() {
         //              let f = |lhs: i32| Some(-lhs);
         //              if let Some(res) = f(lhs) {
-        //                  return Rint::from(res);
+        //                  return RInt::from(res);
         //              }
         //          }
-        //          Rint::na()
+        //          RInt::na()
         //      }
         impl $opname for &$type {
             type Output = $type;
@@ -105,33 +105,33 @@ macro_rules! gen_unop {
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_binop!(Rint, i32, Add, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
+/// gen_binop!(RInt, i32, Add, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
 ///
-/// - `impl Add<Rint> for Rint`
-/// - `impl Add<Rint> for &Rint`
-/// - `impl Add<i32> for Rint`
-/// - `impl Add<Rint> for i32`
-// TODO: binary operators for pairs `(Rtype, Type)` and `(Type, Rtype)` using references?
+/// - `impl Add<RInt> for RInt`
+/// - `impl Add<RInt> for &RInt`
+/// - `impl Add<i32> for RInt`
+/// - `impl Add<RInt> for i32`
+// TODO: binary operators for pairs `(RType, Type)` and `(Type, RType)` using references?
 macro_rules! gen_binop {
     ($type : tt, $type_prim : tt, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
-        // impl Add<Rint> for Rint {
-        // type Output = Rint;
+        // impl Add<RInt> for RInt {
+        // type Output = RInt;
         //     /// Doc Comment
-        //     fn add(self, rhs: Rint) -> Self::Output {
+        //     fn add(self, rhs: RInt) -> Self::Output {
         //         if let Some(lhs) = self.clone().into() {
         //             if let Some(rhs) = rhs.into() {
         //                 let f = |lhs: i32, rhs| lhs.checked_add(rhs);
         //                 if let Some(res) = f(lhs, rhs) {
-        //                     return Rint::from(res);
+        //                     return RInt::from(res);
         //                 }
         //             }
         //         }
-        //         Rint::na()
+        //         RInt::na()
         //     }
         // }
         impl $opname<$type> for $type {
@@ -157,19 +157,19 @@ macro_rules! gen_binop {
 
         // The 'example usage' expands to...
         //
-        // impl Add<Rint> for &Rint {
-        //      type Output = Rint;
+        // impl Add<RInt> for &RInt {
+        //      type Output = RInt;
         //      /// Doc Comment
-        //      fn add(self, rhs: Rint) -> Self::Output {
+        //      fn add(self, rhs: RInt) -> Self::Output {
         //          if let Some(lhs) = self.clone().into() {
         //              if let Some(rhs) = rhs.into() {
         //                  let f = |lhs:i32, rhs| lhs.checked_add(rhs);
         //                  if let Some(res) = f(lhs, rhs) {
-        //                      return Rint::from(res);
+        //                      return RInt::from(res);
         //                  }
         //              }
         //          }
-        //          Rint::na()
+        //          RInt::na()
         //      }
         // }
         impl $opname<$type> for &$type {
@@ -195,17 +195,17 @@ macro_rules! gen_binop {
 
         // The 'example usage' expands to...
         //
-        // impl Add<i32> for Rint {
-        //      type Output = Rint;
+        // impl Add<i32> for RInt {
+        //      type Output = RInt;
         //      /// Doc Comment
         //      fn add(self, rhs: i32) -> Self::Output {
         //          if let Some(lhs) = self.clone().into() {
         //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
         //              if let Some(res) = f(lhs, rhs) {
-        //                  return Rint::from(res);
+        //                  return RInt::from(res);
         //              }
         //          }
-        //          Rint::na()
+        //          RInt::na()
         //      }
         // }
         impl $opname<$type_prim> for $type {
@@ -229,17 +229,17 @@ macro_rules! gen_binop {
 
         // The 'example usage' expands to...
         //
-        // impl Add<Rint> for i32 {
-        //      type Output = Rint;
+        // impl Add<RInt> for i32 {
+        //      type Output = RInt;
         //      /// Doc Comment
-        //      fn add(self, rhs: Rint) -> Self::Output {
+        //      fn add(self, rhs: RInt) -> Self::Output {
         //          if let Some(rhs) = self.clone().into() {
         //              let f = |lhs:i32, rhs| lhs.checked_add(rhs);
         //              if let Some(res) = f(lhs, rhs) {
-        //                  return Rint::from(res);
+        //                  return RInt::from(res);
         //              }
         //          }
-        //          Rint::na()
+        //          RInt::na()
         //      }
         // }
         impl $opname<$type> for $type_prim {
@@ -276,32 +276,32 @@ macro_rules! gen_binop {
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_binopassign!(Rint, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
+/// gen_binopassign!(RInt, i32, AddAssign, |lhs: i32, rhs| lhs.checked_add(rhs), "Doc Comment");
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
 ///
-/// - `impl AddAssign<Rint> for Rint`
-/// - `impl AddAssign<Rint> for &mut Rint`
-/// - `impl AddAssign<i32> for Rint`
-/// - `impl AddAssign<i32> for &mut Rint`
-/// - `impl AddAssign<Rint> for Option<i32>`
+/// - `impl AddAssign<RInt> for RInt`
+/// - `impl AddAssign<RInt> for &mut RInt`
+/// - `impl AddAssign<i32> for RInt`
+/// - `impl AddAssign<i32> for &mut RInt`
+/// - `impl AddAssign<RInt> for Option<i32>`
 macro_rules! gen_binopassign {
     ($type : ty, $type_prim : ty, $opname : ident, $expr: expr, $docstring: expr) => {
         // The 'example usage' expands to...
         //
-        // impl AddAssign<Rint> for Rint {
+        // impl AddAssign<RInt> for RInt {
         //      /// Doc Comment
-        //      fn add_assign(&mut self, other: Rint) {
+        //      fn add_assign(&mut self, other: RInt) {
         //          match (self.clone().into(), other.into()) {
         //              (Some(lhs), Some(rhs)) => {
         //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
         //                  match f(lhs, rhs) {
-        //                      Some(res) => *self = Rint::from(res),
-        //                      None => *self = Rint:na(),
+        //                      Some(res) => *self = RInt::from(res),
+        //                      None => *self = RInt:na(),
         //                  }
         //              }
-        //              _ => *self = Rint::na(),
+        //              _ => *self = RInt::na(),
         //          }
         //      }
         // }
@@ -310,7 +310,7 @@ macro_rules! gen_binopassign {
                 #[doc = $docstring]
                 // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
                 fn [< $opname:snake >](&mut self, other: $type) {
-                    // `.clone()` is needed to convert &mut Rint -> Rint -> Option<$type_prim>
+                    // `.clone()` is needed to convert &mut RInt -> RInt -> Option<$type_prim>
                     match (self.clone().into(), other.into()) {
                         (Some(lhs), Some(rhs)) => {
                             let f = $expr;
@@ -327,18 +327,18 @@ macro_rules! gen_binopassign {
 
         // The 'example usage' expands to...
         //
-        // impl AddAssign<Rint> for &mut Rint {
+        // impl AddAssign<RInt> for &mut RInt {
         //      /// Doc Comment
-        //      fn add_assign(&mut self, other: Rint) {
+        //      fn add_assign(&mut self, other: RInt) {
         //          match (self.clone().into(), other.into()) {
         //              (Some(lhs), Some(rhs)) => {
         //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
         //                  match f(lhs, rhs) {
-        //                      Some(res) => **self = Rint::from(res),
-        //                      None => **self = Rint:na(),
+        //                      Some(res) => **self = RInt::from(res),
+        //                      None => **self = RInt:na(),
         //                  }
         //              }
-        //              _ => **self = Rint::na(),
+        //              _ => **self = RInt::na(),
         //          }
         //      }
         // }
@@ -347,7 +347,7 @@ macro_rules! gen_binopassign {
                 #[doc = $docstring]
                 // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
                 fn [< $opname:snake >](&mut self, other: $type) {
-                    // `.clone()` is needed to convert &mut &mut Rint -> Rint -> Option<$type_prim>
+                    // `.clone()` is needed to convert &mut &mut RInt -> RInt -> Option<$type_prim>
                     match (self.clone().into(), other.into()) {
                         (Some(lhs), Some(rhs)) => {
                             let f = $expr;
@@ -364,18 +364,18 @@ macro_rules! gen_binopassign {
 
         // The 'example usage' expands to...
         //
-        // impl AddAssign<i32> for Rint {
+        // impl AddAssign<i32> for RInt {
         //      /// Doc Comment
         //      fn add_assign(&mut self, other: i32) {
         //          match self.clone().int() {
         //              Some(lhs) => {
         //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
         //                  match f(lhs, rhs) {
-        //                      Some(res) => *self = Rint::from(res),
-        //                      None => *self = Rint:na(),
+        //                      Some(res) => *self = RInt::from(res),
+        //                      None => *self = RInt:na(),
         //                  }
         //              }
-        //              _ => *self = Rint::na(),
+        //              _ => *self = RInt::na(),
         //              }
         //          }
         //      }
@@ -385,7 +385,7 @@ macro_rules! gen_binopassign {
                 #[doc = $docstring]
                 // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
                 fn [< $opname:snake >](&mut self, other: $type_prim) {
-                    // `.clone()` is needed to convert &mut Rint -> Rint -> Option<$type_prim>
+                    // `.clone()` is needed to convert &mut RInt -> RInt -> Option<$type_prim>
                     match self.clone().into() {
                         Some(lhs) => {
                             let f = $expr;
@@ -402,18 +402,18 @@ macro_rules! gen_binopassign {
 
         // The 'example usage' expands to...
         //
-        // impl AddAssign<i32> for &mut Rint {
+        // impl AddAssign<i32> for &mut RInt {
         //      /// Doc Comment
         //      fn add_assign(&mut self, other: i32) {
         //          match self.clone().int() {
         //              Some(lhs) => {
         //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
         //                  match f(lhs, rhs) {
-        //                      Some(res) => **self = Rint::from(res),
-        //                      None => **self = Rint:na(),
+        //                      Some(res) => **self = RInt::from(res),
+        //                      None => **self = RInt:na(),
         //                  }
         //              }
-        //              _ => **self = Rint::na(),
+        //              _ => **self = RInt::na(),
         //              }
         //          }
         //      }
@@ -423,7 +423,7 @@ macro_rules! gen_binopassign {
                 #[doc = $docstring]
                 // Note: $opname:snake snake cases the Trait name, i.e. AddAssign -> add_assign
                 fn [< $opname:snake >](&mut self, other: $type_prim) {
-                    // `.clone()` is needed to convert &mut &mut Rint -> Rint -> Option<$type_prim>
+                    // `.clone()` is needed to convert &mut &mut RInt -> RInt -> Option<$type_prim>
                     match self.clone().into() {
                         Some(lhs) => {
                             let f = $expr;
@@ -440,9 +440,9 @@ macro_rules! gen_binopassign {
 
         // The 'example usage' expands to...
         //
-        //  impl AddAssign<Rint> for Option<i32> {
+        //  impl AddAssign<RInt> for Option<i32> {
         //      /// Doc Comment
-        //      fn add_assign(&mut self, other: Rint) {
+        //      fn add_assign(&mut self, other: RInt) {
         //          match (*self, other.into()) {
         //              (Some(lhs), Some(rhs)) => {
         //                  let f = |lhs: i32, rhs| lhs.checked_add(rhs);
@@ -481,18 +481,18 @@ macro_rules! gen_binopassign {
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_from_primitive!(Rint, i32);
+/// gen_from_primitive!(RInt, i32);
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
 ///
-/// - `From<i32> for Rint`
-/// - `From<Option<i32>> for Rint`
+/// - `From<i32> for RInt`
+/// - `From<Option<i32>> for RInt`
 macro_rules! gen_from_primitive {
     ($type : tt, $type_prim : tt) => {
         // The 'example usage' expands to...
         //
-        // impl From<i32> for Rint {
+        // impl From<i32> for RInt {
         //     fn from(v: i32) -> Self {
         //         Self(v)
         //     }
@@ -512,12 +512,12 @@ macro_rules! gen_from_primitive {
 
         // The 'example usage' expands to...
         //
-        // impl From<Option<i32>> for Rint {
+        // impl From<Option<i32>> for RInt {
         //     fn from(v: Option<i32>) -> Self {
         //         if let Some(v) = v {
         //             v.into()
         //         } else {
-        //             Rint::na()
+        //             RInt::na()
         //         }
         //     }
         // }
@@ -556,23 +556,23 @@ macro_rules! gen_from_primitive {
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_trait_impl!(Rint, i32, |x: &Rint| x.0 == i32::MIN, i32::MIN);
+/// gen_trait_impl!(RInt, i32, |x: &RInt| x.0 == i32::MIN, i32::MIN);
 /// ```
 ///
 /// The 'example usage' implements the following trait definitions:
 ///
-/// - `impl Clone for Rint`
-/// - `impl Copy for Rint`
-/// - `impl CanBeNA for Rint`             // Includes doc test
-/// - `impl Debug for Rint`
-/// - `impl PartialEq<Rint> for Rint`     // Includes doc test
-/// - `impl PartialEq<i32> for Rint`      // Includes doc test
-/// - `impl Default for Rint`             // Includes doc test
+/// - `impl Clone for RInt`
+/// - `impl Copy for RInt`
+/// - `impl CanBeNA for RInt`             // Includes doc test
+/// - `impl Debug for RInt`
+/// - `impl PartialEq<RInt> for RInt`     // Includes doc test
+/// - `impl PartialEq<i32> for RInt`      // Includes doc test
+/// - `impl Default for RInt`             // Includes doc test
 macro_rules! gen_trait_impl {
     ($type : ident, $type_prim : ty, $na_check : expr, $na_val : expr) => {
         // The 'example usage' expands to...
         //
-        // impl Clone for Rint {
+        // impl Clone for RInt {
         //     fn clone(&self) -> Self {
         //         Self(self.0)
         //     }
@@ -585,19 +585,19 @@ macro_rules! gen_trait_impl {
 
         // The 'example usage' expands to...
         //
-        // impl Copy for Rint {}
+        // impl Copy for RInt {}
         impl Copy for $type {}
 
         // The 'example usage' expands to...
         //
         // /// Documentation comments/test built by the #[doc] attributes
-        // impl CanBeNA for Rint {
+        // impl CanBeNA for RInt {
         //     fn is_na(&self) -> bool {
-        //         (|x: &Rint| x.0 == i32::MIN)(self)
+        //         (|x: &RInt| x.0 == i32::MIN)(self)
         //     }
         //
         //     fn na() -> Self {
-        //         Rint(i32::MIN)
+        //         RInt(i32::MIN)
         //     }
         // }
         paste::paste! {
@@ -623,8 +623,8 @@ macro_rules! gen_trait_impl {
         //
         //
         // /// Documentation comments/test built by the #[doc] attributes
-        // impl PartialEq<Rint> for Rint {
-        //     fn eq(&self, other: &Rint) -> bool {
+        // impl PartialEq<RInt> for RInt {
+        //     fn eq(&self, other: &RInt) -> bool {
         //         !(self.is_na() || other.is_na()) && self.0 == other.0
         //     }
         // }
@@ -674,9 +674,9 @@ macro_rules! gen_trait_impl {
         // The 'example usage' expands to...
         //
         // /// Documentation comments/test built by the #[doc] attributes
-        // impl std::default::Default for Rint {
+        // impl std::default::Default for RInt {
         //     fn default() -> Self {
-        //         Rint(<i32>::default())
+        //         RInt(<i32>::default())
         //     }
         // }
         paste::paste! {
@@ -773,7 +773,7 @@ macro_rules! gen_partial_ord {
 /// Example Usage:
 ///
 /// ```rust,ignore
-/// gen_sum_iter!(Rint);
+/// gen_sum_iter!(RInt);
 /// ```
 macro_rules! gen_sum_iter {
     ($type : ty) => {
@@ -781,8 +781,8 @@ macro_rules! gen_sum_iter {
         //
         // impl std::iter::Sum for $type {
         //     /// Documentation comments/test built by the #[doc] attributes
-        //     fn sum<I: Iterator<Item = Rint>>(iter: I) -> Rint {
-        //         iter.fold(Rint::default(), |a, b| a + b)
+        //     fn sum<I: Iterator<Item = RInt>>(iter: I) -> RInt {
+        //         iter.fold(RInt::default(), |a, b| a + b)
         //     }
         // }
         impl std::iter::Sum for $type {
@@ -806,8 +806,8 @@ macro_rules! gen_sum_iter {
         //
         // impl std::iter::Sum for &$type {
         //     /// Documentation comments/test built by the #[doc] attributes
-        //     fn sum<I: Iterator<Item = &Rint>>(iter: I) -> Rint {
-        //         iter.fold(Rint::default(), |a, b| a + b)
+        //     fn sum<I: Iterator<Item = &RInt>>(iter: I) -> RInt {
+        //         iter.fold(RInt::default(), |a, b| a + b)
         //     }
         // }
         impl<'a> std::iter::Sum<&'a $type> for $type {

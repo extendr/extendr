@@ -13,7 +13,7 @@ pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream
     };
     let struct_name = ast.ident;
 
-    // Iterate each struct field and capture a conversion from Robj for each field
+    // Iterate each struct field and capture a conversion from RObj for each field
     let mut tokens = Vec::<_>::with_capacity(inside.fields.len());
     let is_tuple_struct = inside
         .fields
@@ -41,20 +41,20 @@ pub fn derive_try_from_list(item: TokenStream) -> syn::parse::Result<TokenStream
 
     // Emit the conversion trait impl
     Ok(TokenStream::from(quote!(
-        impl std::convert::TryFrom<&extendr_api::Robj> for #struct_name {
+        impl std::convert::TryFrom<&extendr_api::RObj> for #struct_name {
             type Error = extendr_api::Error;
 
-            fn try_from(value: &extendr_api::Robj) -> extendr_api::Result<Self> {
+            fn try_from(value: &extendr_api::RObj) -> extendr_api::Result<Self> {
                 Ok(#struct_name {
                     #(#tokens),*
                 })
             }
         }
 
-        impl std::convert::TryFrom<extendr_api::Robj> for #struct_name {
+        impl std::convert::TryFrom<extendr_api::RObj> for #struct_name {
             type Error = extendr_api::Error;
 
-            fn try_from(value: extendr_api::Robj) -> extendr_api::Result<Self> {
+            fn try_from(value: extendr_api::RObj) -> extendr_api::Result<Self> {
                 Ok(#struct_name {
                     #(#tokens),*
                 })
@@ -124,12 +124,12 @@ pub fn derive_into_list(item: TokenStream) -> syn::parse::Result<TokenStream> {
 
     // The only thing we emit from this macro is the conversion trait impl
     Ok(TokenStream::from(quote!(
-        impl std::convert::From<&#struct_name> for extendr_api::Robj {
+        impl std::convert::From<&#struct_name> for extendr_api::RObj {
             fn from(value: &#struct_name) -> Self {
                 extendr_api::List::from_pairs([#(#tokens),*]).into()
             }
         }
-        impl std::convert::From<#struct_name> for extendr_api::Robj {
+        impl std::convert::From<#struct_name> for extendr_api::RObj {
             fn from(value: #struct_name) -> Self {
                 (&value).into()
             }

@@ -207,7 +207,7 @@ fn transform_method_doc_roxygen(method_name: &str, doc: &str) -> (String, Vec<St
 ///     }
 ///
 ///     // Convert the struct into a data.frame
-///     fn into_df(&self) -> Robj {
+///     fn into_df(&self) -> RObj {
 ///         let df = self.0.clone().into_dataframe();
 ///
 ///         match df {
@@ -353,8 +353,8 @@ pub(crate) fn extendr_impl(
     // #[allow(non_snake_case)]
     // pub extern "C" fn wrap__Person__new() -> extendr_api::SEXP {
     //     unsafe {
-    //         use extendr_api::FromRobj;
-    //         extendr_api::Robj::from(<Person>::new()).get()
+    //         use extendr_api::FromRObj;
+    //         extendr_api::RObj::from(<Person>::new()).get()
     //     }
     // }
     // ```

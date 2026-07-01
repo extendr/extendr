@@ -18,7 +18,7 @@ macro_rules! gen_vector_wrapper_impl {
             }
         }
 
-        impl From<Option<$type>> for Robj {
+        impl From<Option<$type>> for RObj {
             fn from(value: Option<$type>) -> Self {
                 match value {
                     None => nil_value(),
@@ -64,7 +64,7 @@ macro_rules! gen_vector_wrapper_impl {
                     single_threaded(|| {
                         let values: V::IntoIter = values.into_iter();
 
-                        let mut robj = Robj::alloc_vector($sexp, values.len());
+                        let mut robj = RObj::alloc_vector($sexp, values.len());
                         let dest: &mut [$scalar_type] = robj.as_typed_slice_mut().unwrap();
 
                         for (d, v) in dest.iter_mut().zip(values) {
@@ -146,7 +146,7 @@ macro_rules! gen_vector_wrapper_impl {
                 // TODO: specialise for ExactSizeIterator.
                 let values: Vec<$scalar_type> = iter.into_iter().collect();
 
-                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let mut robj = RObj::alloc_vector($sexp, values.len());
                 let dest: &mut [$scalar_type] = robj.as_typed_slice_mut().unwrap();
 
                 for (d, v) in dest.iter_mut().zip(values) {
@@ -175,7 +175,7 @@ macro_rules! gen_from_iterator_impl {
                 // TODO: specialise for ExactSizeIterator.
                 let values: Vec<$collect_from_type> = iter.into_iter().collect();
 
-                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let mut robj = RObj::alloc_vector($sexp, values.len());
                 let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
 
                 for (d, v) in dest.iter_mut().zip(values) {
@@ -194,7 +194,7 @@ macro_rules! gen_from_iterator_impl {
                 // TODO: specialise for ExactSizeIterator.
                 let values: Vec<&'a $collect_from_type> = iter.into_iter().collect();
 
-                let mut robj = Robj::alloc_vector($sexp, values.len());
+                let mut robj = RObj::alloc_vector($sexp, values.len());
                 let dest: &mut [$underlying_type] = robj.as_typed_slice_mut().unwrap();
 
                 for (d, v) in dest.iter_mut().zip(values) {

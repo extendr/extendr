@@ -2,7 +2,7 @@ use super::*;
 
 #[derive(PartialEq, Clone)]
 pub struct Expressions {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Expressions {
@@ -24,7 +24,7 @@ impl Expressions {
     where
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
-        V::Item: Into<Robj>,
+        V::Item: Into<RObj>,
     {
         Self {
             robj: make_vector(SEXPTYPE::EXPRSXP, values),
@@ -59,8 +59,8 @@ impl std::str::FromStr for Expressions {
             use extendr_ffi::{ParseStatus, R_NilValue, R_ParseVector};
             let mut status = ParseStatus::PARSE_NULL;
             let status_ptr = (&mut status) as *mut _;
-            let codeobj: Robj = code.into();
-            let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
+            let codeobj: RObj = code.into();
+            let parsed = RObj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
             match status {
                 ParseStatus::PARSE_OK => parsed.try_into(),
                 _ => Err(Error::ParseError {

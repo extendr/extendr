@@ -11,7 +11,7 @@ pub use super::functions::{
     srcref,
 };
 pub use super::{
-    print_r_error, print_r_output, CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
+    print_r_error, print_r_output, CanBeNA, RType, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
     NA_STRING, NULL, TRUE,
 };
 
@@ -42,16 +42,16 @@ pub use super::wrapper::AltListImpl;
 
 pub use super::iter::StrIter;
 pub use super::robj::{
-    AsStrIter, Attributes, Eval, GetSexp, IntoRobj, Length, Operators, Rinternals, Robj,
-    RobjItertools, Slices, Types,
+    AsStrIter, Attributes, Eval, GetSexp, IntoRObj, Length, Operators, RInternals, RObj,
+    RObjIterTools, Slices, Types,
 };
 pub use super::scalar::*;
 pub use super::thread_safety::{catch_r_error, single_threaded, throw_r_error};
 pub use super::wrapper::s4::S4;
 pub use super::wrapper::{
-    Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
-    Function, Integers, IntoDataFrameRow, Language, List, ListIter, Logicals, Nullable, Pairlist,
-    Primitive, Promise, Raw, Rstr, Strings, Symbol,
+    Complexes, DataFrame, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
+    Function, Integers, IntoDataFrameRow, Language, List, ListIter, Logicals, Nullable, PairList,
+    Primitive, Promise, RStr, Raw, Strings, Symbol,
 };
 pub use super::wrapper::{Conversions, MatrixConversions};
 pub use super::Nullable::*;

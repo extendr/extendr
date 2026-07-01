@@ -193,7 +193,7 @@ pub trait DeviceDriver: std::marker::Sized {
     /// A callback function that captures and returns the current canvas.
     ///
     /// This is only meaningful for raster devices.
-    fn capture(&mut self, dd: DevDesc) -> Robj {
+    fn capture(&mut self, dd: DevDesc) -> RObj {
         ().into()
     }
 
@@ -279,12 +279,17 @@ pub trait DeviceDriver: std::marker::Sized {
         true
     }
 
-    /// A callback function for X11_eventHelper.
+    /// A callback function for X11 event helper.
     // TODO:
     // Argument `code` should, ideally, be of type c_int,
     // but compiler throws erors. It should be ok to use
     // i32 here.
-    fn eventHelper(&mut self, dd: DevDesc, code: i32) {}
+    fn event_helper(&mut self, _dd: DevDesc, _code: i32) {}
+
+    #[deprecated(note = "Use event_helper instead", since = "0.9.0")]
+    fn eventHelper(&mut self, dd: DevDesc, code: i32) {
+        self.event_helper(dd, code);
+    }
 
     /// Create a [Device].
     fn create_device<T: DeviceDriver>(
@@ -613,7 +618,10 @@ pub trait DeviceDriver: std::marker::Sized {
             data.locator(x, y, *dd).into()
         }
 
-        unsafe extern "C" fn device_driver_eventHelper<T: DeviceDriver>(dd: pDevDesc, code: c_int) {
+        unsafe extern "C" fn device_driver_event_helper<T: DeviceDriver>(
+            dd: pDevDesc,
+            code: c_int,
+        ) {
             let mut data = ((*dd).deviceSpecific as *mut T).read();
             data.eventHelper(*dd, code);
         }
@@ -859,7 +867,7 @@ pub trait DeviceDriver: std::marker::Sized {
             (*p_dev_desc).useRotatedTextInContour = Rboolean::FALSE;
 
             (*p_dev_desc).eventEnv = Environment::empty().get();
-            (*p_dev_desc).eventHelper = Some(device_driver_eventHelper::<T>);
+            (*p_dev_desc).eventHelper = Some(device_driver_event_helper::<T>);
 
             (*p_dev_desc).holdflush = Some(device_driver_holdflush::<T>);
 

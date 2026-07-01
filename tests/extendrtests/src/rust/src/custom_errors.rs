@@ -7,18 +7,18 @@ fn custom_error_return() -> std::result::Result<(), std::io::Error> {
 
 struct A;
 
-impl TryFrom<Robj> for A {
+impl TryFrom<RObj> for A {
     type Error = std::io::Error;
 
-    fn try_from(_value: Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(_value: RObj) -> std::result::Result<Self, Self::Error> {
         Ok(A)
     }
 }
 
-impl TryFrom<&Robj> for A {
+impl TryFrom<&RObj> for A {
     type Error = std::io::Error;
 
-    fn try_from(_value: &Robj) -> std::result::Result<Self, Self::Error> {
+    fn try_from(_value: &RObj) -> std::result::Result<Self, Self::Error> {
         Ok(A)
     }
 }

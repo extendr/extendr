@@ -2,7 +2,7 @@
 //!
 
 use crate::robj::GetSexp;
-use crate::robj::Robj;
+use crate::robj::RObj;
 use crate::single_threaded;
 use extendr_ffi::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
 /// Convert a list of tokens to an array of tuples.
@@ -10,17 +10,17 @@ use extendr_ffi::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
 #[macro_export]
 macro_rules! push_args {
     ($args: expr, $name: ident = $val : expr) => {
-        $args.push((stringify!($name), Robj::from($val)));
+        $args.push((stringify!($name), RObj::from($val)));
     };
     ($args: expr, $name: ident = $val : expr, $($rest: tt)*) => {
-        $args.push((stringify!($name), Robj::from($val)));
+        $args.push((stringify!($name), RObj::from($val)));
         push_args!($args, $($rest)*);
     };
     ($args: expr, $val : expr) => {
-        $args.push(("", Robj::from($val)));
+        $args.push(("", RObj::from($val)));
     };
     ($args: expr, $val : expr, $($rest: tt)*) => {
-        $args.push(("", Robj::from($val)));
+        $args.push(("", RObj::from($val)));
         push_args!($args, $($rest)*);
     };
 }
@@ -29,11 +29,11 @@ macro_rules! push_args {
 #[macro_export]
 macro_rules! args {
     () => {
-        Vec::<(&str, Robj)>::new()
+        Vec::<(&str, RObj)>::new()
     };
     ($($rest: tt)*) => {
         {
-            let mut args = Vec::<(&str, Robj)>::new();
+            let mut args = Vec::<(&str, RObj)>::new();
             push_args!(args, $($rest)*);
             args
         }
@@ -41,7 +41,7 @@ macro_rules! args {
 }
 
 #[doc(hidden)]
-pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
+pub unsafe fn append_with_name(tail: SEXP, obj: RObj, name: &str) -> SEXP {
     single_threaded(|| {
         let cons = Rf_cons(obj.get(), R_NilValue);
         SET_TAG(cons, crate::make_symbol(name));
@@ -52,7 +52,7 @@ pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
 
 #[doc(hidden)]
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
-pub fn append(tail: SEXP, obj: Robj) -> SEXP {
+pub fn append(tail: SEXP, obj: RObj) -> SEXP {
     single_threaded(|| unsafe {
         let cons = Rf_cons(obj.get(), R_NilValue);
         SETCDR(tail, cons);
@@ -61,8 +61,8 @@ pub fn append(tail: SEXP, obj: Robj) -> SEXP {
 }
 
 #[doc(hidden)]
-pub fn make_lang(sym: &str) -> Robj {
-    unsafe { Robj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym)))) }
+pub fn make_lang(sym: &str) -> RObj {
+    unsafe { RObj::from_sexp(single_threaded(|| Rf_lang1(crate::make_symbol(sym)))) }
 }
 
 /// Convert a list of tokens to an array of tuples.
@@ -70,17 +70,17 @@ pub fn make_lang(sym: &str) -> Robj {
 #[macro_export]
 macro_rules! append_lang {
     ($tail: ident, $name: ident = $val : expr) => {
-        $tail = append_with_name($tail, Robj::from($val), stringify!($name));
+        $tail = append_with_name($tail, RObj::from($val), stringify!($name));
     };
     ($tail: ident, $name: ident = $val : expr, $($rest: tt)*) => {
-        $tail = append_with_name($tail, Robj::from($val), stringify!($name));
+        $tail = append_with_name($tail, RObj::from($val), stringify!($name));
         append_lang!($tail, $($rest)*);
     };
     ($tail: ident, $val : expr) => {
-        $tail = append($tail, Robj::from($val));
+        $tail = append($tail, RObj::from($val));
     };
     ($tail: ident, $val : expr, $($rest: tt)*) => {
-        $tail = append($tail, Robj::from($val));
+        $tail = append($tail, RObj::from($val));
         append_lang!($tail, $($rest)*);
     };
 }

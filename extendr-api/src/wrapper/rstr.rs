@@ -7,14 +7,14 @@ use extendr_ffi::{R_BlankString, R_NaString, R_NilValue, Rf_xlength, R_CHAR, SEX
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let chr = r!(Rstr::from("xyz"));
+///     let chr = r!(RStr::from("xyz"));
 ///     assert_eq!(chr.as_char().unwrap().as_ref(), "xyz");
 /// }
 /// ```
 ///
 #[derive(Clone)]
-pub struct Rstr {
-    pub(crate) robj: Robj,
+pub struct RStr {
+    pub(crate) robj: RObj,
 }
 
 /// Returns a rust string-slice based on the provided `SEXP`, which is of type
@@ -36,25 +36,25 @@ pub(crate) unsafe fn charsxp_to_str(charsxp: SEXP) -> Option<&'static str> {
     }
 }
 
-impl Rstr {
+impl RStr {
     /// Make a character object from a string.
     ///
     /// # Deprecated
-    /// Use `Rstr::from()` or `.into()` instead, which implement the standard `From<&str>` trait.
+    /// Use `RStr::from()` or `.into()` instead, which implement the standard `From<&str>` trait.
     ///
     /// # Examples
     /// ```
     /// use extendr_api::prelude::*;
     /// # fn example() {
-    /// let rstr = Rstr::from("hello");
+    /// let rstr = RStr::from("hello");
     /// // or
-    /// let rstr: Rstr = "hello".into();
+    /// let rstr: RStr = "hello".into();
     /// # }
     /// ```
-    #[deprecated(since = "0.8.1", note = "Use `Rstr::from()` or `.into()` instead")]
+    #[deprecated(since = "0.8.1", note = "Use `RStr::from()` or `.into()` instead")]
     pub fn from_string(val: &str) -> Self {
-        Rstr {
-            robj: unsafe { Robj::from_sexp(str_to_character(val)) },
+        RStr {
+            robj: unsafe { RObj::from_sexp(str_to_character(val)) },
         }
     }
 
@@ -68,7 +68,7 @@ impl Rstr {
     /// ```
     /// use extendr_api::prelude::*;
     /// # fn example() {
-    /// # let rstr = Rstr::from("hello");
+    /// # let rstr = RStr::from("hello");
     /// let s: &str = rstr.as_ref();
     /// // or use Deref coercion
     /// let len = rstr.len(); // calls str::len() via Deref
@@ -83,31 +83,31 @@ impl Rstr {
     }
 }
 
-impl AsRef<str> for Rstr {
-    /// Treat a Rstr as a string slice.
+impl AsRef<str> for RStr {
+    /// Treat a RStr as a string slice.
     fn as_ref(&self) -> &str {
         self.into()
     }
 }
 
-impl From<String> for Rstr {
-    /// Convert a String to a Rstr.
+impl From<String> for RStr {
+    /// Convert a String to a RStr.
     fn from(s: String) -> Self {
         Self::from(s.as_str())
     }
 }
 
-impl From<&str> for Rstr {
-    /// Convert a string slice to a Rstr.
+impl From<&str> for RStr {
+    /// Convert a string slice to a RStr.
     fn from(s: &str) -> Self {
-        Rstr {
-            robj: unsafe { Robj::from_sexp(str_to_character(s)) },
+        RStr {
+            robj: unsafe { RObj::from_sexp(str_to_character(s)) },
         }
     }
 }
 
-impl From<&Rstr> for &str {
-    fn from(value: &Rstr) -> Self {
+impl From<&RStr> for &str {
+    fn from(value: &RStr) -> Self {
         unsafe {
             let charsxp = value.robj.get();
             rstr::charsxp_to_str(charsxp).unwrap()
@@ -115,7 +115,7 @@ impl From<&Rstr> for &str {
     }
 }
 
-impl From<Option<String>> for Rstr {
+impl From<Option<String>> for RStr {
     fn from(value: Option<String>) -> Self {
         if let Some(string) = value {
             Self::from(string)
@@ -125,7 +125,7 @@ impl From<Option<String>> for Rstr {
     }
 }
 
-impl From<Option<&str>> for Rstr {
+impl From<Option<&str>> for RStr {
     fn from(value: Option<&str>) -> Self {
         if let Some(string_ref) = value {
             Self::from(string_ref)
@@ -135,53 +135,53 @@ impl From<Option<&str>> for Rstr {
     }
 }
 
-impl Deref for Rstr {
+impl Deref for RStr {
     type Target = str;
 
-    /// Treat `Rstr` like `&str`.
+    /// Treat `RStr` like `&str`.
     fn deref(&self) -> &Self::Target {
         self.into()
     }
 }
 
 /// Defer comparison to R's string interner
-impl PartialEq<Rstr> for Rstr {
-    fn eq(&self, other: &Rstr) -> bool {
+impl PartialEq<RStr> for RStr {
+    fn eq(&self, other: &RStr) -> bool {
         unsafe { self.robj.get() == other.robj.get() }
     }
 }
 
-/// Let performant than comparing [Rstr] directly as
-/// we need to convert [Rstr] to a string slice first
-impl PartialEq<str> for Rstr {
-    /// Compare a `Rstr` with a string slice.
+/// Let performant than comparing [RStr] directly as
+/// we need to convert [RStr] to a string slice first
+impl PartialEq<str> for RStr {
+    /// Compare a `RStr` with a string slice.
     fn eq(&self, other: &str) -> bool {
         self.as_ref() == other
     }
 }
 
-impl PartialEq<Rstr> for &str {
-    /// Compare a `Rstr` with a string slice.
-    fn eq(&self, other: &Rstr) -> bool {
+impl PartialEq<RStr> for &str {
+    /// Compare a `RStr` with a string slice.
+    fn eq(&self, other: &RStr) -> bool {
         *self == other.as_ref()
     }
 }
 
-impl PartialEq<&str> for Rstr {
-    /// Compare a `Rstr` with a string slice.
+impl PartialEq<&str> for RStr {
+    /// Compare a `RStr` with a string slice.
     fn eq(&self, other: &&str) -> bool {
         self.as_ref() == *other
     }
 }
 
-impl PartialEq<Rstr> for &&str {
-    /// Compare a `Rstr` with a string slice.
-    fn eq(&self, other: &Rstr) -> bool {
+impl PartialEq<RStr> for &&str {
+    /// Compare a `RStr` with a string slice.
+    fn eq(&self, other: &RStr) -> bool {
         **self == other.as_ref()
     }
 }
 
-impl std::fmt::Debug for Rstr {
+impl std::fmt::Debug for RStr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.is_na() {
             write!(f, "NA_CHARACTER")
@@ -192,14 +192,14 @@ impl std::fmt::Debug for Rstr {
     }
 }
 
-impl std::fmt::Display for Rstr {
+impl std::fmt::Display for RStr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s: &str = self.as_ref();
         write!(f, "{}", s)
     }
 }
 
-impl CanBeNA for Rstr {
+impl CanBeNA for RStr {
     fn is_na(&self) -> bool {
         unsafe { self.robj.get() == R_NaString }
     }
@@ -207,7 +207,7 @@ impl CanBeNA for Rstr {
     fn na() -> Self {
         unsafe {
             Self {
-                robj: Robj::from_sexp(R_NaString),
+                robj: RObj::from_sexp(R_NaString),
             }
         }
     }
@@ -221,7 +221,7 @@ mod tests {
     #[test]
     fn test_rstr_as_char() {
         test! {
-            let chr = r!(Rstr::from("xyz"));
+            let chr = r!(RStr::from("xyz"));
             let x = chr.as_char().unwrap();
             assert_eq!(x.as_ref(), "xyz");
         }
@@ -230,7 +230,10 @@ mod tests {
     #[test]
     fn test_rstr_from_str_ref() {
         test! {
-            assert_eq!(Rstr::from(Some("value")), Rstr::from("value"));
+            assert_eq!(RStr::from(Some("value")), RStr::from("value"));
         }
     }
 }
+
+#[deprecated(note = "Use RStr instead", since = "0.9.0")]
+pub type Rstr = RStr;

@@ -140,7 +140,7 @@ pub(crate) fn make_function_wrappers(
         })
         .collect::<Vec<Ident>>();
 
-    // arguments from R (`SEXP`s) are converted to `Robj`
+    // arguments from R (`SEXP`s) are converted to `RObj`
     let convert_args: Vec<syn::Stmt> = inputs
         .iter()
         .map(translate_to_robj)
@@ -161,8 +161,8 @@ pub(crate) fn make_function_wrappers(
     // #[allow(non_snake_case)]
     // pub extern "C" fn wrap__hello() -> extendr_api::SEXP {
     //     unsafe {
-    //         use extendr_api::FromRobj;
-    //         extendr_api::Robj::from(hello()).get()
+    //         use extendr_api::FromRObj;
+    //         extendr_api::RObj::from(hello()).get()
     //     }
     // }
     // ```
@@ -229,13 +229,13 @@ pub(crate) fn make_function_wrappers(
             if std::ptr::addr_eq(
                 arg_ref,
                 std::ptr::from_ref(return_ref_to_self)) {
-                    return Ok(extendr_api::Robj::from_sexp(#sexp_args))
+                    return Ok(extendr_api::RObj::from_sexp(#sexp_args))
                 }
             )*
             Err(Error::ExpectedExternalPtrReference.into())
         )
     } else {
-        quote!(Ok(extendr_api::Robj::from(#call_name(#actual_args))))
+        quote!(Ok(extendr_api::RObj::from(#call_name(#actual_args))))
     };
 
     // TODO: the unsafe in here is unnecessary
@@ -249,10 +249,10 @@ pub(crate) fn make_function_wrappers(
             #rng_start
 
             let wrap_result_state: std::result::Result<
-                std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>>,
+                std::result::Result<extendr_api::RObj, Box<dyn std::error::Error>>,
                 Box<dyn std::any::Any + Send>
             > = unsafe {
-                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::Robj, Box<dyn std::error::Error>> {
+                    std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || -> std::result::Result<extendr_api::RObj, Box<dyn std::error::Error>> {
                         #(#convert_args)*
                         #return_type_conversion
                     }))
@@ -269,7 +269,7 @@ pub(crate) fn make_function_wrappers(
                 // any conversion error bubbled from #actual_args conversions of incoming args from R.
                 Ok(Err(conversion_err)) => {
                     let err_string = conversion_err.to_string();
-                    drop(conversion_err); // try_from=true errors contain Robj, this must be dropped to not leak
+                    drop(conversion_err); // try_from=true errors contain RObj, this must be dropped to not leak
                     extendr_api::throw_r_error(&err_string);
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)
@@ -542,7 +542,7 @@ fn type_needs_mut_robj(ty: &Type) -> bool {
     }
 }
 
-/// Convert `SEXP` arguments into `Robj`.
+/// Convert `SEXP` arguments into `RObj`.
 /// This maintains the lifetime of references.
 ///
 /// These conversions are from R into Rust
@@ -557,10 +557,10 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
                 // TODO: these do not need protection, as they come from R
                 if mut_token {
                     Ok(
-                        parse_quote! { let mut #varname = extendr_api::robj::Robj::from_sexp(#ident); },
+                        parse_quote! { let mut #varname = extendr_api::robj::RObj::from_sexp(#ident); },
                     )
                 } else {
-                    Ok(parse_quote! { let #varname = extendr_api::robj::Robj::from_sexp(#ident); })
+                    Ok(parse_quote! { let #varname = extendr_api::robj::RObj::from_sexp(#ident); })
                 }
             } else {
                 Err(syn::Error::new_spanned(
@@ -571,7 +571,7 @@ fn translate_to_robj(input: &FnArg) -> syn::Result<syn::Stmt> {
         }
         FnArg::Receiver(_) => {
             // this is `mut`, in case of a mutable reference
-            Ok(parse_quote! { let mut _self_robj = extendr_api::robj::Robj::from_sexp(_self); })
+            Ok(parse_quote! { let mut _self_robj = extendr_api::robj::RObj::from_sexp(_self); })
         }
     }
 }

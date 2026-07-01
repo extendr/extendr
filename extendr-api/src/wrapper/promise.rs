@@ -3,7 +3,7 @@ use super::*;
 /// Wrapper for creating promises (PROMSXP).
 #[derive(PartialEq, Clone)]
 pub struct Promise {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Promise {
@@ -17,10 +17,10 @@ impl Promise {
     /// }
     /// ```
     #[cfg(feature = "non-api")]
-    pub fn from_parts(code: Robj, environment: Environment) -> Result<Self> {
+    pub fn from_parts(code: RObj, environment: Environment) -> Result<Self> {
         single_threaded(|| unsafe {
             let sexp = extendr_ffi::Rf_allocSExp(SEXPTYPE::PROMSXP);
-            let robj = Robj::from_sexp(sexp);
+            let robj = RObj::from_sexp(sexp);
             extendr_ffi::SET_PRCODE(sexp, code.get());
             extendr_ffi::SET_PRENV(sexp, environment.robj.get());
             #[cfg(not(r_4_5))]
@@ -31,10 +31,10 @@ impl Promise {
 
     #[cfg(feature = "non-api")]
     /// Get the code to be executed from the promise.
-    pub fn code(&self) -> Robj {
+    pub fn code(&self) -> RObj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(extendr_ffi::PRCODE(sexp))
+            RObj::from_sexp(extendr_ffi::PRCODE(sexp))
         }
     }
 
@@ -43,7 +43,7 @@ impl Promise {
     pub fn environment(&self) -> Environment {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(extendr_ffi::PRENV(sexp))
+            RObj::from_sexp(extendr_ffi::PRENV(sexp))
                 .try_into()
                 .unwrap()
         }
@@ -51,10 +51,10 @@ impl Promise {
 
     #[cfg(feature = "non-api")]
     /// Get the value of the promise, once executed.
-    pub fn value(&self) -> Robj {
+    pub fn value(&self) -> RObj {
         unsafe {
             let sexp = self.robj.get();
-            Robj::from_sexp(extendr_ffi::PRVALUE(sexp))
+            RObj::from_sexp(extendr_ffi::PRVALUE(sexp))
         }
     }
 
@@ -77,7 +77,7 @@ impl Promise {
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// }
     /// ```
-    pub fn eval(&self) -> Result<Robj> {
+    pub fn eval(&self) -> Result<RObj> {
         assert!(self.is_promise());
         #[cfg(not(r_4_5))]
         if !self.value().is_unbound_value() {

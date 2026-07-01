@@ -16,7 +16,7 @@ fn fetch_colnames(x: RMatrix<f64>) -> Option<Strings> {
 }
 
 #[extendr]
-fn change_dimnames(mut x: RMatrix<f64>) -> Robj {
+fn change_dimnames(mut x: RMatrix<f64>) -> RObj {
     let rownames = Strings::from_values(["AA", "BB", "CC"]);
     x.set_dimnames(list!(rownames, NULL));
     x.to_owned()

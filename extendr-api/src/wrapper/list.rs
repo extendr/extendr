@@ -5,7 +5,7 @@ use std::{collections::HashMap, iter::FromIterator};
 
 #[derive(PartialEq, Clone)]
 pub struct List {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 impl Default for List {
@@ -25,7 +25,7 @@ impl List {
     /// }
     /// ```
     pub fn new(size: usize) -> Self {
-        let robj = Robj::alloc_vector(SEXPTYPE::VECSXP, size);
+        let robj = RObj::alloc_vector(SEXPTYPE::VECSXP, size);
         Self { robj }
     }
 
@@ -42,7 +42,7 @@ impl List {
     where
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
-        V::Item: Into<Robj>,
+        V::Item: Into<RObj>,
     {
         Self {
             robj: make_vector(SEXPTYPE::VECSXP, values),
@@ -80,7 +80,7 @@ impl List {
     /// use extendr_api::prelude::*;
     /// use std::collections::HashMap;
     /// test! {
-    ///     let mut map: HashMap<&str, Robj> = HashMap::new();
+    ///     let mut map: HashMap<&str, RObj> = HashMap::new();
     ///     map.insert("a", r!(1));
     ///     map.insert("b", r!(2));
     ///
@@ -98,7 +98,7 @@ impl List {
     )]
     pub fn from_hashmap<K, V>(val: HashMap<K, V>) -> Result<Self>
     where
-        V: IntoRobj,
+        V: IntoRObj,
         K: Into<String>,
     {
         val.try_into()
@@ -113,7 +113,7 @@ impl List {
         N::Item: ToVectorValue + AsRef<str>,
         V: IntoIterator,
         V::IntoIter: ExactSizeIterator,
-        V::Item: Into<Robj>,
+        V::Item: Into<RObj>,
     {
         let mut list = List::from_values(values);
         list.set_names(names)?;
@@ -149,29 +149,29 @@ impl List {
             .unwrap_or_else(|| StrIter::new(self.len()).zip(self.values()))
     }
 
-    /// Get the list a slice of `Robj`s.
-    pub fn as_slice(&self) -> &[Robj] {
+    /// Get the list a slice of `RObj`s.
+    pub fn as_slice(&self) -> &[RObj] {
         unsafe {
-            let data = dataptr(self.robj.get()) as *const Robj;
+            let data = dataptr(self.robj.get()) as *const RObj;
             let len = self.robj.len();
             std::slice::from_raw_parts(data, len)
         }
     }
 
     /// Get a reference to an element in the list.
-    pub fn elt(&self, i: usize) -> Result<Robj> {
+    pub fn elt(&self, i: usize) -> Result<RObj> {
         if i >= self.robj.len() {
             Err(Error::OutOfRange(self.robj.clone()))
         } else {
             unsafe {
                 let sexp = VECTOR_ELT(self.robj.get(), i as R_xlen_t);
-                Ok(Robj::from_sexp(sexp))
+                Ok(RObj::from_sexp(sexp))
             }
         }
     }
 
     /// Set an element in the list.
-    pub fn set_elt(&mut self, i: usize, value: Robj) -> Result<()> {
+    pub fn set_elt(&mut self, i: usize, value: RObj) -> Result<()> {
         single_threaded(|| unsafe {
             if i >= self.robj.len() {
                 Err(Error::OutOfRange(self.robj.clone()))
@@ -194,7 +194,7 @@ impl List {
     /// use std::collections::HashMap;
     /// test! {
     ///     let mut robj = list!(a=1, 2);
-    ///     let names_and_values: HashMap<&str, Robj> = robj.as_list().unwrap().try_into().unwrap();
+    ///     let names_and_values: HashMap<&str, RObj> = robj.as_list().unwrap().try_into().unwrap();
     ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))].into_iter().collect::<HashMap<_, _>>());
     /// }
     /// ```
@@ -202,14 +202,14 @@ impl List {
         since = "0.8.1",
         note = "Use `HashMap::try_from(list)` or `list.try_into()` instead"
     )]
-    pub fn into_hashmap(self) -> HashMap<&'static str, Robj> {
+    pub fn into_hashmap(self) -> HashMap<&'static str, RObj> {
         self.try_into().unwrap()
     }
 }
 
 impl<T> TryFrom<&List> for HashMap<&str, T>
 where
-    T: TryFrom<Robj, Error = error::Error>,
+    T: TryFrom<RObj, Error = error::Error>,
 {
     type Error = Error;
 
@@ -225,7 +225,7 @@ where
 
 impl<T> TryFrom<&List> for HashMap<String, T>
 where
-    T: TryFrom<Robj, Error = error::Error>,
+    T: TryFrom<RObj, Error = error::Error>,
 {
     type Error = Error;
     fn try_from(value: &List) -> Result<Self> {
@@ -234,10 +234,10 @@ where
     }
 }
 
-// The following is necessary because it is impossible to define `TryFrom<Robj> for &Robj` as
+// The following is necessary because it is impossible to define `TryFrom<RObj> for &RObj` as
 // it requires returning a reference to a owned (moved) value
 
-impl TryFrom<&List> for HashMap<&str, Robj> {
+impl TryFrom<&List> for HashMap<&str, RObj> {
     type Error = Error;
 
     fn try_from(value: &List) -> Result<Self> {
@@ -245,7 +245,7 @@ impl TryFrom<&List> for HashMap<&str, Robj> {
     }
 }
 
-impl TryFrom<&List> for HashMap<String, Robj> {
+impl TryFrom<&List> for HashMap<String, RObj> {
     type Error = Error;
     fn try_from(value: &List) -> Result<Self> {
         let value: HashMap<&str, _> = value.try_into()?;
@@ -255,7 +255,7 @@ impl TryFrom<&List> for HashMap<String, Robj> {
 
 impl<T> TryFrom<List> for HashMap<&str, T>
 where
-    T: TryFrom<Robj, Error = error::Error>,
+    T: TryFrom<RObj, Error = error::Error>,
 {
     type Error = Error;
 
@@ -266,7 +266,7 @@ where
 
 impl<T> TryFrom<List> for HashMap<String, T>
 where
-    T: TryFrom<Robj, Error = error::Error>,
+    T: TryFrom<RObj, Error = error::Error>,
 {
     type Error = Error;
 
@@ -275,7 +275,7 @@ where
     }
 }
 
-impl TryFrom<List> for HashMap<&str, Robj> {
+impl TryFrom<List> for HashMap<&str, RObj> {
     type Error = Error;
 
     fn try_from(value: List) -> Result<Self> {
@@ -283,7 +283,7 @@ impl TryFrom<List> for HashMap<&str, Robj> {
     }
 }
 
-impl TryFrom<List> for HashMap<String, Robj> {
+impl TryFrom<List> for HashMap<String, RObj> {
     type Error = Error;
 
     fn try_from(value: List) -> Result<Self> {
@@ -294,7 +294,7 @@ impl TryFrom<List> for HashMap<String, Robj> {
 impl<K, V> TryFrom<HashMap<K, V>> for List
 where
     K: Into<String>,
-    V: IntoRobj,
+    V: IntoRObj,
 {
     type Error = Error;
 
@@ -311,7 +311,7 @@ where
 
 impl IntoIterator for List {
     type IntoIter = NamedListIter;
-    type Item = (&'static str, Robj);
+    type Item = (&'static str, RObj);
 
     /// Convert a List into an interator, consuming the list.
     /// ```
@@ -348,7 +348,7 @@ impl IntoIterator for List {
 /// ```
 #[derive(Clone)]
 pub struct ListIter {
-    robj: Robj,
+    robj: RObj,
     i: usize,
     len: usize,
 }
@@ -365,13 +365,13 @@ impl ListIter {
         ListIter::from_parts(().into(), 0, 0)
     }
 
-    pub(crate) fn from_parts(robj: Robj, i: usize, len: usize) -> Self {
+    pub(crate) fn from_parts(robj: RObj, i: usize, len: usize) -> Self {
         Self { robj, i, len }
     }
 }
 
 impl Iterator for ListIter {
-    type Item = Robj;
+    type Item = RObj;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
         (self.len, Some(self.len))
@@ -383,7 +383,7 @@ impl Iterator for ListIter {
         if i >= self.len {
             None
         } else {
-            Some(unsafe { Robj::from_sexp(VECTOR_ELT(self.robj.get(), i as isize)) })
+            Some(unsafe { RObj::from_sexp(VECTOR_ELT(self.robj.get(), i as isize)) })
         }
     }
 
@@ -400,25 +400,25 @@ impl ExactSizeIterator for ListIter {
     }
 }
 
-/// You can use the FromList wrapper to coerce a Robj into a list.
+/// You can use the FromList wrapper to coerce a RObj into a list.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let list = Robj::from(list!(1, 2));
+///     let list = RObj::from(list!(1, 2));
 ///     let vec : FromList<Vec<i32>> = list.try_into()?;
 ///     assert_eq!(vec.0, vec![1, 2]);
 /// }
 /// ```
 pub struct FromList<T>(pub T);
 
-impl<T> TryFrom<&Robj> for FromList<Vec<T>>
+impl<T> TryFrom<&RObj> for FromList<Vec<T>>
 where
-    T: TryFrom<Robj>,
-    <T as TryFrom<Robj>>::Error: Into<Error>,
+    T: TryFrom<RObj>,
+    <T as TryFrom<RObj>>::Error: Into<Error>,
 {
     type Error = Error;
 
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let listiter: ListIter = robj.try_into()?;
         let res: Result<Vec<_>> = listiter
             .map(|robj| T::try_from(robj).map_err(|e| e.into()))
@@ -427,44 +427,44 @@ where
     }
 }
 
-impl<T> TryFrom<Robj> for FromList<Vec<T>>
+impl<T> TryFrom<RObj> for FromList<Vec<T>>
 where
-    T: TryFrom<Robj>,
-    <T as TryFrom<Robj>>::Error: Into<Error>,
+    T: TryFrom<RObj>,
+    <T as TryFrom<RObj>>::Error: Into<Error>,
 {
     type Error = Error;
 
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         <FromList<Vec<T>>>::try_from(&robj)
     }
 }
 
-impl TryFrom<&Robj> for ListIter {
+impl TryFrom<&RObj> for ListIter {
     type Error = Error;
 
     /// Convert a general R object into a List iterator if possible.
-    fn try_from(robj: &Robj) -> Result<Self> {
+    fn try_from(robj: &RObj) -> Result<Self> {
         let list: List = robj.try_into()?;
         Ok(list.values())
     }
 }
 
-impl TryFrom<Robj> for ListIter {
+impl TryFrom<RObj> for ListIter {
     type Error = Error;
 
     /// Convert a general R object into a List iterator if possible.
-    fn try_from(robj: Robj) -> Result<Self> {
+    fn try_from(robj: RObj) -> Result<Self> {
         <ListIter>::try_from(&robj)
     }
 }
 
-impl From<ListIter> for Robj {
+impl From<ListIter> for RObj {
     /// You can return a ListIter from a function.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let listiter = list!(1, 2).values();
-    ///     assert_eq!(Robj::from(listiter), Robj::from(list!(1, 2)));
+    ///     assert_eq!(RObj::from(listiter), RObj::from(list!(1, 2)));
     /// }
     /// ```
     fn from(iter: ListIter) -> Self {
@@ -472,36 +472,36 @@ impl From<ListIter> for Robj {
     }
 }
 
-// TODO: use Rstr or Sym instead of String.
+// TODO: use RStr or Sym instead of String.
 pub trait KeyValue {
     fn key(&self) -> String;
-    fn value(self) -> Robj;
+    fn value(self) -> RObj;
 }
 
-impl<T: AsRef<str>> KeyValue for (T, Robj) {
+impl<T: AsRef<str>> KeyValue for (T, RObj) {
     fn key(&self) -> String {
         self.0.as_ref().to_owned()
     }
-    fn value(self) -> Robj {
+    fn value(self) -> RObj {
         self.1
     }
 }
 
-impl<T: Into<Robj>> FromIterator<T> for List {
+impl<T: Into<RObj>> FromIterator<T> for List {
     /// Convert an iterator to a `List` object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let iter_collect: Vec<_> = iter.into_iter().collect();
         let len = iter_collect.len();
 
         crate::single_threaded(|| unsafe {
-            let mut robj = Robj::alloc_vector(SEXPTYPE::VECSXP, len);
+            let mut robj = RObj::alloc_vector(SEXPTYPE::VECSXP, len);
             for (i, v) in iter_collect.into_iter().enumerate() {
                 // We don't PROTECT each element here, as they will be immediately
                 // placed into a list which will protect them:
                 // https://cran.r-project.org/doc/manuals/R-exts.html#Garbage-Collection
-                // note: Currently, `Robj` automatically registers `v` by the
+                // note: Currently, `RObj` automatically registers `v` by the
                 // `ownership`-module, making it protected, even though it isn't necessary to do so.
-                let item: Robj = v.into();
+                let item: RObj = v.into();
                 SET_VECTOR_ELT(robj.get_mut(), i as isize, item.get());
             }
 
@@ -513,9 +513,9 @@ impl<T: Into<Robj>> FromIterator<T> for List {
 impl Attributes for List {}
 
 impl Deref for List {
-    type Target = [Robj];
+    type Target = [RObj];
 
-    /// Lists behave like slices of Robj.
+    /// Lists behave like slices of RObj.
     fn deref(&self) -> &Self::Target {
         self.as_slice()
     }

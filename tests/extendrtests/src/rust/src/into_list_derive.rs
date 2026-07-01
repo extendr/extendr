@@ -12,7 +12,7 @@ pub struct BasicStruct {
 }
 
 #[extendr]
-fn make_basic_struct() -> Robj {
+fn make_basic_struct() -> RObj {
     BasicStruct {
         int_field: 42,
         double_field: f64::consts::PI,
@@ -32,7 +32,7 @@ pub struct RWrapperStruct {
 }
 
 #[extendr]
-fn make_rwrapper_struct() -> Robj {
+fn make_rwrapper_struct() -> RObj {
     RWrapperStruct {
         doubles: Doubles::from_values([1.0, 2.0, 3.0]),
         logicals: Logicals::from_values([true, false, true]),
@@ -50,7 +50,7 @@ pub struct WithList {
 }
 
 #[extendr]
-fn make_with_list() -> Robj {
+fn make_with_list() -> RObj {
     WithList {
         name: String::from("my_list"),
         data: list!(x = 1, y = 2, z = 3),
@@ -58,16 +58,16 @@ fn make_with_list() -> Robj {
     .into()
 }
 
-// Test struct with Robj field
+// Test struct with RObj field
 #[derive(Debug, IntoList)]
-pub struct WithRobj {
+pub struct WithRObj {
     pub label: String,
-    pub value: Robj,
+    pub value: RObj,
 }
 
 #[extendr]
-fn make_with_robj() -> Robj {
-    WithRobj {
+fn make_with_robj() -> RObj {
+    WithRObj {
         label: String::from("answer"),
         value: r!(42),
     }
@@ -82,7 +82,7 @@ pub struct WithFunction {
 }
 
 #[extendr]
-fn make_with_function() -> Robj {
+fn make_with_function() -> RObj {
     single_threaded(|| {
         WithFunction {
             func_name: String::from("sum"),
@@ -92,16 +92,16 @@ fn make_with_function() -> Robj {
     })
 }
 
-// Test struct with Pairlist field
+// Test struct with PairList field
 #[derive(Debug, IntoList)]
-pub struct WithPairlist {
+pub struct WithPairList {
     pub description: String,
-    pub pairs: Pairlist,
+    pub pairs: PairList,
 }
 
 #[extendr]
-fn make_with_pairlist() -> Robj {
-    WithPairlist {
+fn make_with_pairlist() -> RObj {
+    WithPairList {
         description: String::from("pairlist container"),
         pairs: pairlist!(a = 10, b = 20, c = 30),
     }
@@ -116,7 +116,7 @@ pub struct WithEnvironment {
 }
 
 #[extendr]
-fn make_with_environment() -> Robj {
+fn make_with_environment() -> RObj {
     single_threaded(|| {
         let env = Environment::new_with_parent(Environment::global());
         env.set_local(sym!(x), 100);
@@ -142,7 +142,7 @@ pub struct WithIgnoredFields {
 }
 
 #[extendr]
-fn make_with_ignored() -> Robj {
+fn make_with_ignored() -> RObj {
     WithIgnoredFields {
         visible_name: String::from("public data"),
         visible_count: 99,
@@ -162,7 +162,7 @@ pub struct WithVectors {
 }
 
 #[extendr]
-fn make_with_vectors() -> Robj {
+fn make_with_vectors() -> RObj {
     WithVectors {
         int_vec: vec![1, 2, 3, 4, 5],
         double_vec: vec![1.1, 2.2, 3.3],
@@ -191,9 +191,9 @@ pub struct NestedOuter {
 }
 
 #[extendr]
-fn make_nested_struct() -> Robj {
+fn make_nested_struct() -> RObj {
     let inner = NestedInner { x: 10.5, y: 20.5 };
-    let inner_list: List = Robj::from(inner).try_into().unwrap();
+    let inner_list: List = RObj::from(inner).try_into().unwrap();
 
     NestedOuter {
         name: String::from("outer"),
@@ -217,12 +217,12 @@ pub struct FunctionMetadata {
 }
 
 #[extendr]
-fn make_function_metadata() -> Robj {
+fn make_function_metadata() -> RObj {
     FunctionMetadata {
         doc: "Example function documentation",
         rust_name: "example_fn",
         r_name: "exampleFn",
-        return_type: "Robj",
+        return_type: "RObj",
         num_args: 3,
         func_ptr: std::ptr::null(),
         is_hidden: false,
@@ -238,14 +238,14 @@ pub struct AllRTypes {
     pub raw_field: Raw,
     pub strings_field: Strings,
     pub list_field: List,
-    pub robj_field: Robj,
+    pub robj_field: RObj,
     pub function_field: Function,
-    pub pairlist_field: Pairlist,
+    pub pairlist_field: PairList,
     pub environment_field: Environment,
 }
 
 #[extendr]
-fn make_all_r_types() -> Robj {
+fn make_all_r_types() -> RObj {
     single_threaded(|| {
         let env = Environment::new_with_parent(Environment::global());
         env.set_local(sym!(test), "value");

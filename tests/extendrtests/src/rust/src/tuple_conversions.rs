@@ -1,8 +1,8 @@
 use extendr_api::{error::Result, prelude::*};
 
 #[extendr]
-fn sum_triplet_ints(x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32)) -> Rint {
-    Rint::from(x.0 + x.1)
+fn sum_triplet_ints(x: (i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32)) -> RInt {
+    RInt::from(x.0 + x.1)
 }
 
 #[derive(Debug, Clone)]
@@ -11,9 +11,9 @@ pub struct Point {
     y: f64,
 }
 
-impl TryFrom<Robj> for Point {
+impl TryFrom<RObj> for Point {
     type Error = extendr_api::Error;
-    fn try_from(value: Robj) -> Result<Self> {
+    fn try_from(value: RObj) -> Result<Self> {
         let dbl_vec = Doubles::try_from(value)?;
         let x = dbl_vec[0].0;
         let y = dbl_vec[1].0;
@@ -21,9 +21,9 @@ impl TryFrom<Robj> for Point {
     }
 }
 
-impl TryFrom<&Robj> for Point {
+impl TryFrom<&RObj> for Point {
     type Error = extendr_api::Error;
-    fn try_from(value: &Robj) -> Result<Self> {
+    fn try_from(value: &RObj) -> Result<Self> {
         value.clone().try_into()
     }
 }
@@ -51,22 +51,22 @@ fn round_trip_array_i32(x: [i32; 4]) -> [i32; 4] {
 }
 
 #[extendr]
-fn round_trip_array_rint(x: [Rint; 4]) -> [Rint; 4] {
+fn round_trip_array_rint(x: [RInt; 4]) -> [RInt; 4] {
     x
 }
 
 #[extendr]
-fn round_trip_array_rfloat(x: [Rfloat; 4]) -> [Rfloat; 4] {
+fn round_trip_array_rfloat(x: [RFloat; 4]) -> [RFloat; 4] {
     x
 }
 
 #[extendr]
-fn round_trip_array_rbool(x: [Rbool; 4]) -> [Rbool; 4] {
+fn round_trip_array_rbool(x: [RBool; 4]) -> [RBool; 4] {
     x
 }
 
 #[extendr]
-fn round_trip_array_rcplx(x: [Rcplx; 4]) -> [Rcplx; 4] {
+fn round_trip_array_rcplx(x: [RCplx; 4]) -> [RCplx; 4] {
     x
 }
 

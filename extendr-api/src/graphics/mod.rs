@@ -104,7 +104,7 @@ pub struct Device {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Pattern {
-    inner: Robj,
+    inner: RObj,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -460,7 +460,7 @@ impl Device {
     pub fn mode_on(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(RObj::from(())))
             } else {
                 GEMode(1, self.inner());
                 Ok(())
@@ -472,7 +472,7 @@ impl Device {
     pub fn mode_off(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(RObj::from(())))
             } else {
                 GEMode(0, self.inner());
                 Ok(())
@@ -489,7 +489,7 @@ impl Device {
     pub fn get_device(number: i32) -> Result<Device> {
         unsafe {
             if number < 0 || number >= Rf_NumDevices() {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(RObj::from(())))
             } else {
                 Ok(Device {
                     inner: GEgetDevice(number),
@@ -614,7 +614,7 @@ impl Device {
     //     rep_ends: bool,
     //     draw: bool,
     //     gc: &Context,
-    // ) -> Robj {
+    // ) -> RObj {
     //     let (mut x, mut y): (Vec<_>, Vec<_>) = coords
     //         .clone()
     //         .map(|(xy, _s)| gc.t(xy))
@@ -698,8 +698,8 @@ impl Device {
     }
 
     /// Screen capture. Returns an integer matrix representing pixels if it is able.
-    pub fn capture(&self) -> Robj {
-        unsafe { Robj::from_sexp(GECap(self.inner())) }
+    pub fn capture(&self) -> RObj {
+        unsafe { RObj::from_sexp(GECap(self.inner())) }
     }
 
     /// Draw a bitmap.
@@ -834,17 +834,17 @@ impl Device {
     }
 
     /// Get the width of a mathematical expression.
-    pub fn math_text_width(&self, expr: &Robj, gc: &Context) -> f64 {
+    pub fn math_text_width(&self, expr: &RObj, gc: &Context) -> f64 {
         unsafe { gc.its(GEExpressionWidth(expr.get(), gc.context(), self.inner())) }
     }
 
     /// Get the height of a mathematical expression.
-    pub fn math_text_height(&self, expr: &Robj, gc: &Context) -> f64 {
+    pub fn math_text_height(&self, expr: &RObj, gc: &Context) -> f64 {
         unsafe { gc.its(GEExpressionHeight(expr.get(), gc.context(), self.inner())) }
     }
 
     /// Get the metrics for a mathematical expression.
-    pub fn math_text_metric(&self, expr: &Robj, gc: &Context) -> TextMetric {
+    pub fn math_text_metric(&self, expr: &RObj, gc: &Context) -> TextMetric {
         unsafe {
             let mut res = TextMetric {
                 ascent: 0.0,
@@ -866,7 +866,7 @@ impl Device {
     /// Draw a mathematical expression.
     pub fn math_text(
         &self,
-        expr: &Robj,
+        expr: &RObj,
         pos: (f64, f64),
         center: (f64, f64),
         rot: f64,

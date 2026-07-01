@@ -6,7 +6,7 @@ use ndarray::{s, ArrayView2};
 /// @param a : Matrix of real values or `NULL`
 /// @export
 #[extendr]
-fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
+fn euclidean_dist(a: Nullable<ArrayView2<RFloat>>) -> Nullable<Doubles> {
     if let NotNull(a) = a {
         let nrow = a.nrows();
 
@@ -14,7 +14,7 @@ fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
             .flat_map(|x| {
                 ((x + 1)..nrow).map(move |y| {
                     let z = &a.slice(s![x, ..]) - &a.slice(s![y, ..]);
-                    (&z * &z).iter().sum::<Rfloat>().sqrt()
+                    (&z * &z).iter().sum::<RFloat>().sqrt()
                 })
             })
             .collect();

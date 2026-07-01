@@ -78,19 +78,19 @@ impl From<&Arg> for RArg {
     }
 }
 
-impl From<&Vec<Arg>> for Robj {
+impl From<&Vec<Arg>> for RObj {
     fn from(args: &Vec<Arg>) -> Self {
         List::from_values(args).into()
     }
 }
 
-impl From<&Vec<Func>> for Robj {
+impl From<&Vec<Func>> for RObj {
     fn from(funcs: &Vec<Func>) -> Self {
         List::from_values(funcs).into()
     }
 }
 
-impl From<&Vec<Impl>> for Robj {
+impl From<&Vec<Impl>> for RObj {
     fn from(impls: &Vec<Impl>) -> Self {
         List::from_values(impls).into()
     }

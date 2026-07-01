@@ -13,11 +13,11 @@ use super::*;
 ///
 #[derive(PartialEq, Clone)]
 pub struct Raw {
-    pub(crate) robj: Robj,
+    pub(crate) robj: RObj,
 }
 
 fn init_raw<F: FnOnce(&mut [u8])>(len: usize, filler: F) -> Raw {
-    let mut robj = Robj::alloc_vector(SEXPTYPE::RAWSXP, len);
+    let mut robj = RObj::alloc_vector(SEXPTYPE::RAWSXP, len);
     let slice = robj.as_raw_slice_mut().unwrap();
     filler(slice);
     Raw { robj }
@@ -62,7 +62,7 @@ impl std::fmt::Debug for Raw {
     }
 }
 
-impl From<Option<Raw>> for Robj {
+impl From<Option<Raw>> for RObj {
     fn from(value: Option<Raw>) -> Self {
         match value {
             None => nil_value(),

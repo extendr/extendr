@@ -14,7 +14,7 @@ use extendr_ffi::{
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
-pub trait Rinternals: Types + Conversions {
+pub trait RInternals: Types + Conversions {
     /// Return true if this is the null object.
     fn is_null(&self) -> bool {
         unsafe { Rf_isNull(self.get()).into() }
@@ -72,53 +72,53 @@ pub trait Rinternals: Types + Conversions {
 
     /// Return true if this is an expression.
     fn is_external_pointer(&self) -> bool {
-        self.rtype() == Rtype::ExternalPtr
+        self.rtype() == RType::ExternalPtr
     }
 
     /// Get the source ref.
-    fn get_current_srcref(val: i32) -> Robj {
-        unsafe { Robj::from_sexp(R_GetCurrentSrcref(val as std::ffi::c_int)) }
+    fn get_current_srcref(val: i32) -> RObj {
+        unsafe { RObj::from_sexp(R_GetCurrentSrcref(val as std::ffi::c_int)) }
     }
 
     /// Get the source filename.
-    fn get_src_filename(&self) -> Robj {
-        unsafe { Robj::from_sexp(R_GetSrcFilename(self.get())) }
+    fn get_src_filename(&self) -> RObj {
+        unsafe { RObj::from_sexp(R_GetSrcFilename(self.get())) }
     }
 
     /// Convert to a string vector.
-    fn as_character_vector(&self) -> Robj {
-        unsafe { Robj::from_sexp(Rf_asChar(self.get())) }
+    fn as_character_vector(&self) -> RObj {
+        unsafe { RObj::from_sexp(Rf_asChar(self.get())) }
     }
 
     /// Convert to vectors of many kinds.
-    fn coerce_vector(&self, sexptype: SEXPTYPE) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_coerceVector(self.get(), sexptype)) })
+    fn coerce_vector(&self, sexptype: SEXPTYPE) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_coerceVector(self.get(), sexptype)) })
     }
 
     /// Convert a pairlist (LISTSXP) to a vector list (VECSXP).
-    fn pair_to_vector_list(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_PairToVectorList(self.get())) })
+    fn pair_to_vector_list(&self) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_PairToVectorList(self.get())) })
     }
 
     /// Convert a vector list (VECSXP) to a pair list (LISTSXP)
-    fn vector_to_pair_list(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_VectorToPairList(self.get())) })
+    fn vector_to_pair_list(&self) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_VectorToPairList(self.get())) })
     }
 
     /// Convert a factor to a string vector.
-    fn as_character_factor(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_asCharacterFactor(self.get())) })
+    fn as_character_factor(&self) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_asCharacterFactor(self.get())) })
     }
 
     /// Allocate a matrix object.
-    fn alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) })
+    fn alloc_matrix(sexptype: SEXPTYPE, rows: i32, cols: i32) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_allocMatrix(sexptype, rows, cols)) })
     }
 
     /// Do a deep copy of this object.
     /// Note that clone() only adds a reference.
-    fn duplicate(&self) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_duplicate(self.get())) })
+    fn duplicate(&self) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_duplicate(self.get())) })
     }
 
     /// Find a function in an environment ignoring other variables.
@@ -136,13 +136,13 @@ pub trait Rinternals: Types + Conversions {
     ///    // assert!(Environment::base().find_function(sym!(qwertyuiop)).is_none());
     /// }
     /// ```
-    fn find_function<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+    fn find_function<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<RObj> {
         let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
         // This may be better:
-        // let mut env: Robj = self.into();
+        // let mut env: RObj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
         //         if let Some(var) = var.eval_promise() {
@@ -160,7 +160,7 @@ pub trait Rinternals: Types + Conversions {
         unsafe {
             let sexp = self.get();
             if let Ok(var) = catch_r_error(|| Rf_findFun(key.get(), sexp)) {
-                Ok(Robj::from_sexp(var))
+                Ok(RObj::from_sexp(var))
             } else {
                 Err(Error::NotFound(key.into()))
             }
@@ -175,13 +175,13 @@ pub trait Rinternals: Types + Conversions {
     /// Note that many common variables and functions are contained in promises
     /// which must be evaluated and this function may throw an R error.
     ///
-    fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<Robj> {
+    fn find_var<K: TryInto<Symbol, Error = Error>>(&self, key: K) -> Result<RObj> {
         let key: Symbol = key.try_into()?;
         if !self.is_environment() {
             return Err(Error::NotFound(key.into()));
         }
         // Alternative:
-        // let mut env: Robj = self.into();
+        // let mut env: RObj = self.into();
         // loop {
         //     if let Some(var) = env.local(&key) {
         //         println!("v1={:?}", var);
@@ -199,7 +199,7 @@ pub trait Rinternals: Types + Conversions {
         unsafe {
             let sexp = self.get();
             match get_var_safe(key.get(), sexp) {
-                Some(var) => Ok(Robj::from_sexp(var)),
+                Some(var) => Ok(RObj::from_sexp(var)),
                 None => Err(Error::NotFound(key.into())),
             }
         }
@@ -215,7 +215,7 @@ pub trait Rinternals: Types + Conversions {
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// }
     /// ```
-    fn eval_promise(&self) -> Result<Robj> {
+    fn eval_promise(&self) -> Result<RObj> {
         if self.is_promise() {
             self.as_promise().unwrap().eval()
         } else {
@@ -235,9 +235,9 @@ pub trait Rinternals: Types + Conversions {
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
-    unsafe fn make_external_ptr<T>(p: *mut T, prot: Robj) -> Robj {
-        let type_name: Robj = std::any::type_name::<T>().into();
-        Robj::from_sexp(single_threaded(|| {
+    unsafe fn make_external_ptr<T>(p: *mut T, prot: RObj) -> RObj {
+        let type_name: RObj = std::any::type_name::<T>().into();
+        RObj::from_sexp(single_threaded(|| {
             R_MakeExternalPtr(
                 p as *mut ::std::os::raw::c_void,
                 type_name.get(),
@@ -254,14 +254,14 @@ pub trait Rinternals: Types + Conversions {
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
-    unsafe fn external_ptr_tag(&self) -> Robj {
-        Robj::from_sexp(R_ExternalPtrTag(self.get()))
+    unsafe fn external_ptr_tag(&self) -> RObj {
+        RObj::from_sexp(R_ExternalPtrTag(self.get()))
     }
 
     /// Internal function used to implement `#[extendr]` impl
     #[doc(hidden)]
-    unsafe fn external_ptr_protected(&self) -> Robj {
-        Robj::from_sexp(R_ExternalPtrProtected(self.get()))
+    unsafe fn external_ptr_protected(&self) -> RObj {
+        RObj::from_sexp(R_ExternalPtrProtected(self.get()))
     }
 
     #[doc(hidden)]
@@ -273,11 +273,11 @@ pub trait Rinternals: Types + Conversions {
 
     /// Copy a vector and resize it.
     /// See. <https://github.com/hadley/r-internals/blob/master/vectors.md>
-    fn xlengthgets(&self, new_len: usize) -> Result<Robj> {
+    fn xlengthgets(&self, new_len: usize) -> Result<RObj> {
         unsafe {
             if self.is_vector() {
                 Ok(single_threaded(|| {
-                    Robj::from_sexp(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
+                    RObj::from_sexp(Rf_xlengthgets(self.get(), new_len as R_xlen_t))
                 }))
             } else {
                 Err(Error::ExpectedVector(self.as_robj().clone()))
@@ -286,12 +286,12 @@ pub trait Rinternals: Types + Conversions {
     }
 
     /// Allocated an owned object of a certain type.
-    fn alloc_vector(sexptype: SEXPTYPE, len: usize) -> Robj {
-        single_threaded(|| unsafe { Robj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
+    fn alloc_vector(sexptype: SEXPTYPE, len: usize) -> RObj {
+        single_threaded(|| unsafe { RObj::from_sexp(Rf_allocVector(sexptype, len as R_xlen_t)) })
     }
 
     /// Return true if two arrays have identical dims.
-    fn conformable(a: &Robj, b: &Robj) -> bool {
+    fn conformable(a: &RObj, b: &RObj) -> bool {
         single_threaded(|| unsafe { Rf_conformable(a.get(), b.get()).into() })
     }
 
@@ -394,12 +394,12 @@ pub trait Rinternals: Types + Conversions {
 
     /// Return true if this is RAWSXP.
     fn is_raw(&self) -> bool {
-        self.rtype() == Rtype::Raw
+        self.rtype() == RType::Raw
     }
 
     /// Return true if this is CHARSXP.
     fn is_char(&self) -> bool {
-        self.rtype() == Rtype::Rstr
+        self.rtype() == RType::RStr
     }
 
     /// Check an external pointer tag.
@@ -428,16 +428,16 @@ pub trait Rinternals: Types + Conversions {
         unsafe { R_IsPackageEnv(self.get()).into() }
     }
 
-    fn package_env_name(&self) -> Robj {
-        unsafe { Robj::from_sexp(R_PackageEnvName(self.get())) }
+    fn package_env_name(&self) -> RObj {
+        unsafe { RObj::from_sexp(R_PackageEnvName(self.get())) }
     }
 
     fn is_namespace_env(&self) -> bool {
         unsafe { R_IsNamespaceEnv(self.get()).into() }
     }
 
-    fn namespace_env_spec(&self) -> Robj {
-        unsafe { Robj::from_sexp(R_NamespaceEnvSpec(self.get())) }
+    fn namespace_env_spec(&self) -> RObj {
+        unsafe { RObj::from_sexp(R_NamespaceEnvSpec(self.get())) }
     }
 
     /// Returns `true` if this is an ALTREP object.
@@ -492,4 +492,4 @@ pub trait Rinternals: Types + Conversions {
     }
 }
 
-impl Rinternals for Robj {}
+impl RInternals for RObj {}

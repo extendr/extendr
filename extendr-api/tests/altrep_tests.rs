@@ -22,11 +22,11 @@ fn test_altinteger() {
         }
 
         impl AltIntegerImpl for MyCompactIntRange {
-            fn elt(&self, index: usize) -> Rint {
+            fn elt(&self, index: usize) -> RInt {
                 if index == self.missing_index {
-                    Rint::na()
+                    RInt::na()
                 } else {
-                    Rint::from(self.start + self.step * index as i32)
+                    RInt::from(self.start + self.step * index as i32)
                 }
             }
         }
@@ -45,9 +45,9 @@ fn test_altinteger() {
         let mystate_w_missing = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: 5 };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
-        let robj_w_missing = Robj::from(obj_w_missing);
+        let robj_w_missing = RObj::from(obj_w_missing);
         let integers_w_missing: Integers = robj_w_missing.try_into()?;
-        assert_eq!(integers_w_missing.elt(9), Rint::from(9));
+        assert_eq!(integers_w_missing.elt(9), RInt::from(9));
         assert!(integers_w_missing.elt(5).is_na());
 
         // tests for get_region()
@@ -76,11 +76,11 @@ fn test_altreal() {
         }
 
         impl AltRealImpl for MyCompactRealRange {
-            fn elt(&self, index: usize) -> Rfloat {
+            fn elt(&self, index: usize) -> RFloat {
                 if index == self.missing_index {
-                    Rfloat::na()
+                    RFloat::na()
                 } else {
-                    Rfloat::from(self.start + self.step * index as f64)
+                    RFloat::from(self.start + self.step * index as f64)
                 }
             }
         }
@@ -99,9 +99,9 @@ fn test_altreal() {
         let mystate_w_missing = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: 5 };
 
         let obj_w_missing = Altrep::from_state_and_class(mystate_w_missing, class, false);
-        let robj_w_missing = Robj::from(obj_w_missing);
+        let robj_w_missing = RObj::from(obj_w_missing);
         let doubles_w_missing: Doubles = robj_w_missing.try_into()?;
-        assert_eq!(doubles_w_missing.elt(9), Rfloat::from(9.0));
+        assert_eq!(doubles_w_missing.elt(9), RFloat::from(9.0));
 
         // TODO: Win32 currently handles NA improperly. Re-enable this when the problem is fixed.
         if cfg!(not(target_arch = "x86")) {
@@ -130,7 +130,7 @@ fn test_altlogical() {
         }
 
         impl AltLogicalImpl for IsEven {
-            fn elt(&self, index: usize) -> Rbool {
+            fn elt(&self, index: usize) -> RBool {
                 (index % 2 == 1).into()
             }
         }
@@ -195,8 +195,8 @@ fn test_altcomplex() {
         }
 
         impl AltComplexImpl for MyCompactComplexRange {
-            fn elt(&self, index: usize) -> Rcplx {
-                Rcplx::from(c64::new(self.start + self.step * index as f64, self.start + self.step * index as f64))
+            fn elt(&self, index: usize) -> RCplx {
+                RCplx::from(c64::new(self.start + self.step * index as f64, self.start + self.step * index as f64))
             }
         }
 
@@ -225,7 +225,7 @@ fn test_altstring() {
         }
 
         impl AltStringImpl for StringInts {
-            fn elt(&self, index: usize) -> Rstr {
+            fn elt(&self, index: usize) -> RStr {
                 format!("{}", index).into()
             }
         }
@@ -237,7 +237,7 @@ fn test_altstring() {
 
         assert!(obj.is_altstring());
         assert_eq!(obj.len(), 10);
-        assert_eq!(Robj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
+        assert_eq!(RObj::from(obj), r!(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]));
     }
 }
 
@@ -261,7 +261,7 @@ fn test_altlist() -> std::result::Result<(), Box<dyn Error>> {
         }
 
         impl AltListImpl for VecUsize {
-            fn elt(&self, index: usize) -> Robj {
+            fn elt(&self, index: usize) -> RObj {
                 let v = vec![self.0[index]];
                 Self(v).into_robj()
             }

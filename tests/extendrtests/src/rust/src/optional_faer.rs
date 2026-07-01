@@ -12,13 +12,13 @@ fn mat_to_rmat(x: Mat<f64>) -> RMatrix<f64> {
 }
 
 #[extendr]
-fn mat_to_robj(x: Mat<f64>) -> Robj {
+fn mat_to_robj(x: Mat<f64>) -> RObj {
     x.into_robj()
 }
 
 #[extendr]
-fn mat_to_rmatfloat(x: Mat<f64>) -> RMatrix<Rfloat> {
-    RMatrix::<Rfloat>::from(x)
+fn mat_to_rmatfloat(x: Mat<f64>) -> RMatrix<RFloat> {
+    RMatrix::<RFloat>::from(x)
 }
 
 // convert to Mat<f64> from other things
@@ -28,13 +28,13 @@ fn rmat_to_mat(x: RMatrix<f64>) -> Mat<f64> {
 }
 
 #[extendr]
-fn robj_to_mat(x: Robj) -> Mat<f64> {
+fn robj_to_mat(x: RObj) -> Mat<f64> {
     Mat::<f64>::try_from(x).unwrap()
 }
 
 // MatRef input
 #[extendr]
-fn matref_to_mat(x: MatRef<'_, f64>) -> Robj {
+fn matref_to_mat(x: MatRef<'_, f64>) -> RObj {
     RMatrix::<f64>::from(x).into()
 }
 

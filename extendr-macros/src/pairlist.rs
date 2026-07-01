@@ -13,18 +13,18 @@ pub fn pairlist(item: TokenStream) -> TokenStream {
             if let Expr::Assign(ExprAssign { left, right, .. }) = e {
                 if let Expr::Path(ExprPath { path, .. }) = &**left {
                     let s = path.get_ident().unwrap().to_string();
-                    return parse_quote!( (#s, extendr_api::Robj::from(#right)) );
+                    return parse_quote!( (#s, extendr_api::RObj::from(#right)) );
                 }
             }
-            parse_quote!( ("", extendr_api::Robj::from(#e)) )
+            parse_quote!( ("", extendr_api::RObj::from(#e)) )
         })
         .collect::<Vec<Expr>>();
 
     if pairs.is_empty() {
-        TokenStream::from(quote!(extendr_api::wrapper::Pairlist::from(())))
+        TokenStream::from(quote!(extendr_api::wrapper::PairList::from(())))
     } else {
         TokenStream::from(quote!(
-            extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])
+            extendr_api::wrapper::PairList::from_pairs(&[# ( #pairs ),*])
         ))
     }
 }

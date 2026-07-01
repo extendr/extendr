@@ -102,7 +102,7 @@ pub fn my_sum(v: &[f64]) -> f64 {
 }
 ```
 
-You can interact in more detail with R objects using the `Robj`
+You can interact in more detail with R objects using the `RObj`
 type which wraps the native R object type. This supports a large
 subset of the R internals functions, but wrapped to prevent
 accidental segfaults and failures.
