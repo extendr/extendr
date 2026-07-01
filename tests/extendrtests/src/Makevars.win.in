@@ -39,19 +39,15 @@ $(STATLIB):
 	RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --target=$(TARGET) --lib @PROFILE@ --manifest-path=rust/Cargo.toml --target-dir="$(TARGET_DIR)"
 
 	# Generate wrappers using a linked C executable. The helper only runs the
-	# R-free wrapper generator, but the windows-gnu staticlib emits a single
-	# `.text` section per codegen unit, so `--gc-sections` cannot drop the
-	# R-calling wrapper code pulled in alongside it (unlike macOS/Linux, which
-	# strip it). Rather than link `-lR`, resolve the never-called R symbols with
-	# trap stubs: trial-link to discover the undefined symbols, emit a stub for
-	# each, then link for real. A genuine live call to one would abort loudly,
-	# and any non-R link error still fails the build.
-	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) 2> document-link.log || true
-	sed -n "s/.*undefined reference to .\([A-Za-z0-9_]*\).$$/\1/p" document-link.log \
-		| sort -u | awk '{print "void " $$0 "(void){__builtin_trap();}"}' > document-rstubs.c
-	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) document-rstubs.c $(PKG_LIBS)
+	# R-free wrapper generator, but on windows-gnu its R-calling wrapper code
+	# shares a single `.text` section per codegen unit that `--gc-sections`
+	# cannot split (unlike macOS/Linux), so the link pulls in undefined R
+	# symbols. They are never called (dead code), so `--noinhibit-exec` writes
+	# the executable anyway with them left unresolved; running it immediately
+	# after confirms the R-free path works. No `-lR`, no `R.dll` dependency.
+	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) -Wl,--noinhibit-exec || true
 	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
-	rm -f $(DOCUMENT) document-rstubs.c document-link.log
+	rm -f $(DOCUMENT)
 
 	# Always clean up CARGOTMP
 	rm -Rf "$(CARGOTMP)";
