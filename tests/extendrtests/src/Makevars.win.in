@@ -44,7 +44,7 @@ $(STATLIB):
 	# cannot split (unlike macOS/Linux), so the link pulls in undefined R
 	# symbols. They are never called (dead code), so `--noinhibit-exec` writes
 	# the executable anyway with them left unresolved; running it immediately
-	# after confirms the R-free path works. No `-lR`, no `R.dll` dependency.
+	# Generate wrappers using a linked C executable.
 	$(CC) -o $(DOCUMENT) $(DOCUMENT_SRC) $(PKG_LIBS) -Wl,--noinhibit-exec || true
 	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
 	rm -f $(DOCUMENT)
