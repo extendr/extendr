@@ -460,7 +460,7 @@ impl Device {
     pub fn mode_on(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(Robj::null()))
             } else {
                 GEMode(1, self.inner());
                 Ok(())
@@ -472,7 +472,7 @@ impl Device {
     pub fn mode_off(&self) -> Result<()> {
         unsafe {
             if Rf_NoDevices() != 0 {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(Robj::null()))
             } else {
                 GEMode(0, self.inner());
                 Ok(())
@@ -489,7 +489,7 @@ impl Device {
     pub fn get_device(number: i32) -> Result<Device> {
         unsafe {
             if number < 0 || number >= Rf_NumDevices() {
-                Err(Error::NoGraphicsDevices(Robj::from(())))
+                Err(Error::NoGraphicsDevices(Robj::null()))
             } else {
                 Ok(Device {
                     inner: GEgetDevice(number),

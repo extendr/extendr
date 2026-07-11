@@ -161,9 +161,9 @@ fn test_try_from_robj() {
         assert_eq!(<&[Rint]>::try_from(&robj), Err(Error::ExpectedInteger(r!(1.0))));
         let robj = Robj::from(1);
         assert_eq!(<&[Rfloat]>::try_from(&robj), Err(Error::ExpectedReal(r!(1))));
-        let robj = Robj::from(());
-        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(r!(()))));
-        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(r!(()))));
+        let robj = Robj::null();
+        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(Robj::null())));
+        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(Robj::null())));
     }
 }
 
@@ -314,5 +314,16 @@ fn test_rstr_rtype() {
     test! {
     let robj = r!(Rstr::from("hello"));
     assert_eq!(Rstr::try_from(robj).unwrap().rtype(), Rtype::Rstr);
+    }
+}
+
+#[test]
+fn test_robj_null() {
+    test! {
+        let null = Robj::null();
+        assert_eq!(null, Robj::from(()));
+        assert_eq!(null, ().into_robj());
+        assert_eq!(null, r!(()));
+        assert_eq!(null, r!(NULL));
     }
 }

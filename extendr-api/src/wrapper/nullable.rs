@@ -20,11 +20,11 @@ use crate as extendr_api;
 ///     assert_eq!(<Nullable<Option<i32>>>::try_from(&sna)?, NotNull(None));
 ///
 ///     // NULL object.
-///     let snull = r!(NULL);
+///     let snull = Robj::null();
 ///     let nnull = <Nullable<i32>>::try_from(&snull)?;
 ///     assert_eq!(nnull, Null);
 ///
-///     assert_eq!(r!(Nullable::<i32>::Null), r!(NULL));
+///     assert_eq!(r!(Nullable::<i32>::Null), Robj::null());
 ///     assert_eq!(r!(Nullable::<i32>::NotNull(1)), r!(1));
 /// }
 /// ```
@@ -67,7 +67,7 @@ where
     ///     let s1 = r!(1);
     ///     let n1 = <Nullable<i32>>::try_from(s1)?;
     ///     assert_eq!(n1, Nullable::NotNull(1));
-    ///     let snull = r!(NULL);
+    ///     let snull = Robj::null();
     ///     let nnull = <Nullable<i32>>::try_from(snull)?;
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
@@ -94,7 +94,7 @@ where
     ///     let s1 = r!(1);
     ///     let n1 = <Nullable<i32>>::try_from(&s1)?;
     ///     assert_eq!(n1, Nullable::NotNull(1));
-    ///     let snull = r!(NULL);
+    ///     let snull = Robj::null();
     ///     let nnull = <Nullable<i32>>::try_from(&snull)?;
     ///     assert_eq!(nnull, Nullable::Null);
     /// }
@@ -116,14 +116,14 @@ where
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(r!(Nullable::<i32>::Null), r!(NULL));
+    ///     assert_eq!(r!(Nullable::<i32>::Null), Robj::null());
     ///     assert_eq!(r!(Nullable::<i32>::NotNull(1)), r!(1));
     /// }
     /// ```
     fn from(val: Nullable<T>) -> Self {
         match val {
             Nullable::NotNull(t) => t.into(),
-            Nullable::Null => r!(NULL),
+            Nullable::Null => Robj::null(),
         }
     }
 }

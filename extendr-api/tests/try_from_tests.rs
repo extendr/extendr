@@ -66,7 +66,7 @@ fn test_try_from() {
             float_slice_ok: true,
         );
 
-        let null = r!(());
+        let null = Robj::null();
         test_matrix!(
             null.clone(),
             int_ok : false,

@@ -21,47 +21,47 @@ fn test_deserialize_robj() {
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Null;
-        assert_eq!(from_robj::<Null>(&r!(NULL)), Ok(Null));
+        assert_eq!(from_robj::<Null>(&Robj::null()), Ok(Null));
         assert_eq!(from_robj::<Null>(&r!(1)), Err(Error::ExpectedNull(r!(1))));
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Int(i32);
         assert_eq!(from_robj::<Int>(&r!(1)), Ok(Int(1)));
         assert_eq!(from_robj::<Int>(&r!(1.0)), Ok(Int(1)));
-        assert_eq!(from_robj::<Int>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<Int>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct RInt(Rint);
         assert_eq!(from_robj::<RInt>(&r!(1)), Ok(RInt(1.into())));
         assert_eq!(from_robj::<RInt>(&r!(1.0)), Ok(RInt(1.into())));
         assert_eq!(from_robj::<RInt>(&r!(Rint::na())).is_err(), true);
-        assert_eq!(from_robj::<RInt>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<RInt>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Float(f64);
         assert_eq!(from_robj::<Float>(&r!(1)), Ok(Float(1.0)));
         assert_eq!(from_robj::<Float>(&r!(1.0)), Ok(Float(1.0)));
-        assert_eq!(from_robj::<Float>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<Float>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct RFloat(Rfloat);
         assert_eq!(from_robj::<RFloat>(&r!(1)), Ok(RFloat(1.0.into())));
         assert_eq!(from_robj::<RFloat>(&r!(1.0)), Ok(RFloat(1.0.into())));
         assert_eq!(from_robj::<RFloat>(&r!(Rfloat::na())).is_err(), true);
-        assert_eq!(from_robj::<RFloat>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<RFloat>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct Bool(bool);
         assert_eq!(from_robj::<Bool>(&r!(TRUE)), Ok(Bool(true)));
         assert_eq!(from_robj::<Bool>(&r!(FALSE)), Ok(Bool(false)));
-        assert_eq!(from_robj::<Bool>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<Bool>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct RBool(Rbool);
         assert_eq!(from_robj::<RBool>(&r!(TRUE)), Ok(RBool(TRUE)));
         assert_eq!(from_robj::<RBool>(&r!(FALSE)), Ok(RBool(FALSE)));
         assert_eq!(from_robj::<RBool>(&r!(Rbool::na())).is_err(), true);
-        assert_eq!(from_robj::<RBool>(&r!(NULL)).is_err(), true);
+        assert_eq!(from_robj::<RBool>(&Robj::null()).is_err(), true);
 
         #[derive(Deserialize, PartialEq, Debug)]
         struct VInt(Vec<i32>);

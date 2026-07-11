@@ -5,7 +5,7 @@ struct Mock {}
 
 impl From<Mock> for Robj {
     fn from(_: Mock) -> Self {
-        r!(())
+        Robj::null()
     }
 }
 
@@ -23,11 +23,11 @@ fn into_robj() {
         let left : Either<Mock, NotExecutedMock> = Left(Mock{});
         let robj : Robj = left.into();
 
-        assert_eq!(r!(()), robj);
+        assert_eq!(Robj::null(), robj);
 
         let right : Either<NotExecutedMock, Mock> = Right(Mock{});
         let robj : Robj = right.into();
 
-        assert_eq!(r!(()), robj);
+        assert_eq!(Robj::null(), robj);
     }
 }

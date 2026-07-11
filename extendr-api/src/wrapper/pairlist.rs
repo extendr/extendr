@@ -12,7 +12,7 @@ pub struct Pairlist {
 
 impl Pairlist {
     pub fn new() -> Self {
-        let robj = Robj::from(());
+        let robj = Robj::null();
         Self { robj }
     }
 
@@ -26,7 +26,7 @@ impl Pairlist {
     ///
     ///     // Use "" to indicate the absense of the name
     ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
-    ///     assert_eq!(call!("names", unnamed_pairlist)?, r!(NULL));
+    ///     assert_eq!(call!("names", unnamed_pairlist)?, Robj::null());
     ///     let unnamed_pairlist_r = R!(r#"pairlist("a", "b")"#)?.as_pairlist().unwrap();
     ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
     /// }
@@ -197,9 +197,7 @@ impl From<PairlistIter> for Robj {
 impl From<()> for Pairlist {
     /// Construct a NULL pairlist (which is a NULL).
     fn from(_: ()) -> Self {
-        Pairlist {
-            robj: Robj::from(()),
-        }
+        Pairlist { robj: Robj::null() }
     }
 }
 

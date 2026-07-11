@@ -78,12 +78,12 @@ impl From<Condition> for List {
     fn from(value: Condition) -> Self {
         let msg = Strings::from_values(value.message).into_robj();
 
-        let call_robj = value.call.map(|v| v.into()).unwrap_or(Robj::from(()));
+        let call_robj = value.call.map(|v| v.into()).unwrap_or(Robj::null());
         let parent_robj = value
             .parent
             .map(|v| Robj::from(v.0))
-            .unwrap_or(Robj::from(()));
-        let trace_robj = value.trace.map(|v| Robj::from(v)).unwrap_or(Robj::from(()));
+            .unwrap_or(Robj::null());
+        let trace_robj = value.trace.map(|v| Robj::from(v)).unwrap_or(Robj::null());
 
         let mut cnd = List::from_pairs([
             ("message", msg),
@@ -595,7 +595,7 @@ mod tests {
     fn err_ambiguous_kind() -> Result<()> {
         with_r(|| {
             let mut list =
-                List::from_pairs([("message", Robj::from("oops")), ("call", Robj::from(()))]);
+                List::from_pairs([("message", Robj::from("oops")), ("call", Robj::null())]);
             list.set_class(&["error", "warning", "condition"]).unwrap();
             let result = Condition::try_from(&list);
             assert!(result.is_err());

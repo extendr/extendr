@@ -369,7 +369,7 @@ pub const TRUE: Rbool = Rbool::true_value();
 /// FALSE value eg. `r!(FALSE)`
 pub const FALSE: Rbool = Rbool::false_value();
 
-/// NULL value eg. `r!(NULL)`
+/// NULL value eg. `Robj::null()`
 pub const NULL: () = ();
 
 /// NA value for integers eg. `r!(NA_INTEGER)`

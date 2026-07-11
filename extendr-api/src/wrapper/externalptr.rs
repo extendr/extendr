@@ -136,7 +136,7 @@ impl<T: 'static> ExternalPtr<T> {
             // into_raw() converts the box to a malloced pointer.
             let robj = {
                 let boxed_ptr = Box::into_raw(boxed);
-                let prot = Robj::from(());
+                let prot = Robj::null();
                 let type_name: Robj = std::any::type_name::<T>().into();
 
                 Robj::from_sexp(single_threaded(|| {
