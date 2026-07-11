@@ -18,6 +18,8 @@
 - Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
   This is part of the process of moving `document.rs` into `document.c` to avoid
   issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
+- Added experimental methods `RMatrix::row_iter()` and `RMatrix::col_iter()` to iterate over rows and columns as `RColumn<T>`, plus `RColumn::iter()` and `RColumn::iter_mut()`. <https://github.com/extendr/extendr/pull/1104>
+- Added `From<RColumn<T>>` conversions to the typed vector wrappers (`Doubles`, `Integers`, `Logicals`, `Complexes`, `Strings`, `Raw`) for their corresponding scalar types
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
 
 ### Changed

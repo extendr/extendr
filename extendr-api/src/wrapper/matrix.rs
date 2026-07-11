@@ -1,6 +1,7 @@
 //! Wrappers for matrices with deferred arithmetic.
 use self::robj::{AsTypedSlice, Robj};
 use super::*;
+use crate::scalar::{c64, Rbool, Rcplx, Rfloat, Rint};
 use crate::throw_r_error;
 use extendr_ffi::{
     Rf_GetArrayDimnames, Rf_GetColNames, Rf_GetRowNames, Rf_dimgets, Rf_dimnamesgets, Rf_namesgets,
@@ -257,7 +258,50 @@ where
     pub fn nrows(&self) -> usize {
         self.get_dim()[0]
     }
+
+    /// Returns an iterator over the elements of the column.
+    ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let col = RColumn::new_column(3, |r| [1., 2., 3.][r]);
+    ///     let sum = col.iter().sum::<f64>();
+    ///     assert_eq!(sum, 6.);
+    /// }
+    /// ```
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
+        self.data().iter()
+    }
+
+    /// Returns a mutable iterator over the elements of the column.
+    ///
+    /// This method is experimental and likely to be unstable for a while.
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut T> {
+        self.data_mut().iter_mut()
+    }
 }
+
+macro_rules! impl_rcolumn_into_wrapper {
+    ($scalar:ty, $wrapper:ty) => {
+        impl From<RColumn<$scalar>> for $wrapper {
+            fn from(col: RColumn<$scalar>) -> Self {
+                <$wrapper>::try_from(Robj::from(col)).unwrap()
+            }
+        }
+    };
+}
+
+impl_rcolumn_into_wrapper!(f64, Doubles);
+impl_rcolumn_into_wrapper!(Rfloat, Doubles);
+impl_rcolumn_into_wrapper!(i32, Integers);
+impl_rcolumn_into_wrapper!(Rint, Integers);
+impl_rcolumn_into_wrapper!(Rbool, Logicals);
+impl_rcolumn_into_wrapper!(c64, Complexes);
+impl_rcolumn_into_wrapper!(Rcplx, Complexes);
+impl_rcolumn_into_wrapper!(Rstr, Strings);
+impl_rcolumn_into_wrapper!(u8, Raw);
 
 impl<T> RMatrix<T>
 where
@@ -300,6 +344,138 @@ where
     pub fn ncols(&self) -> usize {
         self.get_dim()[1]
     }
+
+    /// Returns an iterator over the rows of the matrix.
+    ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
+    /// Each row is returned as an [`RColumn<T>`] containing a copy of the
+    /// row's values in row-major order.
+    ///
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+    ///         [1., 2., 3.],
+    ///         [4., 5., 6.]][c][r]);
+    ///     let rows: Vec<_> = matrix.row_iter().collect();
+    ///     assert_eq!(rows.len(), 3);
+    ///     assert_eq!(rows[0].data(), &[1., 4.]);
+    ///     assert_eq!(rows[1].data(), &[2., 5.]);
+    ///     assert_eq!(rows[2].data(), &[3., 6.]);
+    /// }
+    /// ```
+    pub fn row_iter(&self) -> RowIter<'_, T> {
+        let nrows = self.nrows();
+        let ncols = self.ncols();
+        RowIter {
+            data: self.data(),
+            range: 0..nrows,
+            nrows,
+            ncols,
+        }
+    }
+
+    /// Returns an iterator over the columns of the matrix.
+    ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
+    /// Each column is returned as an [`RColumn<T>`] containing a copy of the
+    /// column's values.
+    ///
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+    ///         [1., 2., 3.],
+    ///         [4., 5., 6.]][c][r]);
+    ///     let cols: Vec<_> = matrix.col_iter().collect();
+    ///     assert_eq!(cols.len(), 2);
+    ///     assert_eq!(cols[0].data(), &[1., 2., 3.]);
+    ///     assert_eq!(cols[1].data(), &[4., 5., 6.]);
+    /// }
+    /// ```
+    pub fn col_iter(&self) -> ColIter<'_, T> {
+        let nrows = self.nrows();
+        let ncols = self.ncols();
+        ColIter {
+            data: self.data(),
+            range: 0..ncols,
+            nrows,
+        }
+    }
+}
+
+/// Iterator over the rows of an [`RMatrix`].
+///
+/// This iterator is experimental and likely to be unstable for a while.
+pub struct RowIter<'a, T> {
+    data: &'a [T],
+    range: std::ops::Range<usize>,
+    nrows: usize,
+    ncols: usize,
+}
+
+impl<'a, T> Iterator for RowIter<'a, T>
+where
+    T: ToVectorValue + Clone,
+    Robj: for<'b> AsTypedSlice<'b, T>,
+{
+    type Item = RColumn<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let r = self.range.next()?;
+        Some(RColumn::new_column(self.ncols, |c| {
+            self.data[c * self.nrows + r].clone()
+        }))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.range.size_hint()
+    }
+}
+
+impl<'a, T> ExactSizeIterator for RowIter<'a, T>
+where
+    T: ToVectorValue + Clone,
+    Robj: for<'b> AsTypedSlice<'b, T>,
+{
+}
+
+/// Iterator over the columns of an [`RMatrix`].
+///
+/// This iterator is experimental and likely to be unstable for a while.
+pub struct ColIter<'a, T> {
+    data: &'a [T],
+    range: std::ops::Range<usize>,
+    nrows: usize,
+}
+
+impl<'a, T> Iterator for ColIter<'a, T>
+where
+    T: ToVectorValue + Clone,
+    Robj: for<'b> AsTypedSlice<'b, T>,
+{
+    type Item = RColumn<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let c = self.range.next()?;
+        let start = c * self.nrows;
+        Some(RColumn::new_column(self.nrows, |r| {
+            self.data[start + r].clone()
+        }))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.range.size_hint()
+    }
+}
+
+impl<'a, T> ExactSizeIterator for ColIter<'a, T>
+where
+    T: ToVectorValue + Clone,
+    Robj: for<'b> AsTypedSlice<'b, T>,
+{
 }
 
 impl<T> RMatrix3D<T>
@@ -753,6 +929,165 @@ mod tests {
             let robj: Robj = matrix.into();
             assert_eq!(robj.is_matrix(), true);
             assert_eq!(robj.rtype(), Rtype::Strings);
+        }
+    }
+
+    #[test]
+    fn test_row_iter_values() {
+        test! {
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+            let rows: Vec<_> = matrix.row_iter().collect();
+            assert_eq!(rows.len(), 3);
+            assert_eq!(rows[0].data(), &[1., 4.]);
+            assert_eq!(rows[1].data(), &[2., 5.]);
+            assert_eq!(rows[2].data(), &[3., 6.]);
+        }
+    }
+
+    #[test]
+    fn test_col_iter_values() {
+        test! {
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+            let cols: Vec<_> = matrix.col_iter().collect();
+            assert_eq!(cols.len(), 2);
+            assert_eq!(cols[0].data(), &[1., 2., 3.]);
+            assert_eq!(cols[1].data(), &[4., 5., 6.]);
+        }
+    }
+
+    #[test]
+    fn test_row_iter_with_rcolumn_iter() {
+        test! {
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+            let row_sums: Vec<f64> = matrix
+                .row_iter()
+                .map(|row| row.iter().sum::<f64>())
+                .collect();
+            assert_eq!(row_sums, vec![5., 7., 9.]);
+        }
+    }
+
+    #[test]
+    fn test_empty_matrix_iters() {
+        test! {
+            let no_rows: RMatrix<f64> = RMatrix::new_matrix(0, 3, |_, _| 0.);
+            assert_eq!(no_rows.row_iter().count(), 0);
+            assert_eq!(no_rows.col_iter().count(), 3);
+            for col in no_rows.col_iter() {
+                assert_eq!(col.nrows(), 0);
+            }
+
+            let no_cols: RMatrix<f64> = RMatrix::new_matrix(3, 0, |_, _| 0.);
+            assert_eq!(no_cols.row_iter().count(), 3);
+            assert_eq!(no_cols.col_iter().count(), 0);
+            for row in no_cols.row_iter() {
+                assert_eq!(row.nrows(), 0);
+            }
+        }
+    }
+
+    #[test]
+    fn test_rfloat_matrix_iters() {
+        test! {
+            let matrix = RMatrix::new_matrix(2, 2, |r, c| {
+                Rfloat::from([[1., 2.], [3., 4.]][c][r])
+            });
+            let rows: Vec<_> = matrix.row_iter().collect();
+            assert_eq!(rows.len(), 2);
+            assert_eq!(rows[0].data(), &[Rfloat::from(1.), Rfloat::from(3.)]);
+            assert_eq!(rows[1].data(), &[Rfloat::from(2.), Rfloat::from(4.)]);
+
+            let cols: Vec<_> = matrix.col_iter().collect();
+            assert_eq!(cols.len(), 2);
+            assert_eq!(cols[0].data(), &[Rfloat::from(1.), Rfloat::from(2.)]);
+            assert_eq!(cols[1].data(), &[Rfloat::from(3.), Rfloat::from(4.)]);
+        }
+    }
+
+    #[test]
+    fn test_row_col_iter_roundtrip() {
+        test! {
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+
+            let first_row = matrix.row_iter().next().unwrap();
+            let robj: Robj = first_row.into();
+            assert!(robj.is_real());
+            assert_eq!(robj.len(), 2);
+            assert_eq!(robj.as_real_slice().unwrap(), &[1., 4.]);
+
+            let first_col = matrix.col_iter().next().unwrap();
+            let robj: Robj = first_col.into();
+            assert!(robj.is_real());
+            assert_eq!(robj.len(), 3);
+            assert_eq!(robj.as_real_slice().unwrap(), &[1., 2., 3.]);
+
+            let string_data = ["a", "b", "c", "d"];
+            let str_matrix: RMatrix<Rstr> = RMatrix::new_matrix(2, 2, |r, c| {
+                Rstr::from(string_data[c * 2 + r])
+            });
+            let first_row = str_matrix.row_iter().next().unwrap();
+            let robj: Robj = first_row.into();
+            assert!(robj.is_string());
+            assert_eq!(robj.len(), 2);
+            assert_eq!(robj.as_str_vector().unwrap(), vec!["a", "c"]);
+        }
+    }
+
+    #[test]
+    fn test_rcolumn_iter_mut() {
+        test! {
+            let mut col = RColumn::new_column(3, |r| [1., 2., 3.][r]);
+            col.iter_mut().for_each(|v| *v += 10.);
+            assert_eq!(col.data(), &[11., 12., 13.]);
+
+            let matrix = RMatrix::new_matrix(2, 2, |r, c| [[1., 2.], [3., 4.]][c][r]);
+            let mut first_row = matrix.row_iter().next().unwrap();
+            first_row.iter_mut().for_each(|v| *v *= 2.);
+            assert_eq!(first_row.data(), &[2., 6.]);
+
+            // The original matrix is unchanged because row_iter yields owned copies.
+            assert_eq!(matrix[[0, 0]], 1.);
+            assert_eq!(matrix[[0, 1]], 3.);
+        }
+    }
+
+    #[test]
+    fn test_row_iter_to_doubles() {
+        test! {
+            let matrix = RMatrix::new_matrix(3, 2, |r, c| [
+                [1., 2., 3.],
+                [4., 5., 6.]][c][r]);
+
+            let rows: Vec<Doubles> = matrix.row_iter().map(Doubles::from).collect();
+
+            assert_eq!(rows.len(), 3);
+            assert_eq!(rows[0].iter().collect::<Vec<_>>(), vec![Rfloat::from(1.), Rfloat::from(4.)]);
+            assert_eq!(rows[1].iter().collect::<Vec<_>>(), vec![Rfloat::from(2.), Rfloat::from(5.)]);
+            assert_eq!(rows[2].iter().collect::<Vec<_>>(), vec![Rfloat::from(3.), Rfloat::from(6.)]);
+        }
+    }
+
+    #[test]
+    fn test_row_iter_to_strings() {
+        test! {
+            let string_data = ["a", "b", "c", "d"];
+            let str_matrix: RMatrix<Rstr> = RMatrix::new_matrix(2, 2, |r, c| {
+                Rstr::from(string_data[c * 2 + r])
+            });
+
+            let rows: Vec<Strings> = str_matrix.row_iter().map(Strings::from).collect();
+
+            assert_eq!(rows.len(), 2);
+            assert_eq!(rows[0].iter().map(|s| s.as_ref()).collect::<Vec<_>>(), vec!["a", "c"]);
+            assert_eq!(rows[1].iter().map(|s| s.as_ref()).collect::<Vec<_>>(), vec!["b", "d"]);
         }
     }
 }
