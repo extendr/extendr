@@ -261,6 +261,8 @@ where
 
     /// Returns an iterator over the elements of the column.
     ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -274,6 +276,8 @@ where
     }
 
     /// Returns a mutable iterator over the elements of the column.
+    ///
+    /// This method is experimental and likely to be unstable for a while.
     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut T> {
         self.data_mut().iter_mut()
     }
@@ -343,6 +347,8 @@ where
 
     /// Returns an iterator over the rows of the matrix.
     ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
     /// Each row is returned as an [`RColumn<T>`] containing a copy of the
     /// row's values in row-major order.
     ///
@@ -372,6 +378,8 @@ where
 
     /// Returns an iterator over the columns of the matrix.
     ///
+    /// This method is experimental and likely to be unstable for a while.
+    ///
     /// Each column is returned as an [`RColumn<T>`] containing a copy of the
     /// column's values.
     ///
@@ -399,6 +407,8 @@ where
 }
 
 /// Iterator over the rows of an [`RMatrix`].
+///
+/// This iterator is experimental and likely to be unstable for a while.
 pub struct RowIter<'a, T> {
     data: &'a [T],
     range: std::ops::Range<usize>,
@@ -433,6 +443,8 @@ where
 }
 
 /// Iterator over the columns of an [`RMatrix`].
+///
+/// This iterator is experimental and likely to be unstable for a while.
 pub struct ColIter<'a, T> {
     data: &'a [T],
     range: std::ops::Range<usize>,
