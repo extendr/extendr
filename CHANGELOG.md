@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added `TryFrom<&Strings>` for `HashSet<&str>` and `BTreeSet<&str>` [[#1006]](https://github.com/extendr/extendr/pull/1006)
 - Infallible `From<T> for S` for extendr-scalar-type `T` and rust-scalar-type `S`.
 - `Condition`, `RCondition`, `ConditionKind`, and `ConditionBuilder` in `extendr_api::conditions` for creating, converting, and round-tripping R condition objects. `Condition` is the Rust-native representation; `RCondition` is the R-boundary type wrapping a validated `List`. Conversions between all four types are provided via `From`/`TryFrom`. <https://github.com/extendr/extendr/pull/1082>
 - `From<Strings> for Vec<String>` and `From<Strings> for StrIter` conversions. <https://github.com/extendr/extendr/pull/1082>
