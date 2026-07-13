@@ -14,7 +14,7 @@ features = ["full-functionality"]
 either = { version = "1.8.1", optional = true }
 extendr-ffi = { workspace = true }
 extendr-macros = { workspace = true }
-faer = { version = "0.20", optional = true }
+faer = { version = "0.24", optional = true }
 libc = { version = "0.2", optional = true }
 ndarray = { version = "0.16.1", optional = true }
 num-complex = { version = "0.4.6", optional = true }
