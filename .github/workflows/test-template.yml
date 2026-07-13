@@ -40,7 +40,7 @@ jobs:
         shell: pwsh
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install just
         uses: extractions/setup-just@v4
