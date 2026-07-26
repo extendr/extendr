@@ -166,6 +166,43 @@ impl InstallationPaths {
     }
 }
 
+/// Emits the R-version-derived build flags: the `rustc-cfg` flags consumed by
+/// this crate and the `DEP_R_R_VERSION_*` exports consumed by dependents such
+/// as extendr-api. Both the detected-R path and the no-R fallback go through
+/// here so the two can never disagree.
+fn emit_r_version_flags(version: &Version) {
+    // used by extendr-api
+    println!("cargo:r_version_major={}", version.major);
+    println!("cargo:r_version_minor={}", version.minor);
+    println!("cargo:r_version_patch={}", version.patch);
+
+    // Set R version specfic config flags
+    // use r_4_4 config
+    if (version.major, version.minor) >= (4, 4) {
+        println!("cargo:rustc-cfg=r_4_4")
+    }
+
+    // use r_4_5 config
+    if (version.major, version.minor) >= (4, 5) {
+        println!("cargo:rustc-cfg=r_4_5")
+    }
+
+    // Graphics engine version 15 was introduced in R 4.2
+    if (version.major, version.minor) >= (4, 2) {
+        println!("cargo:rustc-cfg=use_r_ge_version_15")
+    }
+
+    // Graphics engine version 16 was introduced in R 4.3
+    if (version.major, version.minor) >= (4, 3) {
+        println!("cargo:rustc-cfg=use_r_ge_version_16")
+    }
+
+    // Graphics engine version 17 was introduced in R 4.6
+    if (version.major, version.minor) >= (4, 6) {
+        println!("cargo:rustc-cfg=use_r_ge_version_17")
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
@@ -177,11 +214,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let r_paths = match InstallationPaths::try_new() {
         Ok(v) => v,
         Err(_) => {
-            warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
-            println!("cargo:rustc-cfg=r_4_5");
-            println!("cargo:r_version_major=4");
-            println!("cargo:r_version_minor=5");
-            println!("cargo:r_version_patch=1");
+            warn!("Cannot fetch R version from R. Defaulting to the newest known R version");
+            // Without a detected R there is nothing to link against, so this
+            // build only serves type-checking surfaces (docs.rs, rust-analyzer,
+            // clippy CI). Default to the newest R version this build script
+            // knows about, so every version-gated API is enabled rather than
+            // an arbitrary older subset. Bump this together with any new
+            // version flag added to emit_r_version_flags.
+            emit_r_version_flags(&Version {
+                major: 4,
+                minor: 6,
+                patch: 0,
+            });
             return Ok(());
         }
     };
@@ -190,10 +234,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:r_home={}", r_paths.r_home.display());
     println!("cargo:rustc-env=R_HOME={}", r_paths.r_home.display());
 
-    // used by extendr-api
-    println!("cargo:r_version_major={}", r_paths.version.major);
-    println!("cargo:r_version_minor={}", r_paths.version.minor);
-    println!("cargo:r_version_patch={}", r_paths.version.patch);
+    emit_r_version_flags(&r_paths.version);
 
     let pkg_target_arch = std::env::var("CARGO_CFG_TARGET_ARCH").unwrap();
 
@@ -216,32 +257,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     println!("cargo:rustc-link-lib=dylib=R");
-
-    // Set R version specfic config flags
-    // use r_4_4 config
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 4) {
-        println!("cargo:rustc-cfg=r_4_4")
-    }
-
-    // use r_4_5 config
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 5) {
-        println!("cargo:rustc-cfg=r_4_5")
-    }
-
-    // Graphics engine version 15 was introduced in R 4.2
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 2) {
-        println!("cargo:rustc-cfg=use_r_ge_version_15")
-    }
-
-    // Graphics engine version 16 was introduced in R 4.3
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 3) {
-        println!("cargo:rustc-cfg=use_r_ge_version_16")
-    }
-
-    // Graphics engine version 17 was introduced in R 4.6
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 6) {
-        println!("cargo:rustc-cfg=use_r_ge_version_17")
-    }
 
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");
