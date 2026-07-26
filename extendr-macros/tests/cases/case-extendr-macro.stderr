@@ -1,3 +1,23 @@
+error: inherent impls cannot be default
+  --> tests/cases/case-extendr-macro.rs:31:14
+   |
+31 | default impl FooStruct {}
+   | -------      ^^^^^^^^^ inherent impl for this type
+   | |
+   | default because of this
+   |
+   = note: only trait implementations may be annotated with `default`
+
+error[E0197]: inherent impls cannot be unsafe
+  --> tests/cases/case-extendr-macro.rs:34:13
+   |
+34 | unsafe impl FooStruct {}
+   | ------      ^^^^^^^^^ inherent impl for this type
+   | |
+   | unsafe because of this
+   |
+   = note: only trait implementations may be annotated with `unsafe`
+
 error: Unexpected key
  --> tests/cases/case-extendr-macro.rs:4:11
   |
