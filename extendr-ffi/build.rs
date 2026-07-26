@@ -178,7 +178,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         Ok(v) => v,
         Err(_) => {
             warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
+            // Emit the same cfg set and version exports a real R 4.5.1 would
+            // produce. Dependents like extendr-api read DEP_R_R_VERSION_* and
+            // derive their own cfgs from it, so a partial set here leads to
+            // build-script panics or mismatched cfg gating downstream.
+            println!("cargo:rustc-cfg=r_4_4");
             println!("cargo:rustc-cfg=r_4_5");
+            println!("cargo:rustc-cfg=use_r_ge_version_15");
+            println!("cargo:rustc-cfg=use_r_ge_version_16");
+            println!("cargo:r_version_major=4");
+            println!("cargo:r_version_minor=5");
+            println!("cargo:r_version_patch=1");
             return Ok(());
         }
     };
