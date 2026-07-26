@@ -15,6 +15,20 @@ pub use symbols::*;
 pub mod backports;
 pub use backports::*;
 
+/// Check if an object is a data.frame.
+///
+/// Kept on the 0.8 line for backwards compatibility; prefer [`is_data_frame`],
+/// which stays within the current R API on all R versions.
+///
+/// # Safety
+///
+/// This function dereferences a raw SEXP pointer.
+/// The caller must ensure that `arg1` is a valid SEXP pointer.
+#[allow(non_snake_case)]
+pub unsafe extern "C" fn Rf_isFrame(arg1: SEXP) -> Rboolean {
+    is_data_frame(arg1)
+}
+
 #[cfg(feature = "non-api")]
 mod non_api;
 #[cfg(feature = "non-api")]

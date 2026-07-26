@@ -225,7 +225,9 @@ impl Robj {
     ///
     /// This function dereferences a raw SEXP pointer.
     /// The caller must ensure that `sexp` is a valid SEXP pointer.
-    pub unsafe fn from_sexp(sexp: SEXP) -> Self {
+    // Kept a safe `fn` on the 0.8 line for backwards compatibility; 0.9 makes it `unsafe`.
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    pub fn from_sexp(sexp: SEXP) -> Self {
         single_threaded(|| {
             unsafe { ownership::protect(sexp) };
             Robj { inner: sexp }

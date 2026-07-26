@@ -101,7 +101,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     /// Duplicate this object. Called by Rf_duplicate.
     /// Currently this manifests the array but preserves the original object.
     fn duplicate(x: SEXP, _deep: bool) -> Robj {
-        unsafe { Robj::from_sexp(manifest(x)) }
+        Robj::from_sexp(manifest(x))
     }
 
     /// Coerce this object into some other type, if possible.
@@ -131,7 +131,9 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     ///
     /// This function dereferences a raw SEXP pointer.
     /// The caller must ensure that `x` is a valid SEXP pointer.
-    unsafe fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
+    // Kept a safe `fn` on the 0.8 line for backwards compatibility; 0.9 makes it `unsafe`.
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn dataptr(x: SEXP, _writeable: bool) -> *mut u8 {
         single_threaded(|| unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
@@ -151,7 +153,9 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     ///
     /// This function dereferences a raw SEXP pointer.
     /// The caller must ensure that `x` is a valid SEXP pointer.
-    unsafe fn dataptr_or_null(x: SEXP) -> *const u8 {
+    // Kept a safe `fn` on the 0.8 line for backwards compatibility; 0.9 makes it `unsafe`.
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn dataptr_or_null(x: SEXP) -> *const u8 {
         unsafe {
             let data2 = R_altrep_data2(x);
             if data2 == R_NilValue || TYPEOF(data2) != TYPEOF(x) {
