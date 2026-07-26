@@ -2,9 +2,20 @@
 
 ## 0.8.2
 
+Patch release backporting non-breaking fixes from the 0.9 development line onto 0.8.
+
 ### Fixed
 
 - `extendr-ffi` can now be built for `aarch64-pc-windows-gnullvm` (Windows on ARM64); backport of [[#950]](https://github.com/extendr/extendr/pull/950)
+- Graphics devices now report the correct graphics engine version on R ≥ 4.3 (GE 16) and R ≥ 4.6 (GE 17), and use `GECreateDevDesc` where available; backports of [[#959]](https://github.com/extendr/extendr/pull/959) and [[#981]](https://github.com/extendr/extendr/pull/981)
+- Deserializing into borrowed strings via serde no longer panics with `unimplemented!()`; backport of [[#983]](https://github.com/extendr/extendr/pull/983)
+- Errors raised in `#[extendr]` functions no longer prepend a Rust traceback to the R error message (set `EXTENDR_BACKTRACE=1` to get the full traceback), and the panic hook is registered correctly; backport of [[#973]](https://github.com/extendr/extendr/pull/973)
+- Panics raised in `#[extendr]` functions are rethrown without prepending the `unwrap` message; backport of [[#1055]](https://github.com/extendr/extendr/pull/1055)
+- `Rf_isFrame` is routed through `extendr-ffi` backports for R C API compliance; backport of [[#1044]](https://github.com/extendr/extendr/pull/1044)
+
+### Changed
+
+- Compiler and clippy warnings on recent Rust toolchains have been cleaned up, and the workspace now declares `rust-version = "1.65"`; backport of [[#965]](https://github.com/extendr/extendr/pull/965)
 
 ## 0.8.0
 
