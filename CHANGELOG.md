@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.8.2
+
+### Fixed
+
+- `extendr-ffi` can now be built for `aarch64-pc-windows-gnullvm` (Windows on ARM64); backport of [[#950]](https://github.com/extendr/extendr/pull/950)
+
+## 0.8.0
 
 ### Added
 
