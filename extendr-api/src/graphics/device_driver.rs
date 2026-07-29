@@ -8,7 +8,7 @@ use extendr_ffi::{
 };
 
 #[cfg(use_r_ge_version_17)]
-use extendr_ffi::{GEcreateDD, GEfreeDD};
+use extendr_ffi::GEcreateDD;
 /// The underlying C structure `DevDesc` has two fields related to clipping:
 ///
 /// - `canClip`
