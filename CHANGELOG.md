@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.2
+## 0.8.2 — 2026-07-31
 
 Patch release backporting non-breaking fixes from the 0.9 development line onto 0.8.
 
