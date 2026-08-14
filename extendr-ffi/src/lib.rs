@@ -22,7 +22,6 @@ pub use non_api::*;
 
 #[non_exhaustive]
 #[repr(transparent)]
-#[derive(Debug)]
 pub struct SEXPREC(std::ffi::c_void);
 
 extern "C" {
