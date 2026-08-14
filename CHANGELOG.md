@@ -25,6 +25,7 @@
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: `extendr_ffi::SEXPREC` no longer implements `Debug`  <https://github.com/extendr/extendr/pull/1111>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
 
 ### Fixed
