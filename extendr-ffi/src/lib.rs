@@ -347,6 +347,12 @@ extern "C" {
     #[doc = "Current srcref, for debuggers"]
     pub static R_Srcref: SEXP;
     pub fn R_tryEval(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
+    pub fn R_CheckUserInterrupt();
+    pub fn R_ToplevelExec(
+        fun: ::std::option::Option<unsafe extern "C" fn(data: *mut ::std::os::raw::c_void)>,
+        data: *mut ::std::os::raw::c_void,
+    ) -> Rboolean;
+    pub fn Rf_onintr();
     pub fn R_tryEvalSilent(arg1: SEXP, arg2: SEXP, arg3: *mut ::std::os::raw::c_int) -> SEXP;
     #[cfg(not(r_4_5))]
     #[doc = "Unbound marker"]

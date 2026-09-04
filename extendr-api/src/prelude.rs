@@ -40,6 +40,7 @@ pub use super::wrapper::{
 #[cfg(use_r_altlist)]
 pub use super::wrapper::AltListImpl;
 
+pub use super::interrupt::{check_user_interrupt, interrupt_requested};
 pub use super::iter::StrIter;
 pub use super::robj::{
     AsStrIter, Attributes, Eval, GetSexp, IntoRobj, Length, Operators, Rinternals, Robj,

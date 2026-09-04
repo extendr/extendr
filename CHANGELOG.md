@@ -19,6 +19,8 @@
   This is part of the process of moving `document.rs` into `document.c` to avoid
   issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
+- Added `check_user_interrupt()` and `interrupt_requested()` in `extendr_api::interrupt` (also in the prelude) for responding to user interrupts from Rust. Fixes <https://github.com/extendr/extendr/issues/925>.
+- Added `R_CheckUserInterrupt`, `R_ToplevelExec` and `Rf_onintr` to extendr-ffi.
 
 ### Changed
 

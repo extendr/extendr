@@ -274,6 +274,16 @@ pub(crate) fn make_function_wrappers(
                 }
                 // any panic (induced by user func code or if user func yields a Result-Err as return value)
                 Err(unwind_err) => {
+                    // a user interrupt detected by `check_user_interrupt()`: every Rust frame of
+                    // this call has been unwound, so hand the interrupt back to R now.
+                    if unwind_err.is::<extendr_api::interrupt::UserInterrupt>() {
+                        drop(unwind_err);
+                        unsafe {
+                            extendr_api::interrupt::resignal_user_interrupt();
+                            // only reached when interrupts are suspended
+                            return extendr_api::R_NilValue;
+                        }
+                    }
                     let panic_msg = if let Some(s) = unwind_err.downcast_ref::<&str>() {
                         (*s).to_string()
                     } else if let Some(s) = unwind_err.downcast_ref::<String>() {

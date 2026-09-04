@@ -269,6 +269,16 @@ cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_cal
 
 throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
 
+#' Loops `n` times, checking for a user interrupt at every iteration.
+#' If `interrupt_at >= 0`, a Ctrl-C is simulated in that iteration.
+interrupt_loop <- function(n, interrupt_at) .Call(wrap__interrupt_loop, n, interrupt_at)
+
+#' Like `interrupt_loop`, but stops early and returns the partial count instead of
+#' signalling the interrupt to R.
+interrupt_loop_partial <- function(n, interrupt_at) .Call(wrap__interrupt_loop_partial, n, interrupt_at)
+
+interrupt_drop_count <- function() .Call(wrap__interrupt_drop_count)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()

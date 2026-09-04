@@ -310,6 +310,7 @@
 pub mod conditions;
 pub mod error;
 pub mod functions;
+pub mod interrupt;
 pub mod io;
 pub mod iter;
 pub mod lang_macros;
