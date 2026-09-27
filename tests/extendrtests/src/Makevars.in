@@ -2,12 +2,10 @@ TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/@LIBDIR@
 STATLIB = $(LIBDIR)/libextendrtests.a
 PKG_LIBS = -L$(LIBDIR) -lextendrtests
-DOCUMENT = rust/document
-DOCUMENT_OBJ = rust/document.o
 
-all: $(SHLIB) rust_clean
+all: $(SHLIB) wrappers rust_clean
 
-.PHONY: $(STATLIB)
+.PHONY: $(STATLIB) wrappers
 
 $(SHLIB): $(STATLIB)
 
@@ -40,15 +38,16 @@ $(STATLIB):
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	@PANIC_EXPORTS@RUSTFLAGS="$(RUSTFLAGS) --print=native-static-libs" cargo build @CRAN_FLAGS@ --lib @PROFILE@ --manifest-path=./rust/Cargo.toml --target-dir="$(TARGET_DIR)" @TARGET@
 
-	$(CC) -o $(DOCUMENT) rust/document.c $(PKG_LIBS) -L"$(R_HOME)/lib$(R_ARCH)" -lR
-	./$(DOCUMENT) $(R_PACKAGE_NAME) ../R/extendr-wrappers.R
-	rm -f $(DOCUMENT) $(DOCUMENT_OBJ)
-
 	# Always clean up CARGOTMP
 	rm -Rf "$(CARGOTMP)";
+
+wrappers: $(SHLIB)
+	if [ -n "$$ROXYGEN_PKG" ]; then \
+		"$(R_HOME)/bin/Rscript" ../tools/document.R $(R_PACKAGE_NAME) $(SHLIB) ../R/extendr-wrappers.R; \
+	fi
 
 rust_clean: $(SHLIB)
 	rm -Rf "$(CARGOTMP)" "$(VENDOR_DIR)" @CLEAN_TARGET@
 
 clean:
-	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) "$(TARGET_DIR)" "$(VENDOR_DIR)" $(DOCUMENT) $(DOCUMENT_OBJ)
+	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS) "$(TARGET_DIR)" "$(VENDOR_DIR)"
