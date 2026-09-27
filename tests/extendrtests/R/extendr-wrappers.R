@@ -535,4 +535,5 @@ Animal$speak <- function() .Call(wrap__Animal__speak, self)
 #' @export
 `[[.Animal` <- `$.Animal`
 
+
 # nolint end
