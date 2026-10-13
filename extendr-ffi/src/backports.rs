@@ -11,6 +11,9 @@
 
 use crate::{Rboolean, SEXP};
 
+#[cfg(r_4_5)]
+use crate::{R_NilValue, Rf_setAttrib, CAR, CDR, TAG};
+
 #[cfg(not(r_4_5))]
 use crate::R_UnboundValue;
 
@@ -62,6 +65,12 @@ extern "C" {
 
     #[cfg(r_4_5)]
     fn Rf_isDataFrame(x: SEXP) -> Rboolean;
+
+    #[cfg(not(r_4_5))]
+    fn SET_ATTRIB(x: SEXP, v: SEXP);
+
+    #[cfg(r_4_5)]
+    fn CLEAR_ATTRIB(x: SEXP);
 }
 
 /// Returns the enclosing environment of env, which will usually be of type ENVSXP, except for the special environment R_EmptyEnv, which terminates the environment chain; its enclosing environment is R_NilValue.
@@ -232,5 +241,32 @@ pub unsafe fn is_data_frame(x: SEXP) -> Rboolean {
     #[cfg(r_4_5)]
     {
         Rf_isDataFrame(x)
+    }
+}
+
+/// Replace all attributes of `x` with the pairlist `attributes`
+///
+/// On R >= 4.5, where `SET_ATTRIB` is no longer part of the API, this clears
+/// the attributes with `CLEAR_ATTRIB` and sets each one with `Rf_setAttrib`.
+///
+/// # Safety
+///
+/// This function dereferences raw SEXP pointers.
+/// The caller must ensure that `x` is a valid SEXP pointer and that `attributes`
+/// is a valid pairlist or `R_NilValue`, and that both are protected.
+#[inline]
+pub unsafe fn set_attrib(x: SEXP, attributes: SEXP) {
+    #[cfg(not(r_4_5))]
+    {
+        SET_ATTRIB(x, attributes)
+    }
+    #[cfg(r_4_5)]
+    {
+        CLEAR_ATTRIB(x);
+        let mut node = attributes;
+        while node != R_NilValue {
+            Rf_setAttrib(x, TAG(node), CAR(node));
+            node = CDR(node);
+        }
     }
 }
