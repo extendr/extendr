@@ -98,9 +98,7 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(
-        &self,
-    ) -> impl Iterator<Item = &Rstr> + Clone + ExactSizeIterator + DoubleEndedIterator {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &Rstr> + Clone + DoubleEndedIterator {
         self.as_slice().iter()
     }
 
