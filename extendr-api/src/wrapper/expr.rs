@@ -50,3 +50,24 @@ impl std::fmt::Debug for Expressions {
             .finish()
     }
 }
+
+impl std::str::FromStr for Expressions {
+    type Err = Error;
+
+    fn from_str(code: &str) -> Result<Expressions> {
+        single_threaded(|| unsafe {
+            use extendr_ffi::{ParseStatus, R_NilValue, R_ParseVector};
+            let mut status = ParseStatus::PARSE_NULL;
+            let status_ptr = (&mut status) as *mut _;
+            let codeobj: Robj = code.into();
+            let parsed = Robj::from_sexp(R_ParseVector(codeobj.get(), -1, status_ptr, R_NilValue));
+            match status {
+                ParseStatus::PARSE_OK => parsed.try_into(),
+                _ => Err(Error::ParseError {
+                    status,
+                    code: code.into(),
+                }),
+            }
+        })
+    }
+}
