@@ -183,21 +183,6 @@ fn emit_r_version_flags(version: &Version) {
     if (version.major, version.minor) >= (4, 5) {
         println!("cargo:rustc-cfg=r_4_5")
     }
-
-    // Graphics engine version 15 was introduced in R 4.2
-    if (version.major, version.minor) >= (4, 2) {
-        println!("cargo:rustc-cfg=use_r_ge_version_15")
-    }
-
-    // Graphics engine version 16 was introduced in R 4.3
-    if (version.major, version.minor) >= (4, 3) {
-        println!("cargo:rustc-cfg=use_r_ge_version_16")
-    }
-
-    // Graphics engine version 17 was introduced in R 4.6
-    if (version.major, version.minor) >= (4, 6) {
-        println!("cargo:rustc-cfg=use_r_ge_version_17")
-    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -215,7 +200,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             // Keep in sync with the newest version in emit_r_version_flags
             emit_r_version_flags(&Version {
                 major: 4,
-                minor: 6,
+                minor: 5,
                 patch: 0,
             });
             return Ok(());
