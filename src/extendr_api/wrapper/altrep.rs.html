@@ -67,12 +67,12 @@
 <a href=#67 id=67 data-nosnippet>67</a>        obj_flags: i32,
 <a href=#68 id=68 data-nosnippet>68</a>        levels: i32,
 <a href=#69 id=69 data-nosnippet>69</a>    ) -&gt; Robj {
-<a href=#70 id=70 data-nosnippet>70</a>        <span class="kw">use </span>extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
+<a href=#70 id=70 data-nosnippet>70</a>        <span class="kw">use </span>extendr_ffi::{set_attrib, SETLEVELS, SET_OBJECT};
 <a href=#71 id=71 data-nosnippet>71</a>        <span class="kw">let </span>res = <span class="self">Self</span>::unserialize(class, state);
 <a href=#72 id=72 data-nosnippet>72</a>        <span class="kw">if </span>!res.is_null() {
 <a href=#73 id=73 data-nosnippet>73</a>            single_threaded(|| <span class="kw">unsafe </span>{
 <a href=#74 id=74 data-nosnippet>74</a>                <span class="kw">let </span>val = res.get();
-<a href=#75 id=75 data-nosnippet>75</a>                SET_ATTRIB(val, attributes.get());
+<a href=#75 id=75 data-nosnippet>75</a>                set_attrib(val, attributes.get());
 <a href=#76 id=76 data-nosnippet>76</a>                SET_OBJECT(val, obj_flags);
 <a href=#77 id=77 data-nosnippet>77</a>                SETLEVELS(val, levels);
 <a href=#78 id=78 data-nosnippet>78</a>            })
