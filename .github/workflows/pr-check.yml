@@ -73,8 +73,8 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
 
-      - name: Check extendr-api without R
-        run: cargo check -p extendr-api --features full-functionality
+      - name: Clippy workspace without R
+        run: cargo clippy --workspace --exclude extendr-engine --all-features -- -D warnings
 
       - name: Document extendr-api without R
         run: cargo doc -p extendr-api --features full-functionality --no-deps

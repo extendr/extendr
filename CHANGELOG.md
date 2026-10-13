@@ -22,6 +22,7 @@
 - Added experimental methods `RMatrix::row_iter()` and `RMatrix::col_iter()` to iterate over rows and columns as `RColumn<T>`, plus `RColumn::iter()` and `RColumn::iter_mut()`. <https://github.com/extendr/extendr/pull/1104>
 - Added `From<RColumn<T>>` conversions to the typed vector wrappers (`Doubles`, `Integers`, `Logicals`, `Complexes`, `Strings`, `Raw`) for their corresponding scalar types
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
+- `iter()` on `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` now returns an iterator that is `Clone`, `ExactSizeIterator`, and `DoubleEndedIterator`, so `.cycle()`, `.len()`, and `.rev()` work <https://github.com/extendr/extendr/issues/582>
 
 ### Changed
 

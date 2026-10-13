@@ -762,12 +762,7 @@ pub trait Eval: GetSexp {
     /// }
     /// ```
     fn eval_blind(&self) -> Robj {
-        let res = self.eval();
-        if let Ok(robj) = res {
-            robj
-        } else {
-            Robj::null()
-        }
+        self.eval().unwrap_or_default()
     }
 }
 
