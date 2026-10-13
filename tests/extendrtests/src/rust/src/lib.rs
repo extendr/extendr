@@ -7,6 +7,7 @@ mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
+mod field_errors;
 mod hashmap;
 mod into_list_derive;
 mod leak;
@@ -372,4 +373,5 @@ extendr_module! {
     use custom_errors;
     use leak;
     use conditions;
+    use field_errors;
 }
