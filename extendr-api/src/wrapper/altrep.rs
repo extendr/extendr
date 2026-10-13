@@ -67,12 +67,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         obj_flags: i32,
         levels: i32,
     ) -> Robj {
-        use extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
+        use extendr_ffi::{set_attrib, SETLEVELS, SET_OBJECT};
         let res = Self::unserialize(class, state);
         if !res.is_null() {
             single_threaded(|| unsafe {
                 let val = res.get();
-                SET_ATTRIB(val, attributes.get());
+                set_attrib(val, attributes.get());
                 SET_OBJECT(val, obj_flags);
                 SETLEVELS(val, levels);
             })
