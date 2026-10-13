@@ -291,7 +291,6 @@
 //! - `ndarray`: provides the conversion between R's matrices and [`ndarray`](https://docs.rs/ndarray/latest/ndarray/).
 //! - `num-complex`: provides the conversion between R's complex numbers and [`num-complex`](https://docs.rs/num-complex/latest/num_complex/).
 //! - `serde`: provides the [`serde`](https://serde.rs/) support.
-//! - `graphics`: provides the functionality to control or implement graphics devices.
 //! - `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 //! - `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 //!
@@ -328,15 +327,13 @@ pub use robj::Robj;
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
 pub use std::ops::DerefMut;
+pub use std::str::FromStr;
 
 #[cfg(feature = "serde")]
 pub mod serializer;
 
 #[cfg(feature = "serde")]
 pub mod deserializer;
-
-#[cfg(feature = "graphics")]
-pub mod graphics;
 
 pub(crate) mod conversions;
 
@@ -368,7 +365,7 @@ pub const TRUE: Rbool = Rbool::true_value();
 /// FALSE value eg. `r!(FALSE)`
 pub const FALSE: Rbool = Rbool::false_value();
 
-/// NULL value eg. `r!(NULL)`
+/// NULL value eg. `Robj::null()`
 pub const NULL: () = ();
 
 /// NA value for integers eg. `r!(NA_INTEGER)`

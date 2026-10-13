@@ -224,7 +224,6 @@ dependencies = [
  "extendr-ffi",
  "extendr-macros",
  "faer",
- "libc",
  "ndarray",
  "once_cell",
  "paste",
