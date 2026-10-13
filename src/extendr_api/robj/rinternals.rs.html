@@ -216,8 +216,8 @@
 <a href=#216 id=216 data-nosnippet>216</a>    /// }
 <a href=#217 id=217 data-nosnippet>217</a>    /// ```
 <a href=#218 id=218 data-nosnippet>218</a>    </span><span class="kw">fn </span>eval_promise(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Robj&gt; {
-<a href=#219 id=219 data-nosnippet>219</a>        <span class="kw">if </span><span class="self">self</span>.is_promise() {
-<a href=#220 id=220 data-nosnippet>220</a>            <span class="self">self</span>.as_promise().unwrap().eval()
+<a href=#219 id=219 data-nosnippet>219</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(promise) = <span class="self">self</span>.as_promise() {
+<a href=#220 id=220 data-nosnippet>220</a>            promise.eval()
 <a href=#221 id=221 data-nosnippet>221</a>        } <span class="kw">else </span>{
 <a href=#222 id=222 data-nosnippet>222</a>            <span class="prelude-val">Ok</span>(<span class="self">self</span>.as_robj().clone())
 <a href=#223 id=223 data-nosnippet>223</a>        }
