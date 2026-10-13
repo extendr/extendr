@@ -24,9 +24,11 @@
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
 - `iter()` on `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` now returns an iterator that is `Clone`, `ExactSizeIterator`, and `DoubleEndedIterator`, so `.cycle()`, `.len()`, and `.rev()` work <https://github.com/extendr/extendr/issues/582>
 - `Option<T>` arguments in `#[extendr]` functions now default to `NULL` in the generated R wrappers, so they can be omitted from R and handled with `.unwrap_or_default()` or `.unwrap_or_else()` <https://github.com/extendr/extendr/issues/1077>
+- Implement `fmt::Pointer` for `Robj`, so `{robj:p}` prints the address of the underlying SEXP <https://github.com/extendr/extendr/issues/537>
 
 ### Changed
 
+- **Breaking**: `SET_ATTRIB` is no longer exported from extendr-ffi. Use the new `set_attrib()` backport, which uses `CLEAR_ATTRIB` and `Rf_setAttrib` on R >= 4.5 <https://github.com/extendr/extendr/issues/1026>
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
