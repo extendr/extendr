@@ -225,21 +225,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("cargo:rustc-cfg=r_4_5")
     }
 
-    // Graphics engine version 15 was introduced in R 4.2
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 2) {
-        println!("cargo:rustc-cfg=use_r_ge_version_15")
-    }
-
-    // Graphics engine version 16 was introduced in R 4.3
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 3) {
-        println!("cargo:rustc-cfg=use_r_ge_version_16")
-    }
-
-    // Graphics engine version 17 was introduced in R 4.6
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 6) {
-        println!("cargo:rustc-cfg=use_r_ge_version_17")
-    }
-
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");
 
