@@ -4,6 +4,7 @@
 
 ### Added
 
+- Added `TryFrom<&Strings>` and `TryFrom<&Robj>` for `HashSet<&str>` and `BTreeSet<&str>`, which error on `NA`, and for `HashSet<Option<&str>>` and `BTreeSet<Option<&str>>`, which map `NA` to `None` [[#1006]](https://github.com/extendr/extendr/pull/1006)
 - Infallible `From<T> for S` for extendr-scalar-type `T` and rust-scalar-type `S`.
 - `Condition`, `RCondition`, `ConditionKind`, and `ConditionBuilder` in `extendr_api::conditions` for creating, converting, and round-tripping R condition objects. `Condition` is the Rust-native representation; `RCondition` is the R-boundary type wrapping a validated `List`. Conversions between all four types are provided via `From`/`TryFrom`. <https://github.com/extendr/extendr/pull/1082>
 - `From<Strings> for Vec<String>` and `From<Strings> for StrIter` conversions. <https://github.com/extendr/extendr/pull/1082>
@@ -18,6 +19,8 @@
 - Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
   This is part of the process of moving `document.rs` into `document.c` to avoid
   issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
+- Added experimental methods `RMatrix::row_iter()` and `RMatrix::col_iter()` to iterate over rows and columns as `RColumn<T>`, plus `RColumn::iter()` and `RColumn::iter_mut()`. <https://github.com/extendr/extendr/pull/1104>
+- Added `From<RColumn<T>>` conversions to the typed vector wrappers (`Doubles`, `Integers`, `Logicals`, `Complexes`, `Strings`, `Raw`) for their corresponding scalar types
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
 
 ### Changed
@@ -30,6 +33,7 @@
 ### Fixed
 
 - `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
+- `extendr-ffi` now emits a complete set of cfg flags and `DEP_R_R_VERSION_*` exports when R cannot be found, so R-less builds (docs.rs, rust-analyzer, CI without R) no longer panic in `extendr-api`'s build script or miscompile version-gated items.
 
 ## 0.9.0 — 2026-04-16
 

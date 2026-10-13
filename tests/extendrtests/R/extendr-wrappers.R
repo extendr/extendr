@@ -66,12 +66,6 @@ get_default_value <- function(x = 42) .Call(wrap__get_default_value, x)
 
 add_5_if_not_null <- function(x) .Call(wrap__add_5_if_not_null, x)
 
-#' Create a new device.
-#'
-#' @param welcome_message A warm message to welcome you.
-#' @export
-my_device <- function(welcome_message) .Call(wrap__my_device, welcome_message)
-
 new_usize <- function(robj) .Call(wrap__new_usize, robj)
 
 tst_altstring <- function() .Call(wrap__tst_altstring)
@@ -111,6 +105,8 @@ test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
 test_try_from_hm <- function(x) .Call(wrap__test_try_from_hm, x)
 
 test_hm_custom_try_from <- function(x) .Call(wrap__test_hm_custom_try_from, x)
+
+receive_hashset <- function(values) .Call(wrap__receive_hashset, values)
 
 make_basic_struct <- function() .Call(wrap__make_basic_struct)
 

@@ -1,4 +1,4 @@
-use extendr_api::{graphics::*, prelude::*};
+use extendr_api::prelude::*;
 
 mod altrep;
 mod attributes;
@@ -8,8 +8,8 @@ mod dataframe;
 mod errors;
 mod externalptr;
 mod field_errors;
-mod graphic_device;
 mod hashmap;
+mod hashset;
 mod into_list_derive;
 mod leak;
 mod matrix;
@@ -308,20 +308,6 @@ impl MyClassUnexported {
     }
 }
 
-/// Create a new device.
-///
-/// @param welcome_message A warm message to welcome you.
-/// @export
-#[extendr]
-fn my_device(welcome_message: String) {
-    let device_driver = graphic_device::MyDevice {
-        welcome_message: welcome_message.as_str(),
-    };
-
-    let device_descriptor = DeviceDescriptor::new();
-    device_driver.create_device::<graphic_device::MyDevice>(device_descriptor, "my device");
-}
-
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -368,13 +354,12 @@ extendr_module! {
     impl __MyClass;
     impl MyClassUnexported;
 
-    fn my_device;
-
     use altrep;
     use attributes;
     use dataframe;
     use errors;
     use hashmap;
+    use hashset;
     use into_list_derive;
     use memory_leaks;
     use optional_either;
