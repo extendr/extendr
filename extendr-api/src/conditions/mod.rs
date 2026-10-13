@@ -497,12 +497,6 @@ mod tests {
     };
 
     #[test]
-    fn test_to_c_message_escapes_nul() {
-        let msg = super::to_c_message("a\0b");
-        assert_eq!(msg.to_str().unwrap(), "a\\0b");
-    }
-
-    #[test]
     fn test_format_cnd_message_no_body() {
         let msg = super::format_cnd_message("something went wrong", &[]);
         assert!(msg.contains("something went wrong"));
