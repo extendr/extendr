@@ -31,6 +31,27 @@ fn test_derive_into_dataframe() {
 }
 
 #[test]
+fn test_derive_into_dataframe_field_names_dont_clash() {
+    test! {
+        #[derive(IntoDataFrameRow)]
+        struct MyStruct {
+            val: Rint,
+            caller: Rint,
+            res: Rint,
+        }
+
+        let v = vec![
+            MyStruct { val: 0.into(), caller: 1.into(), res: 2.into() },
+            MyStruct { val: 3.into(), caller: 4.into(), res: 5.into() },
+        ];
+        let list: List = v.into_dataframe()?.as_list().unwrap();
+        assert_eq!(list[0], r!([0, 3]));
+        assert_eq!(list[1], r!([1, 4]));
+        assert_eq!(list[2], r!([2, 5]));
+    }
+}
+
+#[test]
 fn test_into_robj_dataframe() {
     test! {
         use extendr_api::prelude::*;

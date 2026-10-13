@@ -82,6 +82,8 @@ test_derive_into_dataframe <- function() .Call(wrap__test_derive_into_dataframe)
 
 test_into_robj_dataframe <- function() .Call(wrap__test_into_robj_dataframe)
 
+test_derive_into_dataframe_val_field <- function() .Call(wrap__test_derive_into_dataframe_val_field)
+
 error_simple <- function() .Call(wrap__error_simple)
 
 error_parse_int <- function(s) .Call(wrap__error_parse_int, s)
