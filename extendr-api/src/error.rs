@@ -83,7 +83,6 @@ pub enum Error {
     OutOfLimits(Robj),
     TypeMismatch(Robj),
     NamespaceNotFound(Robj),
-    NoGraphicsDevices(Robj),
 
     ExpectedExternalPtrType(Robj, String),
     ExpectedExternalNonNullPtr(Robj),
@@ -188,7 +187,6 @@ impl std::fmt::Display for Error {
             Error::ExpectedExternalPtrReference => {
                 write!(f, "It is only possible to return a reference to self.")
             }
-            Error::NoGraphicsDevices(_robj) => write!(f, "No graphics devices active."),
             // this is very unlikely to occur, and it would just say: Rust error: could not convert slice to array
             Error::TryFromSliceError(std_error) => write!(f, "Rust error: {}", std_error),
             Error::Other(str) => write!(f, "{}", str),

@@ -39,7 +39,6 @@ result_list = []
 full-functionality = [
   "either",
   "faer",
-  "graphics",
   "ndarray",
   "num-complex",
   "serde",
@@ -51,15 +50,10 @@ full-functionality = [
 # BEWARE: this feature does not work, as `bindgen` use in extendr is deprecated
 non-api = ["extendr-ffi/non-api"]
 
-# libc is needed to allocate a DevDesc (c.f., https://bugs.r-project.org/show_bug.cgi?id=18292)
-graphics = ["libc"]
-
 # The minimal set of features without all optional ones
 tests-minimal = []
 
 tests = ["either", "faer", "ndarray", "num-complex", "serde", "tests-minimal"]
 
-tests-graphics = ["graphics", "tests-minimal"]
-
 # Literally all features to test
-tests-all = ["graphics", "tests"]
+tests-all = ["tests"]
