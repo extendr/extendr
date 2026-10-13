@@ -1,7 +1,8 @@
 use super::*;
 use extendr_ffi::{
-    get_parent_env, get_var_in_frame, R_BaseEnv, R_EmptyEnv, R_GetCurrentEnv, R_GlobalEnv,
-    Rf_defineVar,
+    get_parent_env, get_var_in_frame, R_BaseEnv, R_BindingIsLocked, R_EmptyEnv,
+    R_EnvironmentIsLocked, R_GetCurrentEnv, R_GlobalEnv, R_existsVarInFrame, R_lsInternal3,
+    R_removeVarFromFrame, Rboolean, Rf_defineVar,
 };
 #[derive(PartialEq, Clone)]
 pub struct Environment {
@@ -188,8 +189,7 @@ impl Environment {
         }
     }
 
-    #[cfg(feature = "non-api")]
-    /// Get the names in an environment.
+    /// Get the names in an environment, sorted.
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
@@ -198,8 +198,106 @@ impl Environment {
     ///    assert_eq!(env.names().collect::<Vec<_>>(), vec!["n0", "n1", "n2", "n3"]);
     /// }
     /// ```
-    pub fn names(&self) -> impl Iterator<Item = &str> {
-        self.iter().map(|(k, _)| k)
+    pub fn names(&self) -> impl Iterator<Item = &'static str> {
+        let names =
+            unsafe { Robj::from_sexp(R_lsInternal3(self.get(), Rboolean::TRUE, Rboolean::TRUE)) };
+        names.as_str_iter().into_iter().flatten()
+    }
+
+    /// An alias for [`Environment::names`].
+    pub fn keys(&self) -> impl Iterator<Item = &'static str> {
+        self.names()
+    }
+
+    /// Get the values in an environment, ordered by name.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///    let env = Environment::from_pairs(Environment::global(), vec![("b", r!(2)), ("a", r!(1))]);
+    ///    assert_eq!(env.values().collect::<Vec<_>>(), vec![r!(1), r!(2)]);
+    /// }
+    /// ```
+    pub fn values(&self) -> impl Iterator<Item = Robj> + '_ {
+        self.names()
+            .filter_map(move |name| get_in_frame(self, &Symbol::from_string(name)))
+    }
+
+    /// Returns `true` if the environment, but not its ancestors, has a binding for `key`.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     env.insert("x", 1)?;
+    ///     assert!(env.contains_key("x"));
+    ///     assert!(!env.contains_key("y"));
+    /// }
+    /// ```
+    pub fn contains_key<K: AsRef<str>>(&self, key: K) -> bool {
+        let key = Symbol::from_string(key);
+        unsafe { R_existsVarInFrame(self.get(), key.get()) != Rboolean::FALSE }
+    }
+
+    /// Bind `value` to `key` in the environment, returning the previous value if there was one.
+    ///
+    /// Fails if the binding is locked, or if the environment is locked and `key` is new.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     assert_eq!(env.insert("x", "harry"), Ok(None));
+    ///     assert_eq!(env.insert("x", "fred"), Ok(Some(r!("harry"))));
+    ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
+    /// }
+    /// ```
+    pub fn insert<K: AsRef<str>, V: Into<Robj>>(&self, key: K, value: V) -> Result<Option<Robj>> {
+        let key = Symbol::from_string(key);
+        let value = value.into();
+        let old = get_in_frame(self, &key);
+        unsafe {
+            if old.is_some() && R_BindingIsLocked(key.get(), self.get()) != Rboolean::FALSE {
+                return Err(Error::Other(format!(
+                    "cannot change value of locked binding for '{}'",
+                    key.as_str()
+                )));
+            }
+            if old.is_none() && R_EnvironmentIsLocked(self.get()) != Rboolean::FALSE {
+                return Err(Error::Other(format!(
+                    "cannot add binding of '{}' to a locked environment",
+                    key.as_str()
+                )));
+            }
+            Rf_defineVar(key.get(), value.get(), self.get());
+        }
+        Ok(old)
+    }
+
+    /// Remove `key` from the environment, returning its value if there was one.
+    ///
+    /// Fails if the environment is locked.
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     env.insert("x", 1)?;
+    ///     assert_eq!(env.remove("x"), Ok(Some(r!(1))));
+    ///     assert_eq!(env.remove("x"), Ok(None));
+    /// }
+    /// ```
+    pub fn remove<K: AsRef<str>>(&self, key: K) -> Result<Option<Robj>> {
+        let key = Symbol::from_string(key);
+        let Some(old) = get_in_frame(self, &key) else {
+            return Ok(None);
+        };
+        unsafe {
+            if R_EnvironmentIsLocked(self.get()) != Rboolean::FALSE {
+                return Err(Error::Other(format!(
+                    "cannot remove '{}' from a locked environment",
+                    key.as_str()
+                )));
+            }
+            R_removeVarFromFrame(key.get(), self.get());
+        }
+        Ok(Some(old))
     }
 
     /// Set or define a variable in an environment.
@@ -238,6 +336,15 @@ impl Environment {
         } else {
             Err(Error::NotFound(key))
         }
+    }
+}
+
+fn get_in_frame(env: &Environment, key: &Symbol) -> Option<Robj> {
+    unsafe {
+        if R_existsVarInFrame(env.get(), key.get()) == Rboolean::FALSE {
+            return None;
+        }
+        Some(Robj::from_sexp(get_var_in_frame(env.get(), key.get())))
     }
 }
 
