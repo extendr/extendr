@@ -71,9 +71,8 @@ fn non_api_getsexp_rtype() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn non_api_base_env() -> Result<(), Box<dyn std::error::Error>> {
     with_r(|| {
-        Environment::global().set_local(sym!(x), "hello");
         assert_eq!(
-            Environment::global().local(sym!(+)),
+            Environment::base().local(sym!(+)),
             Ok(r!(Primitive::from_string("+")))
         );
         Ok(())

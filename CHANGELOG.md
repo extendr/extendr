@@ -24,6 +24,7 @@
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
 - `iter()` on `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` now returns an iterator that is `Clone`, `ExactSizeIterator`, and `DoubleEndedIterator`, so `.cycle()`, `.len()`, and `.rev()` work <https://github.com/extendr/extendr/issues/582>
 - Implement `fmt::Pointer` for `Robj`, so `{robj:p}` prints the address of the underlying SEXP <https://github.com/extendr/extendr/issues/537>
+- `Environment` gains `HashMap`-style methods `keys()`, `values()`, `contains_key()`, `insert()`, and `remove()`. `insert()` and `remove()` return an error instead of failing in R when the binding or environment is locked.
 
 ### Changed
 
@@ -32,6 +33,7 @@
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+- `Environment::names()` is no longer marked `non-api`.
 
 ### Fixed
 

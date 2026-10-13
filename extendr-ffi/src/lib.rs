@@ -316,6 +316,11 @@ extern "C" {
     pub fn R_has_slot(obj: SEXP, name: SEXP) -> ::std::os::raw::c_int;
     pub fn R_IsNamespaceEnv(rho: SEXP) -> Rboolean;
     pub fn R_IsPackageEnv(rho: SEXP) -> Rboolean;
+    pub fn R_existsVarInFrame(rho: SEXP, symbol: SEXP) -> Rboolean;
+    pub fn R_removeVarFromFrame(symbol: SEXP, env: SEXP);
+    pub fn R_lsInternal3(env: SEXP, all: Rboolean, sorted: Rboolean) -> SEXP;
+    pub fn R_EnvironmentIsLocked(env: SEXP) -> Rboolean;
+    pub fn R_BindingIsLocked(symbol: SEXP, env: SEXP) -> Rboolean;
     pub fn R_MakeUnwindCont() -> SEXP;
     #[doc = "Missing argument marker"]
     pub static R_MissingArg: SEXP;

@@ -28,13 +28,13 @@ extern "C" {
     fn Rf_findVar(arg1: SEXP, arg2: SEXP) -> SEXP;
 
     #[cfg(r_4_5)]
-    fn R_getVar(arg1: SEXP, arg2: SEXP) -> SEXP;
+    fn R_getVar(sym: SEXP, rho: SEXP, inherits: Rboolean) -> SEXP;
 
     #[cfg(not(r_4_5))]
     fn Rf_findVarInFrame(arg1: SEXP, arg2: SEXP) -> SEXP;
 
     #[cfg(r_4_5)]
-    fn R_getVarEx(arg1: SEXP, arg2: SEXP) -> SEXP;
+    fn R_getVarEx(sym: SEXP, rho: SEXP, inherits: Rboolean, ifnotfound: SEXP) -> SEXP;
 
     #[cfg(not(r_4_5))]
     fn CLOENV(x: SEXP) -> SEXP;
@@ -105,7 +105,7 @@ pub unsafe fn get_var(symbol: SEXP, env: SEXP) -> SEXP {
     }
     #[cfg(r_4_5)]
     {
-        R_getVar(symbol, env)
+        R_getVar(symbol, env, Rboolean::TRUE)
     }
 }
 
@@ -132,7 +132,7 @@ pub unsafe fn get_var_safe(symbol: SEXP, env: SEXP) -> Option<SEXP> {
     }
     #[cfg(r_4_5)]
     {
-        Some(R_getVar(symbol, env))
+        Some(R_getVar(symbol, env, Rboolean::TRUE))
     }
 }
 
@@ -141,16 +141,16 @@ pub unsafe fn get_var_safe(symbol: SEXP, env: SEXP) -> Option<SEXP> {
 /// # Safety
 ///
 /// This function dereferences raw SEXP pointers.
-/// The caller must ensure that `symbol` and `env` are valid SEXP pointers.
+/// The caller must ensure that `env` and `symbol` are valid SEXP pointers.
 #[inline]
-pub unsafe fn get_var_in_frame(symbol: SEXP, env: SEXP) -> SEXP {
+pub unsafe fn get_var_in_frame(env: SEXP, symbol: SEXP) -> SEXP {
     #[cfg(not(r_4_5))]
     {
-        Rf_findVarInFrame(symbol, env)
+        Rf_findVarInFrame(env, symbol)
     }
     #[cfg(r_4_5)]
     {
-        R_getVarEx(env, symbol)
+        R_getVarEx(symbol, env, Rboolean::FALSE, R_NilValue)
     }
 }
 
