@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["FONTSIZE","HEIGH_INCH","POINTSIZE","PT","PT_PER_INCH","WIDTH_INCH"],"enum":["CanHAdjOption","DevCapCapture","DevCapLocator","DevCapRaster","DevCapTransparency","DevCapTransparentBg"],"struct":["DeviceDescriptor"]};
