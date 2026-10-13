@@ -14,12 +14,18 @@
 - `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
 - Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
 - Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
+- Implement `From<Option<&str>> for Rstr` <https://github.com/extendr/extendr/pull/1098>
+- Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
+  This is part of the process of moving `document.rs` into `document.c` to avoid
+  issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
+- Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
 
 ### Changed
 
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
+- **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
 
 ### Fixed
 

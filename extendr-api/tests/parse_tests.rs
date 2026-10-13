@@ -4,7 +4,7 @@ use extendr_ffi::ParseStatus;
 #[test]
 fn parse_reports_error_for_invalid_syntax() {
     test! {
-        let err = parse("c(10 42,20)").unwrap_err();
+        let err = Expressions::from_str("c(10 42,20)").unwrap_err();
         let msg = err.to_string();
         match err {
             Error::ParseError {
@@ -19,7 +19,7 @@ fn parse_reports_error_for_invalid_syntax() {
 #[test]
 fn parse_reports_error_for_incomplete_input() {
     test! {
-        let err = parse("c(10").unwrap_err();
+        let err = Expressions::from_str("c(10").unwrap_err();
         let msg = err.to_string();
         match err {
             Error::ParseError {

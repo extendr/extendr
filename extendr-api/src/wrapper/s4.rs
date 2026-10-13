@@ -46,7 +46,7 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     let class = S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
+    ///     let class = S4::set_class("fred", pairlist!(x="numeric"), Robj::null())?;
     /// }
     /// ```
     pub fn set_class(name: &str, representation: Pairlist, contains: Robj) -> Result<S4> {
@@ -62,7 +62,7 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
+    ///     S4::set_class("fred", pairlist!(x="numeric"), Robj::null())?;
     ///     let mut robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
     /// }
     /// ```
@@ -79,7 +79,7 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), Robj::null())?;
     ///     let robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
     ///     assert_eq!(robj.get_slot("xyz").unwrap().len(), 0);
     /// }
@@ -106,7 +106,7 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), Robj::null())?;
     ///     let mut robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
     ///     let xyz = sym!(xyz);
     ///     assert_eq!(robj.get_slot(xyz.clone()).unwrap().len(), 0);
@@ -134,7 +134,7 @@ impl S4 {
     /// use extendr_api::prelude::*;
     ///
     /// test! {
-    ///     S4::set_class("fred", pairlist!(xyz="numeric"), r!(()))?;
+    ///     S4::set_class("fred", pairlist!(xyz="numeric"), Robj::null())?;
     ///     let robj : S4 = R!(r#"new("fred")"#)?.try_into()?;
     ///     assert_eq!(robj.has_slot("xyz"), true);
     /// }
