@@ -40,6 +40,16 @@ logicals_not <- function(input) .Call(wrap__logicals_not, input)
 
 check_default <- function(x = NULL) .Call(wrap__check_default, x)
 
+check_option_default_int <- function(x = NULL) .Call(wrap__check_option_default_int, x)
+
+check_option_default_str <- function(x = NULL) .Call(wrap__check_option_default_str, x)
+
+check_option_default_vec <- function(x = NULL) .Call(wrap__check_option_default_vec, x)
+
+check_option_default_after_required <- function(x, y = NULL) .Call(wrap__check_option_default_after_required, x, y)
+
+check_option_default_override <- function(x = 1L) .Call(wrap__check_option_default_override, x)
+
 try_rfloat_na <- function() .Call(wrap__try_rfloat_na)
 
 try_rint_na <- function() .Call(wrap__try_rint_na)

@@ -42,7 +42,7 @@ fn cnd_abort_with_body(msg: &str, body: Vec<String>) {
 }
 
 #[extendr]
-fn cnd_abort_with_call(msg: &str, #[extendr(default = "NULL")] call: Option<Environment>) {
+fn cnd_abort_with_call(msg: &str, call: Option<Environment>) {
     let call = call.unwrap_or_else(Environment::caller);
     abort!(msg, call = call);
 }

@@ -187,6 +187,32 @@ fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
     x.is_null()
 }
 
+// Option arguments default to NULL
+#[extendr]
+fn check_option_default_int(x: Option<i32>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_str(x: Option<&str>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_vec(x: Option<Vec<String>>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_after_required(x: i32, y: Option<i32>) -> i32 {
+    x + y.unwrap_or(0)
+}
+
+#[extendr]
+fn check_option_default_override(#[extendr(default = "1L")] x: Option<i32>) -> bool {
+    x.is_none()
+}
+
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
 /// Test whether `_arg` parameters are treated correctly in R
@@ -333,6 +359,11 @@ extendr_module! {
     fn logicals_not;
 
     fn check_default;
+    fn check_option_default_int;
+    fn check_option_default_str;
+    fn check_option_default_vec;
+    fn check_option_default_after_required;
+    fn check_option_default_override;
 
     fn try_rfloat_na;
     fn try_rint_na;
