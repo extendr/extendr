@@ -219,6 +219,24 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
 
 impl AsStrIter for Robj {}
 
+impl From<StrIter> for Vec<String> {
+    fn from(value: StrIter) -> Vec<String> {
+        value.map(|v| v.to_string()).collect()
+    }
+}
+
+impl From<Strings> for StrIter {
+    fn from(value: Strings) -> Self {
+        value.robj.as_str_iter().unwrap_or_default()
+    }
+}
+
+impl From<Strings> for Vec<String> {
+    fn from(value: Strings) -> Self {
+        StrIter::from(value).map(|s| s.to_string()).collect()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::error::Error;
@@ -254,23 +272,5 @@ mod tests {
             assert!(str_iter.next().is_none());
             Ok(())
         })
-    }
-}
-
-impl From<StrIter> for Vec<String> {
-    fn from(value: StrIter) -> Vec<String> {
-        value.map(|v| v.to_string()).collect()
-    }
-}
-
-impl From<Strings> for StrIter {
-    fn from(value: Strings) -> Self {
-        value.robj.as_str_iter().unwrap_or_default()
-    }
-}
-
-impl From<Strings> for Vec<String> {
-    fn from(value: Strings) -> Self {
-        StrIter::from(value).map(|s| s.to_string()).collect()
     }
 }

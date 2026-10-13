@@ -102,10 +102,7 @@ macro_rules! append_lang {
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {
-        #[allow(unused_unsafe)]
-        unsafe {
-            make_lang($sym)
-        }
+        make_lang($sym)
     };
     ($sym : expr, $($rest: tt)*) => {
         unsafe {
