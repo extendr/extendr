@@ -404,26 +404,33 @@ pub fn format_warn_message(header: &str, body: &[&str]) -> String {
     msg
 }
 
+#[doc(hidden)]
+pub fn to_c_message(msg: impl Into<String>) -> std::ffi::CString {
+    let msg = msg.into();
+    // Cannot fail: every NUL byte has been escaped.
+    std::ffi::CString::new(msg.replace('\0', "\\0")).unwrap_or_default()
+}
+
 /// Signal a warning with an rlang-style formatted message.
 #[macro_export]
 macro_rules! warn {
     ($msg:expr) => {{
         let formatted = $crate::conditions::format_warn_message($msg, &[]);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         unsafe {
             $crate::Rf_warningcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
     }};
     ($msg:expr, $body:expr) => {{
         let formatted = $crate::conditions::format_warn_message($msg, $body);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         unsafe {
             $crate::Rf_warningcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
     }};
     ($msg:expr, $body:expr, $call:expr) => {{
         let formatted = $crate::conditions::format_warn_message($msg, $body);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         let call_robj = $call.call();
         unsafe {
             let call_sexp = call_robj
@@ -440,7 +447,7 @@ macro_rules! warn {
 macro_rules! abort {
     ($msg:expr) => {{
         let formatted = $crate::conditions::format_cnd_message($msg, &[]);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         unsafe {
             $crate::Rf_errorcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
@@ -448,7 +455,7 @@ macro_rules! abort {
 
     ($msg:expr, call = $call:expr) => {{
         let formatted = $crate::conditions::format_cnd_message($msg, &[]);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         let call_robj = $call.call();
         unsafe {
             let call_sexp = call_robj
@@ -461,7 +468,7 @@ macro_rules! abort {
 
     ($msg:expr, $body:expr) => {{
         let formatted = $crate::conditions::format_cnd_message($msg, $body);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         unsafe {
             $crate::Rf_errorcall($crate::R_NilValue, c"%s".as_ptr(), c_msg.as_ptr());
         }
@@ -469,7 +476,7 @@ macro_rules! abort {
 
     ($msg:expr, $body:expr, $call:expr) => {{
         let formatted = $crate::conditions::format_cnd_message($msg, $body);
-        let c_msg = ::std::ffi::CString::new(formatted).unwrap();
+        let c_msg = $crate::conditions::to_c_message(formatted);
         let call_robj = $call.call();
         unsafe {
             let call_sexp = call_robj
@@ -489,6 +496,12 @@ mod tests {
         conditions::{Condition, ConditionBuilder, ConditionKind, RCondition},
         Attributes, List, Result, Robj,
     };
+
+    #[test]
+    fn test_to_c_message_escapes_nul() {
+        let msg = super::to_c_message("a\0b");
+        assert_eq!(msg.to_str().unwrap(), "a\\0b");
+    }
 
     #[test]
     fn test_format_cnd_message_no_body() {

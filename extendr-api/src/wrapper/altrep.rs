@@ -1043,8 +1043,15 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+                match Robj::from_sexp(v).try_into() {
+                    Ok(rstr) => Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, rstr),
+                    Err(e) => {
+                        // Drop the error (and the `Robj` it holds) before longjmp-ing back into R.
+                        let msg = e.to_string();
+                        drop(e);
+                        throw_r_error(msg)
+                    }
+                }
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(

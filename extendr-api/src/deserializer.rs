@@ -806,7 +806,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
             values.push(value);
         }
         let mut result = List::from_values(values);
-        result.set_names(keys).unwrap();
+        result
+            .set_names(keys)
+            .map_err(<M::Error as serde::de::Error>::custom)?;
         Ok(result.into())
     }
 
