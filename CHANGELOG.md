@@ -4,12 +4,13 @@
 
 ### Added
 
+- Implements `FromIterator` for `Robj` [[#1039]](https://github.com/extendr/extendr/pull/1039)
 - Implements `CanBeNa` for `u8` and `Rcomplex` [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - References to R native types are strictly checked `&/&mut T`, where `T` is a R native data type namely `i32`, `f64`, `Rint`, `Rfloat`, `Rcplx`, `Rbool`, and `u8`. We cannot perform coercion on borrowed data only owned data. [[#1000]](https://github.com/extendr/extendr/pull/1000)
 - Support for tuple-structs in `IntoList` and `TryFromList` [[#985]](https://github.com/extendr/extendr/pull/871)
 - `Strings`, `Doubles`, `Integers`, `Complexes`, and `Logicals` structs now have associated method `new_with_na()` to construct empty vectors of NA values [[#871]](https://github.com/extendr/extendr/pull/871)
 - It is now possible to provide your own `Error`-type in custom `TryFrom<Robj>`/
-`TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
+  `TryFrom<&Robj>` calls. [[#977]](https://github.com/extendr/extendr/pull/977)
 - Implements ToVectorValue for `Rstr` enabling the creating of character matrices
 - Added `#[extendr(invisible)]` attribute to allow functions to return invisibly in R [[#946]](https://github.com/extendr/extendr/pull/946)
 - An ignore field attribute to the macro `derive(IntoList)` called `#[into_list(ignore)]` [[#864]](https://github.com/extendr/extendr/pull/864)
@@ -68,8 +69,8 @@
 - Breaking change: Adding `#[extendr]` above impl blocks no longer provides a default implementation for `impl From<T> for Robj` and `impl TryFrom<Robj> for T`. Instead, users may annotate their custom structs and enums with `#[extendr]` to get these default implementations. Note that a user can still derive their own implementations for these traits, and in this case should forego annotating their type with `#[extendr]`. With this change, users may use `#[extendr]` on multiple `impl <T>` blocks so long as they are contained within their own modules. [[#882]](https://github.com/extendr/extendr/pull/882)
 - Enhancement: string comparisons are now implemented for `Rstr` using R's string intern mechanism. Making string comparisons _much_ faster. [[#845]](https://github.com/extendr/extendr/pull/845)
 - Breaking change: `RMatrix::get_rownames` and `RMatrix::get_colnames` now both
-return `Option<Strings>` instead of opaque `Robj`.
-[[#801]](https://github.com/extendr/extendr/pull/790)
+  return `Option<Strings>` instead of opaque `Robj`.
+  [[#801]](https://github.com/extendr/extendr/pull/790)
 
 ### Fixed
 
@@ -91,7 +92,7 @@ return `Option<Strings>` instead of opaque `Robj`.
 - `RArray::data_mut` provides a mutable slice to the underlying array data [[#657]](https://github.com/extendr/extendr/pull/657)
 - Implements the `Attributes` trait for all R vector wrapper structs (e.g. `Integers` , `Doubles`, `Strings`, etc.), allowing for easy access and setting of the attributes of an R object [[#745]](https://github.com/extendr/extendr/pull/745). This comes with breaking changes. See below.
 - feature `non-api` that gives access to non-API items; Requires compile-time generation of bindings
-[[#754]](https://github.com/extendr/extendr/pull/754)
+  [[#754]](https://github.com/extendr/extendr/pull/754)
 - `TryFrom<&Robj>` for `StrIter`, `HashMap<K, Robj>` for `K = String` and `K = &str` [[#759]](https://github.com/extendr/extendr/pull/759)
 
 ### Changed
@@ -113,19 +114,19 @@ return `Option<Strings>` instead of opaque `Robj`.
   to `Self`. [[#745]](https://github.com/extendr/extendr/pull/745). Previously `.set_attrib()` would modify an object in
   place, and then return an untyped owned pointer (Robj). Instead, now we return `&mut Self`.
 - In `AltRep` the `unserialize_ex`, `set_parent`, `set_envflags` are
-now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
+  now hidden behind the feature flag `non-api`. Also, `Promise::from_parts` is marked as non-API.
 - Floating point numbers with decimal part can no longer be converted to integer types via
   rounding [[#757]](https://github.com/extendr/extendr/pull/757)
 - You can no longer create an `Robj` from a reference `&T`, where `T` is an `extendr`-impl. [[#759]](https://github.com/extendr/extendr/pull/759)
 - You can no longer use `from_robj`, as the trait `FromRobj` as been removed. Instead, use `try_from`.
 - It is no longer possible to access an R integer vector as a `&[u32]` [[#767]](https://github.com/extendr/extendr/pull/767)
 - It is no longer possible to generate bindings as part of the compilation of
-extendr. Feature `non-api` is broken and will not compile. Related [[#251]](https://github.com/extendr/libR-sys/issues/251)
+  extendr. Feature `non-api` is broken and will not compile. Related [[#251]](https://github.com/extendr/libR-sys/issues/251)
 
 ### Fixed
 
 - returning `&Self` or `&mut Self` from a method in an `#[extendr]`-impl would
-result in unintended cloning  [[#614]](https://github.com/extendr/extendr/issues/614)
+  result in unintended cloning [[#614]](https://github.com/extendr/extendr/issues/614)
 - `TryFrom<&Robj>` and `FromRobj` for integer scalars now correctly handles conversions
   from `f64` [[#757]](https://github.com/extendr/extendr/pull/757)
 
@@ -137,23 +138,23 @@ result in unintended cloning  [[#614]](https://github.com/extendr/extendr/issues
 - [**either**] `TryFrom<&Robj> for Either<T, R>` and `From<Either<T, R>> for Robj` if `T` and `R` are themselves implement these traits. This unblocks scenarios like accepting any numeric vector from R via `Either<Integers, Doubles>` without extra memory allocation [[#480]](https://github.com/extendr/extendr/pull/480)
 - `PartialOrd` trait implementation for `Rfloat`, `Rint` and `Rbool`. `Rfloat` and `Rint` gained `min()` and `max()` methods [[#573]](https://github.com/extendr/extendr/pull/573)
 - `use_rng` option for the `extendr` attribute macro, which enables the use of
-random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]](https://github.com/extendr/extendr/pull/476)
+  random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]](https://github.com/extendr/extendr/pull/476)
 - `[T; N]` conversions to `Robj` [[#594]](https://github.com/extendr/extendr/pull/594/)
 - `ToVectorValue` for `Rfloat`, `Rint` and `Rbool` [[#593]](https://github.com/extendr/extendr/pull/593)
 - `TryFrom<_>` on `Vec<_>` for `Integers` (`i32`), `Complexes` (`c64`), `Doubles` (`f64`), and `Logicals` (`bool` / `i32`). [[#593]](https://github.com/extendr/extendr/pull/593)
-- `Rstr` can now be constructed from `Option<String>`  [[#630]](https://github.com/extendr/extendr/pull/630)
+- `Rstr` can now be constructed from `Option<String>` [[#630]](https://github.com/extendr/extendr/pull/630)
 
 ### Fixed
 
 - You can now create `ArrayView1` from `&Robj` as well as `Robj`
-    [[#501]](https://github.com/extendr/extendr/pull/501)
+  [[#501]](https://github.com/extendr/extendr/pull/501)
 - Raw literals from Rust can be used for function and argument names. e.g.
-    `fn r#type()` in Rust is converted to `type()` in R.
-    [[#531]](https://github.com/extendr/extendr/pull/531)
+  `fn r#type()` in Rust is converted to `type()` in R.
+  [[#531]](https://github.com/extendr/extendr/pull/531)
 - Fix memory leaks on errors and panics
-    [[#555]](https://github.com/extendr/extendr/pull/555)
+  [[#555]](https://github.com/extendr/extendr/pull/555)
 - Fixed error when collecting too many objects into `List`, etc.
-    [[#540]](https://github.com/extendr/extendr/pull/540)
+  [[#540]](https://github.com/extendr/extendr/pull/540)
 
 ## 0.4.0
 
@@ -168,7 +169,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]]
 - [**ndarray**][**docs**] Documentation for the `robj_ndarray` module [[#450]](https://github.com/extendr/extendr/pull/450)
 - `Sum` for scalars like `Rint`, `Rfloat` and `Rcplx`, which accept `Iterator<Item = &Rtype>` [[#454]](https://github.com/extendr/extendr/pull/454)
 - A new `collect_rarray` method that can be used to collect arbitrary iterables into an R matrix
- [[#466]](https://github.com/extendr/extendr/pull/466)
+  [[#466]](https://github.com/extendr/extendr/pull/466)
 - [**docs**] Documentation for `RArray::new_matrix()` [[#466]](https://github.com/extendr/extendr/pull/466)
 
 ### Changed
@@ -207,16 +208,17 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]]
 - `default` option for `extendr`-annotated functions, allowing them to have default values, e.g. `fn fred(#[default="NULL"] x: Option<i32>) { }`. [[#334]](https://github.com/extendr/extendr/pull/334)
 - `r_name` option for `extendr`-annotated functions, allowing the generated R function to have a different name. e.g.
 
-    ```rust
-    #[extendr(
-        use_try_from = true,
-        r_name = "test.rename.rlike",
-        mod_name = "test_rename_mymod"
-    )]
-    fn test_rename() { }
-    ```
+  ```rust
+  #[extendr(
+      use_try_from = true,
+      r_name = "test.rename.rlike",
+      mod_name = "test_rename_mymod"
+  )]
+  fn test_rename() { }
+  ```
 
-    [[#335]](https://github.com/extendr/extendr/pull/335)
+  [[#335]](https://github.com/extendr/extendr/pull/335)
+
 - `serde::Serialize` implementation for R types. [[#305]](https://github.com/extendr/extendr/pull/305), [[#355]](https://github.com/extendr/extendr/pull/355)
 - `Rany` type and the `as_any` conversion method. [[#320]](https://github.com/extendr/extendr/pull/320)
 - `std::fmt::Debug` implementation for wrapper types. [[#345]](https://github.com/extendr/extendr/pull/345)
@@ -240,6 +242,7 @@ random number sampling methods from R, e.g. `#[extendr(use_rng = true)` [[#476]]
   ```
 
   [[#203]](https://github.com/extendr/extendr/pull/203)
+
 - Improved error handling for `<&str>::try_from(Robj)`. [[#226]](https://github.com/extendr/extendr/pull/226)
 - `SymPair::sym_pair()` now returns `(Option<Robj>, Robj)`. [[#225]](https://github.com/extendr/extendr/pull/225)
 - More detailed error messages when converting Rust integer types to R. [[#243]](https://github.com/extendr/extendr/pull/243)
