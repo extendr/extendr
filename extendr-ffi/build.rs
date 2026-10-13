@@ -166,10 +166,7 @@ impl InstallationPaths {
     }
 }
 
-/// Emits the R-version-derived build flags: the `rustc-cfg` flags consumed by
-/// this crate and the `DEP_R_R_VERSION_*` exports consumed by dependents such
-/// as extendr-api. Both the detected-R path and the no-R fallback go through
-/// here so the two can never disagree.
+/// Emits the R version cfg flags and `DEP_R_R_VERSION_*` exports.
 fn emit_r_version_flags(version: &Version) {
     // used by extendr-api
     println!("cargo:r_version_major={}", version.major);
@@ -215,12 +212,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Ok(v) => v,
         Err(_) => {
             warn!("Cannot fetch R version from R. Defaulting to the newest known R version");
-            // Without a detected R there is nothing to link against, so this
-            // build only serves type-checking surfaces (docs.rs, rust-analyzer,
-            // clippy CI). Default to the newest R version this build script
-            // knows about, so every version-gated API is enabled rather than
-            // an arbitrary older subset. Bump this together with any new
-            // version flag added to emit_r_version_flags.
+            // Keep in sync with the newest version in emit_r_version_flags
             emit_r_version_flags(&Version {
                 major: 4,
                 minor: 6,
