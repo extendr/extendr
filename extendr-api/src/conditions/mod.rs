@@ -407,7 +407,6 @@ pub fn format_warn_message(header: &str, body: &[&str]) -> String {
 #[doc(hidden)]
 pub fn to_c_message(msg: impl Into<String>) -> std::ffi::CString {
     let msg = msg.into();
-    // Cannot fail: every NUL byte has been escaped.
     std::ffi::CString::new(msg.replace('\0', "\\0")).unwrap_or_default()
 }
 

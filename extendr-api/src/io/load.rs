@@ -42,8 +42,6 @@ pub trait Load {
             let reader = &mut *((*arg1).data as *mut R);
             let buf = std::slice::from_raw_parts_mut(arg2 as *mut u8, arg3 as usize);
             if let Err(e) = reader.read_exact(buf) {
-                // Panicking across this `extern "C"` boundary would abort the process.
-                // Signal an R error instead; it is caught by `catch_r_error` below.
                 throw_r_error(format!("failed to read R serialization stream: {e}"));
             }
         }
