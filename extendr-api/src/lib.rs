@@ -307,6 +307,7 @@
     html_logo_url = "https://raw.githubusercontent.com/extendr/extendr/main/extendr-logo-256.png"
 )]
 
+pub mod conditions;
 pub mod error;
 pub mod functions;
 pub mod io;
@@ -327,6 +328,7 @@ pub use robj::Robj;
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;
 pub use std::ops::DerefMut;
+pub use std::str::FromStr;
 
 #[cfg(feature = "serde")]
 pub mod serializer;
@@ -367,7 +369,7 @@ pub const TRUE: Rbool = Rbool::true_value();
 /// FALSE value eg. `r!(FALSE)`
 pub const FALSE: Rbool = Rbool::false_value();
 
-/// NULL value eg. `r!(NULL)`
+/// NULL value eg. `Robj::null()`
 pub const NULL: () = ();
 
 /// NA value for integers eg. `r!(NA_INTEGER)`
@@ -400,6 +402,9 @@ pub use extendr_ffi::PutRNGstate;
 
 #[doc(hidden)]
 pub use extendr_ffi::SEXP;
+
+#[doc(hidden)]
+pub use extendr_ffi::{R_NilValue, Rf_errorcall, Rf_warningcall};
 
 pub use metadata::Metadata;
 

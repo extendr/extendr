@@ -13,7 +13,7 @@ use extendr_ffi::{get_closure_body, get_closure_env, get_closure_formals, Rf_lco
 ///         "{", lang!("<-", sym!(c), lang!("+", sym!(a), sym!(b))));
 ///     assert_eq!(func.formals().unwrap(), expected_formals);
 ///     assert_eq!(func.body().unwrap(), expected_body);
-///     assert_eq!(func.environment().unwrap(), global_env());
+///     assert_eq!(func.environment().unwrap(), Environment::global());
 ///
 ///     // Primitives can also be functions.
 ///     let expr = R!("`~`")?;
@@ -36,7 +36,7 @@ impl Function {
     /// test! {
     ///     let formals = pairlist!(a=NULL);
     ///     let body = lang!("+", sym!(a), r!(1)).try_into()?;
-    ///     let env = global_env();
+    ///     let env = Environment::global();
     ///     let f = r!(Function::from_parts(formals, body, env )?);
     ///     assert_eq!(f.call(pairlist!(a=1))?, r!(2));
     /// }

@@ -118,7 +118,7 @@ pub struct WithEnvironment {
 #[extendr]
 fn make_with_environment() -> Robj {
     single_threaded(|| {
-        let env = Environment::new_with_parent(global_env());
+        let env = Environment::new_with_parent(Environment::global());
         env.set_local(sym!(x), 100);
         env.set_local(sym!(y), "test");
 
@@ -247,7 +247,7 @@ pub struct AllRTypes {
 #[extendr]
 fn make_all_r_types() -> Robj {
     single_threaded(|| {
-        let env = Environment::new_with_parent(global_env());
+        let env = Environment::new_with_parent(Environment::global());
         env.set_local(sym!(test), "value");
 
         AllRTypes {

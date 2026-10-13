@@ -102,6 +102,8 @@ error_long_message <- function() .Call(wrap__error_long_message)
 
 error_on_panic <- function() .Call(wrap__error_on_panic)
 
+error_anyhow <- function() .Call(wrap__error_anyhow)
+
 test_hm_string <- function(x) .Call(wrap__test_hm_string, x)
 
 test_hm_i32 <- function(x) .Call(wrap__test_hm_i32, x)
@@ -149,7 +151,7 @@ leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 #' Calculate Euclidean distance matrix
-#' Test case adopted from https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5
+#' Test case adopted from <https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5>
 #' @param a : Matrix of real values or `NULL`
 #' @export
 euclidean_dist <- function(a) .Call(wrap__euclidean_dist, a)
@@ -248,6 +250,26 @@ must_see_drop_msg_panic <- function() .Call(wrap__must_see_drop_msg_panic)
 must_see_drop_msg_r_error_heap <- function() .Call(wrap__must_see_drop_msg_r_error_heap)
 
 must_see_drop_msg_panic_heap <- function() .Call(wrap__must_see_drop_msg_panic_heap)
+
+roundtrip_condition <- function(x) .Call(wrap__roundtrip_condition, x)
+
+condition_message <- function(x) .Call(wrap__condition_message, x)
+
+condition_has_call <- function(x) .Call(wrap__condition_has_call, x)
+
+cnd_warn <- function(msg) .Call(wrap__cnd_warn, msg)
+
+cnd_warn_with_body <- function(msg, body) .Call(wrap__cnd_warn_with_body, msg, body)
+
+cnd_abort <- function(msg) .Call(wrap__cnd_abort, msg)
+
+cnd_abort_with_body <- function(msg, body) .Call(wrap__cnd_abort_with_body, msg, body)
+
+cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_call, msg, call)
+
+throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
+
+sum_many_args_same_type <- function(x, y, z) .Call(wrap__sum_many_args_same_type, x, y, z)
 
 #' Class for testing (exported)
 #' @examples

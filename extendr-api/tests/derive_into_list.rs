@@ -191,7 +191,7 @@ mod tests {
                 name: String,
             }
 
-            let env = Environment::new_with_parent(global_env());
+            let env = Environment::new_with_parent(Environment::global());
             env.set_local(sym!(x), 42);
 
             let rust_struct = WithEnvironment {

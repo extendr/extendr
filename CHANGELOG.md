@@ -1,5 +1,36 @@
 # Changelog
 
+## Development
+
+### Added
+
+- Infallible `From<T> for S` for extendr-scalar-type `T` and rust-scalar-type `S`.
+- `Condition`, `RCondition`, `ConditionKind`, and `ConditionBuilder` in `extendr_api::conditions` for creating, converting, and round-tripping R condition objects. `Condition` is the Rust-native representation; `RCondition` is the R-boundary type wrapping a validated `List`. Conversions between all four types are provided via `From`/`TryFrom`. <https://github.com/extendr/extendr/pull/1082>
+- `From<Strings> for Vec<String>` and `From<Strings> for StrIter` conversions. <https://github.com/extendr/extendr/pull/1082>
+- `stop()` is an alias for `throw_r_error()` 
+- `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`. <https://github.com/extendr/extendr/pull/1075>
+- `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()` <https://github.com/extendr/extendr/pull/1075>
+- `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`. <https://github.com/extendr/extendr/pull/1075>
+- `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
+- Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
+- Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
+- Implement `From<Option<&str>> for Rstr` <https://github.com/extendr/extendr/pull/1098>
+- Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
+  This is part of the process of moving `document.rs` into `document.c` to avoid
+  issues with compiling that binary into target, see https://github.com/extendr/extendr/issues/1087.
+- Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
+
+### Changed
+
+- **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
+- **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+
+### Fixed
+
+- `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
+
 ## 0.9.0 — 2026-04-16
 
 ### Added

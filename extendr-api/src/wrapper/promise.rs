@@ -11,7 +11,7 @@ impl Promise {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let promise = Promise::from_parts(r!(1), global_env())?;
+    ///     let promise = Promise::from_parts(r!(1), Environment::global())?;
     ///     assert_eq!(promise.eval_promise()?, r!(1));
     ///     assert_eq!(promise.value(), r!(1));
     /// }
@@ -72,7 +72,7 @@ impl Promise {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///    let iris_promise = global_env().find_var(sym!(iris)).unwrap();
+    ///    let iris_promise = Environment::global().find_var(sym!(iris)).unwrap();
     ///    let iris_dataframe = iris_promise.as_promise().unwrap().eval().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// }

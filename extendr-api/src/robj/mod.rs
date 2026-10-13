@@ -119,7 +119,7 @@ impl Clone for Robj {
 
 impl Default for Robj {
     fn default() -> Self {
-        Robj::from(())
+        Robj::null()
     }
 }
 
@@ -244,11 +244,11 @@ pub trait Types: GetSexp {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(r!(NULL).rtype(), Rtype::Null);
+    ///     assert_eq!(Robj::null().rtype(), Rtype::Null);
     ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
     ///     assert_eq!(r!(Pairlist::from_pairs(vec![("a", r!(1))])).rtype(), Rtype::Pairlist);
     ///     assert_eq!(R!("function() {}")?.rtype(), Rtype::Function);
-    ///     assert_eq!(Environment::new_with_parent(global_env()).rtype(), Rtype::Environment);
+    ///     assert_eq!(Environment::new_with_parent(Environment::global()).rtype(), Rtype::Environment);
     ///     assert_eq!(lang!("+", 1, 2).rtype(), Rtype::Language);
     ///     assert_eq!(Rstr::from_string("hello").rtype(), Rtype::Rstr);
     ///     assert_eq!(r!(TRUE).rtype(), Rtype::Logicals);
@@ -256,7 +256,7 @@ pub trait Types: GetSexp {
     ///     assert_eq!(r!(1.0).rtype(), Rtype::Doubles);
     ///     assert_eq!(r!("1").rtype(), Rtype::Strings);
     ///     assert_eq!(r!(List::from_values(&[1, 2])).rtype(), Rtype::List);
-    ///     assert_eq!(parse("x + y")?.rtype(), Rtype::Expressions);
+    ///     assert_eq!(Expressions::from_str("x + y")?.rtype(), Rtype::Expressions);
     ///     assert_eq!(r!(Raw::from_bytes(&[1_u8, 2, 3])).rtype(), Rtype::Raw);
     /// }
     /// ```
@@ -344,6 +344,24 @@ pub trait Types: GetSexp {
 impl Types for Robj {}
 
 impl Robj {
+    /// Construct an R `NULL` value.
+    ///
+    /// This is equivalent to `Robj::from(())`, `().into_robj()`, `r!(())`, and `r!(NULL)`.
+    ///
+    /// ```
+    /// use extendr_api::prelude::*;
+    /// test! {
+    ///     let null = Robj::null();
+    ///     assert_eq!(null, Robj::from(()));
+    ///     assert_eq!(null, ().into_robj());
+    ///     assert_eq!(null, r!(()));
+    ///     assert_eq!(null, r!(NULL));
+    /// }
+    /// ```
+    pub fn null() -> Self {
+        Robj::from(())
+    }
+
     /// Is this object is an `NA` scalar?
     /// Works for character, integer and numeric types.
     ///
@@ -711,7 +729,7 @@ pub trait Eval: GetSexp {
     /// }
     /// ```
     fn eval(&self) -> Result<Robj> {
-        self.eval_with_env(&global_env())
+        self.eval_with_env(&Environment::global())
     }
 
     /// Evaluate the expression in R and return an error or an R object.
@@ -720,7 +738,7 @@ pub trait Eval: GetSexp {
     /// test! {
     ///
     ///    let add = lang!("+", 1, 2);
-    ///    assert_eq!(add.eval_with_env(&global_env()).unwrap(), r!(3));
+    ///    assert_eq!(add.eval_with_env(&Environment::global()).unwrap(), r!(3));
     /// }
     /// ```
     fn eval_with_env(&self, env: &Environment) -> Result<Robj> {
@@ -740,7 +758,7 @@ pub trait Eval: GetSexp {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let bad = lang!("imnotavalidfunctioninR", 1, 2);
-    ///    assert_eq!(bad.eval_blind(), r!(NULL));
+    ///    assert_eq!(bad.eval_blind(), Robj::null());
     /// }
     /// ```
     fn eval_blind(&self) -> Robj {
@@ -748,7 +766,7 @@ pub trait Eval: GetSexp {
         if let Ok(robj) = res {
             robj
         } else {
-            Robj::from(())
+            Robj::null()
         }
     }
 }

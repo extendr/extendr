@@ -637,7 +637,7 @@ where
             }
             res
         } else {
-            Robj::from(())
+            Robj::null()
         }
     })
 }

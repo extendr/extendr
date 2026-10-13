@@ -90,6 +90,12 @@ impl From<Rfloat> for Option<f64> {
     }
 }
 
+impl From<Rfloat> for f64 {
+    fn from(v: Rfloat) -> Self {
+        v.0
+    }
+}
+
 gen_sum_iter!(Rfloat);
 gen_partial_ord!(Rfloat, f64);
 

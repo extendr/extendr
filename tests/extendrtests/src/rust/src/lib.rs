@@ -2,10 +2,12 @@ use extendr_api::{graphics::*, prelude::*};
 
 mod altrep;
 mod attributes;
+mod conditions;
 mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
+mod field_errors;
 mod graphic_device;
 mod hashmap;
 mod into_list_derive;
@@ -387,4 +389,6 @@ extendr_module! {
     use to_unique_character;
     use custom_errors;
     use leak;
+    use conditions;
+    use field_errors;
 }

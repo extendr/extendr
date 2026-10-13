@@ -119,6 +119,17 @@ fn test_try_from_robj() {
         );
         assert!(<Option<String>>::try_from(&Robj::from(["1", "2"])).is_err());
 
+        assert_eq!(f64::from(Rfloat::from(1.0)), 1.0);
+        assert!(f64::from(Rfloat::na()).is_na());
+
+        assert_eq!(i32::from(Rint::from(1)), 1);
+        assert!(Rint::from(i32::from(Rint::na())).is_na());
+
+        assert_eq!(bool::from(Rbool::from(true)), true);
+        assert_eq!(bool::from(Rbool::from(false)), false);
+
+        assert_eq!(c64::from(Rcplx::from(c64::new(1.0, 2.0))), c64::new(1.0, 2.0));
+        assert!(c64::from(Rcplx::na()).is_na());
 
         // TODO: once related todos resolved in try_from_robj.rs, add tests for
         // Doubles to Integer successful case (e.g. 1.0 to 1) and failing case
@@ -150,9 +161,9 @@ fn test_try_from_robj() {
         assert_eq!(<&[Rint]>::try_from(&robj), Err(Error::ExpectedInteger(r!(1.0))));
         let robj = Robj::from(1);
         assert_eq!(<&[Rfloat]>::try_from(&robj), Err(Error::ExpectedReal(r!(1))));
-        let robj = Robj::from(());
-        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(r!(()))));
-        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(r!(()))));
+        let robj = Robj::null();
+        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(Robj::null())));
+        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(Robj::null())));
     }
 }
 
@@ -206,7 +217,7 @@ fn test_to_robj() {
 #[test]
 fn parse_test() {
     test! {
-    let p = parse("print(1L);print(1L);")?;
+    let p = Expressions::from_str("print(1L);print(1L);")?;
     let q = Expressions::from_values(&[
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
@@ -346,5 +357,16 @@ fn test_rstr_rtype() {
     test! {
     let robj = r!(Rstr::from("hello"));
     assert_eq!(Rstr::try_from(robj).unwrap().rtype(), Rtype::Rstr);
+    }
+}
+
+#[test]
+fn test_robj_null() {
+    test! {
+        let null = Robj::null();
+        assert_eq!(null, Robj::from(()));
+        assert_eq!(null, ().into_robj());
+        assert_eq!(null, r!(()));
+        assert_eq!(null, r!(NULL));
     }
 }

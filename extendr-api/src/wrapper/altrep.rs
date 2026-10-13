@@ -166,7 +166,7 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
     fn extract_subset(_x: Robj, _indx: Robj, _call: Robj) -> Robj {
         // only available in later versions of R.
         // x.extract_subset(indx, call)
-        Robj::from(())
+        Robj::null()
     }
 }
 
