@@ -9,6 +9,7 @@ mod errors;
 mod externalptr;
 mod field_errors;
 mod hashmap;
+mod hashset;
 mod into_list_derive;
 mod leak;
 mod matrix;
@@ -358,6 +359,7 @@ extendr_module! {
     use dataframe;
     use errors;
     use hashmap;
+    use hashset;
     use into_list_derive;
     use memory_leaks;
     use optional_either;
