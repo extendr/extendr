@@ -126,9 +126,8 @@ macro_rules! gen_vector_wrapper_impl {
                 #[doc = "Forces ALTREP objects to manifest."]
                 pub fn iter(
                     &self,
-                ) -> impl Iterator<Item = $scalar_type>
+                ) -> impl ExactSizeIterator<Item = $scalar_type>
                        + Clone
-                       + ExactSizeIterator
                        + DoubleEndedIterator {
                     self.as_robj().as_typed_slice().unwrap().iter().cloned()
                 }
