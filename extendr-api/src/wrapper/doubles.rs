@@ -136,6 +136,21 @@ mod tests {
     }
 
     #[test]
+    fn iter_cycles_and_reverses() {
+        test! {
+            let vec = Doubles::from_values([1.0, 2.0, 3.0]);
+            let iter = vec.iter();
+            assert_eq!(iter.len(), 3);
+
+            let cycled: Vec<Rfloat> = iter.clone().cycle().take(5).collect();
+            assert_eq!(cycled, [1.0, 2.0, 3.0, 1.0, 2.0].map(Rfloat::from));
+
+            let reversed: Vec<Rfloat> = iter.rev().collect();
+            assert_eq!(reversed, [3.0, 2.0, 1.0].map(Rfloat::from));
+        }
+    }
+
+    #[test]
     fn test_vec_f64_doubles_conversion() {
         test! {
             let test_vec = vec![0., 1., std::f64::consts::PI, -1.];

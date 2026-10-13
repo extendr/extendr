@@ -98,7 +98,9 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(&self) -> impl Iterator<Item = &Rstr> {
+    pub fn iter(
+        &self,
+    ) -> impl Iterator<Item = &Rstr> + Clone + ExactSizeIterator + DoubleEndedIterator {
         self.as_slice().iter()
     }
 
@@ -266,6 +268,21 @@ mod tests {
             let vec = Strings::new(10);
             assert_eq!(vec.is_string(), true);
             assert_eq!(vec.len(), 10);
+        }
+    }
+
+    #[test]
+    fn iter_cycles_and_reverses() {
+        test! {
+            let vec = Strings::from_values(["a", "b"]);
+            let iter = vec.iter();
+            assert_eq!(iter.len(), 2);
+
+            let cycled: Vec<&str> = iter.clone().cycle().take(3).map(|s| s.as_ref()).collect();
+            assert_eq!(cycled, ["a", "b", "a"]);
+
+            let reversed: Vec<&str> = iter.rev().map(|s| s.as_ref()).collect();
+            assert_eq!(reversed, ["b", "a"]);
         }
     }
 
