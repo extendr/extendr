@@ -55,8 +55,8 @@ fn test_serialize_robj() {
     test! {
         #[derive(Serialize)]
         struct Null(Robj);
-        let s = Null(r!(NULL));
-        let expected = r!(NULL);
+        let s = Null(Robj::null());
+        let expected = Robj::null();
         assert_eq!(to_robj(&s).unwrap(), expected);
 
         #[derive(Serialize)]
@@ -124,7 +124,7 @@ fn test_serialize_robj() {
         #[derive(Serialize)]
         struct Rint2(Rint);
         let s = Rint2(Rint::na());
-        let expected = r!(());
+        let expected = Robj::null();
         assert_eq!(to_robj(&s).unwrap(), expected);
 
         #[derive(Serialize)]
@@ -136,7 +136,7 @@ fn test_serialize_robj() {
         #[derive(Serialize)]
         struct Rfloat2(Rfloat);
         let s = Rfloat2(Rfloat::na());
-        let expected = r!(());
+        let expected = Robj::null();
         assert_eq!(to_robj(&s).unwrap(), expected);
 
         #[derive(Serialize)]
@@ -148,7 +148,7 @@ fn test_serialize_robj() {
         #[derive(Serialize)]
         struct Rbool2(Rbool);
         let s = Rbool2(Rbool::na());
-        let expected = r!(());
+        let expected = Robj::null();
         assert_eq!(to_robj(&s).unwrap(), expected);
     }
 }

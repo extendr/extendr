@@ -3,7 +3,7 @@ use extendr_api::prelude::*;
 #[test]
 fn test_debug() {
     test! {
-        let r = r!(());
+        let r = Robj::null();
         assert_eq!(format!("{:?}", r), "()");
         let r : Symbol = sym!("xyz").try_into().unwrap();
         assert_eq!(format!("{:?}", r), "sym!(\"xyz\")");
@@ -55,11 +55,11 @@ fn test_debug() {
         assert_eq!(format!("{:?}", r), "list!(1, 2)");
         let r : List = list!(1, b=2);
         assert_eq!(format!("{:?}", r), "list!(1, b=2)");
-        let r : Expressions = parse("1 + 2").unwrap();
+        let r : Expressions = Expressions::from_str("1 + 2").unwrap();
         assert_eq!(format!("{:?}", r), "Expressions { values: [lang!(sym!(+), 1.0, 2.0)] }");
         let r : Raw = Raw::new(2);
         assert_eq!(format!("{:02x?}", r), "Raw[00, 00]");
-        S4::set_class("fred", pairlist!(x="numeric"), r!(()))?;
+        S4::set_class("fred", pairlist!(x="numeric"), Robj::null())?;
         let r : S4 = S4::new("fred")?;
         assert_eq!(format!("{:?}", r), "S4");
     }

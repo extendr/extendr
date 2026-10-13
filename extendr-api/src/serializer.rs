@@ -209,7 +209,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
 
     /// None of an option is NULL.
     fn serialize_none(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(Robj::null());
         Ok(())
     }
 
@@ -224,7 +224,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
     // In Serde, unit means an anonymous value containing no data. Map this to
     // R as `NULL`.
     fn serialize_unit(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(Robj::null());
         Ok(())
     }
 
