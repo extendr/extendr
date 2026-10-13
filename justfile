@@ -77,19 +77,11 @@ msrv FEATURES="":
       cargo msrv --path extendr-api verify -- cargo check --features {{FEATURES}}; \
     fi
 
-# Generate documentation (R wrappers) via rextendr::document()
+# Generate documentation (R wrappers) via devtools::document()
 document:
     cd tests/extendrtests && \
-    if [ -d ../../rextendr ]; then \
-      echo "Loading vendored {rextendr}" && \
-      Rscript -e 'requireNamespace("devtools")' \
-              -e 'devtools::load_all("../../rextendr")' \
-              -e 'rextendr::document()'; \
-    else \
-      echo "Using installed {rextendr}" && \
-      Rscript -e 'requireNamespace("rextendr")' \
-              -e 'rextendr::document()'; \
-    fi
+    Rscript -e 'requireNamespace("devtools")' \
+            -e 'devtools::document()';
 
 # Run devtools::test() for extendrtests; set FILTER or SNAPSHOT=1 to accept snapshots
 devtools-test FILTER="" SNAPSHOT="0":

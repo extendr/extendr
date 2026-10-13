@@ -771,7 +771,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(Robj::null())
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -814,7 +814,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(Robj::null())
     }
 
     fn visit_newtype_struct<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>

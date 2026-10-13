@@ -52,7 +52,7 @@ impl std::fmt::Debug for Robj {
         }?;
         /*
                match self.sexptype() {
-                   NILSXP => write!(f, "r!(NULL)"),
+                   NILSXP => write!(f, "Robj::null()"),
                    SYMSXP => {
                        if self.is_missing_arg() {
                            write!(f, "missing_arg()")
