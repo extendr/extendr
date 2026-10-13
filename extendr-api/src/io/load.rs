@@ -1,5 +1,5 @@
 use super::PstreamFormat;
-use crate::{catch_r_error, error::Error, error::Result, robj::Robj};
+use crate::{catch_r_error, error::Error, error::Result, robj::Robj, throw_r_error};
 use extendr_ffi::{R_NilValue, R_Unserialize, R_inpstream_st, R_inpstream_t, SEXP};
 use std::io::Read;
 
@@ -41,7 +41,9 @@ pub trait Load {
         ) {
             let reader = &mut *((*arg1).data as *mut R);
             let buf = std::slice::from_raw_parts_mut(arg2 as *mut u8, arg3 as usize);
-            reader.read_exact(buf).unwrap();
+            if let Err(e) = reader.read_exact(buf) {
+                throw_r_error(format!("failed to read R serialization stream: {e}"));
+            }
         }
 
         let read_ptr: *mut R = reader as &mut R;
