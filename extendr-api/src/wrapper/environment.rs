@@ -226,7 +226,7 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     let mut env = Environment::new_with_parent(Environment::global());
     ///     env.insert("x", 1)?;
     ///     assert!(env.contains_key("x"));
     ///     assert!(!env.contains_key("y"));
@@ -243,13 +243,17 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     let mut env = Environment::new_with_parent(Environment::global());
     ///     assert_eq!(env.insert("x", "harry"), Ok(None));
     ///     assert_eq!(env.insert("x", "fred"), Ok(Some(r!("harry"))));
     ///     assert_eq!(env.local(sym!(x)), Ok(r!("fred")));
     /// }
     /// ```
-    pub fn insert<K: AsRef<str>, V: Into<Robj>>(&self, key: K, value: V) -> Result<Option<Robj>> {
+    pub fn insert<K: AsRef<str>, V: Into<Robj>>(
+        &mut self,
+        key: K,
+        value: V,
+    ) -> Result<Option<Robj>> {
         let key = Symbol::from_string(key);
         let value = value.into();
         let old = get_in_frame(self, &key);
@@ -277,13 +281,13 @@ impl Environment {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let env = Environment::new_with_parent(Environment::global());
+    ///     let mut env = Environment::new_with_parent(Environment::global());
     ///     env.insert("x", 1)?;
     ///     assert_eq!(env.remove("x"), Ok(Some(r!(1))));
     ///     assert_eq!(env.remove("x"), Ok(None));
     /// }
     /// ```
-    pub fn remove<K: AsRef<str>>(&self, key: K) -> Result<Option<Robj>> {
+    pub fn remove<K: AsRef<str>>(&mut self, key: K) -> Result<Option<Robj>> {
         let key = Symbol::from_string(key);
         let Some(old) = get_in_frame(self, &key) else {
             return Ok(None);
