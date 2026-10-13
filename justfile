@@ -12,8 +12,8 @@ clean *cargo_flags:
 
 alias cargo-check := check
 check *cargo_flags:
-    cargo check --workspace {{cargo_flags}}
-    cargo check --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}}
+    cargo clippy --workspace {{cargo_flags}} -- -D warnings
+    cargo clippy --manifest-path=tests/extendrtests/src/rust/Cargo.toml {{cargo_flags}} -- -D warnings
 
 alias cargo-build := build
 build *cargo_flags:
