@@ -35,9 +35,8 @@ impl FromStr for Version {
 fn read_r_ver(path: &Path) -> Result<Version, Box<dyn Error>> {
     let ver_h = path.join("Rversion.h");
     info!("Attempting to read version from {}", ver_h.display());
-    let content = read_to_string(ver_h).map_err(|e| {
+    let content = read_to_string(ver_h).inspect_err(|e| {
         error!("Unable to read Rversion.h: {}", e.to_string());
-        e
     })?;
 
     let major = content
@@ -54,9 +53,8 @@ fn read_r_ver(path: &Path) -> Result<Version, Box<dyn Error>> {
         .and_then(|v| v.trim_matches('"').to_string().into())
         .unwrap_or_default();
 
-    let version = Version::from_str(&format!("{major}.{minor}")).map_err(|e| {
+    let version = Version::from_str(&format!("{major}.{minor}")).inspect_err(|e| {
         error!("Unable to parse R version: {}", e.to_string());
-        e
     })?;
 
     info!(
@@ -87,9 +85,8 @@ impl Version {
 
         let out = cmd.output()?.stdout;
 
-        let res = String::from_utf8(out).map_err(|e| {
+        let res = String::from_utf8(out).inspect_err(|_| {
             error!("Unable to parse R output");
-            e
         })?;
 
         info!("R command output: {:?}", res);

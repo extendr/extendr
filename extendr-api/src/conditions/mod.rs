@@ -78,12 +78,9 @@ impl From<Condition> for List {
     fn from(value: Condition) -> Self {
         let msg = Strings::from_values(value.message).into_robj();
 
-        let call_robj = value.call.map(|v| v.into()).unwrap_or(Robj::null());
-        let parent_robj = value
-            .parent
-            .map(|v| Robj::from(v.0))
-            .unwrap_or(Robj::null());
-        let trace_robj = value.trace.map(|v| Robj::from(v)).unwrap_or(Robj::null());
+        let call_robj = value.call.map(|v| v.into()).unwrap_or_default();
+        let parent_robj = value.parent.map(|v| Robj::from(v.0)).unwrap_or_default();
+        let trace_robj = value.trace.map(Robj::from).unwrap_or_default();
 
         let mut cnd = List::from_pairs([
             ("message", msg),
