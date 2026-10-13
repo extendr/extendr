@@ -271,35 +271,32 @@
 <a href=#271 id=271 data-nosnippet>271</a>
 <a href=#272 id=272 data-nosnippet>272</a>            <span class="comment">// Get the first pairlist from the hash table.
 <a href=#273 id=273 data-nosnippet>273</a>            </span><span class="kw">loop </span>{
-<a href=#274 id=274 data-nosnippet>274</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(obj) = <span class="self">self</span>.hash_table.next() {
-<a href=#275 id=275 data-nosnippet>275</a>                    <span class="kw">if </span>!obj.is_null() &amp;&amp; obj.is_pairlist() {
-<a href=#276 id=276 data-nosnippet>276</a>                        <span class="self">self</span>.pairlist = obj.as_pairlist().unwrap().iter();
-<a href=#277 id=277 data-nosnippet>277</a>                        <span class="kw">break</span>;
-<a href=#278 id=278 data-nosnippet>278</a>                    }
-<a href=#279 id=279 data-nosnippet>279</a>                <span class="comment">// continue hash table loop.
-<a href=#280 id=280 data-nosnippet>280</a>                </span>} <span class="kw">else </span>{
-<a href=#281 id=281 data-nosnippet>281</a>                    <span class="comment">// The hash table is empty, end of iteration.
-<a href=#282 id=282 data-nosnippet>282</a>                    </span><span class="kw">return </span><span class="prelude-val">None</span>;
-<a href=#283 id=283 data-nosnippet>283</a>                }
-<a href=#284 id=284 data-nosnippet>284</a>            }
-<a href=#285 id=285 data-nosnippet>285</a>        }
-<a href=#286 id=286 data-nosnippet>286</a>    }
-<a href=#287 id=287 data-nosnippet>287</a>}
-<a href=#288 id=288 data-nosnippet>288</a>
-<a href=#289 id=289 data-nosnippet>289</a><span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Environment {
-<a href=#290 id=290 data-nosnippet>290</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
-<a href=#291 id=291 data-nosnippet>291</a>        <span class="kw">unsafe </span>{
-<a href=#292 id=292 data-nosnippet>292</a>            <span class="kw">let </span>sexp = <span class="self">self</span>.get();
-<a href=#293 id=293 data-nosnippet>293</a>            <span class="kw">if </span>sexp == R_GlobalEnv {
-<a href=#294 id=294 data-nosnippet>294</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::global()"</span>)
-<a href=#295 id=295 data-nosnippet>295</a>            } <span class="kw">else if </span>sexp == R_BaseEnv {
-<a href=#296 id=296 data-nosnippet>296</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::base()"</span>)
-<a href=#297 id=297 data-nosnippet>297</a>            } <span class="kw">else if </span>sexp == R_EmptyEnv {
-<a href=#298 id=298 data-nosnippet>298</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::empty()"</span>)
-<a href=#299 id=299 data-nosnippet>299</a>            } <span class="kw">else </span>{
-<a href=#300 id=300 data-nosnippet>300</a>                <span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.deparse().unwrap())
-<a href=#301 id=301 data-nosnippet>301</a>            }
-<a href=#302 id=302 data-nosnippet>302</a>        }
-<a href=#303 id=303 data-nosnippet>303</a>    }
-<a href=#304 id=304 data-nosnippet>304</a>}
+<a href=#274 id=274 data-nosnippet>274</a>                <span class="comment">// The hash table is empty, end of iteration.
+<a href=#275 id=275 data-nosnippet>275</a>                </span><span class="kw">let </span>obj = <span class="self">self</span>.hash_table.next()<span class="question-mark">?</span>;
+<a href=#276 id=276 data-nosnippet>276</a>                <span class="kw">if </span>!obj.is_null() &amp;&amp; obj.is_pairlist() {
+<a href=#277 id=277 data-nosnippet>277</a>                    <span class="self">self</span>.pairlist = obj.as_pairlist().unwrap().iter();
+<a href=#278 id=278 data-nosnippet>278</a>                    <span class="kw">break</span>;
+<a href=#279 id=279 data-nosnippet>279</a>                }
+<a href=#280 id=280 data-nosnippet>280</a>                <span class="comment">// continue hash table loop.
+<a href=#281 id=281 data-nosnippet>281</a>            </span>}
+<a href=#282 id=282 data-nosnippet>282</a>        }
+<a href=#283 id=283 data-nosnippet>283</a>    }
+<a href=#284 id=284 data-nosnippet>284</a>}
+<a href=#285 id=285 data-nosnippet>285</a>
+<a href=#286 id=286 data-nosnippet>286</a><span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Environment {
+<a href=#287 id=287 data-nosnippet>287</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+<a href=#288 id=288 data-nosnippet>288</a>        <span class="kw">unsafe </span>{
+<a href=#289 id=289 data-nosnippet>289</a>            <span class="kw">let </span>sexp = <span class="self">self</span>.get();
+<a href=#290 id=290 data-nosnippet>290</a>            <span class="kw">if </span>sexp == R_GlobalEnv {
+<a href=#291 id=291 data-nosnippet>291</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::global()"</span>)
+<a href=#292 id=292 data-nosnippet>292</a>            } <span class="kw">else if </span>sexp == R_BaseEnv {
+<a href=#293 id=293 data-nosnippet>293</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::base()"</span>)
+<a href=#294 id=294 data-nosnippet>294</a>            } <span class="kw">else if </span>sexp == R_EmptyEnv {
+<a href=#295 id=295 data-nosnippet>295</a>                <span class="macro">write!</span>(f, <span class="string">"Environment::empty()"</span>)
+<a href=#296 id=296 data-nosnippet>296</a>            } <span class="kw">else </span>{
+<a href=#297 id=297 data-nosnippet>297</a>                <span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.deparse().unwrap())
+<a href=#298 id=298 data-nosnippet>298</a>            }
+<a href=#299 id=299 data-nosnippet>299</a>        }
+<a href=#300 id=300 data-nosnippet>300</a>    }
+<a href=#301 id=301 data-nosnippet>301</a>}
 </code></pre></div></section></main></body></html>
