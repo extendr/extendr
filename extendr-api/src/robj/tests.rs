@@ -370,3 +370,19 @@ fn test_robj_null() {
         assert_eq!(null, r!(NULL));
     }
 }
+
+#[test]
+fn test_set_attrib_backport() {
+    test! {
+        let mut x = r!([1, 2]);
+        let attrs = eval_string(r#"as.pairlist(list(names = c("a", "b"), class = "foo"))"#).unwrap();
+
+        unsafe { extendr_ffi::set_attrib(x.get_mut(), attrs.get()) };
+        assert_eq!(x.get_attrib("class"), Some(r!("foo")));
+        assert_eq!(x.get_attrib("names"), Some(r!(["a", "b"])));
+
+        unsafe { extendr_ffi::set_attrib(x.get_mut(), R_NilValue) };
+        assert_eq!(x.get_attrib("class"), None);
+        assert_eq!(x.get_attrib("names"), None);
+    }
+}

@@ -38,6 +38,32 @@ fn test_into_robj_dataframe() -> Robj {
     v.into_dataframe().unwrap().into_robj()
 }
 
+// https://github.com/extendr/extendr/issues/1059
+#[derive(Debug, IntoDataFrameRow)]
+struct ValStruct {
+    x: i32,
+    y: String,
+    val: i32,
+}
+
+#[extendr]
+fn test_derive_into_dataframe_val_field() -> Dataframe<ValStruct> {
+    let v = vec![
+        ValStruct {
+            x: 0,
+            y: "abc".into(),
+            val: 10,
+        },
+        ValStruct {
+            x: 1,
+            y: "xyz".into(),
+            val: 11,
+        },
+    ];
+
+    v.into_dataframe().unwrap()
+}
+
 // Not possible today
 // https://github.com/extendr/extendr/issues/727
 // #[derive(Debug, IntoDataFrameRow)]
@@ -74,4 +100,5 @@ extendr_module! {
     mod dataframe;
     fn test_derive_into_dataframe;
     fn test_into_robj_dataframe;
+    fn test_derive_into_dataframe_val_field;
 }
