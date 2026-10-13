@@ -1,10 +1,10 @@
-use crate::wrapper::*;
-use crate::robj::GetSexp;
 use crate::robj::Attributes;
+use crate::robj::GetSexp;
 use crate::robj::Rany;
 use crate::robj::Rinternals;
 use crate::robj::Robj;
 use crate::robj::Types;
+use crate::wrapper::*;
 
 impl std::fmt::Debug for Symbol {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
