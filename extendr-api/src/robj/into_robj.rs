@@ -1,8 +1,8 @@
 use super::*;
 use crate::single_threaded;
 use extendr_ffi::{
-    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
-    COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
+    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, R_xlen_t, Rcomplex,
+    Rf_mkCharLenCE, Rf_xlengthgets, COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
 mod repeat_into_robj;
 
@@ -590,55 +590,34 @@ where
     I::Item: ToVectorValue,
 {
     single_threaded(|| unsafe {
-        // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
-        if sexptype != SEXPTYPE::NILSXP {
-            let res = Robj::alloc_vector(sexptype, len);
+        if sexptype == SEXPTYPE::NILSXP {
+            return Robj::null();
+        }
+        let mut res = Robj::alloc_vector(sexptype, len);
+        let mut capacity = len;
+        let mut n = 0;
+        for v in iter {
+            if n == capacity {
+                capacity = (capacity * 2).max(1);
+                res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+            }
             let sexp = res.get();
             match sexptype {
-                SEXPTYPE::REALSXP => {
-                    let ptr = REAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_real();
-                    }
-                }
-                SEXPTYPE::CPLXSXP => {
-                    let ptr = COMPLEX(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_complex();
-                    }
-                }
-                SEXPTYPE::INTSXP => {
-                    let ptr = INTEGER(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_integer();
-                    }
-                }
-                SEXPTYPE::LGLSXP => {
-                    let ptr = LOGICAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_logical();
-                    }
-                }
-                SEXPTYPE::STRSXP => {
-                    for (i, v) in iter.enumerate() {
-                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                    }
-                }
-                SEXPTYPE::RAWSXP => {
-                    let ptr = RAW(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_raw();
-                    }
-                }
-                _ => {
-                    panic!("unexpected SEXPTYPE in collect_robj");
-                }
+                SEXPTYPE::REALSXP => *REAL(sexp).add(n) = v.to_real(),
+                SEXPTYPE::CPLXSXP => *COMPLEX(sexp).add(n) = v.to_complex(),
+                SEXPTYPE::INTSXP => *INTEGER(sexp).add(n) = v.to_integer(),
+                SEXPTYPE::LGLSXP => *LOGICAL(sexp).add(n) = v.to_logical(),
+                SEXPTYPE::STRSXP => SET_STRING_ELT(sexp, n as isize, v.to_sexp()),
+                SEXPTYPE::RAWSXP => *RAW(sexp).add(n) = v.to_raw(),
+                _ => panic!("unexpected SEXPTYPE in collect_robj"),
             }
-            res
-        } else {
-            Robj::null()
+            n += 1;
         }
+        if n < capacity {
+            res = Robj::from_sexp(Rf_xlengthgets(res.get(), n as R_xlen_t));
+        }
+        res
     })
 }
 
@@ -700,8 +679,8 @@ pub trait RobjItertools: Iterator {
         }
         // If the size is indeterminate, create a vector and call recursively.
         let vec: Vec<_> = self.collect();
-        assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
-        vec.into_iter().collect_robj()
+        let len = vec.len();
+        fixed_size_collect(vec.into_iter(), len)
     }
 
     /// Collects an iterable into an [`RArray`].
@@ -857,6 +836,45 @@ impl From<&Vec<Robj>> for Robj {
 mod test {
     use super::*;
     use crate as extendr_api;
+
+    struct WrongSizeHint {
+        i: i32,
+        n: i32,
+        hint: usize,
+    }
+
+    impl Iterator for WrongSizeHint {
+        type Item = i32;
+
+        fn next(&mut self) -> Option<i32> {
+            (self.i < self.n).then(|| {
+                self.i += 1;
+                self.i
+            })
+        }
+
+        fn size_hint(&self) -> (usize, Option<usize>) {
+            (self.hint, Some(self.hint))
+        }
+    }
+
+    #[test]
+    fn collect_robj_wrong_size_hint() {
+        test! {
+            let expected: Vec<i32> = (1..=100).collect();
+
+            let low: Robj = WrongSizeHint { i: 0, n: 100, hint: 1 }.collect();
+            assert_eq!(low.as_integer_slice().unwrap(), &expected);
+
+            let high: Robj = WrongSizeHint { i: 0, n: 100, hint: 500 }.collect();
+            assert_eq!(high.as_integer_slice().unwrap(), &expected);
+
+            let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i.to_string())
+                .collect();
+            assert_eq!(strs.as_str_vector().unwrap(), vec!["1", "2", "3"]);
+        }
+    }
 
     #[test]
     fn test_vec_rint_to_robj() {
