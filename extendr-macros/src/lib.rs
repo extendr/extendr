@@ -171,7 +171,7 @@ pub fn call(item: TokenStream) -> TokenStream {
 ///
 /// ```rust,ignore
 ///     R!("c(1, 2, 3)");
-///     R!("{{(0..3).collect_robj()}} + 1");
+///     R!("{{(0..3).collect::<Robj>()}} + 1");
 ///     R!(r#"
 ///       print("hello")
 ///     "#);

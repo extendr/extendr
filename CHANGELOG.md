@@ -32,9 +32,11 @@
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+- **Deprecates** `collect_robj()` in favor of `collect::<Robj>()`
 
 ### Fixed
 
+- `collect::<Robj>()` no longer writes past the allocation when `size_hint()` is wrong <https://github.com/extendr/extendr/issues/1136>
 - `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
 - `extendr-ffi` now emits a complete set of cfg flags and `DEP_R_R_VERSION_*` exports when R cannot be found, so R-less builds (docs.rs, rust-analyzer, CI without R) no longer panic in `extendr-api`'s build script or miscompile version-gated items.
 - Replaced panicking `.unwrap()` calls reachable at runtime with errors <https://github.com/extendr/extendr/issues/1022>
