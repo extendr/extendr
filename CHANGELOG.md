@@ -33,6 +33,7 @@
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
 - **Deprecates** `collect_robj()` in favor of `collect::<Robj>()`
+- Collecting into `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` writes directly into the R vector instead of a `Vec` first
 
 ### Fixed
 

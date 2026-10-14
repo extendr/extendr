@@ -38,8 +38,8 @@ macros::gen_from_iterator_impl!(
     vector_type: Integers,
     collect_from_type: i32,
     underlying_type: i32,
-    SEXP: INTSXP,
-    assignment: |dest: &mut i32, val: i32| *dest = val
+    r_prefix: INTEGER,
+    SEXP: INTSXP
 );
 
 impl Integers {

@@ -854,6 +854,29 @@ mod test {
     }
 
     #[test]
+    fn collect_typed_wrong_size_hint() {
+        test! {
+            let expected: Vec<i32> = (1..=100).collect();
+            for hint in [0, 1, 100, 500] {
+                let ints: Integers = WrongSizeHint { i: 0, n: 100, hint }.collect();
+                assert_eq!(ints.as_robj().as_integer_slice().unwrap(), &expected);
+
+                let dbls: Doubles = WrongSizeHint { i: 0, n: 100, hint }.map(f64::from).collect();
+                assert_eq!(dbls.len(), 100);
+                assert_eq!(dbls.elt(99), 100.0);
+
+                let lgls: Logicals = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i % 2 == 0).collect();
+                assert_eq!(lgls.len(), 100);
+                assert_eq!(lgls.elt(99), TRUE);
+
+                let strs: Strings = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i.to_string()).collect();
+                assert_eq!(strs.len(), 100);
+                assert_eq!(strs.elt(99), "100");
+            }
+        }
+    }
+
+    #[test]
     fn test_vec_rint_to_robj() {
         test! {
             let int_vec = vec![3,4,0,-2];
