@@ -753,7 +753,8 @@ where
                 return fixed_size_collect(iter, len);
             }
         }
-        let vec: Vec<_> = iter.collect();
+        // FIXME: remove allocation in the future
+        let vec = iter.collect::<Vec<_>>();
         let len = vec.len();
         fixed_size_collect(vec.into_iter(), len)
     }
