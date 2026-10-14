@@ -374,12 +374,13 @@ impl Iterator for ListIter {
     type Item = Robj;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.len, Some(self.len))
+        let len = self.len();
+        (len, Some(len))
     }
 
     fn next(&mut self) -> Option<Self::Item> {
         let i = self.i;
-        self.i += 1;
+        self.i = self.i.saturating_add(1);
         if i >= self.len {
             None
         } else {
@@ -388,7 +389,7 @@ impl Iterator for ListIter {
     }
 
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
-        self.i += n;
+        self.i = self.i.saturating_add(n);
         self.next()
     }
 }
@@ -396,7 +397,7 @@ impl Iterator for ListIter {
 impl ExactSizeIterator for ListIter {
     /// Length of a list iterator.
     fn len(&self) -> usize {
-        self.len - self.i
+        self.len.saturating_sub(self.i)
     }
 }
 

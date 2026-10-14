@@ -10,7 +10,7 @@ pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
-///     let robj = r!(["a", "b", "c"]);
+///     let robj = Robj::from(["a", "b", "c"]);
 ///     assert_eq!(robj.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["a", "b", "c"]);
 ///
 ///     let factor = factor!(["abcd", "def", "fg", "fg"]);
@@ -68,13 +68,14 @@ impl Iterator for StrIter {
     type Item = &'static str;
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (self.len, Some(self.len))
+        let len = self.len();
+        (len, Some(len))
     }
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
             let i = self.i;
-            self.i += 1;
+            self.i = self.i.saturating_add(1);
             let vector = self.vector.get();
             if i >= self.len || TYPEOF(vector) == SEXPTYPE::NILSXP {
                 None
@@ -100,14 +101,14 @@ impl Iterator for StrIter {
     }
 
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
-        self.i += n;
+        self.i = self.i.saturating_add(n);
         self.next()
     }
 }
 
 impl ExactSizeIterator for StrIter {
     fn len(&self) -> usize {
-        self.len - self.i
+        self.len.saturating_sub(self.i)
     }
 }
 
@@ -270,6 +271,39 @@ mod tests {
             assert!(str_iter_collect.is_empty());
             let mut str_iter = StrIter::new(0);
             assert!(str_iter.next().is_none());
+            Ok(())
+        })
+    }
+
+    #[test]
+    fn size_hint_tracks_position() -> std::result::Result<(), Box<dyn Error>> {
+        with_r(|| {
+            let robj = Robj::from(["a", "b", "c"]);
+            let mut it = robj.as_str_iter().ok_or("not a character vector")?;
+            it.next();
+            assert_eq!(it.size_hint(), (2, Some(2)));
+            assert_eq!(it.len(), 2);
+            it.by_ref().for_each(drop);
+            it.next();
+            assert_eq!(it.size_hint(), (0, Some(0)));
+            assert_eq!(it.len(), 0);
+
+            let list = List::from_values([1, 2, 3]);
+            let mut it = list.values();
+            it.next();
+            assert_eq!(it.size_hint(), (2, Some(2)));
+            assert_eq!(it.len(), 2);
+            it.by_ref().for_each(drop);
+            it.next();
+            assert_eq!(it.size_hint(), (0, Some(0)));
+            assert_eq!(it.len(), 0);
+
+            assert!(robj
+                .as_str_iter()
+                .ok_or("not a character vector")?
+                .nth(usize::MAX)
+                .is_none());
+            assert!(list.values().nth(usize::MAX).is_none());
             Ok(())
         })
     }
