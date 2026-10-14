@@ -597,22 +597,78 @@ where
         let mut res = Robj::alloc_vector(sexptype, len);
         let mut capacity = len;
         let mut n = 0;
-        for v in iter {
-            if n == capacity {
-                capacity = (capacity * 2).max(1);
-                res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+        match sexptype {
+            SEXPTYPE::REALSXP => {
+                let mut ptr = REAL(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = REAL(res.get());
+                    }
+                    *ptr.add(n) = v.to_real();
+                    n += 1;
+                }
             }
-            let sexp = res.get();
-            match sexptype {
-                SEXPTYPE::REALSXP => *REAL(sexp).add(n) = v.to_real(),
-                SEXPTYPE::CPLXSXP => *COMPLEX(sexp).add(n) = v.to_complex(),
-                SEXPTYPE::INTSXP => *INTEGER(sexp).add(n) = v.to_integer(),
-                SEXPTYPE::LGLSXP => *LOGICAL(sexp).add(n) = v.to_logical(),
-                SEXPTYPE::STRSXP => SET_STRING_ELT(sexp, n as isize, v.to_sexp()),
-                SEXPTYPE::RAWSXP => *RAW(sexp).add(n) = v.to_raw(),
-                _ => panic!("unexpected SEXPTYPE in collect"),
+            SEXPTYPE::CPLXSXP => {
+                let mut ptr = COMPLEX(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = COMPLEX(res.get());
+                    }
+                    *ptr.add(n) = v.to_complex();
+                    n += 1;
+                }
             }
-            n += 1;
+            SEXPTYPE::INTSXP => {
+                let mut ptr = INTEGER(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = INTEGER(res.get());
+                    }
+                    *ptr.add(n) = v.to_integer();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::LGLSXP => {
+                let mut ptr = LOGICAL(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = LOGICAL(res.get());
+                    }
+                    *ptr.add(n) = v.to_logical();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::RAWSXP => {
+                let mut ptr = RAW(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = RAW(res.get());
+                    }
+                    *ptr.add(n) = v.to_raw();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::STRSXP => {
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                    }
+                    SET_STRING_ELT(res.get(), n as isize, v.to_sexp());
+                    n += 1;
+                }
+            }
+            _ => panic!("unexpected SEXPTYPE in collect"),
         }
         if n < capacity {
             res = Robj::from_sexp(Rf_xlengthgets(res.get(), n as R_xlen_t));
@@ -840,11 +896,35 @@ mod test {
         test! {
             let expected: Vec<i32> = (1..=100).collect();
 
-            let low: Robj = WrongSizeHint { i: 0, n: 100, hint: 1 }.collect();
-            assert_eq!(low.as_integer_slice().unwrap(), &expected);
+            for hint in [0, 1, 99, 500] {
+                let robj: Robj = WrongSizeHint { i: 0, n: 100, hint }.collect();
+                assert_eq!(robj.as_integer_slice().unwrap(), &expected);
+            }
 
-            let high: Robj = WrongSizeHint { i: 0, n: 100, hint: 500 }.collect();
-            assert_eq!(high.as_integer_slice().unwrap(), &expected);
+            let empty: Robj = WrongSizeHint { i: 0, n: 0, hint: 5 }.collect();
+            assert_eq!(empty.len(), 0);
+            assert!(empty.is_integer());
+
+            let reals: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i as f64)
+                .collect();
+            assert_eq!(reals.as_real_slice().unwrap(), &[1., 2., 3.]);
+
+            let lgls: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i % 2 == 0)
+                .collect();
+            assert_eq!(lgls.as_logical_vector().unwrap(), vec![FALSE, TRUE, FALSE]);
+
+            let raws: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i as u8)
+                .collect();
+            assert_eq!(raws.as_raw_slice().unwrap(), &[1, 2, 3]);
+
+            let cplx: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| c64::new(i as f64, 0.))
+                .collect();
+            assert_eq!(cplx.len(), 3);
+            assert!(cplx.is_complex());
 
             let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| i.to_string())
