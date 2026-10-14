@@ -248,7 +248,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
-        let mut robj = (0..nrows).map(f).collect_robj();
+        let mut robj = (0..nrows).map(f).collect::<Robj>();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
@@ -329,7 +329,7 @@ where
                 let mut g = f.clone();
                 (0..nrows).map(move |r| g(r, c))
             })
-            .collect_robj();
+            .collect::<Robj>();
         let dim = [nrows, ncols];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
@@ -497,7 +497,7 @@ where
                     (0..nrows).map(move |r| g(r, c, m))
                 })
             })
-            .collect_robj();
+            .collect::<Robj>();
         let dim = [nrows, ncols, nmatrix];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)

@@ -172,7 +172,7 @@ where
 
 /// `ToVectorValue` is a trait that allows many different types
 /// to be converted to vectors. It is used as a type parameter
-/// to `collect_robj()`.
+/// to `collect::<Robj>()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::NILSXP
@@ -610,7 +610,7 @@ where
                 SEXPTYPE::LGLSXP => *LOGICAL(sexp).add(n) = v.to_logical(),
                 SEXPTYPE::STRSXP => SET_STRING_ELT(sexp, n as isize, v.to_sexp()),
                 SEXPTYPE::RAWSXP => *RAW(sexp).add(n) = v.to_raw(),
-                _ => panic!("unexpected SEXPTYPE in collect_robj"),
+                _ => panic!("unexpected SEXPTYPE in collect"),
             }
             n += 1;
         }
@@ -621,66 +621,17 @@ where
     })
 }
 
-/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
+/// Extensions to iterators for R objects including [RobjItertools::collect_rarray()].
 pub trait RobjItertools: Iterator {
     /// Convert a wide range of iterators to Robj.
-    ///
-    /// Using `.collect::<Robj>()` is the usual way to use this functionality via the
-    /// [`FromIterator`] trait.
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    ///
-    /// test! {
-    /// // Integer iterators.
-    /// let robj = (0..3).collect_robj();
-    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
-    ///
-    /// // Integer iterators: using standard `.collect()`
-    /// let robj = (0..3).collect::<Robj>();
-    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
-    ///
-    /// // Logical iterators.
-    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
-    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
-    ///
-    /// // Logical iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
-    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
-    ///
-    /// // Numeric iterators.
-    /// let robj = (0..3).map(|x| x as f64).collect_robj();
-    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
-    ///
-    /// // Numeric iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
-    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
-    ///
-    /// // String iterators.
-    /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
-    /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
-    ///
-    /// // String iterators: using standard `.collect()`
-    /// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
-    /// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
-    ///
-    /// }
-    /// ```
+    #[deprecated(since = "0.10.0", note = "Use `collect::<Robj>()` instead")]
     fn collect_robj(self) -> Robj
     where
         Self: Iterator,
         Self: Sized,
         Self::Item: ToVectorValue,
     {
-        if let (len, Some(max)) = self.size_hint() {
-            if len == max {
-                return fixed_size_collect(self, len);
-            }
-        }
-        // If the size is indeterminate, create a vector and call recursively.
-        let vec: Vec<_> = self.collect();
-        let len = vec.len();
-        fixed_size_collect(vec.into_iter(), len)
+        self.collect()
     }
 
     /// Collects an iterable into an [`RArray`].
@@ -696,7 +647,7 @@ pub trait RobjItertools: Iterator {
         Self::Item: ToVectorValue,
         Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
-        let mut vector = self.collect_robj();
+        let mut vector = self.collect::<Robj>();
         let prod = dims.iter().product::<usize>();
         if prod != vector.len() {
             return Err(Error::Other(format!(
@@ -705,7 +656,7 @@ pub trait RobjItertools: Iterator {
                 prod
             )));
         }
-        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
+        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect::<Robj>())?;
         let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
@@ -716,13 +667,39 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
-// Make Iterator::collect() work
+/// Collect an iterator into an R vector.
+///
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// test! {
+/// let robj = (0..3).collect::<Robj>();
+/// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+///
+/// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
+/// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+///
+/// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
+/// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+///
+/// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
+/// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
+/// }
+/// ```
 impl<A> FromIterator<A> for Robj
 where
     A: ToVectorValue,
 {
     fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self {
-        iter.into_iter().collect_robj()
+        let iter = iter.into_iter();
+        if let (len, Some(max)) = iter.size_hint() {
+            if len == max {
+                return fixed_size_collect(iter, len);
+            }
+        }
+        let vec: Vec<_> = iter.collect();
+        let len = vec.len();
+        fixed_size_collect(vec.into_iter(), len)
     }
 }
 
@@ -732,7 +709,7 @@ where
     T: ToVectorValue,
 {
     fn from(scalar: T) -> Self {
-        Some(scalar).into_iter().collect_robj()
+        Some(scalar).into_iter().collect::<Robj>()
     }
 }
 
@@ -745,7 +722,7 @@ macro_rules! impl_from_as_iterator {
             T: ToVectorValue,
         {
             fn from(val: $t) -> Self {
-                val.collect_robj()
+                val.collect::<Robj>()
             }
         }
     };
@@ -758,7 +735,7 @@ macro_rules! impl_from_as_iterator {
 //     T : ToVectorValue
 // {
 //     fn from(val: Range<T>) -> Self {
-//         val.collect_robj()
+//         val.collect::<Robj>()
 //     }
 // } //
 
@@ -812,7 +789,7 @@ where
     &'a T: ToVectorValue,
 {
     fn from(val: &'a [T]) -> Self {
-        val.iter().collect_robj()
+        val.iter().collect::<Robj>()
     }
 }
 
@@ -859,7 +836,7 @@ mod test {
     }
 
     #[test]
-    fn collect_robj_wrong_size_hint() {
+    fn collect_wrong_size_hint() {
         test! {
             let expected: Vec<i32> = (1..=100).collect();
 
