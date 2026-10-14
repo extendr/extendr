@@ -3,6 +3,7 @@
 
 use crate::robj::{GetSexp, Rinternals};
 use crate::*;
+use extendr_ffi::{R_xlen_t, Rf_xlengthgets};
 
 pub mod altrep;
 pub mod complexes;
@@ -59,3 +60,30 @@ pub use s4::S4;
 pub use strings::Strings;
 pub use symbol::Symbol;
 pub use wrapper_macros::*;
+
+fn collect_vector<T, U>(
+    sexptype: SEXPTYPE,
+    data: impl Fn(SEXP) -> *mut U,
+    iter: impl Iterator<Item = T>,
+    convert: impl Fn(T) -> U,
+) -> Robj {
+    unsafe {
+        let mut capacity = iter.size_hint().0;
+        let mut robj = Robj::alloc_vector(sexptype, capacity);
+        let mut ptr = data(robj.get());
+        let mut n = 0;
+        for v in iter {
+            if n == capacity {
+                capacity = (capacity * 2).max(1);
+                robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), capacity as R_xlen_t));
+                ptr = data(robj.get());
+            }
+            ptr.add(n).write(convert(v));
+            n += 1;
+        }
+        if n < capacity {
+            robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), n as R_xlen_t));
+        }
+        robj
+    }
+}

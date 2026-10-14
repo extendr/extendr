@@ -897,6 +897,39 @@ mod test {
         test! {
             let expected: Vec<i32> = (1..=100).collect();
 
+            let low: Robj = WrongSizeHint { i: 0, n: 100, hint: 1 }.collect();
+            assert_eq!(low.as_integer_slice().unwrap(), &expected);
+
+            let high: Robj = WrongSizeHint { i: 0, n: 100, hint: 500 }.collect();
+            assert_eq!(high.as_integer_slice().unwrap(), &expected);
+
+            let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i.to_string())
+                .collect();
+            assert_eq!(strs.as_str_vector().unwrap(), vec!["1", "2", "3"]);
+        }
+    }
+
+    #[test]
+    fn collect_typed_wrong_size_hint() {
+        test! {
+            let expected: Vec<i32> = (1..=100).collect();
+            for hint in [0, 1, 100, 500] {
+                let ints: Integers = WrongSizeHint { i: 0, n: 100, hint }.collect();
+                assert_eq!(ints.as_robj().as_integer_slice().unwrap(), &expected);
+
+                let dbls: Doubles = WrongSizeHint { i: 0, n: 100, hint }.map(f64::from).collect();
+                assert_eq!(dbls.len(), 100);
+                assert_eq!(dbls.elt(99), 100.0);
+
+                let lgls: Logicals = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i % 2 == 0).collect();
+                assert_eq!(lgls.len(), 100);
+                assert_eq!(lgls.elt(99), TRUE);
+
+                let strs: Strings = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i.to_string()).collect();
+                assert_eq!(strs.len(), 100);
+                assert_eq!(strs.elt(99), "100");
+            }
             for hint in [0, 1, 99, 500] {
                 let robj: Robj = WrongSizeHint { i: 0, n: 100, hint }.collect();
                 assert_eq!(robj.as_integer_slice().unwrap(), &expected);
