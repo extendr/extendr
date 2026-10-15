@@ -27,6 +27,7 @@
 
 ### Changed
 
+- Force symbol-based lookup of native entry points in packages built with extendr (`R_forceSymbols(TRUE)`); `.Call("wrap__…", …)` strings must now be replaced with the symbol form `.Call(wrap__…, …)`. <https://github.com/extendr/extendr/pull/1009>
 - **Breaking**: `SET_ATTRIB` is no longer exported from extendr-ffi. Use the new `set_attrib()` backport, which uses `CLEAR_ATTRIB` and `Rf_setAttrib` on R >= 4.5 <https://github.com/extendr/extendr/issues/1026>
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
