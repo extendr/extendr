@@ -4,6 +4,7 @@
 //! using deprecated features.
 
 pub use super::error::Error;
+#[allow(deprecated)]
 pub use super::functions::parse;
 pub use super::functions::{
     base_namespace, blank_scalar_string, blank_string, eval_string, eval_string_with_params,

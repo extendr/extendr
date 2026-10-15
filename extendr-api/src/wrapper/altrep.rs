@@ -67,12 +67,12 @@ pub trait AltrepImpl: Clone + std::fmt::Debug {
         obj_flags: i32,
         levels: i32,
     ) -> Robj {
-        use extendr_ffi::{SETLEVELS, SET_ATTRIB, SET_OBJECT};
+        use extendr_ffi::{set_attrib, SETLEVELS, SET_OBJECT};
         let res = Self::unserialize(class, state);
         if !res.is_null() {
             single_threaded(|| unsafe {
                 let val = res.get();
-                SET_ATTRIB(val, attributes.get());
+                set_attrib(val, attributes.get());
                 SET_OBJECT(val, obj_flags);
                 SETLEVELS(val, levels);
             })
@@ -1043,8 +1043,14 @@ impl Altrep {
                 i: R_xlen_t,
                 v: SEXP,
             ) {
-                Altrep::get_state_mut::<StateType>(x)
-                    .set_elt(i as usize, Robj::from_sexp(v).try_into().unwrap())
+                match Robj::from_sexp(v).try_into() {
+                    Ok(rstr) => Altrep::get_state_mut::<StateType>(x).set_elt(i as usize, rstr),
+                    Err(e) => {
+                        let msg = e.to_string();
+                        drop(e);
+                        throw_r_error(msg)
+                    }
+                }
             }
 
             unsafe extern "C" fn altstring_Is_sorted<StateType: AltStringImpl + 'static>(

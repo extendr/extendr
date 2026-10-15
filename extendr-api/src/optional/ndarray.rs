@@ -165,7 +165,7 @@ where
             .iter()
             // Since we only have a reference, we have to copy all elements so that we can own the entire R array
             .copied()
-            .collect_robj();
+            .collect::<Robj>();
         result.set_attrib(
             dim_symbol(),
             value

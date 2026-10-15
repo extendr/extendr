@@ -22,19 +22,26 @@
 - Added experimental methods `RMatrix::row_iter()` and `RMatrix::col_iter()` to iterate over rows and columns as `RColumn<T>`, plus `RColumn::iter()` and `RColumn::iter_mut()`. <https://github.com/extendr/extendr/pull/1104>
 - Added `From<RColumn<T>>` conversions to the typed vector wrappers (`Doubles`, `Integers`, `Logicals`, `Complexes`, `Strings`, `Raw`) for their corresponding scalar types
 - Adds `Robj::null()` utility <https://github.com/extendr/extendr/pull/1099>
+- `iter()` on `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` now returns an iterator that is `Clone`, `ExactSizeIterator`, and `DoubleEndedIterator`, so `.cycle()`, `.len()`, and `.rev()` work <https://github.com/extendr/extendr/issues/582>
+- Implement `fmt::Pointer` for `Robj`, so `{robj:p}` prints the address of the underlying SEXP <https://github.com/extendr/extendr/issues/537>
 
 ### Changed
 
 - Force symbol-based lookup of native entry points in packages built with extendr (`R_forceSymbols(TRUE)`); `.Call("wrap__…", …)` strings must now be replaced with the symbol form `.Call(wrap__…, …)`. <https://github.com/extendr/extendr/pull/1009>
+- **Breaking**: `SET_ATTRIB` is no longer exported from extendr-ffi. Use the new `set_attrib()` backport, which uses `CLEAR_ATTRIB` and `Rf_setAttrib` on R >= 4.5 <https://github.com/extendr/extendr/issues/1026>
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+- **Deprecates** `collect_robj()` in favor of `collect::<Robj>()`
 
 ### Fixed
 
+- `collect::<Robj>()` no longer writes past the allocation when `size_hint()` is wrong <https://github.com/extendr/extendr/issues/1136>
 - `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
 - `extendr-ffi` now emits a complete set of cfg flags and `DEP_R_R_VERSION_*` exports when R cannot be found, so R-less builds (docs.rs, rust-analyzer, CI without R) no longer panic in `extendr-api`'s build script or miscompile version-gated items.
+- Replaced panicking `.unwrap()` calls reachable at runtime with errors <https://github.com/extendr/extendr/issues/1022>
+- `#[derive(IntoDataFrameRow)]` no longer fails to compile when a struct has a field named `val`, `caller`, or `res` <https://github.com/extendr/extendr/issues/1059>
 
 ## 0.9.0 — 2026-04-16
 

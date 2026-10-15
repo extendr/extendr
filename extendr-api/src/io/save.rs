@@ -1,7 +1,7 @@
 //! Wrapper for R output streams.
 
 use super::PstreamFormat;
-use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp};
+use crate::{catch_r_error, error::Error, error::Result, robj::GetSexp, throw_r_error};
 use extendr_ffi::{
     R_NilValue, R_Serialize, R_outpstream_st, R_outpstream_t, R_pstream_data_t, R_pstream_format_t,
     SEXP,
@@ -29,7 +29,9 @@ impl<W: Write> OutStream<W> {
         unsafe extern "C" fn outchar<W: Write>(arg1: R_outpstream_t, arg2: ::std::os::raw::c_int) {
             let writer = &mut *((*arg1).data as *mut W);
             let b = [arg2 as u8];
-            writer.write_all(&b).unwrap();
+            if let Err(e) = writer.write_all(&b) {
+                throw_r_error(format!("failed to write R serialization stream: {e}"));
+            }
         }
 
         unsafe extern "C" fn outbytes<W: Write>(
@@ -39,7 +41,9 @@ impl<W: Write> OutStream<W> {
         ) {
             let writer = &mut *((*arg1).data as *mut W);
             let b = std::slice::from_raw_parts(arg2 as *mut u8, arg3 as usize);
-            writer.write_all(b).unwrap();
+            if let Err(e) = writer.write_all(b) {
+                throw_r_error(format!("failed to write R serialization stream: {e}"));
+            }
         }
 
         {

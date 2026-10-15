@@ -46,13 +46,11 @@ impl<T, const NDIM: usize> RArray<T, NDIM> {
     ///
     /// Equivalent to `dim()` in R
     pub fn get_dim(&self) -> Vec<usize> {
-        // TODO: Is there a better way to do this?
         self.robj
             .get_attrib(wrapper::symbol::dim_symbol())
-            .unwrap()
-            .as_integer_vector()
+            .and_then(|dim| dim.as_integer_vector())
             .map(|vec| vec.into_iter().map(|x| x as usize).collect())
-            .unwrap()
+            .unwrap_or_else(|| vec![self.robj.len()])
     }
 
     /// Set the names of the elements of an array.
@@ -250,7 +248,7 @@ where
 {
     /// Make a new column type.
     pub fn new_column<F: FnMut(usize) -> T>(nrows: usize, f: F) -> Self {
-        let mut robj = (0..nrows).map(f).collect_robj();
+        let mut robj = (0..nrows).map(f).collect::<Robj>();
         let dim = [nrows];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
@@ -331,7 +329,7 @@ where
                 let mut g = f.clone();
                 (0..nrows).map(move |r| g(r, c))
             })
-            .collect_robj();
+            .collect::<Robj>();
         let dim = [nrows, ncols];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
@@ -499,7 +497,7 @@ where
                     (0..nrows).map(move |r| g(r, c, m))
                 })
             })
-            .collect_robj();
+            .collect::<Robj>();
         let dim = [nrows, ncols, nmatrix];
         robj.set_attrib(wrapper::symbol::dim_symbol(), dim).unwrap();
         RArray::from_parts(robj)
@@ -1009,6 +1007,17 @@ mod tests {
             assert_eq!(cols.len(), 2);
             assert_eq!(cols[0].data(), &[Rfloat::from(1.), Rfloat::from(2.)]);
             assert_eq!(cols[1].data(), &[Rfloat::from(3.), Rfloat::from(4.)]);
+        }
+    }
+
+    #[test]
+    fn test_rcolumn_without_dim() {
+        test! {
+            let robj = r!([1., 2., 3.]);
+            let column = RColumn::<f64>::try_from(&robj)?;
+            assert_eq!(column.get_dim(), vec![3]);
+            assert_eq!(column.nrows(), 3);
+            assert_eq!(column[[1]], 2.);
         }
     }
 
