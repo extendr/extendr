@@ -25,6 +25,7 @@
 - `iter()` on `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` now returns an iterator that is `Clone`, `ExactSizeIterator`, and `DoubleEndedIterator`, so `.cycle()`, `.len()`, and `.rev()` work <https://github.com/extendr/extendr/issues/582>
 - `Option<T>` arguments in `#[extendr]` functions now default to `NULL` in the generated R wrappers, so they can be omitted from R and handled with `.unwrap_or_default()` or `.unwrap_or_else()` <https://github.com/extendr/extendr/issues/1077>
 - Implement `fmt::Pointer` for `Robj`, so `{robj:p}` prints the address of the underlying SEXP <https://github.com/extendr/extendr/issues/537>
+- `Environment` gains `HashMap`-style methods `keys()`, `values()`, `contains_key()`, `insert()`, and `remove()`. `insert()` and `remove()` return an error instead of failing in R when the binding or environment is locked.
 
 ### Changed
 
@@ -34,6 +35,7 @@
 - **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: removed the unsound lifetime from `as_integer_slice()` closes <https://github.com/extendr/extendr/issues/1061>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
+- `Environment::names()` is no longer marked `non-api`.
 - **Deprecates** `collect_robj()` in favor of `collect::<Robj>()`
 
 ### Fixed
