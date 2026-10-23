@@ -6,8 +6,6 @@
 #![allow(non_snake_case)]
 #![allow(improper_ctypes)]
 
-pub mod graphics;
-pub use graphics::*;
 pub mod altrep;
 pub use altrep::*;
 mod symbols;
@@ -440,7 +438,6 @@ extern "C" {
     pub fn Rf_VectorToPairList(x: SEXP) -> SEXP;
     pub fn Rf_xlength(arg1: SEXP) -> R_xlen_t;
     pub fn Rf_xlengthgets(arg1: SEXP, arg2: R_xlen_t) -> SEXP;
-    pub fn SET_ATTRIB(x: SEXP, v: SEXP);
     pub fn SET_INTEGER_ELT(x: SEXP, i: R_xlen_t, v: ::std::os::raw::c_int);
     pub fn SET_OBJECT(x: SEXP, v: ::std::os::raw::c_int);
     pub fn SET_REAL_ELT(x: SEXP, i: R_xlen_t, v: f64);

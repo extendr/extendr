@@ -211,3 +211,18 @@ fn test_metadata() {
         }
     );
 }
+
+#[extendr]
+fn test_metadata_option(a: Option<i32>, #[extendr(default = "1L")] b: Option<i32>) -> bool {
+    a.is_none() && b.is_some()
+}
+
+#[test]
+fn test_metadata_option_defaults_to_null() {
+    use extendr_api::metadata::Func;
+    let mut funcs: Vec<Func> = Vec::new();
+    meta__test_metadata_option(&mut funcs);
+
+    let defaults: Vec<_> = funcs[0].args.iter().map(|arg| arg.default).collect();
+    assert_eq!(defaults, vec![Some("NULL"), Some("1L")]);
+}

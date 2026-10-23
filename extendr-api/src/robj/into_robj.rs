@@ -1,8 +1,8 @@
 use super::*;
 use crate::single_threaded;
 use extendr_ffi::{
-    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, Rcomplex, Rf_mkCharLenCE,
-    COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
+    cetype_t, R_BlankString, R_NaInt, R_NaReal, R_NaString, R_NilValue, R_xlen_t, Rcomplex,
+    Rf_mkCharLenCE, Rf_xlengthgets, COMPLEX, INTEGER, LOGICAL, RAW, REAL, SET_STRING_ELT, SEXPTYPE,
 };
 mod repeat_into_robj;
 
@@ -172,7 +172,7 @@ where
 
 /// `ToVectorValue` is a trait that allows many different types
 /// to be converted to vectors. It is used as a type parameter
-/// to `collect_robj()`.
+/// to `collect::<Robj>()`.
 pub trait ToVectorValue {
     fn sexptype() -> SEXPTYPE {
         SEXPTYPE::NILSXP
@@ -590,97 +590,104 @@ where
     I::Item: ToVectorValue,
 {
     single_threaded(|| unsafe {
-        // Length of the vector is known in advance.
         let sexptype = I::Item::sexptype();
-        if sexptype != SEXPTYPE::NILSXP {
-            let res = Robj::alloc_vector(sexptype, len);
-            let sexp = res.get();
-            match sexptype {
-                SEXPTYPE::REALSXP => {
-                    let ptr = REAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_real();
+        if sexptype == SEXPTYPE::NILSXP {
+            return Robj::null();
+        }
+        let mut res = Robj::alloc_vector(sexptype, len);
+        let mut capacity = len;
+        let mut n = 0;
+        match sexptype {
+            SEXPTYPE::REALSXP => {
+                let mut ptr = REAL(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = REAL(res.get());
                     }
-                }
-                SEXPTYPE::CPLXSXP => {
-                    let ptr = COMPLEX(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_complex();
-                    }
-                }
-                SEXPTYPE::INTSXP => {
-                    let ptr = INTEGER(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_integer();
-                    }
-                }
-                SEXPTYPE::LGLSXP => {
-                    let ptr = LOGICAL(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_logical();
-                    }
-                }
-                SEXPTYPE::STRSXP => {
-                    for (i, v) in iter.enumerate() {
-                        SET_STRING_ELT(sexp, i as isize, v.to_sexp());
-                    }
-                }
-                SEXPTYPE::RAWSXP => {
-                    let ptr = RAW(sexp);
-                    for (i, v) in iter.enumerate() {
-                        *ptr.add(i) = v.to_raw();
-                    }
-                }
-                _ => {
-                    panic!("unexpected SEXPTYPE in collect_robj");
+                    *ptr.add(n) = v.to_real();
+                    n += 1;
                 }
             }
-            res
-        } else {
-            Robj::from(())
+            SEXPTYPE::CPLXSXP => {
+                let mut ptr = COMPLEX(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = COMPLEX(res.get());
+                    }
+                    *ptr.add(n) = v.to_complex();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::INTSXP => {
+                let mut ptr = INTEGER(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = INTEGER(res.get());
+                    }
+                    *ptr.add(n) = v.to_integer();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::LGLSXP => {
+                let mut ptr = LOGICAL(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = LOGICAL(res.get());
+                    }
+                    *ptr.add(n) = v.to_logical();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::RAWSXP => {
+                let mut ptr = RAW(res.get());
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                        ptr = RAW(res.get());
+                    }
+                    *ptr.add(n) = v.to_raw();
+                    n += 1;
+                }
+            }
+            SEXPTYPE::STRSXP => {
+                for v in iter {
+                    if n == capacity {
+                        capacity = (capacity * 2).max(1);
+                        res = Robj::from_sexp(Rf_xlengthgets(res.get(), capacity as R_xlen_t));
+                    }
+                    SET_STRING_ELT(res.get(), n as isize, v.to_sexp());
+                    n += 1;
+                }
+            }
+            _ => panic!("unexpected SEXPTYPE in collect"),
         }
+        if n < capacity {
+            res = Robj::from_sexp(Rf_xlengthgets(res.get(), n as R_xlen_t));
+        }
+        res
     })
 }
 
-/// Extensions to iterators for R objects including [RobjItertools::collect_robj()].
+/// Extensions to iterators for R objects including [RobjItertools::collect_rarray()].
 pub trait RobjItertools: Iterator {
     /// Convert a wide range of iterators to Robj.
-    /// ```
-    /// use extendr_api::prelude::*;
-    ///
-    /// test! {
-    /// // Integer iterators.
-    /// let robj = (0..3).collect_robj();
-    /// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
-    ///
-    /// // Logical iterators.
-    /// let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
-    /// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
-    ///
-    /// // Numeric iterators.
-    /// let robj = (0..3).map(|x| x as f64).collect_robj();
-    /// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
-    ///
-    /// // String iterators.
-    /// let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
-    /// assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
-    /// }
-    /// ```
+    #[deprecated(since = "0.10.0", note = "Use `collect::<Robj>()` instead")]
     fn collect_robj(self) -> Robj
     where
         Self: Iterator,
         Self: Sized,
         Self::Item: ToVectorValue,
     {
-        if let (len, Some(max)) = self.size_hint() {
-            if len == max {
-                return fixed_size_collect(self, len);
-            }
-        }
-        // If the size is indeterminate, create a vector and call recursively.
-        let vec: Vec<_> = self.collect();
-        assert!(vec.iter().size_hint() == (vec.len(), Some(vec.len())));
-        vec.into_iter().collect_robj()
+        self.collect()
     }
 
     /// Collects an iterable into an [`RArray`].
@@ -696,7 +703,7 @@ pub trait RobjItertools: Iterator {
         Self::Item: ToVectorValue,
         Robj: for<'a> AsTypedSlice<'a, Self::Item>,
     {
-        let mut vector = self.collect_robj();
+        let mut vector = self.collect::<Robj>();
         let prod = dims.iter().product::<usize>();
         if prod != vector.len() {
             return Err(Error::Other(format!(
@@ -705,7 +712,7 @@ pub trait RobjItertools: Iterator {
                 prod
             )));
         }
-        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect_robj())?;
+        vector.set_attrib(wrapper::symbol::dim_symbol(), dims.iter().collect::<Robj>())?;
         let _data = vector.as_typed_slice().ok_or(Error::Other(
             "Unknown error in converting to slice".to_string(),
         ))?;
@@ -716,13 +723,50 @@ pub trait RobjItertools: Iterator {
 // Thanks to *pretzelhammer* on stackoverflow for this.
 impl<T> RobjItertools for T where T: Iterator {}
 
+/// Collect an iterator into an R vector.
+///
+/// ```
+/// use extendr_api::prelude::*;
+///
+/// test! {
+/// let robj = (0..3).collect::<Robj>();
+/// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+///
+/// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
+/// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+///
+/// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
+/// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+///
+/// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
+/// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
+/// }
+/// ```
+impl<A> FromIterator<A> for Robj
+where
+    A: ToVectorValue,
+{
+    fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self {
+        let iter = iter.into_iter();
+        if let (len, Some(max)) = iter.size_hint() {
+            if len == max {
+                return fixed_size_collect(iter, len);
+            }
+        }
+        // FIXME: remove allocation in the future
+        let vec = iter.collect::<Vec<_>>();
+        let len = vec.len();
+        fixed_size_collect(vec.into_iter(), len)
+    }
+}
+
 // Scalars which are ToVectorValue
 impl<T> From<T> for Robj
 where
     T: ToVectorValue,
 {
     fn from(scalar: T) -> Self {
-        Some(scalar).into_iter().collect_robj()
+        Some(scalar).into_iter().collect::<Robj>()
     }
 }
 
@@ -735,7 +779,7 @@ macro_rules! impl_from_as_iterator {
             T: ToVectorValue,
         {
             fn from(val: $t) -> Self {
-                val.collect_robj()
+                val.collect::<Robj>()
             }
         }
     };
@@ -748,7 +792,7 @@ macro_rules! impl_from_as_iterator {
 //     T : ToVectorValue
 // {
 //     fn from(val: Range<T>) -> Self {
-//         val.collect_robj()
+//         val.collect::<Robj>()
 //     }
 // } //
 
@@ -802,7 +846,7 @@ where
     &'a T: ToVectorValue,
 {
     fn from(val: &'a [T]) -> Self {
-        val.iter().collect_robj()
+        val.iter().collect::<Robj>()
     }
 }
 
@@ -826,6 +870,102 @@ impl From<&Vec<Robj>> for Robj {
 mod test {
     use super::*;
     use crate as extendr_api;
+
+    struct WrongSizeHint {
+        i: i32,
+        n: i32,
+        hint: usize,
+    }
+
+    impl Iterator for WrongSizeHint {
+        type Item = i32;
+
+        fn next(&mut self) -> Option<i32> {
+            (self.i < self.n).then(|| {
+                self.i += 1;
+                self.i
+            })
+        }
+
+        fn size_hint(&self) -> (usize, Option<usize>) {
+            (self.hint, Some(self.hint))
+        }
+    }
+
+    #[test]
+    fn collect_wrong_size_hint() {
+        test! {
+            let expected: Vec<i32> = (1..=100).collect();
+
+            let low: Robj = WrongSizeHint { i: 0, n: 100, hint: 1 }.collect();
+            assert_eq!(low.as_integer_slice().unwrap(), &expected);
+
+            let high: Robj = WrongSizeHint { i: 0, n: 100, hint: 500 }.collect();
+            assert_eq!(high.as_integer_slice().unwrap(), &expected);
+
+            let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i.to_string())
+                .collect();
+            assert_eq!(strs.as_str_vector().unwrap(), vec!["1", "2", "3"]);
+        }
+    }
+
+    #[test]
+    fn collect_typed_wrong_size_hint() {
+        test! {
+            let expected: Vec<i32> = (1..=100).collect();
+            for hint in [0, 1, 100, 500] {
+                let ints: Integers = WrongSizeHint { i: 0, n: 100, hint }.collect();
+                assert_eq!(ints.as_robj().as_integer_slice().unwrap(), &expected);
+
+                let dbls: Doubles = WrongSizeHint { i: 0, n: 100, hint }.map(f64::from).collect();
+                assert_eq!(dbls.len(), 100);
+                assert_eq!(dbls.elt(99), 100.0);
+
+                let lgls: Logicals = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i % 2 == 0).collect();
+                assert_eq!(lgls.len(), 100);
+                assert_eq!(lgls.elt(99), TRUE);
+
+                let strs: Strings = WrongSizeHint { i: 0, n: 100, hint }.map(|i| i.to_string()).collect();
+                assert_eq!(strs.len(), 100);
+                assert_eq!(strs.elt(99), "100");
+            }
+            for hint in [0, 1, 99, 500] {
+                let robj: Robj = WrongSizeHint { i: 0, n: 100, hint }.collect();
+                assert_eq!(robj.as_integer_slice().unwrap(), &expected);
+            }
+
+            let empty: Robj = WrongSizeHint { i: 0, n: 0, hint: 5 }.collect();
+            assert_eq!(empty.len(), 0);
+            assert!(empty.is_integer());
+
+            let reals: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i as f64)
+                .collect();
+            assert_eq!(reals.as_real_slice().unwrap(), &[1., 2., 3.]);
+
+            let lgls: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i % 2 == 0)
+                .collect();
+            assert_eq!(lgls.as_logical_vector().unwrap(), vec![FALSE, TRUE, FALSE]);
+
+            let raws: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i as u8)
+                .collect();
+            assert_eq!(raws.as_raw_slice().unwrap(), &[1, 2, 3]);
+
+            let cplx: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| c64::new(i as f64, 0.))
+                .collect();
+            assert_eq!(cplx.len(), 3);
+            assert!(cplx.is_complex());
+
+            let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
+                .map(|i| i.to_string())
+                .collect();
+            assert_eq!(strs.as_str_vector().unwrap(), vec!["1", "2", "3"]);
+        }
+    }
 
     #[test]
     fn test_vec_rint_to_robj() {

@@ -9,3 +9,10 @@ test_that("Dataframe<T> can be returned", {
     data.frame(x = 0:1, y = c("abc", "xyz"))
   )
 })
+
+test_that("IntoDataFrameRow works with a field named `val`", {
+  expect_identical(
+    test_derive_into_dataframe_val_field(),
+    data.frame(x = 0:1, y = c("abc", "xyz"), val = 10:11)
+  )
+})

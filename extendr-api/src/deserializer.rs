@@ -771,7 +771,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(Robj::null())
     }
 
     fn visit_some<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>
@@ -806,7 +806,9 @@ impl<'de> Visitor<'de> for RobjVisitor {
             values.push(value);
         }
         let mut result = List::from_values(values);
-        result.set_names(keys).unwrap();
+        result
+            .set_names(keys)
+            .map_err(<M::Error as serde::de::Error>::custom)?;
         Ok(result.into())
     }
 
@@ -814,7 +816,7 @@ impl<'de> Visitor<'de> for RobjVisitor {
     where
         E: serde::de::Error,
     {
-        Ok(Robj::from(()))
+        Ok(Robj::null())
     }
 
     fn visit_newtype_struct<D>(self, deserializer: D) -> std::result::Result<Self::Value, D::Error>

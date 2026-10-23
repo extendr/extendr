@@ -271,16 +271,13 @@ impl Iterator for EnvIter {
 
             // Get the first pairlist from the hash table.
             loop {
-                if let Some(obj) = self.hash_table.next() {
-                    if !obj.is_null() && obj.is_pairlist() {
-                        self.pairlist = obj.as_pairlist().unwrap().iter();
-                        break;
-                    }
-                // continue hash table loop.
-                } else {
-                    // The hash table is empty, end of iteration.
-                    return None;
+                // The hash table is empty, end of iteration.
+                let obj = self.hash_table.next()?;
+                if !obj.is_null() && obj.is_pairlist() {
+                    self.pairlist = obj.as_pairlist().unwrap().iter();
+                    break;
                 }
+                // continue hash table loop.
             }
         }
     }

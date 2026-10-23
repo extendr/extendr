@@ -2,6 +2,7 @@ use super::*;
 use extendr_ffi::{
     R_xlen_t, SET_STRING_ELT, STRING_ELT, STRING_IS_SORTED, STRING_NO_NA, STRING_PTR_RO,
 };
+use std::collections::{BTreeSet, HashSet};
 use std::convert::From;
 use std::iter::FromIterator;
 
@@ -97,7 +98,7 @@ impl Strings {
     }
 
     /// Get an iterator for this string vector.
-    pub fn iter(&self) -> impl Iterator<Item = &Rstr> {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &Rstr> + Clone + DoubleEndedIterator {
         self.as_slice().iter()
     }
 
@@ -117,16 +118,24 @@ impl Attributes for Strings {}
 impl<T: AsRef<str>> FromIterator<T> for Strings {
     /// Convert an iterator to a Strings object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        let iter_collect: Vec<_> = iter.into_iter().collect();
-        let len = iter_collect.len();
-
-        let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, len);
-        crate::single_threaded(|| unsafe {
-            for (i, v) in iter_collect.into_iter().enumerate() {
-                SET_STRING_ELT(robj.get_mut(), i as isize, str_to_character(v.as_ref()));
+        let iter = iter.into_iter();
+        let mut capacity = iter.size_hint().0;
+        let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, capacity);
+        let mut n = 0;
+        unsafe {
+            for v in iter {
+                if n == capacity {
+                    capacity = (capacity * 2).max(1);
+                    robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), capacity as R_xlen_t));
+                }
+                SET_STRING_ELT(robj.get_mut(), n as isize, str_to_character(v.as_ref()));
+                n += 1;
             }
-            Strings { robj }
-        })
+            if n < capacity {
+                robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), n as R_xlen_t));
+            }
+        }
+        Strings { robj }
     }
 }
 
@@ -167,10 +176,97 @@ impl From<Option<Strings>> for Robj {
     }
 }
 
+impl TryFrom<&Robj> for HashSet<&str> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))?
+            .map(|s| {
+                if s.is_na() {
+                    Err(Error::MustNotBeNA(robj.clone()))
+                } else {
+                    Ok(s)
+                }
+            })
+            .collect()
+    }
+}
+
+impl TryFrom<&Robj> for BTreeSet<&str> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))?
+            .map(|s| {
+                if s.is_na() {
+                    Err(Error::MustNotBeNA(robj.clone()))
+                } else {
+                    Ok(s)
+                }
+            })
+            .collect()
+    }
+}
+
+impl TryFrom<&Robj> for HashSet<Option<&str>> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))
+            .map(|iter| iter.map(|s| (!s.is_na()).then_some(s)).collect())
+    }
+}
+
+impl TryFrom<&Robj> for BTreeSet<Option<&str>> {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        robj.as_str_iter()
+            .ok_or_else(|| Error::ExpectedString(robj.clone()))
+            .map(|iter| iter.map(|s| (!s.is_na()).then_some(s)).collect())
+    }
+}
+
+impl TryFrom<&Strings> for HashSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> Result<Self> {
+        Self::try_from(&value.robj)
+    }
+}
+
+impl TryFrom<&Strings> for BTreeSet<&str> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> Result<Self> {
+        Self::try_from(&value.robj)
+    }
+}
+
+impl TryFrom<&Strings> for HashSet<Option<&str>> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> Result<Self> {
+        Self::try_from(&value.robj)
+    }
+}
+
+impl TryFrom<&Strings> for BTreeSet<Option<&str>> {
+    type Error = Error;
+
+    fn try_from(value: &Strings) -> Result<Self> {
+        Self::try_from(&value.robj)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate as extendr_api;
+    use std::collections::{BTreeSet, HashSet};
 
     #[test]
     fn new() {
@@ -182,6 +278,21 @@ mod tests {
     }
 
     #[test]
+    fn iter_cycles_and_reverses() {
+        test! {
+            let vec = Strings::from_values(["a", "b"]);
+            let iter = vec.iter();
+            assert_eq!(iter.len(), 2);
+
+            let cycled: Vec<&str> = iter.clone().cycle().take(3).map(|s| s.as_ref()).collect();
+            assert_eq!(cycled, ["a", "b", "a"]);
+
+            let reversed: Vec<&str> = iter.rev().map(|s| s.as_ref()).collect();
+            assert_eq!(reversed, ["b", "a"]);
+        }
+    }
+
+    #[test]
     fn new_with_na() {
         use crate::na::CanBeNA;
         test! {
@@ -189,6 +300,62 @@ mod tests {
             let manual_vec = (0..10).map(|_| Rstr::na()).collect::<Strings>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_hashset() {
+        test! {
+            let strings = Strings::from_values(["alpha", "beta", "alpha"]);
+            let set = HashSet::<&str>::try_from(&strings).unwrap();
+
+            assert_eq!(set.len(), 2);
+            assert!(set.contains("alpha"));
+            assert!(set.contains("beta"));
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_btreeset() {
+        test! {
+            let strings = Strings::from_values(["charlie", "bravo", "alpha"]);
+            let set = BTreeSet::<&str>::try_from(&strings).unwrap();
+            let ordered: Vec<_> = set.into_iter().collect();
+
+            assert_eq!(ordered, vec!["alpha", "bravo", "charlie"]);
+        }
+    }
+
+    #[test]
+    fn try_from_strings_fails_on_na() {
+        test! {
+            let strings = Strings::from_values([Rstr::from("NA"), Rstr::na()]);
+
+            assert!(matches!(HashSet::<&str>::try_from(&strings), Err(Error::MustNotBeNA(_))));
+            assert!(matches!(BTreeSet::<&str>::try_from(&strings), Err(Error::MustNotBeNA(_))));
+        }
+    }
+
+    #[test]
+    fn try_from_strings_to_option_sets_keeps_na_distinct() {
+        test! {
+            let strings = Strings::from_values([Rstr::from("NA"), Rstr::na(), Rstr::na()]);
+
+            let set = HashSet::<Option<&str>>::try_from(&strings).unwrap();
+            assert_eq!(set, HashSet::from([Some("NA"), None]));
+
+            let set = BTreeSet::<Option<&str>>::try_from(&strings).unwrap();
+            assert_eq!(set.into_iter().collect::<Vec<_>>(), vec![None, Some("NA")]);
+        }
+    }
+
+    #[test]
+    fn try_from_strings_fails_on_non_strings() {
+        test! {
+            let not_strings = Strings { robj: r!(1) };
+            let result = HashSet::<&str>::try_from(&not_strings);
+
+            assert!(matches!(result, Err(Error::ExpectedString(robj)) if robj == r!(1)));
         }
     }
 }

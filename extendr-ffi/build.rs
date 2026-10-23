@@ -35,9 +35,8 @@ impl FromStr for Version {
 fn read_r_ver(path: &Path) -> Result<Version, Box<dyn Error>> {
     let ver_h = path.join("Rversion.h");
     info!("Attempting to read version from {}", ver_h.display());
-    let content = read_to_string(ver_h).map_err(|e| {
+    let content = read_to_string(ver_h).inspect_err(|e| {
         error!("Unable to read Rversion.h: {}", e.to_string());
-        e
     })?;
 
     let major = content
@@ -54,9 +53,8 @@ fn read_r_ver(path: &Path) -> Result<Version, Box<dyn Error>> {
         .and_then(|v| v.trim_matches('"').to_string().into())
         .unwrap_or_default();
 
-    let version = Version::from_str(&format!("{major}.{minor}")).map_err(|e| {
+    let version = Version::from_str(&format!("{major}.{minor}")).inspect_err(|e| {
         error!("Unable to parse R version: {}", e.to_string());
-        e
     })?;
 
     info!(
@@ -87,9 +85,8 @@ impl Version {
 
         let out = cmd.output()?.stdout;
 
-        let res = String::from_utf8(out).map_err(|e| {
+        let res = String::from_utf8(out).inspect_err(|_| {
             error!("Unable to parse R output");
-            e
         })?;
 
         info!("R command output: {:?}", res);
@@ -166,6 +163,25 @@ impl InstallationPaths {
     }
 }
 
+/// Emits the R version cfg flags and `DEP_R_R_VERSION_*` exports.
+fn emit_r_version_flags(version: &Version) {
+    // used by extendr-api
+    println!("cargo:r_version_major={}", version.major);
+    println!("cargo:r_version_minor={}", version.minor);
+    println!("cargo:r_version_patch={}", version.patch);
+
+    // Set R version specfic config flags
+    // use r_4_4 config
+    if (version.major, version.minor) >= (4, 4) {
+        println!("cargo:rustc-cfg=r_4_4")
+    }
+
+    // use r_4_5 config
+    if (version.major, version.minor) >= (4, 5) {
+        println!("cargo:rustc-cfg=r_4_5")
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
@@ -177,8 +193,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let r_paths = match InstallationPaths::try_new() {
         Ok(v) => v,
         Err(_) => {
-            warn!("Cannot fetch R version from R. Defaulting to most recent configure flag");
-            println!("cargo:rustc-cfg=r_4_5");
+            warn!("Cannot fetch R version from R. Defaulting to the newest known R version");
+            // Keep in sync with the newest version in emit_r_version_flags
+            emit_r_version_flags(&Version {
+                major: 4,
+                minor: 5,
+                patch: 0,
+            });
             return Ok(());
         }
     };
@@ -187,10 +208,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:r_home={}", r_paths.r_home.display());
     println!("cargo:rustc-env=R_HOME={}", r_paths.r_home.display());
 
-    // used by extendr-api
-    println!("cargo:r_version_major={}", r_paths.version.major);
-    println!("cargo:r_version_minor={}", r_paths.version.minor);
-    println!("cargo:r_version_patch={}", r_paths.version.patch);
+    emit_r_version_flags(&r_paths.version);
 
     let pkg_target_arch = std::env::var("CARGO_CFG_TARGET_ARCH").unwrap();
 
@@ -213,32 +231,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     println!("cargo:rustc-link-lib=dylib=R");
-
-    // Set R version specfic config flags
-    // use r_4_4 config
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 4) {
-        println!("cargo:rustc-cfg=r_4_4")
-    }
-
-    // use r_4_5 config
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 5) {
-        println!("cargo:rustc-cfg=r_4_5")
-    }
-
-    // Graphics engine version 15 was introduced in R 4.2
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 2) {
-        println!("cargo:rustc-cfg=use_r_ge_version_15")
-    }
-
-    // Graphics engine version 16 was introduced in R 4.3
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 3) {
-        println!("cargo:rustc-cfg=use_r_ge_version_16")
-    }
-
-    // Graphics engine version 17 was introduced in R 4.6
-    if (r_paths.version.major, r_paths.version.minor) >= (4, 6) {
-        println!("cargo:rustc-cfg=use_r_ge_version_17")
-    }
 
     // Only re-run if the include directory changes
     println!("cargo:rerun-if-env-changed=R_INCLUDE_DIR");

@@ -4,10 +4,12 @@
 //! using deprecated features.
 
 pub use super::error::Error;
+#[allow(deprecated)]
+pub use super::functions::parse;
 pub use super::functions::{
     base_namespace, blank_scalar_string, blank_string, eval_string, eval_string_with_params,
     find_namespace, find_namespaced_function, global_function, na_string, new_env, nil_value,
-    parse, srcref,
+    srcref,
 };
 pub use super::{
     print_r_error, print_r_output, CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
@@ -33,7 +35,7 @@ pub use crate::{
 
 pub use super::wrapper::{
     AltComplexImpl, AltIntegerImpl, AltLogicalImpl, AltRawImpl, AltRealImpl, AltStringImpl, Altrep,
-    AltrepImpl, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D,
+    AltrepImpl, ColIter, RArray, RColumn, RMatrix, RMatrix3D, RMatrix4D, RMatrix5D, RowIter,
 };
 
 #[cfg(use_r_altlist)]
@@ -58,6 +60,7 @@ pub use extendr_macros::{
     call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromList, R,
 };
 pub use std::convert::{TryFrom, TryInto};
+pub use std::str::FromStr;
 
 #[cfg(feature = "ndarray")]
 pub use ::ndarray;

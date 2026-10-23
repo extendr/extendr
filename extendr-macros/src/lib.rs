@@ -171,7 +171,7 @@ pub fn call(item: TokenStream) -> TokenStream {
 ///
 /// ```rust,ignore
 ///     R!("c(1, 2, 3)");
-///     R!("{{(0..3).collect_robj()}} + 1");
+///     R!("{{(0..3).collect::<Robj>()}} + 1");
 ///     R!(r#"
 ///       print("hello")
 ///     "#);
@@ -359,7 +359,13 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
         let indices = 0..n;
         let element_extraction = indices.map(|idx| {
             quote! {
-                (&list.elt(#idx)?).try_into()?
+                (&list.elt(#idx)?)
+                    .try_into()
+                    .map_err(|error| extendr_api::error::Error::Other(format!(
+                        "failed to convert tuple element {}: {}",
+                        #idx,
+                        error
+                    )))?
             }
         });
 

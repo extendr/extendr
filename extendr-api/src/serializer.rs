@@ -96,7 +96,9 @@ where
     let mut serializer = RobjSerializer { robj: None };
 
     value.serialize(&mut serializer)?;
-    Ok(serializer.robj.unwrap())
+    serializer
+        .robj
+        .ok_or_else(|| Error::Other("serializer produced no value".into()))
 }
 
 impl<'a> ser::Serializer for &'a mut RobjSerializer {
@@ -209,7 +211,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
 
     /// None of an option is NULL.
     fn serialize_none(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(Robj::null());
         Ok(())
     }
 
@@ -224,7 +226,7 @@ impl<'a> ser::Serializer for &'a mut RobjSerializer {
     // In Serde, unit means an anonymous value containing no data. Map this to
     // R as `NULL`.
     fn serialize_unit(self) -> Result<()> {
-        self.robj = Some(Robj::from(()));
+        self.robj = Some(Robj::null());
         Ok(())
     }
 
@@ -522,7 +524,7 @@ impl ser::Serialize for Primitive {
     where
         S: ser::Serializer,
     {
-        let string = self.deparse().unwrap();
+        let string = self.deparse().map_err(ser::Error::custom)?;
         string.serialize(serializer)
     }
 }
@@ -532,7 +534,7 @@ impl ser::Serialize for Expressions {
     where
         S: ser::Serializer,
     {
-        let string = self.deparse().unwrap();
+        let string = self.deparse().map_err(ser::Error::custom)?;
         string.serialize(serializer)
     }
 }
@@ -542,7 +544,7 @@ impl ser::Serialize for S4 {
     where
         S: ser::Serializer,
     {
-        let string = self.deparse().unwrap();
+        let string = self.deparse().map_err(ser::Error::custom)?;
         string.serialize(serializer)
     }
 }
@@ -691,7 +693,11 @@ impl ser::Serialize for Raw {
     where
         S: ser::Serializer,
     {
-        serializer.serialize_bytes(self.as_robj().as_raw_slice().unwrap())
+        let bytes = self
+            .as_robj()
+            .as_raw_slice()
+            .ok_or_else(|| ser::Error::custom("expected a raw vector"))?;
+        serializer.serialize_bytes(bytes)
     }
 }
 

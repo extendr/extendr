@@ -57,6 +57,28 @@ jobs:
           }
         ]
 
+  # Exercises extendr-ffi's no-R fallback, used by docs.rs and rust-analyzer
+  build-no-r:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Ensure R is not installed
+        run: |
+          if command -v R >/dev/null; then
+            echo "R found at $(command -v R); this job must run without R"
+            exit 1
+          fi
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Clippy workspace without R
+        run: cargo clippy --workspace --exclude extendr-engine --all-features -- -D warnings
+
+      - name: Document extendr-api without R
+        run: cargo doc -p extendr-api --features full-functionality --no-deps
+
   # Call MSRV check workflow after PR tests pass
   msrv_check:
     needs: pr_tests

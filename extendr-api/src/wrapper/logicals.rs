@@ -37,8 +37,8 @@ macros::gen_from_iterator_impl!(
     vector_type: Logicals,
     collect_from_type: bool,
     underlying_type: Rbool,
-    SEXP: LGLSXP,
-    assignment: |dest: &mut Rbool, val : bool| *dest = val.into()
+    r_prefix: LOGICAL,
+    SEXP: LGLSXP
 );
 
 impl Logicals {

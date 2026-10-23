@@ -1,4 +1,4 @@
-use extendr_api::{graphics::*, prelude::*};
+use extendr_api::prelude::*;
 
 mod altrep;
 mod attributes;
@@ -7,8 +7,9 @@ mod custom_errors;
 mod dataframe;
 mod errors;
 mod externalptr;
-mod graphic_device;
+mod field_errors;
 mod hashmap;
+mod hashset;
 mod into_list_derive;
 mod leak;
 mod matrix;
@@ -186,6 +187,32 @@ fn check_default(#[extendr(default = "NULL")] x: Robj) -> bool {
     x.is_null()
 }
 
+// Option arguments default to NULL
+#[extendr]
+fn check_option_default_int(x: Option<i32>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_str(x: Option<&str>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_vec(x: Option<Vec<String>>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_default_after_required(x: i32, y: Option<i32>) -> i32 {
+    x + y.unwrap_or(0)
+}
+
+#[extendr]
+fn check_option_default_override(#[extendr(default = "1L")] x: Option<i32>) -> bool {
+    x.is_none()
+}
+
 // Weird behavior of parameter descriptions:
 // first passes tests as is, second -- only in backquotes.
 /// Test whether `_arg` parameters are treated correctly in R
@@ -307,20 +334,6 @@ impl MyClassUnexported {
     }
 }
 
-/// Create a new device.
-///
-/// @param welcome_message A warm message to welcome you.
-/// @export
-#[extendr]
-fn my_device(welcome_message: String) {
-    let device_driver = graphic_device::MyDevice {
-        welcome_message: welcome_message.as_str(),
-    };
-
-    let device_descriptor = DeviceDescriptor::new();
-    device_driver.create_device::<graphic_device::MyDevice>(device_descriptor, "my device");
-}
-
 // Macro to generate exports
 extendr_module! {
     mod extendrtests;
@@ -346,6 +359,11 @@ extendr_module! {
     fn logicals_not;
 
     fn check_default;
+    fn check_option_default_int;
+    fn check_option_default_str;
+    fn check_option_default_vec;
+    fn check_option_default_after_required;
+    fn check_option_default_override;
 
     fn try_rfloat_na;
     fn try_rint_na;
@@ -367,13 +385,12 @@ extendr_module! {
     impl __MyClass;
     impl MyClassUnexported;
 
-    fn my_device;
-
     use altrep;
     use attributes;
     use dataframe;
     use errors;
     use hashmap;
+    use hashset;
     use into_list_derive;
     use memory_leaks;
     use optional_either;
@@ -389,4 +406,5 @@ extendr_module! {
     use custom_errors;
     use leak;
     use conditions;
+    use field_errors;
 }

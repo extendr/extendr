@@ -119,6 +119,17 @@ fn test_try_from_robj() {
         );
         assert!(<Option<String>>::try_from(&Robj::from(["1", "2"])).is_err());
 
+        assert_eq!(f64::from(Rfloat::from(1.0)), 1.0);
+        assert!(f64::from(Rfloat::na()).is_na());
+
+        assert_eq!(i32::from(Rint::from(1)), 1);
+        assert!(Rint::from(i32::from(Rint::na())).is_na());
+
+        assert_eq!(bool::from(Rbool::from(true)), true);
+        assert_eq!(bool::from(Rbool::from(false)), false);
+
+        assert_eq!(c64::from(Rcplx::from(c64::new(1.0, 2.0))), c64::new(1.0, 2.0));
+        assert!(c64::from(Rcplx::na()).is_na());
 
         // TODO: once related todos resolved in try_from_robj.rs, add tests for
         // Doubles to Integer successful case (e.g. 1.0 to 1) and failing case
@@ -150,9 +161,9 @@ fn test_try_from_robj() {
         assert_eq!(<&[Rint]>::try_from(&robj), Err(Error::ExpectedInteger(r!(1.0))));
         let robj = Robj::from(1);
         assert_eq!(<&[Rfloat]>::try_from(&robj), Err(Error::ExpectedReal(r!(1))));
-        let robj = Robj::from(());
-        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(r!(()))));
-        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(r!(()))));
+        let robj = Robj::null();
+        assert_eq!(<&[Rbool]>::try_from(&robj), Err(Error::ExpectedLogical(Robj::null())));
+        assert_eq!(<&[u8]>::try_from(&robj), Err(Error::ExpectedRaw(Robj::null())));
     }
 }
 
@@ -206,7 +217,7 @@ fn test_to_robj() {
 #[test]
 fn parse_test() {
     test! {
-    let p = parse("print(1L);print(1L);")?;
+    let p = Expressions::from_str("print(1L);print(1L);")?;
     let q = Expressions::from_values(&[
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)])),
         r!(Language::from_values(&[r!(Symbol::from_string("print")), r!(1)]))
@@ -219,44 +230,44 @@ fn parse_test() {
 }
 
 #[test]
-fn output_iterator_test() {
+fn output_from_iterator_collect_test() {
     test! {
         // Allocation where size is known in advance.
-        let robj = (0..3).collect_robj();
+        let robj = (0..3).collect::<Robj>();
         assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
 
-        let robj = [0, 1, 2].iter().collect_robj();
+        let robj = [0, 1, 2].iter().collect::<Robj>();
         assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
 
-        let robj = (0..3).map(|x| x % 2 == 0).collect_robj();
+        let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
         assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
 
-        let robj = [TRUE, FALSE, TRUE].iter().collect_robj();
+        let robj = [TRUE, FALSE, TRUE].iter().collect::<Robj>();
         assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
 
-        let robj = (0..3).map(|x| x as f64).collect_robj();
+        let robj = (0..3).map(|x| x as f64).collect::<Robj>();
         assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
 
-        let robj = [0., 1., 2.].iter().collect_robj();
+        let robj = [0., 1., 2.].iter().collect::<Robj>();
         assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
 
-        let robj = (0..3).map(|x| format!("{}", x)).collect_robj();
+        let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
 
-        let robj = ["0", "1", "2"].iter().collect_robj();
+        let robj = ["0", "1", "2"].iter().collect::<Robj>();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
 
         // Fallback allocation where size is not known in advance.
-        let robj = (0..3).filter(|&x| x != 1).collect_robj();
+        let robj = (0..3).filter(|&x| x != 1).collect::<Robj>();
         assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 2]);
 
-        let robj = (0..3).filter(|&x| x != 1).map(|x| x as f64).collect_robj();
+        let robj = (0..3).filter(|&x| x != 1).map(|x| x as f64).collect::<Robj>();
         assert_eq!(robj.as_real_vector().unwrap(), vec![0., 2.]);
 
         let robj = (0..3)
             .filter(|&x| x != 1)
             .map(|x| format!("{}", x))
-            .collect_robj();
+            .collect::<Robj>();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "2"]));
     }
 }
@@ -303,5 +314,32 @@ fn test_rstr_rtype() {
     test! {
     let robj = r!(Rstr::from("hello"));
     assert_eq!(Rstr::try_from(robj).unwrap().rtype(), Rtype::Rstr);
+    }
+}
+
+#[test]
+fn test_robj_null() {
+    test! {
+        let null = Robj::null();
+        assert_eq!(null, Robj::from(()));
+        assert_eq!(null, ().into_robj());
+        assert_eq!(null, r!(()));
+        assert_eq!(null, r!(NULL));
+    }
+}
+
+#[test]
+fn test_set_attrib_backport() {
+    test! {
+        let mut x = r!([1, 2]);
+        let attrs = eval_string(r#"as.pairlist(list(names = c("a", "b"), class = "foo"))"#).unwrap();
+
+        unsafe { extendr_ffi::set_attrib(x.get_mut(), attrs.get()) };
+        assert_eq!(x.get_attrib("class"), Some(r!("foo")));
+        assert_eq!(x.get_attrib("names"), Some(r!(["a", "b"])));
+
+        unsafe { extendr_ffi::set_attrib(x.get_mut(), R_NilValue) };
+        assert_eq!(x.get_attrib("class"), None);
+        assert_eq!(x.get_attrib("names"), None);
     }
 }

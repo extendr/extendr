@@ -37,8 +37,8 @@ macros::gen_from_iterator_impl!(
     vector_type: Doubles,
     collect_from_type: f64,
     underlying_type: f64,
-    SEXP: REALSXP,
-    assignment: |dest: &mut f64, val: f64| *dest = val
+    r_prefix: REAL,
+    SEXP: REALSXP
 );
 
 impl Doubles {
@@ -132,6 +132,21 @@ mod tests {
             let manual_vec = (0..10).map(|_| Rfloat::na()).collect::<Doubles>();
             assert_eq!(vec, manual_vec);
             assert_eq!(vec.len(), manual_vec.len());
+        }
+    }
+
+    #[test]
+    fn iter_cycles_and_reverses() {
+        test! {
+            let vec = Doubles::from_values([1.0, 2.0, 3.0]);
+            let iter = vec.iter();
+            assert_eq!(iter.len(), 3);
+
+            let cycled: Vec<Rfloat> = iter.clone().cycle().take(5).collect();
+            assert_eq!(cycled, [1.0, 2.0, 3.0, 1.0, 2.0].map(Rfloat::from));
+
+            let reversed: Vec<Rfloat> = iter.rev().collect();
+            assert_eq!(reversed, [3.0, 2.0, 1.0].map(Rfloat::from));
         }
     }
 

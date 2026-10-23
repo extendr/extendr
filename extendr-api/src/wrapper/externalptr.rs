@@ -136,7 +136,7 @@ impl<T: 'static> ExternalPtr<T> {
             // into_raw() converts the box to a malloced pointer.
             let robj = {
                 let boxed_ptr = Box::into_raw(boxed);
-                let prot = Robj::from(());
+                let prot = Robj::null();
                 let type_name: Robj = std::any::type_name::<T>().into();
 
                 Robj::from_sexp(single_threaded(|| {
@@ -206,32 +206,46 @@ impl<T: 'static> ExternalPtr<T> {
     /// Get the "address" field of an external pointer.
     /// Normally, we will use Deref to do this.
     ///
-    /// ## Panics
+    /// ## Errors
     ///
-    /// When the underlying pointer is C `NULL`.
+    /// When the underlying pointer is C `NULL`, or does not point to a `T`.
     pub fn try_addr(&self) -> Result<&T> {
         unsafe {
             R_ExternalPtrAddr(self.robj.get())
                 .cast::<Box<dyn Any>>()
                 .as_ref()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
-                .map(|x| x.downcast_ref::<T>().unwrap())
+                .and_then(|x| {
+                    x.downcast_ref::<T>().ok_or_else(|| {
+                        Error::ExpectedExternalPtrType(
+                            self.robj.clone(),
+                            std::any::type_name::<T>().to_string(),
+                        )
+                    })
+                })
         }
     }
 
     /// Get the "address" field of an external pointer as a mutable reference.
     /// Normally, we will use DerefMut to do this.
     ///
-    /// ## Panics
+    /// ## Errors
     ///
-    /// When the underlying pointer is C `NULL`.
+    /// When the underlying pointer is C `NULL`, or does not point to a `T`.
     pub fn try_addr_mut(&mut self) -> Result<&mut T> {
         unsafe {
             R_ExternalPtrAddr(self.robj.get_mut())
                 .cast::<Box<dyn Any>>()
                 .as_mut()
                 .ok_or_else(|| Error::ExpectedExternalNonNullPtr(self.robj.clone()))
-                .map(|x| x.downcast_mut::<T>().unwrap())
+                .and_then(|x| {
+                    x.downcast_mut::<T>().ok_or_else(|| {
+                        Error::ExpectedExternalPtrType(
+                            self.robj.clone(),
+                            std::any::type_name::<T>().to_string(),
+                        )
+                    })
+                })
         }
     }
 }

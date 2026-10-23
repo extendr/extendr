@@ -2,34 +2,27 @@
 name = "extendrtests"
 version = "0.7.1"
 edition = "2021"
-rust-version = "1.65"
+rust-version = "1.77"
 publish = false
 
 [workspace]
 resolver = "2"
 
 [lib]
-crate-type = ["rlib", "staticlib"]
+crate-type = ["staticlib"]
 name = "extendrtests"
-
-[[bin]]
-bench = false
-name = "document"
-path = "document.rs"
 
 [dependencies]
 anyhow = "1"
 extendr-api = { version = "*", features = [
-  "either",
-  "faer",
-  "graphics",
-  "ndarray",
+    "either",
+    "faer",
+    "ndarray",
 ] }
 
 [features]
 faer = []
 full-functionality = []
-graphics = []
 ndarray = []
 serde = ["extendr-api/serde"]
 

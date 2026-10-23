@@ -118,6 +118,12 @@ impl From<Rcplx> for Option<c64> {
     }
 }
 
+impl From<Rcplx> for c64 {
+    fn from(val: Rcplx) -> Self {
+        c64::new(val.re().0, val.im().0)
+    }
+}
+
 impl PartialEq<f64> for Rcplx {
     fn eq(&self, other: &f64) -> bool {
         self.re().0 == *other && self.im() == 0.0

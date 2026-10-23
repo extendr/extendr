@@ -1,10 +1,10 @@
-use crate::wrapper::*;
-// use crate::robj::GetSexp;
 use crate::robj::Attributes;
+use crate::robj::GetSexp;
 use crate::robj::Rany;
 use crate::robj::Rinternals;
 use crate::robj::Robj;
 use crate::robj::Types;
+use crate::wrapper::*;
 
 impl std::fmt::Debug for Symbol {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -52,7 +52,7 @@ impl std::fmt::Debug for Robj {
         }?;
         /*
                match self.sexptype() {
-                   NILSXP => write!(f, "r!(NULL)"),
+                   NILSXP => write!(f, "Robj::null()"),
                    SYMSXP => {
                        if self.is_missing_arg() {
                            write!(f, "missing_arg()")
@@ -184,5 +184,22 @@ impl std::fmt::Debug for Robj {
             write!(f, ".set_class({:?}", c)?;
         }
         Ok(())
+    }
+}
+
+/// Implement {:p} formatting to print the address of the underlying SEXP.
+/// Clones of an `Robj` share the same SEXP, so they print the same address.
+/// ```
+/// use extendr_api::prelude::*;
+/// test! {
+///     let robj = r!([1, 2, 3]);
+///     let cloned = robj.clone();
+///     assert_eq!(format!("{robj:p}"), format!("{cloned:p}"));
+///     assert_ne!(format!("{robj:p}"), format!("{:p}", r!([1, 2, 3])));
+/// }
+/// ```
+impl std::fmt::Pointer for Robj {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Pointer::fmt(&unsafe { self.get() }, f)
     }
 }

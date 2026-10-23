@@ -70,7 +70,7 @@ test! {
 
     // An R real vector.
     let real_vector = r!([1.0, 2.0]);
-    let real_vector = &[1.0, 2.0].iter().collect_robj();
+    let real_vector = &[1.0, 2.0].iter().collect::<Robj>();
     let real_vector = r!(vec![1.0, 2.0]);
 
     // An R function object.
@@ -87,8 +87,8 @@ test! {
     // A symbol
     let sym = sym!(wombat);
 
-    // A R vector using collect_robj()
-    let vector = (0..3).map(|x| x * 10).collect_robj();
+    // A R vector using collect::<Robj>()
+    let vector = (0..3).map(|x| x * 10).collect::<Robj>();
 }
 ```
 
@@ -107,7 +107,7 @@ test! {
 
     // Using map is a super fast way to generate vectors.
     let iter = (0..3).map(|i| format!("fred{}", i));
-    let character = iter.collect_robj();
+    let character = iter.collect::<Robj>();
     assert_eq!(character, r!(["fred0", "fred1", "fred2"]));
 }
 ```
@@ -247,7 +247,6 @@ extendr-api has some optional features behind these feature gates:
 * `ndarray`: provides the conversion between R's matrices and [`ndarray`](https://docs.rs/ndarray/latest/ndarray/).
 * `num-complex`: provides the conversion between R's complex numbers and [`num-complex`](https://docs.rs/num-complex/latest/num_complex/).
 * `serde`: provides the [`serde`](https://serde.rs/) support.
-* `graphics`: provides the functionality to control or implement graphics devices.
 * `either`: provides implementation of type conversion traits for `Either<L, R>` from [`either`](https://docs.rs/either/latest/either/) if `L` and `R` both implement those traits.
 * `faer`: provides conversion between R's matrices and [`faer`](https://docs.rs/faer/latest/faer/).
 
