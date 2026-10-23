@@ -42,6 +42,7 @@
 - `extendr-ffi` now emits a complete set of cfg flags and `DEP_R_R_VERSION_*` exports when R cannot be found, so R-less builds (docs.rs, rust-analyzer, CI without R) no longer panic in `extendr-api`'s build script or miscompile version-gated items.
 - Replaced panicking `.unwrap()` calls reachable at runtime with errors <https://github.com/extendr/extendr/issues/1022>
 - `#[derive(IntoDataFrameRow)]` no longer fails to compile when a struct has a field named `val`, `caller`, or `res` <https://github.com/extendr/extendr/issues/1059>
+- Collecting into `Integers`, `Doubles`, `Logicals`, `Complexes`, and `Strings` writes directly into the R vector instead of a `Vec` first
 
 ## 0.9.0 — 2026-04-16
 

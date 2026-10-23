@@ -37,8 +37,8 @@ macros::gen_from_iterator_impl!(
     vector_type: Doubles,
     collect_from_type: f64,
     underlying_type: f64,
-    SEXP: REALSXP,
-    assignment: |dest: &mut f64, val: f64| *dest = val
+    r_prefix: REAL,
+    SEXP: REALSXP
 );
 
 impl Doubles {
