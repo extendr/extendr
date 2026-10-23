@@ -446,10 +446,13 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let pat_ident = translate_only_alias(pat)?;
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
+            let is_option = matches!(ty, Type::Path(p) if p.path.segments.last().is_some_and(|seg| seg.ident == "Option"));
             let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
                 quote!(Some(#default))
             } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
                 quote!(Some(#default))
+            } else if is_option {
+                quote!(Some("NULL"))
             } else {
                 quote!(None)
             };
