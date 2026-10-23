@@ -32,8 +32,8 @@ macros::gen_from_iterator_impl!(
     vector_type: Complexes,
     collect_from_type: c64,
     underlying_type: Rcplx,
-    SEXP: CPLXSXP,
-    assignment: |dest: &mut Rcplx, val: c64| *dest = val.into()
+    r_prefix: COMPLEX,
+    SEXP: CPLXSXP
 );
 
 impl Complexes {

@@ -118,16 +118,24 @@ impl Attributes for Strings {}
 impl<T: AsRef<str>> FromIterator<T> for Strings {
     /// Convert an iterator to a Strings object.
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        let iter_collect: Vec<_> = iter.into_iter().collect();
-        let len = iter_collect.len();
-
-        let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, len);
-        crate::single_threaded(|| unsafe {
-            for (i, v) in iter_collect.into_iter().enumerate() {
-                SET_STRING_ELT(robj.get_mut(), i as isize, str_to_character(v.as_ref()));
+        let iter = iter.into_iter();
+        let mut capacity = iter.size_hint().0;
+        let mut robj = Strings::alloc_vector(SEXPTYPE::STRSXP, capacity);
+        let mut n = 0;
+        unsafe {
+            for v in iter {
+                if n == capacity {
+                    capacity = (capacity * 2).max(1);
+                    robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), capacity as R_xlen_t));
+                }
+                SET_STRING_ELT(robj.get_mut(), n as isize, str_to_character(v.as_ref()));
+                n += 1;
             }
-            Strings { robj }
-        })
+            if n < capacity {
+                robj = Robj::from_sexp(Rf_xlengthgets(robj.get(), n as R_xlen_t));
+            }
+        }
+        Strings { robj }
     }
 }
 
