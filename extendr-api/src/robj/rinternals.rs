@@ -216,8 +216,8 @@ pub trait Rinternals: Types + Conversions {
     /// }
     /// ```
     fn eval_promise(&self) -> Result<Robj> {
-        if self.is_promise() {
-            self.as_promise().unwrap().eval()
+        if let Some(promise) = self.as_promise() {
+            promise.eval()
         } else {
             Ok(self.as_robj().clone())
         }

@@ -17,7 +17,7 @@ fn test_allocation() {
         let mut obj: Robj = List::from_names_and_values(&["A"], vec![data]).into();
         obj.set_attrib(
             row_names_symbol(),
-            (1i32..=COUNT as i32).collect_robj(),
+            (1i32..=COUNT as i32).collect::<Robj>(),
         )?;
         obj.set_class(&["data.frame"])?;
     }

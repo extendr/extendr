@@ -70,7 +70,7 @@ mod tests;
 ///     assert_eq!(a, r!([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
 ///
 ///     // Use an iterator (like (1:10)[(1:10) %% 3 == 0])
-///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect_robj();
+///     let a = (1 ..= 10).filter(|v| v % 3 == 0).collect::<Robj>();
 ///     assert_eq!(a, r!([3, 6, 9]));
 /// }
 /// ```
@@ -960,7 +960,7 @@ pub trait Attributes: Types + Length {
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = names.into_iter();
-        let robj = iter.collect_robj();
+        let robj = iter.collect::<Robj>();
         if !robj.is_vector() && !robj.is_pairlist() {
             Err(Error::ExpectedVector(robj))
         } else if robj.len() != self.len() {
@@ -1042,7 +1042,7 @@ pub trait Attributes: Types + Length {
         T::Item: ToVectorValue + AsRef<str>,
     {
         let iter = class.into_iter();
-        self.set_attrib(wrapper::symbol::class_symbol(), iter.collect_robj())
+        self.set_attrib(wrapper::symbol::class_symbol(), iter.collect::<Robj>())
     }
 
     /// Return true if this object has this class attribute.

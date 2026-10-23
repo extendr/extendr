@@ -52,9 +52,10 @@ static mut R_ERROR_BUF: Option<std::ffi::CString> = None;
 pub fn throw_r_error<S: AsRef<str>>(s: S) -> ! {
     let s = s.as_ref();
     unsafe {
-        R_ERROR_BUF = Some(std::ffi::CString::new(s).unwrap());
+        R_ERROR_BUF = Some(crate::conditions::to_c_message(s));
         let ptr = std::ptr::addr_of!(R_ERROR_BUF);
-        Rf_error(c"%s".as_ptr(), (*ptr).as_ref().unwrap().as_ptr());
+        let msg = (*ptr).as_ref().map_or(c"".as_ptr(), |msg| msg.as_ptr());
+        Rf_error(c"%s".as_ptr(), msg);
     };
 }
 

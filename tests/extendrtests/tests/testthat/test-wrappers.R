@@ -89,6 +89,28 @@ test_that("Call to Rust via wrapper functions works", {
   expect_equal(check_default("xyz"), FALSE)
 })
 
+test_that("Option arguments default to NULL", {
+  expect_true(check_option_default_int())
+  expect_false(check_option_default_int(1L))
+  expect_true(check_option_default_int(NULL))
+
+  expect_true(check_option_default_str())
+  expect_false(check_option_default_str("a"))
+
+  expect_true(check_option_default_vec())
+  expect_false(check_option_default_vec(c("a", "b")))
+
+  expect_equal(check_option_default_after_required(1L), 1L)
+  expect_equal(check_option_default_after_required(1L, 2L), 3L)
+  expect_error(check_option_default_after_required())
+
+  expect_false(check_option_default_override())
+  expect_true(check_option_default_override(NULL))
+  expect_equal(formals(check_option_default_override), as.pairlist(alist(x = 1L)))
+
+  expect_equal(formals(check_option_default_int), as.pairlist(alist(x = NULL)))
+})
+
 test_that("Default parameter values are emitted to wrappers", {
   expect_equal(get_default_value(), 42L)
   expect_equal(MyClass$get_default_value(), 42L)
