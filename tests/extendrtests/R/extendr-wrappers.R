@@ -46,6 +46,32 @@ check_option_default_str <- function(x = NULL) .Call(wrap__check_option_default_
 
 check_option_default_vec <- function(x = NULL) .Call(wrap__check_option_default_vec, x)
 
+check_option_strings <- function(x = NULL) .Call(wrap__check_option_strings, x)
+
+check_option_integers <- function(x = NULL) .Call(wrap__check_option_integers, x)
+
+check_option_doubles <- function(x = NULL) .Call(wrap__check_option_doubles, x)
+
+check_option_logicals <- function(x = NULL) .Call(wrap__check_option_logicals, x)
+
+check_option_complexes <- function(x = NULL) .Call(wrap__check_option_complexes, x)
+
+check_option_raw <- function(x = NULL) .Call(wrap__check_option_raw, x)
+
+check_option_list <- function(x = NULL) .Call(wrap__check_option_list, x)
+
+check_option_pairlist <- function(x = NULL) .Call(wrap__check_option_pairlist, x)
+
+check_option_expressions <- function(x = NULL) .Call(wrap__check_option_expressions, x)
+
+check_option_language <- function(x = NULL) .Call(wrap__check_option_language, x)
+
+check_option_symbol <- function(x = NULL) .Call(wrap__check_option_symbol, x)
+
+check_option_function <- function(x = NULL) .Call(wrap__check_option_function, x)
+
+check_option_environment <- function(x = NULL) .Call(wrap__check_option_environment, x)
+
 check_option_default_after_required <- function(x, y = NULL) .Call(wrap__check_option_default_after_required, x, y)
 
 check_option_default_override <- function(x = 1L) .Call(wrap__check_option_default_override, x)
