@@ -204,6 +204,71 @@ fn check_option_default_vec(x: Option<Vec<String>>) -> bool {
 }
 
 #[extendr]
+fn check_option_strings(x: Option<Strings>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_integers(x: Option<Integers>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_doubles(x: Option<Doubles>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_logicals(x: Option<Logicals>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_complexes(x: Option<Complexes>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_raw(x: Option<Raw>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_list(x: Option<List>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_pairlist(x: Option<Pairlist>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_expressions(x: Option<Expressions>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_language(x: Option<Language>) -> i32 {
+    x.map_or(-1, |x| x.len() as i32)
+}
+
+#[extendr]
+fn check_option_symbol(x: Option<Symbol>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_function(x: Option<Function>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
+fn check_option_environment(x: Option<Environment>) -> bool {
+    x.is_none()
+}
+
+#[extendr]
 fn check_option_default_after_required(x: i32, y: Option<i32>) -> i32 {
     x + y.unwrap_or(0)
 }
@@ -362,6 +427,19 @@ extendr_module! {
     fn check_option_default_int;
     fn check_option_default_str;
     fn check_option_default_vec;
+    fn check_option_strings;
+    fn check_option_integers;
+    fn check_option_doubles;
+    fn check_option_logicals;
+    fn check_option_complexes;
+    fn check_option_raw;
+    fn check_option_list;
+    fn check_option_pairlist;
+    fn check_option_expressions;
+    fn check_option_language;
+    fn check_option_symbol;
+    fn check_option_function;
+    fn check_option_environment;
     fn check_option_default_after_required;
     fn check_option_default_override;
 

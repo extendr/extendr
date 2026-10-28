@@ -100,6 +100,49 @@ test_that("Option arguments default to NULL", {
   expect_true(check_option_default_vec())
   expect_false(check_option_default_vec(c("a", "b")))
 
+  expect_equal(check_option_strings(), -1L)
+  expect_equal(check_option_strings(c("a", "b")), 2L)
+  expect_equal(check_option_strings(NA_character_), 1L)
+  expect_error(check_option_strings(1), "failed to convert argument `x`")
+
+  expect_equal(check_option_integers(), -1L)
+  expect_equal(check_option_integers(c(1L, NA)), 2L)
+  expect_error(check_option_integers("a"), "failed to convert argument `x`")
+
+  expect_equal(check_option_doubles(), -1L)
+  expect_equal(check_option_doubles(c(1, NA)), 2L)
+
+  expect_equal(check_option_logicals(), -1L)
+  expect_equal(check_option_logicals(c(TRUE, NA)), 2L)
+
+  expect_equal(check_option_complexes(), -1L)
+  expect_equal(check_option_complexes(c(1i, 2i)), 2L)
+
+  expect_equal(check_option_raw(), -1L)
+  expect_equal(check_option_raw(as.raw(1:2)), 2L)
+
+  expect_equal(check_option_list(), -1L)
+  expect_equal(check_option_list(list(1, "a")), 2L)
+  expect_error(check_option_list(1), "failed to convert argument `x`")
+
+  expect_equal(check_option_pairlist(), -1L)
+  expect_equal(check_option_pairlist(pairlist(a = 1, b = 2)), 2L)
+
+  expect_equal(check_option_expressions(), -1L)
+  expect_equal(check_option_expressions(expression(a, b)), 2L)
+
+  expect_equal(check_option_language(), -1L)
+  expect_equal(check_option_language(quote(f(x))), 2L)
+
+  expect_true(check_option_symbol())
+  expect_false(check_option_symbol(quote(a)))
+
+  expect_true(check_option_function())
+  expect_false(check_option_function(function() 1))
+
+  expect_true(check_option_environment())
+  expect_false(check_option_environment(new.env()))
+
   expect_equal(check_option_default_after_required(1L), 1L)
   expect_equal(check_option_default_after_required(1L, 2L), 3L)
   expect_error(check_option_default_after_required())
