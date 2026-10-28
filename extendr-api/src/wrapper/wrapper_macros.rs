@@ -63,6 +63,28 @@ macro_rules! make_conversions {
             }
         }
 
+        impl TryFrom<&Robj> for Option<$typename> {
+            type Error = crate::Error;
+
+            /// Make an optional wrapper from a robj. `NULL` becomes `None`.
+            fn try_from(robj: &Robj) -> Result<Self> {
+                if robj.is_null() {
+                    Ok(None)
+                } else {
+                    Ok(Some(<$typename>::try_from(robj)?))
+                }
+            }
+        }
+
+        impl TryFrom<Robj> for Option<$typename> {
+            type Error = crate::Error;
+
+            /// Make an optional wrapper from a robj. `NULL` becomes `None`.
+            fn try_from(robj: Robj) -> Result<Self> {
+                <Option<$typename>>::try_from(&robj)
+            }
+        }
+
         make_getsexp!($typename, impl);
     };
 }

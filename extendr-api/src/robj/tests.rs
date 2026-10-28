@@ -119,6 +119,40 @@ fn test_try_from_robj() {
         );
         assert!(<Option<String>>::try_from(&Robj::from(["1", "2"])).is_err());
 
+        let null = Robj::from(());
+
+        assert!(<Option<Strings>>::try_from(&null).unwrap().is_none());
+        assert_eq!(<Option<Strings>>::try_from(&Robj::from(["1", "2"])).unwrap().unwrap().len(), 2);
+        assert_eq!(<Option<Strings>>::try_from(&na_string).unwrap().unwrap().len(), 1);
+        assert!(<Option<Strings>>::try_from(&Robj::from(1)).is_err());
+        assert!(<Option<Strings>>::try_from(null.clone()).unwrap().is_none());
+
+        assert!(<Option<Integers>>::try_from(&null).unwrap().is_none());
+        assert_eq!(<Option<Integers>>::try_from(&Robj::from([1, 2])).unwrap().unwrap().len(), 2);
+        assert_eq!(<Option<Integers>>::try_from(&na_integer).unwrap().unwrap().len(), 1);
+        assert!(<Option<Integers>>::try_from(&Robj::from("1")).is_err());
+
+        assert!(<Option<Doubles>>::try_from(&null).unwrap().is_none());
+        assert_eq!(<Option<Doubles>>::try_from(&Robj::from([1., 2.])).unwrap().unwrap().len(), 2);
+        assert_eq!(<Option<Doubles>>::try_from(&na_real).unwrap().unwrap().len(), 1);
+        assert!(<Option<Doubles>>::try_from(&Robj::from("1")).is_err());
+
+        assert!(<Option<Logicals>>::try_from(&null).unwrap().is_none());
+        assert_eq!(
+            <Option<Logicals>>::try_from(&Robj::from([true, false])).unwrap().unwrap().len(),
+            2
+        );
+        assert_eq!(<Option<Logicals>>::try_from(&na_bool).unwrap().unwrap().len(), 1);
+        assert!(<Option<Logicals>>::try_from(&Robj::from("1")).is_err());
+
+        let list = eval_string("list(1, 2)").unwrap();
+        assert!(<Option<List>>::try_from(&null).unwrap().is_none());
+        assert_eq!(<Option<List>>::try_from(&list).unwrap().unwrap().len(), 2);
+        assert!(<Option<List>>::try_from(&Robj::from(1)).is_err());
+
+        assert!(<Option<Environment>>::try_from(&null).unwrap().is_none());
+        assert!(<Option<Environment>>::try_from(&Robj::from(Environment::global())).unwrap().is_some());
+
         assert_eq!(f64::from(Rfloat::from(1.0)), 1.0);
         assert!(f64::from(Rfloat::na()).is_na());
 

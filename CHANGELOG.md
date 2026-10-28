@@ -14,6 +14,7 @@
 - `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`. <https://github.com/extendr/extendr/pull/1075>
 - `Environment` gains `base()`, `empty()`, and `global()` associated methods. <https://github.com/extendr/extendr/pull/1075>
 - Implement `TryFrom<Robj> for Option<Environment>` <https://github.com/extendr/extendr/pull/1075>
+- `TryFrom<Robj>` and `TryFrom<&Robj>` for `Option<T>` of the wrapper types (`Strings`, `Integers`, `Doubles`, `Logicals`, `Complexes`, `Raw`, `List`, `Language`, and the rest of `make_conversions!`), so they work as optional `#[extendr]` arguments. `NULL` converts to `None`.
 - Added `Rf_errorcall` and `Rf_warningcall` to extendr-ffi <https://github.com/extendr/extendr/pull/1075>
 - Implement `From<Option<&str>> for Rstr` <https://github.com/extendr/extendr/pull/1098>
 - Added `#write_make_module_wrappers()` to `extendr_module!` macro <https://github.com/extendr/extendr/pull/1092>
