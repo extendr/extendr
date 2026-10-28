@@ -28,13 +28,13 @@
 <a href=#28 id=28 data-nosnippet>28</a>    </span><span class="kw">fn </span>Rf_findVar(arg1: SEXP, arg2: SEXP) -&gt; SEXP;
 <a href=#29 id=29 data-nosnippet>29</a>
 <a href=#30 id=30 data-nosnippet>30</a>    <span class="attr">#[cfg(r_4_5)]
-<a href=#31 id=31 data-nosnippet>31</a>    </span><span class="kw">fn </span>R_getVar(arg1: SEXP, arg2: SEXP) -&gt; SEXP;
+<a href=#31 id=31 data-nosnippet>31</a>    </span><span class="kw">fn </span>R_getVar(sym: SEXP, rho: SEXP, inherits: Rboolean) -&gt; SEXP;
 <a href=#32 id=32 data-nosnippet>32</a>
 <a href=#33 id=33 data-nosnippet>33</a>    <span class="attr">#[cfg(not(r_4_5))]
 <a href=#34 id=34 data-nosnippet>34</a>    </span><span class="kw">fn </span>Rf_findVarInFrame(arg1: SEXP, arg2: SEXP) -&gt; SEXP;
 <a href=#35 id=35 data-nosnippet>35</a>
 <a href=#36 id=36 data-nosnippet>36</a>    <span class="attr">#[cfg(r_4_5)]
-<a href=#37 id=37 data-nosnippet>37</a>    </span><span class="kw">fn </span>R_getVarEx(arg1: SEXP, arg2: SEXP) -&gt; SEXP;
+<a href=#37 id=37 data-nosnippet>37</a>    </span><span class="kw">fn </span>R_getVarEx(sym: SEXP, rho: SEXP, inherits: Rboolean, ifnotfound: SEXP) -&gt; SEXP;
 <a href=#38 id=38 data-nosnippet>38</a>
 <a href=#39 id=39 data-nosnippet>39</a>    <span class="attr">#[cfg(not(r_4_5))]
 <a href=#40 id=40 data-nosnippet>40</a>    </span><span class="kw">fn </span>CLOENV(x: SEXP) -&gt; SEXP;
@@ -105,7 +105,7 @@
 <a href=#105 id=105 data-nosnippet>105</a>    }
 <a href=#106 id=106 data-nosnippet>106</a>    <span class="attr">#[cfg(r_4_5)]
 <a href=#107 id=107 data-nosnippet>107</a>    </span>{
-<a href=#108 id=108 data-nosnippet>108</a>        R_getVar(symbol, env)
+<a href=#108 id=108 data-nosnippet>108</a>        R_getVar(symbol, env, Rboolean::TRUE)
 <a href=#109 id=109 data-nosnippet>109</a>    }
 <a href=#110 id=110 data-nosnippet>110</a>}
 <a href=#111 id=111 data-nosnippet>111</a>
@@ -132,7 +132,7 @@
 <a href=#132 id=132 data-nosnippet>132</a>    }
 <a href=#133 id=133 data-nosnippet>133</a>    <span class="attr">#[cfg(r_4_5)]
 <a href=#134 id=134 data-nosnippet>134</a>    </span>{
-<a href=#135 id=135 data-nosnippet>135</a>        <span class="prelude-val">Some</span>(R_getVar(symbol, env))
+<a href=#135 id=135 data-nosnippet>135</a>        <span class="prelude-val">Some</span>(R_getVar(symbol, env, Rboolean::TRUE))
 <a href=#136 id=136 data-nosnippet>136</a>    }
 <a href=#137 id=137 data-nosnippet>137</a>}
 <a href=#138 id=138 data-nosnippet>138</a>
@@ -141,16 +141,16 @@
 <a href=#141 id=141 data-nosnippet>141</a>/// # Safety
 <a href=#142 id=142 data-nosnippet>142</a>///
 <a href=#143 id=143 data-nosnippet>143</a>/// This function dereferences raw SEXP pointers.
-<a href=#144 id=144 data-nosnippet>144</a>/// The caller must ensure that `symbol` and `env` are valid SEXP pointers.
+<a href=#144 id=144 data-nosnippet>144</a>/// The caller must ensure that `env` and `symbol` are valid SEXP pointers.
 <a href=#145 id=145 data-nosnippet>145</a></span><span class="attr">#[inline]
-<a href=#146 id=146 data-nosnippet>146</a></span><span class="kw">pub unsafe fn </span>get_var_in_frame(symbol: SEXP, env: SEXP) -&gt; SEXP {
+<a href=#146 id=146 data-nosnippet>146</a></span><span class="kw">pub unsafe fn </span>get_var_in_frame(env: SEXP, symbol: SEXP) -&gt; SEXP {
 <a href=#147 id=147 data-nosnippet>147</a>    <span class="attr">#[cfg(not(r_4_5))]
 <a href=#148 id=148 data-nosnippet>148</a>    </span>{
-<a href=#149 id=149 data-nosnippet>149</a>        Rf_findVarInFrame(symbol, env)
+<a href=#149 id=149 data-nosnippet>149</a>        Rf_findVarInFrame(env, symbol)
 <a href=#150 id=150 data-nosnippet>150</a>    }
 <a href=#151 id=151 data-nosnippet>151</a>    <span class="attr">#[cfg(r_4_5)]
 <a href=#152 id=152 data-nosnippet>152</a>    </span>{
-<a href=#153 id=153 data-nosnippet>153</a>        R_getVarEx(env, symbol)
+<a href=#153 id=153 data-nosnippet>153</a>        R_getVarEx(symbol, env, Rboolean::FALSE, R_NilValue)
 <a href=#154 id=154 data-nosnippet>154</a>    }
 <a href=#155 id=155 data-nosnippet>155</a>}
 <a href=#156 id=156 data-nosnippet>156</a>

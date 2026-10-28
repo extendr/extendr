@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["EnvIter","Environment"]};
+window.SIDEBAR_ITEMS = {"fn":["get_in_frame"],"struct":["EnvIter","Environment"]};
