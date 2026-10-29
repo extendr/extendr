@@ -78,7 +78,7 @@ impl Deref for Integers {
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = dataptr(self.get()) as *const Rint;
-            std::slice::from_raw_parts(ptr, self.len())
+            crate::robj::vector_slice(ptr, self.len())
         }
     }
 }
@@ -88,7 +88,7 @@ impl DerefMut for Integers {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = dataptr(self.get_mut()) as *mut Rint;
-            std::slice::from_raw_parts_mut(ptr, self.len())
+            crate::robj::vector_slice_mut(ptr, self.len())
         }
     }
 }

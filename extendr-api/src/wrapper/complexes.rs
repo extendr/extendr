@@ -63,7 +63,7 @@ impl Deref for Complexes {
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = dataptr(self.get()) as *const Rcplx;
-            std::slice::from_raw_parts(ptr, self.len())
+            crate::robj::vector_slice(ptr, self.len())
         }
     }
 }
@@ -73,7 +73,7 @@ impl DerefMut for Complexes {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = dataptr(self.get_mut()) as *mut Rcplx;
-            std::slice::from_raw_parts_mut(ptr, self.len())
+            crate::robj::vector_slice_mut(ptr, self.len())
         }
     }
 }

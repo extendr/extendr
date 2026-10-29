@@ -71,7 +71,7 @@ impl Strings {
         unsafe {
             let data = STRING_PTR_RO(self.robj.get()) as *const Rstr;
             let len = self.robj.len();
-            std::slice::from_raw_parts(data, len)
+            crate::robj::vector_slice(data, len)
         }
     }
 

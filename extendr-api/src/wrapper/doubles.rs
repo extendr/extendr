@@ -77,7 +77,7 @@ impl Deref for Doubles {
     fn deref(&self) -> &Self::Target {
         unsafe {
             let ptr = dataptr(self.get()) as *const Rfloat;
-            std::slice::from_raw_parts(ptr, self.len())
+            crate::robj::vector_slice(ptr, self.len())
         }
     }
 }
@@ -87,7 +87,7 @@ impl DerefMut for Doubles {
     fn deref_mut(&mut self) -> &mut Self::Target {
         unsafe {
             let ptr = dataptr(self.get_mut()) as *mut Rfloat;
-            std::slice::from_raw_parts_mut(ptr, self.len())
+            crate::robj::vector_slice_mut(ptr, self.len())
         }
     }
 }
