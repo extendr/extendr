@@ -356,6 +356,43 @@ impl<T: 'static> AsMut<T> for ExternalPtr<T> {
     }
 }
 
+/// Implemented by `#[extendr]` on a struct or enum, so `Option<&T>` and
+/// `Option<&mut T>` can be used as arguments. Not meant to be implemented by hand.
+#[doc(hidden)]
+pub trait ExtendrStruct {}
+
+impl<'a, T> TryFrom<&'a Robj> for Option<&'a T>
+where
+    T: ExtendrStruct,
+    &'a T: TryFrom<&'a Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &'a Robj) -> Result<Self> {
+        if robj.is_null() {
+            Ok(None)
+        } else {
+            Ok(Some(robj.try_into()?))
+        }
+    }
+}
+
+impl<'a, T> TryFrom<&'a mut Robj> for Option<&'a mut T>
+where
+    T: ExtendrStruct,
+    &'a mut T: TryFrom<&'a mut Robj, Error = Error>,
+{
+    type Error = Error;
+
+    fn try_from(robj: &'a mut Robj) -> Result<Self> {
+        if robj.is_null() {
+            Ok(None)
+        } else {
+            Ok(Some(robj.try_into()?))
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::error::Error;

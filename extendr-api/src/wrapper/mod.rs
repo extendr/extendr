@@ -42,7 +42,7 @@ pub use dataframe::{Dataframe, IntoDataFrameRow};
 pub use doubles::Doubles;
 pub use environment::{EnvIter, Environment};
 pub use expr::Expressions;
-pub use externalptr::ExternalPtr;
+pub use externalptr::{ExtendrStruct, ExternalPtr};
 pub use function::Function;
 pub use integers::Integers;
 pub use lang::Language;

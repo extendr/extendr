@@ -204,6 +204,19 @@ fn check_option_default_vec(x: Option<Vec<String>>) -> bool {
 }
 
 #[extendr]
+fn check_option_extendr_struct(x: Option<&MyClass>) -> i32 {
+    x.map_or(-1, |x| x.a)
+}
+
+#[extendr]
+fn check_option_extendr_struct_mut(x: Option<&mut MyClass>) -> i32 {
+    x.map_or(-1, |x| {
+        x.a += 1;
+        x.a
+    })
+}
+
+#[extendr]
 fn check_option_default_after_required(x: i32, y: Option<i32>) -> i32 {
     x + y.unwrap_or(0)
 }
@@ -362,6 +375,8 @@ extendr_module! {
     fn check_option_default_int;
     fn check_option_default_str;
     fn check_option_default_vec;
+    fn check_option_extendr_struct;
+    fn check_option_extendr_struct_mut;
     fn check_option_default_after_required;
     fn check_option_default_override;
 

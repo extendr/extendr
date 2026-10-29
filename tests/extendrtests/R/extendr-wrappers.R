@@ -46,6 +46,10 @@ check_option_default_str <- function(x = NULL) .Call(wrap__check_option_default_
 
 check_option_default_vec <- function(x = NULL) .Call(wrap__check_option_default_vec, x)
 
+check_option_extendr_struct <- function(x = NULL) .Call(wrap__check_option_extendr_struct, x)
+
+check_option_extendr_struct_mut <- function(x = NULL) .Call(wrap__check_option_extendr_struct_mut, x)
+
 check_option_default_after_required <- function(x, y = NULL) .Call(wrap__check_option_default_after_required, x, y)
 
 check_option_default_override <- function(x = 1L) .Call(wrap__check_option_default_override, x)

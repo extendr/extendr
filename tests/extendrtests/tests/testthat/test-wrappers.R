@@ -100,6 +100,16 @@ test_that("Option arguments default to NULL", {
   expect_true(check_option_default_vec())
   expect_false(check_option_default_vec(c("a", "b")))
 
+  x <- MyClass$new()
+  x$set_a(10L)
+  expect_equal(check_option_extendr_struct(), -1L)
+  expect_equal(check_option_extendr_struct(x), 10L)
+  expect_error(check_option_extendr_struct(1L), "failed to convert argument `x`")
+
+  expect_equal(check_option_extendr_struct_mut(), -1L)
+  expect_equal(check_option_extendr_struct_mut(x), 11L)
+  expect_equal(x$a(), 11L)
+
   expect_equal(check_option_default_after_required(1L), 1L)
   expect_equal(check_option_default_after_required(1L, 2L), 3L)
   expect_error(check_option_default_after_required())

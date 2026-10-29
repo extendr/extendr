@@ -88,6 +88,9 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
                 }
             }
         }
+
+        // Enables `Option<&Self>` and `Option<&mut Self>` input conversions.
+        impl extendr_api::ExtendrStruct for #self_ty {}
     };
 
     let output = TokenStream::from(quote! {
