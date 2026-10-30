@@ -1,0 +1,47 @@
+name: Upcoming Changelog
+
+# Squash-merged PR titles on main are conventional commits; git-sv groups them
+# into release notes since the last `v*` tag (see .gitsv/config.yml).
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install git-sv
+        env:
+          GIT_SV_VERSION: v3.0.6
+        run: |
+          base=https://github.com/thegeeklab/git-sv/releases/download/$GIT_SV_VERSION
+          curl -fsSLO "$base/git-sv-linux-amd64"
+          curl -fsSLO "$base/git-sv-linux-amd64.sha256"
+          sha256sum -c git-sv-linux-amd64.sha256
+          sudo install git-sv-linux-amd64 /usr/local/bin/git-sv
+
+      - name: Update changelog issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: Changelog for upcoming version
+        run: |
+          notes=$(git sv rn)
+          issue=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')
+          if [ -z "$issue" ]; then
+            gh issue create --title "$TITLE" --body "$notes"
+          else
+            gh issue edit "$issue" --body "$notes"
+          fi
