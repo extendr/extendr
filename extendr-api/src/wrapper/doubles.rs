@@ -44,6 +44,9 @@ macros::gen_from_iterator_impl!(
 impl Doubles {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rfloat]) -> usize {
+        if index >= self.len() {
+            return 0;
+        }
         unsafe {
             let ptr: *mut f64 = dest.as_mut_ptr() as *mut f64;
             REAL_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
