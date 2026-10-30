@@ -154,7 +154,7 @@ impl List {
         unsafe {
             let data = dataptr(self.robj.get()) as *const Robj;
             let len = self.robj.len();
-            std::slice::from_raw_parts(data, len)
+            crate::robj::vector_slice(data, len)
         }
     }
 

@@ -171,7 +171,7 @@ pub trait Slices: GetSexp {
     unsafe fn as_typed_slice_raw<T>(&self) -> &[T] {
         let len = XLENGTH(self.get()) as usize;
         let data = dataptr(self.get()) as *const T;
-        std::slice::from_raw_parts(data, len)
+        vector_slice(data, len)
     }
 
     /// Get a mutable slice to this object's data.
@@ -184,11 +184,28 @@ pub trait Slices: GetSexp {
     unsafe fn as_typed_slice_raw_mut<T>(&mut self) -> &mut [T] {
         let len = XLENGTH(self.get()) as usize;
         let data = dataptr(self.get_mut()) as *mut T;
-        std::slice::from_raw_parts_mut(data, len)
+        vector_slice_mut(data, len)
     }
 }
 
 impl Slices for Robj {}
+
+// R returns `(void *) 1` as the data pointer of a zero-length vector, which isn't aligned.
+pub(crate) unsafe fn vector_slice<'a, T>(data: *const T, len: usize) -> &'a [T] {
+    if len == 0 {
+        &[]
+    } else {
+        std::slice::from_raw_parts(data, len)
+    }
+}
+
+pub(crate) unsafe fn vector_slice_mut<'a, T>(data: *mut T, len: usize) -> &'a mut [T] {
+    if len == 0 {
+        &mut []
+    } else {
+        std::slice::from_raw_parts_mut(data, len)
+    }
+}
 
 pub trait Length: GetSexp {
     /// Get the extended length of the object.

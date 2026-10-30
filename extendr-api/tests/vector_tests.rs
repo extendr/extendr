@@ -242,6 +242,37 @@ fn test_rstr() {
     }
 }
 
+// R returns `(void *) 1` as the data pointer of a zero-length vector.
+#[test]
+fn test_zero_length_slices() {
+    use std::ops::{Deref, DerefMut};
+    test! {
+        let mut x = Integers::new(0);
+        assert!(x.deref().is_empty());
+        assert!(x.deref_mut().is_empty());
+
+        let mut x = Doubles::new(0);
+        assert!(x.deref().is_empty());
+        assert!(x.deref_mut().is_empty());
+
+        let mut x = Logicals::new(0);
+        assert!(x.deref().is_empty());
+        assert!(x.deref_mut().is_empty());
+
+        let mut x = Complexes::new(0);
+        assert!(x.deref().is_empty());
+        assert!(x.deref_mut().is_empty());
+
+        assert!(Strings::new(0).as_slice().is_empty());
+        assert!(Strings::new(0).iter().next().is_none());
+        assert!(List::new(0).as_slice().is_empty());
+
+        let mut x: Robj = Integers::new(0).into();
+        assert!(unsafe { x.as_typed_slice_raw::<Rint>() }.is_empty());
+        assert!(unsafe { x.as_typed_slice_raw_mut::<Rint>() }.is_empty());
+    }
+}
+
 #[test]
 fn test_doubles_from_iterator() {
     test! {

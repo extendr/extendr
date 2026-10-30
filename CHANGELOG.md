@@ -8,7 +8,7 @@
 - Infallible `From<T> for S` for extendr-scalar-type `T` and rust-scalar-type `S`.
 - `Condition`, `RCondition`, `ConditionKind`, and `ConditionBuilder` in `extendr_api::conditions` for creating, converting, and round-tripping R condition objects. `Condition` is the Rust-native representation; `RCondition` is the R-boundary type wrapping a validated `List`. Conversions between all four types are provided via `From`/`TryFrom`. <https://github.com/extendr/extendr/pull/1082>
 - `From<Strings> for Vec<String>` and `From<Strings> for StrIter` conversions. <https://github.com/extendr/extendr/pull/1082>
-- `stop()` is an alias for `throw_r_error()` 
+- `stop()` is an alias for `throw_r_error()`
 - `abort!()` and `warn!()` macros for rlang-style error and warning conditions with no rlang dependency. Supports optional body bullets and caller environment attribution: `abort!("msg", &["detail"], call = env)` and `abort!("msg", call = env)`. <https://github.com/extendr/extendr/pull/1075>
 - `Environment::call()` retrieves the call associated with an environment by matching against the R call stack, mirroring `rlang::frame_call()` <https://github.com/extendr/extendr/pull/1075>
 - `Environment::caller()` returns the calling environment, mirroring `rlang::caller_env()`. <https://github.com/extendr/extendr/pull/1075>
@@ -32,8 +32,8 @@
 
 - **Breaking**: `SET_ATTRIB` is no longer exported from extendr-ffi. Use the new `set_attrib()` backport, which uses `CLEAR_ATTRIB` and `Rf_setAttrib` on R >= 4.5 <https://github.com/extendr/extendr/issues/1026>
 - **Breaking**: bumps MSRV to 1.77 <https://github.com/extendr/extendr/pull/1075>
-- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude`  <https://github.com/extendr/extendr/pull/1075>
-- **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed  <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: deprecates and removed `global_env()`, `base_env()`, and `empty_env()` from the `prelude` <https://github.com/extendr/extendr/pull/1075>
+- **Breaking**: non-API items `global_var()`, `local_var()`, `global!()` have been removed <https://github.com/extendr/extendr/pull/1075>
 - **Breaking**: removed the unsound lifetime from `as_integer_slice()` closes <https://github.com/extendr/extendr/issues/1061>
 - **Deprecates** `parse()` in favor of the idiomatic `FromStr` trait. Replace `parse(code)` with `Expressions::from_str(code)` <https://github.com/extendr/extendr/pull/1100>
 - `Environment::names()` is no longer marked `non-api`.
@@ -41,6 +41,7 @@
 
 ### Fixed
 
+- Fixes a bug where length 0 vectors were dereferenced into a slice incorrectly causing a panic <https://github.com/extendr/extendr/pull/1147>
 - `StrIter` and `ListIter` `size_hint()` now reports the remaining length <https://github.com/extendr/extendr/issues/1131>
 - `collect::<Robj>()` no longer writes past the allocation when `size_hint()` is wrong <https://github.com/extendr/extendr/issues/1136>
 - `throw_r_error()` no longer segfaults when the message contains `%` characters. <https://github.com/extendr/extendr/issues/1058> behavior now in line with cpp11 and Rcpp
