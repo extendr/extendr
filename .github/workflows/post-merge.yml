@@ -9,6 +9,7 @@ on:
       - "**.R"
       - "**.toml"
       - "**.lock"
+      - "tests/**"
   workflow_dispatch:
 
 # Cancel previous runs when new commits are pushed
