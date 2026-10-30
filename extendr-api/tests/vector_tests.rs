@@ -393,3 +393,33 @@ mod num_complex {
         }
     }
 }
+
+#[test]
+fn test_get_region_out_of_bounds() {
+    test! {
+        let x = Integers::from_values([1, 2, 3]);
+        let mut dest = [0.into(); 2];
+        assert_eq!(x.get_region(3, &mut dest), 0);
+        assert_eq!(x.get_region(5, &mut dest), 0);
+        assert_eq!(x.get_region(usize::MAX, &mut dest), 0);
+        assert_eq!(dest, [0, 0]);
+
+        let x = Doubles::from_values([1.0, 2.0, 3.0]);
+        let mut dest = [0.0.into(); 2];
+        assert_eq!(x.get_region(5, &mut dest), 0);
+        assert_eq!(x.get_region(usize::MAX, &mut dest), 0);
+        assert_eq!(dest, [0.0, 0.0]);
+
+        let x = Logicals::from_values([true, false, true]);
+        let mut dest = [FALSE; 2];
+        assert_eq!(x.get_region(5, &mut dest), 0);
+        assert_eq!(x.get_region(usize::MAX, &mut dest), 0);
+        assert_eq!(dest, [FALSE, FALSE]);
+
+        let x = Complexes::from_values([1.0, 2.0, 3.0]);
+        let mut dest = [0.0.into(); 2];
+        assert_eq!(x.get_region(5, &mut dest), 0);
+        assert_eq!(x.get_region(usize::MAX, &mut dest), 0);
+        assert_eq!(dest, [Rcplx::from(0.0), Rcplx::from(0.0)]);
+    }
+}

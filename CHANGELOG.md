@@ -41,6 +41,7 @@
 
 ### Fixed
 
+- `get_region()` now returns 0 when `index` is out of bounds. Previously R returned a negative count, and casting as a usize reinterprets the number as a large positive number
 - Fixes a bug where length 0 vectors were dereferenced into a slice incorrectly causing a panic <https://github.com/extendr/extendr/pull/1147>
 - `StrIter` and `ListIter` `size_hint()` now reports the remaining length <https://github.com/extendr/extendr/issues/1131>
 - `collect::<Robj>()` no longer writes past the allocation when `size_hint()` is wrong <https://github.com/extendr/extendr/issues/1136>
