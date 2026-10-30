@@ -10,6 +10,7 @@ on:
       - "**.R"
       - "**.toml"
       - "**.lock"
+      - "tests/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
