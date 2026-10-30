@@ -598,7 +598,7 @@ pub fn sxp_to_rtype(sxptype: SEXPTYPE) -> Rtype {
 const PRINTF_NO_FMT_CSTRING: &[std::os::raw::c_char] = &[37, 115, 0]; // same as "%s\0"
 #[doc(hidden)]
 pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
-    let cs = std::ffi::CString::new(s).expect("NulError");
+    let cs = conditions::to_c_message(String::from_utf8_lossy(&s.into()));
     unsafe {
         extendr_ffi::Rprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
@@ -606,7 +606,7 @@ pub fn print_r_output<T: Into<Vec<u8>>>(s: T) {
 
 #[doc(hidden)]
 pub fn print_r_error<T: Into<Vec<u8>>>(s: T) {
-    let cs = std::ffi::CString::new(s).expect("NulError");
+    let cs = conditions::to_c_message(String::from_utf8_lossy(&s.into()));
     unsafe {
         extendr_ffi::REprintf(PRINTF_NO_FMT_CSTRING.as_ptr(), cs.as_ptr());
     }
