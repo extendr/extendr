@@ -53,10 +53,12 @@ impl Logicals {
 
 // TODO: this should be a trait.
 impl Logicals {
-    pub fn set_elt(&mut self, index: usize, val: Rbool) {
-        single_threaded(|| unsafe {
-            SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.0);
-        })
+    pub fn set_elt(&mut self, index: usize, val: Rbool) -> Result<()> {
+        if index >= self.len() {
+            return Err(Error::OutOfRange(self.robj.clone()));
+        }
+        unsafe { SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.0) };
+        Ok(())
     }
 }
 
