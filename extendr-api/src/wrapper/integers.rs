@@ -45,6 +45,9 @@ macros::gen_from_iterator_impl!(
 impl Integers {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rint]) -> usize {
+        if index >= self.len() {
+            return 0;
+        }
         unsafe {
             let ptr: *mut i32 = dest.as_mut_ptr() as *mut i32;
             INTEGER_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
