@@ -1,0 +1,48 @@
+name: Release Changelog
+
+# Prepends the release's notes to CHANGELOG.md and opens a PR for review.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install git-sv
+        env:
+          GIT_SV_VERSION: v3.0.6
+        run: |
+          base=https://github.com/thegeeklab/git-sv/releases/download/$GIT_SV_VERSION
+          curl -fsSLO "$base/git-sv-linux-amd64"
+          curl -fsSLO "$base/git-sv-linux-amd64.sha256"
+          sha256sum -c git-sv-linux-amd64.sha256
+          sudo install git-sv-linux-amd64 /usr/local/bin/git-sv
+          rm git-sv-linux-amd64 git-sv-linux-amd64.sha256
+
+      - name: Open changelog PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          branch="changelog/$TAG"
+          git switch -c "$branch"
+          { head -n 1 CHANGELOG.md; echo; git sv rn -t "$TAG"; echo; tail -n +3 CHANGELOG.md; } > CHANGELOG.new
+          mv CHANGELOG.new CHANGELOG.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "docs: changelog for $TAG"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "docs: changelog for $TAG" \
+            --body "Release notes for $TAG generated from the merged PR titles."

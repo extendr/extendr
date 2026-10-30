@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "**.rs"
+      - "**.R"
+      - "**.toml"
+      - "**.lock"
+      - "tests/**"
 
 # Cancel previous runs when new commits are pushed
 concurrency:

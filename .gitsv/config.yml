@@ -1,0 +1,29 @@
+versioning:
+  update-major: []
+  update-minor: [feat]
+  update-patch: [enh, fix, perf, refactor, chore, ci, docs, style, test]
+  ignore-unknown: true
+
+tag:
+  pattern: "v%d.%d.%d"
+  filter: "v*"
+
+release-notes:
+  sections:
+    - name: Breaking Changes
+      section-type: breaking-changes
+    - name: Features
+      section-type: commits
+      commit-types: [feat]
+    - name: Enhancements
+      section-type: commits
+      commit-types: [enh, perf]
+    - name: Bug Fixes
+      section-type: commits
+      commit-types: [fix]
+    - name: Refactors
+      section-type: commits
+      commit-types: [refactor]
+
+commit-message:
+  types: [feat, fix, enh, chore, docs, style, refactor, test, perf, ci, WIP]

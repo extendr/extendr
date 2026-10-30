@@ -5,6 +5,12 @@ on:
     types: [labeled, synchronize, reopened]
     branches:
       - main
+    paths:
+      - "**.rs"
+      - "**.R"
+      - "**.toml"
+      - "**.lock"
+      - "tests/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
