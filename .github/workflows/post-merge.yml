@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "**.rs"
+      - "**.R"
+      - "**.toml"
+      - "**.lock"
   workflow_dispatch:
 
 # Cancel previous runs when new commits are pushed
