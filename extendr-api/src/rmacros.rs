@@ -33,17 +33,6 @@ macro_rules! r {
     };
 }
 
-/// Get a local variable from the calling function
-/// or a global variable if no such variable exists.
-///
-/// Variables with embedded "." may not work.
-#[macro_export]
-macro_rules! var {
-    ($($tokens: tt)*) => {{
-        local_var(sym!($($tokens)*))
-    }};
-}
-
 /// The sym! macro install symbols.
 /// You should cache your symbols in variables
 /// as generating them is costly.

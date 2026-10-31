@@ -30,7 +30,7 @@ pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
 
 // Exported macros have crate scope.
 pub use crate::{
-    abort, data_frame, factor, list, r, reprint, reprintln, rprint, rprintln, sym, test, var, warn,
+    abort, data_frame, factor, list, r, reprint, reprintln, rprint, rprintln, sym, test, warn,
 };
 
 pub use super::wrapper::{
