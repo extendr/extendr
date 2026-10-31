@@ -75,18 +75,26 @@ impl From<Option<bool>> for Rbool {
 }
 
 impl From<Rbool> for Option<bool> {
+    /// Convert an `Rbool` into an `Option<bool>`. `NA` becomes `None`.
     fn from(v: Rbool) -> Self {
-        if v.0.is_na() {
+        if v.is_na() {
             None
         } else {
-            Some(v.0 != 0)
+            Some(v.is_true())
         }
     }
 }
 
-impl From<Rbool> for bool {
-    fn from(v: Rbool) -> Self {
-        v.0 != 0
+impl TryFrom<Rbool> for bool {
+    type Error = Error;
+
+    /// Convert an `Rbool` into a `bool`. `NA` returns [`Error::MustNotBeNA`].
+    fn try_from(v: Rbool) -> Result<Self> {
+        if v.is_na() {
+            Err(Error::MustNotBeNA(v.into()))
+        } else {
+            Ok(v.is_true())
+        }
     }
 }
 

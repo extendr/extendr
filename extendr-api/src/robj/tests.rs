@@ -159,8 +159,13 @@ fn test_try_from_robj() {
         assert_eq!(i32::from(Rint::from(1)), 1);
         assert!(Rint::from(i32::from(Rint::na())).is_na());
 
-        assert_eq!(bool::from(Rbool::from(true)), true);
-        assert_eq!(bool::from(Rbool::from(false)), false);
+        assert_eq!(bool::try_from(Rbool::from(true)), Ok(true));
+        assert_eq!(bool::try_from(Rbool::from(false)), Ok(false));
+        assert!(matches!(bool::try_from(Rbool::na()), Err(Error::MustNotBeNA(_))));
+
+        assert_eq!(<Option<bool>>::from(Rbool::from(true)), Some(true));
+        assert_eq!(<Option<bool>>::from(Rbool::from(false)), Some(false));
+        assert_eq!(<Option<bool>>::from(Rbool::na()), None);
 
         assert_eq!(c64::from(Rcplx::from(c64::new(1.0, 2.0))), c64::new(1.0, 2.0));
         assert!(c64::from(Rcplx::na()).is_na());
