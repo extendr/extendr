@@ -7,7 +7,7 @@ use ndarray::{s, ArrayView2};
 /// @export
 #[extendr]
 fn euclidean_dist(a: Nullable<ArrayView2<Rfloat>>) -> Nullable<Doubles> {
-    if let NotNull(a) = a {
+    if let Nullable::NotNull(a) = a {
         let nrow = a.nrows();
 
         let result = (0..(nrow - 1))

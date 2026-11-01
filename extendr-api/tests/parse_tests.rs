@@ -1,5 +1,7 @@
+use extendr_api::eval_string;
 use extendr_api::prelude::*;
 use extendr_ffi::ParseStatus;
+use std::str::FromStr;
 
 #[test]
 fn parse_reports_error_for_invalid_syntax() {

@@ -260,6 +260,7 @@ pub trait Types: GetSexp {
     /// Get the type of an R object.
     /// ```
     /// use extendr_api::prelude::*;
+    /// use std::str::FromStr;
     /// test! {
     ///     assert_eq!(Robj::null().rtype(), Rtype::Null);
     ///     assert_eq!(sym!(xyz).rtype(), Rtype::Symbol);
