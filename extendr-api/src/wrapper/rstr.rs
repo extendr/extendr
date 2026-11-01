@@ -8,7 +8,7 @@ use extendr_ffi::{R_BlankString, R_NaString, R_NilValue, Rf_xlength, R_CHAR, SEX
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let chr = r!(Rstr::from("xyz"));
-///     assert_eq!(chr.as_char().unwrap().as_ref(), "xyz");
+///     assert_eq!(Rstr::try_from(&chr).unwrap().as_ref(), "xyz");
 /// }
 /// ```
 ///
@@ -222,7 +222,7 @@ mod tests {
     fn test_rstr_as_char() {
         test! {
             let chr = r!(Rstr::from("xyz"));
-            let x = chr.as_char().unwrap();
+            let x = Rstr::try_from(&chr).unwrap();
             assert_eq!(x.as_ref(), "xyz");
         }
     }

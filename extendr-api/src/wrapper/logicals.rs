@@ -213,7 +213,7 @@ mod tests {
             let test = vec![false, true, true, false];
             let test_rbool: Vec<Rbool> = test.clone().into_iter().map(|x|x.into()).collect();
             let test_logicals: Logicals = test.try_into().unwrap();
-            assert_eq!(test_logicals.robj.as_logical_slice().unwrap(), &test_rbool);
+            assert_eq!(<&[Rbool]>::try_from(&test_logicals.robj).unwrap(), &test_rbool);
         }
     }
 }

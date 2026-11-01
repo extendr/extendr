@@ -49,12 +49,12 @@ pub use super::robj::{
 pub use super::scalar::*;
 pub use super::thread_safety::{catch_r_error, single_threaded, throw_r_error};
 pub use super::wrapper::s4::S4;
+pub use super::wrapper::MatrixConversions;
 pub use super::wrapper::{
     Complexes, Dataframe, Doubles, EnvIter, Environment, Expressions, ExternalPtr, FromList,
     Function, Integers, IntoDataFrameRow, Language, List, ListIter, Logicals, Nullable, Pairlist,
     Primitive, Promise, Raw, Rstr, Strings, Symbol,
 };
-pub use super::wrapper::{Conversions, MatrixConversions};
 pub use super::Nullable::*;
 pub use extendr_macros::{
     call, extendr, extendr_module, pairlist, IntoDataFrameRow, IntoList, Rraw, TryFromList, R,

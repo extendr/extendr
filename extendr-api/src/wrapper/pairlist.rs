@@ -27,7 +27,7 @@ impl Pairlist {
     ///     // Use "" to indicate the absense of the name
     ///     let unnamed_pairlist = Pairlist::from_pairs([("", "a"), ("", "b")]);
     ///     assert_eq!(call!("names", unnamed_pairlist)?, Robj::null());
-    ///     let unnamed_pairlist_r = R!(r#"pairlist("a", "b")"#)?.as_pairlist().unwrap();
+    ///     let unnamed_pairlist_r = Pairlist::try_from(R!(r#"pairlist("a", "b")"#)?).unwrap();
     ///     assert_eq!(unnamed_pairlist_r.names().collect::<Vec<_>>(), vec!["", ""]);
     /// }
     /// ```
@@ -161,7 +161,7 @@ impl IntoIterator for Pairlist {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let pairlist = pairlist!(a=1, 2).as_pairlist().unwrap();
+    ///     let pairlist = pairlist!(a=1, 2);
     ///     let vec : Vec<_> = pairlist.into_iter().collect();
     ///     assert_eq!(vec, vec![("a", r!(1)), ("", r!(2))]);
     /// }

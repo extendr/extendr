@@ -14,7 +14,7 @@ use extendr_ffi::{
 ///////////////////////////////////////////////////////////////
 /// The following impls wrap specific Rinternals.h functions.
 ///
-pub trait Rinternals: Types + Conversions {
+pub trait Rinternals: Types {
     /// Return true if this is the null object.
     fn is_null(&self) -> bool {
         unsafe { Rf_isNull(self.get()).into() }
@@ -216,7 +216,7 @@ pub trait Rinternals: Types + Conversions {
     /// }
     /// ```
     fn eval_promise(&self) -> Result<Robj> {
-        if let Some(promise) = self.as_promise() {
+        if let Ok(promise) = Promise::try_from(self.as_robj()) {
             promise.eval()
         } else {
             Ok(self.as_robj().clone())

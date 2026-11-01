@@ -49,7 +49,7 @@ impl From<RMatrix<f64>> for Mat<f64> {
     fn from(value: RMatrix<f64>) -> Self {
         let nrow = value.nrows();
         let ncol = value.ncols();
-        let slice = value.as_real_slice().expect("RMatrix should be doubles");
+        let slice = <&[f64]>::try_from(value.as_robj()).expect("RMatrix should be doubles");
         Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow])
     }
 }
@@ -72,7 +72,7 @@ impl TryFrom<&Robj> for Mat<f64> {
         let nrow = rmat.nrows();
         let ncol = rmat.ncols();
 
-        if let Some(slice) = robj.as_real_slice() {
+        if let Ok(slice) = <&[f64]>::try_from(robj) {
             let fmat = Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow]);
             Ok(fmat)
         } else {
@@ -118,9 +118,7 @@ impl From<RMatrix<i32>> for Mat<f64> {
     fn from(value: RMatrix<i32>) -> Self {
         let nrow = value.nrows();
         let ncol = value.ncols();
-        let slice = value
-            .as_integer_slice()
-            .expect("RMatrix should be integers");
+        let slice = <&[i32]>::try_from(value.as_robj()).expect("RMatrix should be integers");
         Mat::from_fn(nrow, ncol, |i, j| slice[i + j * nrow] as f64)
     }
 }
@@ -193,7 +191,7 @@ mod test {
                 [4.0, 8.0, 12.0f64],
             ];
             let rmatrix: RMatrix<f64> = a.into();
-            assert_eq!(rmatrix.as_real_slice().expect("slice"), &vec);
+            assert_eq!(<&[f64]>::try_from(rmatrix.as_robj()).expect("slice"), &vec);
         }
     }
 
@@ -208,7 +206,7 @@ mod test {
                 [4.0, 8.0, 12.0f64],
             ];
             let rmatrix: RMatrix<f64> = a.as_ref().into();
-            assert_eq!(rmatrix.as_real_slice().expect("slice"), &vec);
+            assert_eq!(<&[f64]>::try_from(rmatrix.as_robj()).expect("slice"), &vec);
         }
     }
 

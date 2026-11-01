@@ -191,7 +191,7 @@ mod tests {
         test! {
             let int_vec = vec![3,4,0,-2];
             let int_vec_robj: Robj = int_vec.clone().into();
-            assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
+            assert_eq!(<&[i32]>::try_from(&int_vec_robj).unwrap(), &int_vec);
         }
     }
 }

@@ -15,7 +15,7 @@ use extendr_ffi::{
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let chr = r!(Symbol::from_string("xyz"));
-///     assert_eq!(chr.as_symbol().unwrap().as_str(), "xyz");
+///     assert_eq!(Symbol::try_from(&chr).unwrap().as_str(), "xyz");
 /// }
 /// ```
 ///
@@ -55,7 +55,7 @@ impl Symbol {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     assert_eq!(sym!(xyz).as_symbol().unwrap().as_str(), "xyz");
+    ///     assert_eq!(Symbol::try_from(sym!(xyz)).unwrap().as_str(), "xyz");
     /// }
     /// ```
     pub fn as_str(&self) -> &str {
