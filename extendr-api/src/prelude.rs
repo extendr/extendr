@@ -11,10 +11,7 @@ pub use super::functions::{
     find_namespace, find_namespaced_function, global_function, na_string, new_env, nil_value,
     srcref,
 };
-pub use super::{
-    print_r_error, print_r_output, CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL,
-    NA_STRING, NULL, TRUE,
-};
+pub use super::{CanBeNA, Rtype, FALSE, NA_INTEGER, NA_LOGICAL, NA_REAL, NA_STRING, NULL, TRUE};
 
 pub use super::wrapper::symbol::{
     base_symbol, brace_symbol, bracket_2_symbol, bracket_symbol, class_symbol, device_symbol,
@@ -26,11 +23,8 @@ pub use super::wrapper::symbol::{
 };
 
 // Exported macros have crate scope.
-pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
-
-// Exported macros have crate scope.
 pub use crate::{
-    abort, data_frame, factor, list, r, reprint, reprintln, rprint, rprintln, sym, test, warn,
+    abort, data_frame, factor, lang, list, r, reprint, reprintln, rprint, rprintln, sym, test, warn,
 };
 
 pub use super::wrapper::{

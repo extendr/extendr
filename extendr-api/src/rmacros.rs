@@ -29,7 +29,7 @@
 #[macro_export]
 macro_rules! r {
     ($e: expr) => {
-        extendr_api::Robj::from($e)
+        $crate::Robj::from($e)
     };
 }
 
@@ -47,7 +47,7 @@ macro_rules! r {
 #[macro_export]
 macro_rules! sym {
     ($($tokens: tt)*) => {
-        Robj::from(Symbol::from_string(stringify!($($tokens)*)))
+        $crate::Robj::from($crate::Symbol::from_string(stringify!($($tokens)*)))
     };
 }
 
@@ -67,10 +67,10 @@ macro_rules! sym {
 #[macro_export]
 macro_rules! data_frame {
     () => {
-        call!("data.frame").unwrap()
+        $crate::call!("data.frame").unwrap()
     };
     ($($rest: tt)*) => {
-        call!("data.frame", $($rest)*).unwrap()
+        $crate::call!("data.frame", $($rest)*).unwrap()
     };
 }
 
@@ -91,7 +91,7 @@ macro_rules! data_frame {
 #[macro_export]
 macro_rules! factor {
     ($($rest: tt)*) => {
-        call!("factor", $($rest)*).unwrap()
+        $crate::call!("factor", $($rest)*).unwrap()
     };
 }
 
@@ -104,7 +104,7 @@ macro_rules! rprint {
     () => {
     };
     ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*));
+        $crate::print_r_output(format!($($rest)*));
     };
 }
 
@@ -115,11 +115,11 @@ macro_rules! rprint {
 #[macro_export]
 macro_rules! rprintln {
     () => {
-        print_r_output("\n");
+        $crate::print_r_output("\n");
     };
     ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*));
-        print_r_output("\n");
+        $crate::print_r_output(format!($($rest)*));
+        $crate::print_r_output("\n");
     };
 }
 
@@ -129,7 +129,7 @@ macro_rules! reprint {
     () => {
     };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*));
+        $crate::print_r_error(format!($($rest)*));
     };
 }
 
@@ -137,11 +137,11 @@ macro_rules! reprint {
 #[macro_export]
 macro_rules! reprintln {
     () => {
-        print_r_error("\n");
+        $crate::print_r_error("\n");
     };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*));
-        print_r_error("\n");
+        $crate::print_r_error(format!($($rest)*));
+        $crate::print_r_error("\n");
     };
 }
 
@@ -158,16 +158,13 @@ macro_rules! reprintln {
 /// [`extendr_engine`]: https://extendr.github.io/extendr/extendr_engine/
 #[macro_export]
 macro_rules! test {
-    () => {
-        test(|| Ok(()))
-    };
     ($($rest: tt)*) => {
         {
             use extendr_engine;
 
             // this helper function must reside in the macro so it doesn't get compiled
             // unless the macro actually gets used (e.g., in testing code)
-            fn test<F: FnOnce() -> extendr_api::Result<()>>(f: F) {
+            fn test<F: FnOnce() -> $crate::Result<()>>(f: F) {
                 extendr_engine::start_r();
                 f().unwrap();
             }

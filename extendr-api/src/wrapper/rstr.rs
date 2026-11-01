@@ -216,7 +216,6 @@ impl CanBeNA for Rstr {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate as extendr_api;
 
     #[test]
     fn test_rstr_as_char() {

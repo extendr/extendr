@@ -10,18 +10,18 @@ use extendr_ffi::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
 #[macro_export]
 macro_rules! push_args {
     ($args: expr, $name: ident = $val : expr) => {
-        $args.push((stringify!($name), Robj::from($val)));
+        $args.push((stringify!($name), $crate::Robj::from($val)));
     };
     ($args: expr, $name: ident = $val : expr, $($rest: tt)*) => {
-        $args.push((stringify!($name), Robj::from($val)));
-        push_args!($args, $($rest)*);
+        $args.push((stringify!($name), $crate::Robj::from($val)));
+        $crate::push_args!($args, $($rest)*);
     };
     ($args: expr, $val : expr) => {
-        $args.push(("", Robj::from($val)));
+        $args.push(("", $crate::Robj::from($val)));
     };
     ($args: expr, $val : expr, $($rest: tt)*) => {
-        $args.push(("", Robj::from($val)));
-        push_args!($args, $($rest)*);
+        $args.push(("", $crate::Robj::from($val)));
+        $crate::push_args!($args, $($rest)*);
     };
 }
 
@@ -29,12 +29,12 @@ macro_rules! push_args {
 #[macro_export]
 macro_rules! args {
     () => {
-        Vec::<(&str, Robj)>::new()
+        Vec::<(&str, $crate::Robj)>::new()
     };
     ($($rest: tt)*) => {
         {
-            let mut args = Vec::<(&str, Robj)>::new();
-            push_args!(args, $($rest)*);
+            let mut args = Vec::<(&str, $crate::Robj)>::new();
+            $crate::push_args!(args, $($rest)*);
             args
         }
     };
@@ -70,18 +70,18 @@ pub fn make_lang(sym: &str) -> Robj {
 #[macro_export]
 macro_rules! append_lang {
     ($tail: ident, $name: ident = $val : expr) => {
-        $tail = append_with_name($tail, Robj::from($val), stringify!($name));
+        $tail = $crate::append_with_name($tail, $crate::Robj::from($val), stringify!($name));
     };
     ($tail: ident, $name: ident = $val : expr, $($rest: tt)*) => {
-        $tail = append_with_name($tail, Robj::from($val), stringify!($name));
-        append_lang!($tail, $($rest)*);
+        $tail = $crate::append_with_name($tail, $crate::Robj::from($val), stringify!($name));
+        $crate::append_lang!($tail, $($rest)*);
     };
     ($tail: ident, $val : expr) => {
-        $tail = append($tail, Robj::from($val));
+        $tail = $crate::append($tail, $crate::Robj::from($val));
     };
     ($tail: ident, $val : expr, $($rest: tt)*) => {
-        $tail = append($tail, Robj::from($val));
-        append_lang!($tail, $($rest)*);
+        $tail = $crate::append($tail, $crate::Robj::from($val));
+        $crate::append_lang!($tail, $($rest)*);
     };
 }
 
@@ -102,14 +102,14 @@ macro_rules! append_lang {
 #[macro_export]
 macro_rules! lang {
     ($sym : expr) => {
-        make_lang($sym)
+        $crate::make_lang($sym)
     };
     ($sym : expr, $($rest: tt)*) => {
         unsafe {
             use $crate::robj::GetSexp;
-            let res = make_lang($sym);
+            let res = $crate::make_lang($sym);
             let mut tail = res.get();
-            append_lang!(tail, $($rest)*);
+            $crate::append_lang!(tail, $($rest)*);
             let _ = tail;
             res
         }

@@ -270,7 +270,6 @@ impl Ownership {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate as extendr_api;
     use crate::*;
     use extendr_ffi::{Rf_ScalarInteger, Rf_protect};
 

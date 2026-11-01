@@ -56,11 +56,11 @@ pub fn call(item: TokenStream) -> TokenStream {
     // This will error if the object is not callable.
     let res = if pairs.is_empty() {
         quote!(
-            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::new()))
+            (#caller).and_then(|caller| extendr_api::Operators::call(&caller, extendr_api::wrapper::Pairlist::new()))
         )
     } else {
         quote!(
-            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])))
+            (#caller).and_then(|caller| extendr_api::Operators::call(&caller, extendr_api::wrapper::Pairlist::from_pairs(&[# ( #pairs ),*])))
         )
     };
 

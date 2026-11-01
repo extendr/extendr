@@ -1,5 +1,4 @@
 use super::*;
-use crate as extendr_api;
 use extendr_ffi::{R_xlen_t, SET_VECTOR_ELT};
 
 pub(crate) fn make_symbol(name: &str) -> SEXP {
@@ -357,7 +356,6 @@ where
     R: Clone,
 {
     fn sym_pair(self) -> (Option<Robj>, Robj) {
-        use crate as extendr_api;
         let val = self.0.as_ref();
         let nm = if val.is_empty() {
             None

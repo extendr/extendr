@@ -160,7 +160,6 @@ fn tests_with_unsuccessful_outcomes() {
 #[test]
 fn test_call_macro() {
     use extendr_api::Length;
-    use extendr_api::Operators;
     test! {
         let vec = call!("c", 1.0, 2.0, 3.0).unwrap();
         assert_eq!(vec, r!([1., 2., 3.]));
