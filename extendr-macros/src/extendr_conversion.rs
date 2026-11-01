@@ -101,7 +101,7 @@ fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result
                 use extendr_api::ExternalPtr;
                 unsafe {
                     let mut res: ExternalPtr<#self_ty> = ExternalPtr::new(value);
-                    res.set_attrib(class_symbol(), #self_ty_name).unwrap();
+                    res.set_attrib(extendr_api::wrapper::symbol::class_symbol(), #self_ty_name).unwrap();
                     res.into()
                 }
             }

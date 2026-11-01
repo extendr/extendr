@@ -9,15 +9,6 @@ pub use super::{
     NA_STRING, NULL, TRUE,
 };
 
-pub use super::wrapper::symbol::{
-    base_symbol, brace_symbol, bracket_2_symbol, bracket_symbol, class_symbol, device_symbol,
-    dim_symbol, dimnames_symbol, dollar_symbol, dot_defined, dot_method, dot_package_name,
-    dot_target, dots_symbol, double_colon_symbol, lastvalue_symbol, levels_symbol, missing_arg,
-    mode_symbol, na_rm_symbol, name_symbol, names_symbol, namespace_env_symbol, package_symbol,
-    previous_symbol, quote_symbol, row_names_symbol, seeds_symbol, sort_list_symbol, source_symbol,
-    spec_symbol, triple_colon_symbol, tsp_symbol,
-};
-
 // Exported macros have crate scope.
 pub use crate::{append, append_lang, append_with_name, args, lang, make_lang};
 

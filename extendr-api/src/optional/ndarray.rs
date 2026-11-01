@@ -65,7 +65,8 @@ For all array uses in Rust, refer to the [`ArrayBase`] documentation, which expl
 use ndarray::prelude::*;
 use ndarray::{Data, ShapeBuilder};
 
-use crate::prelude::{c64, dim_symbol, Rcplx, Rfloat, Rint};
+use crate::prelude::{c64, Rcplx, Rfloat, Rint};
+use crate::wrapper::symbol::dim_symbol;
 use crate::*;
 
 macro_rules! make_array_view_1 {
