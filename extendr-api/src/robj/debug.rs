@@ -80,11 +80,11 @@ impl std::fmt::Debug for Robj {
                    ENVSXP => unsafe {
                        let sexp = self.get();
                        if sexp == R_GlobalEnv {
-                           write!(f, "global_env()")
+                           write!(f, "Environment::global()")
                        } else if sexp == R_BaseEnv {
-                           write!(f, "base_env()")
+                           write!(f, "Environment::base()")
                        } else if sexp == R_EmptyEnv {
-                           write!(f, "empty_env()")
+                           write!(f, "Environment::empty()")
                        } else {
                            write!(f, "r!(Environment::from_pairs(...))")
                        }
