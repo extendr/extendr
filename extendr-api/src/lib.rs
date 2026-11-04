@@ -464,7 +464,8 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
 }
 
 /// Type of R objects used by [Robj::rtype].
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum Rtype {
     Null,        // NILSXP
     Symbol,      // SYMSXP
@@ -497,6 +498,7 @@ pub enum Rtype {
 // Todo: convert all Robj types to wrappers.
 // Note: this only works if the wrappers are all just SEXPs.
 #[derive(Debug, PartialEq)]
+#[non_exhaustive]
 pub enum Rany<'a> {
     Null(&'a Robj),               // NILSXP
     Symbol(&'a Symbol),           // SYMSXP

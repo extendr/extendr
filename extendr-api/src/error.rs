@@ -29,6 +29,7 @@ pub fn unwrap_or_throw_error<T>(r: std::result::Result<T, Error>) -> T {
 }
 
 #[derive(Debug, PartialEq)]
+#[non_exhaustive]
 pub enum Error {
     Panic(Robj),
     NotFound(Robj),

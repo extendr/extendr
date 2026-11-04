@@ -7,6 +7,7 @@ use crate::*;
 use std::io::Write;
 
 /// Metadata function argument.
+#[doc(hidden)]
 #[derive(Debug, PartialEq, IntoList)]
 pub struct Arg {
     pub name: &'static str,
@@ -16,6 +17,7 @@ pub struct Arg {
 }
 
 /// Metadata function.
+#[doc(hidden)]
 #[derive(Debug, PartialEq, IntoList)]
 pub struct Func {
     pub doc: &'static str,
@@ -32,6 +34,7 @@ pub struct Func {
 }
 
 /// Metadata Impl.
+#[doc(hidden)]
 #[derive(Debug, PartialEq, IntoList)]
 pub struct Impl {
     pub doc: &'static str,
@@ -40,6 +43,7 @@ pub struct Impl {
 }
 
 /// Module metadata.
+#[doc(hidden)]
 #[derive(Debug, PartialEq, IntoList)]
 pub struct Metadata {
     pub name: &'static str,
