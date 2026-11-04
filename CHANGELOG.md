@@ -41,6 +41,7 @@
 
 ### Fixed
 
+- `rprint!()`, `rprintln!()`, `reprint!()`, and `reprintln!()` no longer panic on strings with interior NULs and no longer require the prelude to be imported
 - Fixes a bug where length 0 vectors were dereferenced into a slice incorrectly causing a panic <https://github.com/extendr/extendr/pull/1147>
 - `StrIter` and `ListIter` `size_hint()` now reports the remaining length <https://github.com/extendr/extendr/issues/1131>
 - `collect::<Robj>()` no longer writes past the allocation when `size_hint()` is wrong <https://github.com/extendr/extendr/issues/1136>

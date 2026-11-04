@@ -104,7 +104,7 @@ macro_rules! rprint {
     () => {
     };
     ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*));
+        $crate::print_r_output(format!($($rest)*));
     };
 }
 
@@ -115,11 +115,11 @@ macro_rules! rprint {
 #[macro_export]
 macro_rules! rprintln {
     () => {
-        print_r_output("\n");
+        $crate::print_r_output("\n");
     };
     ($($rest: tt)*) => {
-        print_r_output(format!($($rest)*));
-        print_r_output("\n");
+        $crate::print_r_output(format!($($rest)*));
+        $crate::print_r_output("\n");
     };
 }
 
@@ -129,7 +129,7 @@ macro_rules! reprint {
     () => {
     };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*));
+        $crate::print_r_error(format!($($rest)*));
     };
 }
 
@@ -137,11 +137,11 @@ macro_rules! reprint {
 #[macro_export]
 macro_rules! reprintln {
     () => {
-        print_r_error("\n");
+        $crate::print_r_error("\n");
     };
     ($($rest: tt)*) => {
-        print_r_error(format!($($rest)*));
-        print_r_error("\n");
+        $crate::print_r_error(format!($($rest)*));
+        $crate::print_r_error("\n");
     };
 }
 
