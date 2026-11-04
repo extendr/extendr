@@ -44,11 +44,16 @@ impl Rbool {
     }
 
     /// Convert this `Rbool` to a bool. Note `NA` will be true.
+    #[deprecated(
+        since = "0.10.0",
+        note = "`NA` converts to `true`. Use `bool::try_from()` or `Option::<bool>::from()` instead"
+    )]
     pub fn to_bool(&self) -> bool {
         self.0 != 0
     }
 
     /// Convert this construct a `Rbool` from a rust boolean.
+    #[deprecated(since = "0.10.0", note = "Use `Rbool::from()` or `.into()` instead")]
     pub fn from_bool(val: bool) -> Self {
         Rbool(val as i32)
     }

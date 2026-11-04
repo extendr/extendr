@@ -195,6 +195,6 @@ fn collection_sort_bool() {
     let mut scalars: Vec<Rbool> = raw.iter().map(|&x| x.into()).collect();
     scalars.sort_by(|a, b| a.partial_cmp(b).unwrap());
     for (xi, yi) in ordered.iter().zip(scalars.iter()) {
-        assert_eq!(*xi, yi.to_bool());
+        assert_eq!(*xi, yi.is_true());
     }
 }
