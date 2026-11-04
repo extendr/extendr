@@ -1,4 +1,5 @@
 use extendr_api::prelude::*;
+use std::str::FromStr;
 
 #[test]
 fn test_debug() {

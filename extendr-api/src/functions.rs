@@ -8,6 +8,7 @@ use extendr_ffi::{
 /// Get a global function from global_env() and ancestors.
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::global_function;
 /// test! {
 ///     let ls = global_function(sym!(ls))?;
 ///     assert_eq!(ls.is_function(), true);
@@ -23,6 +24,7 @@ pub fn global_function<K: Into<Robj>>(key: K) -> Result<Robj> {
 /// See also [`Robj::double_colon`].
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::find_namespace;
 /// test! {
 ///    assert_eq!(find_namespace("base").is_ok(), true);
 ///    assert_eq!(find_namespace("stats").is_ok(), true);
@@ -76,6 +78,7 @@ pub fn empty_env() -> Environment {
 ///
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::new_env;
 /// test! {
 ///     let env: Environment = new_env(Environment::global(), true, 10).try_into().unwrap();
 ///     env.set_local(sym!(x), "hello");
@@ -110,6 +113,7 @@ pub fn base_env() -> Environment {
 ///
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::base_namespace;
 /// test! {
 ///    assert_eq!(base_namespace().parent().ok_or("no parent")?, Environment::global());
 /// }
@@ -151,6 +155,7 @@ pub fn blank_scalar_string() -> Robj {
 /// Parse a string into an R executable object
 /// ```
 /// use extendr_api::prelude::*;
+/// use std::str::FromStr;
 /// test! {
 ///    let expr = Expressions::from_str("1 + 2").unwrap();
 ///    assert!(expr.is_expressions());
@@ -165,6 +170,7 @@ pub fn parse(code: &str) -> Result<Expressions> {
 /// Used by the R! macro.
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::eval_string;
 /// test! {
 ///    let res = eval_string("1 + 2").unwrap();
 ///    assert_eq!(res, r!(3.));
@@ -189,6 +195,7 @@ pub fn eval_string(code: &str) -> Result<Robj> {
 /// Used by the R! macro.
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::eval_string_with_params;
 /// test! {
 ///    let res = eval_string_with_params("param.0", &[&r!(3.)]).unwrap();
 ///    assert_eq!(res, r!(3.));
@@ -217,6 +224,7 @@ pub fn eval_string_with_params(code: &str, values: &[&Robj]) -> Result<Robj> {
 /// Find a function or primitive that may be in a namespace.
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::find_namespaced_function;
 /// test! {
 ///    assert!(find_namespaced_function("+").is_ok());
 ///    assert!(find_namespaced_function("ls").is_ok());
