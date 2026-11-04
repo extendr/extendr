@@ -56,11 +56,11 @@
 <a href=#56 id=56 data-nosnippet>56</a>    // This will error if the object is not callable.
 <a href=#57 id=57 data-nosnippet>57</a>    </span><span class="kw">let </span>res = <span class="kw">if </span>pairs.is_empty() {
 <a href=#58 id=58 data-nosnippet>58</a>        <span class="macro">quote!</span>(
-<a href=#59 id=59 data-nosnippet>59</a>            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::new()))
+<a href=#59 id=59 data-nosnippet>59</a>            (#caller).and_then(|caller| extendr_api::Operators::call(<span class="kw-2">&amp;</span>caller, extendr_api::wrapper::Pairlist::new()))
 <a href=#60 id=60 data-nosnippet>60</a>        )
 <a href=#61 id=61 data-nosnippet>61</a>    } <span class="kw">else </span>{
 <a href=#62 id=62 data-nosnippet>62</a>        <span class="macro">quote!</span>(
-<a href=#63 id=63 data-nosnippet>63</a>            (#caller).and_then(|caller| caller.call(extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])))
+<a href=#63 id=63 data-nosnippet>63</a>            (#caller).and_then(|caller| extendr_api::Operators::call(<span class="kw-2">&amp;</span>caller, extendr_api::wrapper::Pairlist::from_pairs(<span class="kw-2">&amp;</span>[# ( #pairs ),<span class="kw-2">*</span>])))
 <a href=#64 id=64 data-nosnippet>64</a>        )
 <a href=#65 id=65 data-nosnippet>65</a>    };
 <a href=#66 id=66 data-nosnippet>66</a>
