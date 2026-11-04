@@ -5,25 +5,6 @@ use crate::robj::GetSexp;
 use crate::robj::Robj;
 use crate::single_threaded;
 use extendr_ffi::{R_NilValue, Rf_cons, Rf_lang1, SETCDR, SET_TAG, SEXP};
-/// Convert a list of tokens to an array of tuples.
-#[doc(hidden)]
-#[macro_export]
-macro_rules! push_args {
-    ($args: expr, $name: ident = $val : expr) => {
-        $args.push((stringify!($name), $crate::Robj::from($val)));
-    };
-    ($args: expr, $name: ident = $val : expr, $($rest: tt)*) => {
-        $args.push((stringify!($name), $crate::Robj::from($val)));
-        $crate::push_args!($args, $($rest)*);
-    };
-    ($args: expr, $val : expr) => {
-        $args.push(("", $crate::Robj::from($val)));
-    };
-    ($args: expr, $val : expr, $($rest: tt)*) => {
-        $args.push(("", $crate::Robj::from($val)));
-        $crate::push_args!($args, $($rest)*);
-    };
-}
 
 #[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
