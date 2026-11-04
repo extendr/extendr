@@ -1,2 +1,2 @@
-window.ALL_CRATES = ["extendr_api","extendr_engine","extendr_ffi","extendr_macros"];
-//{"start":21,"fragment_lengths":[13,17,14,17]}
+window.ALL_CRATES = [{"c":"extendr_api"},{"c":"extendr_engine"},{"c":"extendr_ffi"},{"c":"extendr_macros"}];
+//{"start":21,"fragment_lengths":[19,23,20,23]}
