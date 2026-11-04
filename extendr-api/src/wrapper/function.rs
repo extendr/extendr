@@ -3,6 +3,7 @@ use extendr_ffi::{get_closure_body, get_closure_env, get_closure_formals, Rf_lco
 /// Wrapper for creating functions (CLOSSXP).
 /// ```
 /// use extendr_api::prelude::*;
+/// use extendr_api::wrapper::symbol::missing_arg;
 /// test! {
 ///     // Closures are functions.
 ///     let expr = R!("function(a = 1, b) {c <- a + b}")?;

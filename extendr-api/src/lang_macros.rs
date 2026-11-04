@@ -26,21 +26,6 @@ macro_rules! push_args {
 }
 
 #[doc(hidden)]
-#[macro_export]
-macro_rules! args {
-    () => {
-        Vec::<(&str, $crate::Robj)>::new()
-    };
-    ($($rest: tt)*) => {
-        {
-            let mut args = Vec::<(&str, $crate::Robj)>::new();
-            $crate::push_args!(args, $($rest)*);
-            args
-        }
-    };
-}
-
-#[doc(hidden)]
 pub unsafe fn append_with_name(tail: SEXP, obj: Robj, name: &str) -> SEXP {
     single_threaded(|| {
         let cons = Rf_cons(obj.get(), R_NilValue);
