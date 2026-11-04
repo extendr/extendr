@@ -111,7 +111,7 @@ impl TryFrom<Robj> for Vec<bool> {
                 return Err(Error::MustNotBeNA(value.clone()));
             }
 
-            res_vec.push(logi.to_bool())
+            res_vec.push(logi.is_true())
         }
         Ok(res_vec)
     }
