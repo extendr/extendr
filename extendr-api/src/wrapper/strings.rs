@@ -265,7 +265,6 @@ impl TryFrom<&Strings> for BTreeSet<Option<&str>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate as extendr_api;
     use std::collections::{BTreeSet, HashSet};
 
     #[test]

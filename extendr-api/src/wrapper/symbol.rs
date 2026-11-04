@@ -224,7 +224,6 @@ pub fn dot_target() -> Symbol {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate as extendr_api;
 
     #[test]
     fn test_constant_symbols() {

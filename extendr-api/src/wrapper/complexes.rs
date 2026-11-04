@@ -99,7 +99,6 @@ impl TryFrom<Vec<c64>> for Complexes {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate as extendr_api;
 
     #[test]
     fn new() {
