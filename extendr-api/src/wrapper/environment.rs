@@ -104,7 +104,7 @@ impl Environment {
         // Evaluate sys.frames() in self to get the call stack visible from that frame
         // sys.frames() returns a pairlist of all active frames
         let frames = lang!("sys.frames").eval_with_env(self).ok()?;
-        let frames_list = frames.as_pairlist()?;
+        let frames_list = Pairlist::try_from(&frames).ok()?;
         // Find the index (1-based) of self in the frames list
         for (i, frame) in frames_list.values().enumerate() {
             let frame_env: Environment = match frame.try_into() {
@@ -178,11 +178,11 @@ impl Environment {
             if hashtab.is_null() && frame.is_pairlist() {
                 EnvIter {
                     hash_table: ListIter::new(),
-                    pairlist: frame.as_pairlist().unwrap().iter(),
+                    pairlist: Pairlist::try_from(&frame).unwrap().iter(),
                 }
             } else {
                 EnvIter {
-                    hash_table: hashtab.as_list().unwrap().values(),
+                    hash_table: List::try_from(&hashtab).unwrap().values(),
                     pairlist: PairlistIter::new(),
                 }
             }
@@ -385,7 +385,7 @@ impl Iterator for EnvIter {
                 // The hash table is empty, end of iteration.
                 let obj = self.hash_table.next()?;
                 if !obj.is_null() && obj.is_pairlist() {
-                    self.pairlist = obj.as_pairlist().unwrap().iter();
+                    self.pairlist = Pairlist::try_from(&obj).unwrap().iter();
                     break;
                 }
                 // continue hash table loop.

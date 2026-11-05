@@ -18,13 +18,15 @@ fn environment() -> Result<(), Box<dyn std::error::Error>> {
         let names_and_values = (0..100).map(|i| (format!("n{}", i), i));
         let env = Environment::from_pairs(Environment::global(), names_and_values);
         let robj = r!(env);
-        let names_and_values = robj.as_environment().unwrap().iter().collect::<Vec<_>>();
+        let names_and_values = Environment::try_from(&robj)
+            .unwrap()
+            .iter()
+            .collect::<Vec<_>>();
         assert_eq!(names_and_values.len(), 100);
 
         let small_env = Environment::new_with_capacity(Environment::global(), 1);
         small_env.set_local(sym!(x), 1);
-        let names_and_values = small_env
-            .as_environment()
+        let names_and_values = Environment::try_from(small_env.as_robj())
             .unwrap()
             .iter()
             .collect::<Vec<_>>();
@@ -32,8 +34,7 @@ fn environment() -> Result<(), Box<dyn std::error::Error>> {
 
         let large_env = Environment::new_with_capacity(Environment::global(), 1000);
         large_env.set_local(sym!(x), 1);
-        let names_and_values = large_env
-            .as_environment()
+        let names_and_values = Environment::try_from(large_env.as_robj())
             .unwrap()
             .iter()
             .collect::<Vec<_>>();

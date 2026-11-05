@@ -91,9 +91,6 @@ impl<T> Types for ExternalPtr<T> {}
 /// `set_attrib`
 impl<T> Attributes for ExternalPtr<T> {}
 
-/// as_*()
-impl<T> Conversions for ExternalPtr<T> {}
-
 /// find_var() etc.
 impl<T> Rinternals for ExternalPtr<T> {}
 

@@ -63,11 +63,8 @@ impl List {
             values.push(pair.value());
         }
         let mut res = List::from_values(values);
-        res.as_robj_mut()
-            .set_names(names)
-            .unwrap()
-            .as_list()
-            .unwrap()
+        let robj = res.as_robj_mut().set_names(names).unwrap();
+        List::try_from(&*robj).unwrap()
     }
 
     /// Wrapper for creating a list (VECSXP) object from an existing `HashMap`.
@@ -125,7 +122,7 @@ impl List {
     /// use extendr_api::prelude::*;
     /// test! {
     ///     let mut robj = list!(1, 2, 3);
-    ///     let objects : Vec<_> = robj.as_list().unwrap().values().collect();
+    ///     let objects : Vec<_> = robj.values().collect();
     ///     assert_eq!(objects, vec![r!(1), r!(2), r!(3)]);
     /// }
     /// ```
@@ -194,7 +191,7 @@ impl List {
     /// use std::collections::HashMap;
     /// test! {
     ///     let mut robj = list!(a=1, 2);
-    ///     let names_and_values: HashMap<&str, Robj> = robj.as_list().unwrap().try_into().unwrap();
+    ///     let names_and_values: HashMap<&str, Robj> = robj.try_into().unwrap();
     ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("", r!(2))].into_iter().collect::<HashMap<_, _>>());
     /// }
     /// ```
@@ -317,7 +314,7 @@ impl IntoIterator for List {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let list = list!(a=1, 2).as_list().unwrap();
+    ///     let list = list!(a=1, 2);
     ///     let vec : Vec<_> = list.into_iter().collect();
     ///     assert_eq!(vec, vec![("a", r!(1)), ("", r!(2))]);
     /// }
@@ -334,7 +331,7 @@ impl IntoIterator for List {
 /// test! {
 ///     let my_list = list!(a = 1, b = 2);
 ///     let mut total = 0;
-///     for robj in my_list.as_list().unwrap().values() {
+///     for robj in my_list.values() {
 ///       if let Some(val) = robj.as_integer() {
 ///         total += val;
 ///       }

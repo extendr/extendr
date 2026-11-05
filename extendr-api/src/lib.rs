@@ -100,7 +100,7 @@
 //! use extendr_api::prelude::*;
 //! test! {
 //!     let vals = r!([1.0, 2.0]);
-//!     let slice = vals.as_real_slice().ok_or("expected slice")?;
+//!     let slice = <&[f64]>::try_from(&vals).ok().ok_or("expected slice")?;
 //!     let one = slice[0];
 //!     let two = slice[1];
 //!     // let error = slice[2];
@@ -193,7 +193,7 @@
 //!
 //!     // Here slice is a "borrowed" reference to the bytes in robj.
 //!     // and cannot live longer than robj.
-//!     let slice = robj.as_integer_slice().ok_or("expected slice")?;
+//!     let slice = <&[i32]>::try_from(&robj).ok().ok_or("expected slice")?;
 //!     assert_eq!(slice.len(), 3);
 //! }
 //! ```

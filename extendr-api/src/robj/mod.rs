@@ -81,7 +81,7 @@ mod tests;
 /// use extendr_api::prelude::*;
 /// test! {
 ///     let a : Robj = r!(vec![1., 2., 3., 4.]);
-///     let b : Vec<f64> = a.as_real_vector().unwrap();
+///     let b : Vec<f64> = Vec::<f64>::try_from(&a).unwrap();
 ///     assert_eq!(a.len(), 4);
 ///     assert_eq!(b, vec![1., 2., 3., 4.]);
 /// }
@@ -94,7 +94,7 @@ mod tests;
 /// test! {
 ///     let abc = list!(a = 1, b = "x", c = vec![1, 2]);
 ///     let names : Vec<_> = abc.names().unwrap().collect();
-///     let names_and_values : Vec<_> = abc.as_list().unwrap().iter().collect();
+///     let names_and_values : Vec<_> = abc.iter().collect();
 ///     assert_eq!(names, vec!["a", "b", "c"]);
 ///     assert_eq!(names_and_values, vec![("a", r!(1)), ("b", r!("x")), ("c", r!(vec![1, 2]))]);
 /// }
@@ -413,192 +413,6 @@ impl Robj {
         }
     }
 
-    /// Get a read-only reference to the content of an integer vector.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let robj = r!([1, 2, 3]);
-    /// assert_eq!(robj.as_integer_slice().unwrap(), [1, 2, 3]);
-    /// }
-    /// ```
-    pub fn as_integer_slice(&self) -> Option<&[i32]> {
-        self.as_typed_slice()
-    }
-
-    /// Convert an [`Robj`] into [`Integers`].
-    pub fn as_integers(&self) -> Option<Integers> {
-        self.clone().try_into().ok()
-    }
-
-    /// Get a `Vec<i32>` copied from the object.
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///
-    /// let robj = r!([1, 2, 3]);
-    /// assert_eq!(robj.as_integer_slice().unwrap(), vec![1, 2, 3]);
-    /// }
-    /// ```
-    pub fn as_integer_vector(&self) -> Option<Vec<i32>> {
-        self.as_integer_slice().map(|value| value.to_vec())
-    }
-
-    /// Get a read-only reference to the content of a logical vector
-    /// using the tri-state [Rbool]. Returns None if not a logical vector.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([TRUE, FALSE]);
-    ///     assert_eq!(robj.as_logical_slice().unwrap(), [TRUE, FALSE]);
-    /// }
-    /// ```
-    pub fn as_logical_slice(&self) -> Option<&[Rbool]> {
-        self.as_typed_slice()
-    }
-
-    /// Get a `Vec<Rbool>` copied from the object
-    /// using the tri-state [`Rbool`].
-    /// Returns `None` if not a logical vector.
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([TRUE, FALSE]);
-    ///     assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE]);
-    /// }
-    /// ```
-    pub fn as_logical_vector(&self) -> Option<Vec<Rbool>> {
-        self.as_logical_slice().map(|value| value.to_vec())
-    }
-
-    /// Get an iterator over logical elements of this slice.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([TRUE, FALSE, NA_LOGICAL]);
-    ///     let mut num_na = 0;
-    ///     for val in robj.as_logical_iter().unwrap() {
-    ///       if val.is_na() {
-    ///           num_na += 1;
-    ///       }
-    ///     }
-    ///     assert_eq!(num_na, 1);
-    /// }
-    /// ```
-    pub fn as_logical_iter(&self) -> Option<impl Iterator<Item = &Rbool>> {
-        self.as_logical_slice().map(|slice| slice.iter())
-    }
-
-    /// Get a read-only reference to the content of a double vector.
-    /// Note: the slice may contain NaN or NA values.
-    /// We may introduce a "Real" type to handle this like the Rbool type.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([Some(1.), None, Some(3.)]);
-    ///     let mut tot = 0.;
-    ///     for val in robj.as_real_slice().unwrap() {
-    ///       if !val.is_na() {
-    ///         tot += val;
-    ///       }
-    ///     }
-    ///     assert_eq!(tot, 4.);
-    /// }
-    /// ```
-    pub fn as_real_slice(&self) -> Option<&[f64]> {
-        self.as_typed_slice()
-    }
-
-    /// Get an iterator over real elements of this slice.
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([1., 2., 3.]);
-    ///     let mut tot = 0.;
-    ///     for val in robj.as_real_iter().unwrap() {
-    ///       if !val.is_na() {
-    ///         tot += val;
-    ///       }
-    ///     }
-    ///     assert_eq!(tot, 6.);
-    /// }
-    /// ```
-    pub fn as_real_iter(&self) -> Option<impl Iterator<Item = &f64>> {
-        self.as_real_slice().map(|slice| slice.iter())
-    }
-
-    /// Get a `Vec<f64>` copied from the object.
-    ///
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!([1., 2., 3.]);
-    ///     assert_eq!(robj.as_real_vector().unwrap(), vec![1., 2., 3.]);
-    /// }
-    /// ```
-    pub fn as_real_vector(&self) -> Option<Vec<f64>> {
-        self.as_real_slice().map(|value| value.to_vec())
-    }
-
-    /// Get a read-only reference to the content of an integer or logical vector.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let robj = r!(Raw::from_bytes(&[1, 2, 3]));
-    ///     assert_eq!(robj.as_raw_slice().unwrap(), &[1, 2, 3]);
-    /// }
-    /// ```
-    pub fn as_raw_slice(&self) -> Option<&[u8]> {
-        self.as_typed_slice()
-    }
-
-    /// Get a read-write reference to the content of an integer or logical vector.
-    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let mut robj = r!([1, 2, 3]);
-    ///     let slice : & mut [i32] = robj.as_integer_slice_mut().unwrap();
-    ///     slice[1] = 100;
-    ///     assert_eq!(robj, r!([1, 100, 3]));
-    /// }
-    /// ```
-    pub fn as_integer_slice_mut(&mut self) -> Option<&mut [i32]> {
-        self.as_typed_slice_mut()
-    }
-
-    /// Get a read-write reference to the content of a double vector.
-    /// Note that rust slices are 0-based so `slice[1]` is the middle value.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let mut robj = r!([1.0, 2.0, 3.0]);
-    ///     let slice = robj.as_real_slice_mut().unwrap();
-    ///     slice[1] = 100.0;
-    ///     assert_eq!(robj, r!([1.0, 100.0, 3.0]));
-    /// }
-    /// ```
-    pub fn as_real_slice_mut(&mut self) -> Option<&mut [f64]> {
-        self.as_typed_slice_mut()
-    }
-
-    /// Get a read-write reference to the content of a raw vector.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///     let mut robj = r!(Raw::from_bytes(&[1, 2, 3]));
-    ///     let slice = robj.as_raw_slice_mut().unwrap();
-    ///     slice[1] = 100;
-    ///     assert_eq!(robj, r!(Raw::from_bytes(&[1, 100, 3])));
-    /// }
-    /// ```
-    pub fn as_raw_slice_mut(&mut self) -> Option<&mut [u8]> {
-        self.as_typed_slice_mut()
-    }
-
     /// Get a vector of owned strings.
     /// Owned strings have long lifetimes, but are much slower than references.
     /// ```
@@ -671,7 +485,7 @@ impl Robj {
     /// }
     /// ```
     pub fn as_integer(&self) -> Option<i32> {
-        match self.as_integer_slice() {
+        match AsTypedSlice::<i32>::as_typed_slice(self) {
             Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0]),
             _ => None,
         }
@@ -690,46 +504,8 @@ impl Robj {
     /// }
     /// ```
     pub fn as_real(&self) -> Option<f64> {
-        match self.as_real_slice() {
+        match AsTypedSlice::<f64>::as_typed_slice(self) {
             Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0]),
-            _ => None,
-        }
-    }
-
-    /// Get a scalar rust boolean.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let robj1 = Robj::from(TRUE);
-    ///    let robj2 = Robj::from(1.);
-    ///    let robj3 = Robj::from(NA_LOGICAL);
-    ///    assert_eq!(robj1.as_bool(), Some(true));
-    ///    assert_eq!(robj2.as_bool(), None);
-    ///    assert_eq!(robj3.as_bool(), None);
-    /// }
-    /// ```
-    pub fn as_bool(&self) -> Option<bool> {
-        match self.as_logical_slice() {
-            Some(slice) if slice.len() == 1 && !slice[0].is_na() => Some(slice[0].is_true()),
-            _ => None,
-        }
-    }
-
-    /// Get a scalar boolean as a tri-boolean [Rbool] value.
-    /// ```
-    /// use extendr_api::prelude::*;
-    /// test! {
-    ///    let robj1 = Robj::from(TRUE);
-    ///    let robj2 = Robj::from([TRUE, FALSE]);
-    ///    let robj3 = Robj::from(NA_LOGICAL);
-    ///    assert_eq!(robj1.as_logical(), Some(TRUE));
-    ///    assert_eq!(robj2.as_logical(), None);
-    ///    assert_eq!(robj3.as_logical().unwrap().is_na(), true);
-    /// }
-    /// ```
-    pub fn as_logical(&self) -> Option<Rbool> {
-        match self.as_logical_slice() {
-            Some(slice) if slice.len() == 1 => Some(slice[0]),
             _ => None,
         }
     }
@@ -999,7 +775,7 @@ pub trait Attributes: Types + Length {
     /// ```
     fn dim(&self) -> Option<Integers> {
         if let Some(dim) = self.get_attrib(wrapper::symbol::dim_symbol()) {
-            dim.as_integers()
+            Integers::try_from(&dim).ok()
         } else {
             None
         }
@@ -1016,7 +792,7 @@ pub trait Attributes: Types + Length {
     /// ```
     fn dimnames(&self) -> Option<ListIter> {
         if let Some(names) = self.get_attrib(wrapper::symbol::dimnames_symbol()) {
-            names.as_list().map(|v| v.values())
+            List::try_from(&names).ok().map(|v| v.values())
         } else {
             None
         }
@@ -1102,14 +878,14 @@ impl Attributes for Robj {}
 /// Compare equality with integer slices.
 impl PartialEq<[i32]> for Robj {
     fn eq(&self, rhs: &[i32]) -> bool {
-        self.as_integer_slice() == Some(rhs)
+        <&[i32]>::try_from(self).ok() == Some(rhs)
     }
 }
 
 /// Compare equality with slices of double.
 impl PartialEq<[f64]> for Robj {
     fn eq(&self, rhs: &[f64]) -> bool {
-        self.as_real_slice() == Some(rhs)
+        <&[f64]>::try_from(self).ok() == Some(rhs)
     }
 }
 

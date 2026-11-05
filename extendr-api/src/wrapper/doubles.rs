@@ -154,7 +154,7 @@ mod tests {
         test! {
             let test_vec = vec![0., 1., std::f64::consts::PI, -1.];
             let test_doubles: Doubles = test_vec.clone().try_into().unwrap();
-            let test_doubles_slice = test_doubles.robj.as_real_slice().unwrap();
+            let test_doubles_slice = <&[f64]>::try_from(&test_doubles.robj).unwrap();
             assert_eq!(test_doubles_slice, test_vec);
         }
     }

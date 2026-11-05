@@ -15,7 +15,7 @@ pub type NamedListIter = std::iter::Zip<StrIter, ListIter>;
 ///
 ///     let factor = factor!(["abcd", "def", "fg", "fg"]);
 ///     assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
-///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+///     assert_eq!(Vec::<i32>::try_from(&factor).unwrap(), vec![1, 2, 3, 3]);
 ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
 /// }
@@ -166,7 +166,7 @@ pub trait AsStrIter: GetSexp + Types + Length + Attributes + Rinternals {
     ///
     ///     let factor = factor!(vec!["abcd", "def", "fg", "fg"]);
     ///     assert_eq!(factor.levels().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg"]);
-    ///     assert_eq!(factor.as_integer_vector().unwrap(), vec![1, 2, 3, 3]);
+    ///     assert_eq!(Vec::<i32>::try_from(&factor).unwrap(), vec![1, 2, 3, 3]);
     ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     ///     assert_eq!(factor.as_str_iter().unwrap().collect::<Vec<_>>(), vec!["abcd", "def", "fg", "fg"]);
     ///

@@ -83,7 +83,7 @@ fn test_try_from_robj() {
 
         assert_eq!(hmap_borrowed["a"], Robj::from(1));
         assert_eq!(hmap_borrowed["b"], Robj::from(2));
-        let hmap_borrowed: HashMap<&str, Robj> = list.as_list().unwrap().try_into().unwrap();
+        let hmap_borrowed: HashMap<&str, Robj> = List::try_from(&list).unwrap().try_into().unwrap();
         assert_eq!(hmap_borrowed, hmap2);
 
         let na_integer = eval_string("NA_integer_").unwrap();
@@ -273,22 +273,22 @@ fn output_from_iterator_collect_test() {
     test! {
         // Allocation where size is known in advance.
         let robj = (0..3).collect::<Robj>();
-        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+        assert_eq!(Vec::<i32>::try_from(&robj).unwrap(), vec![0, 1, 2]);
 
         let robj = [0, 1, 2].iter().collect::<Robj>();
-        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+        assert_eq!(Vec::<i32>::try_from(&robj).unwrap(), vec![0, 1, 2]);
 
         let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
-        assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+        assert_eq!(Vec::<Rbool>::try_from(&robj).unwrap(), vec![TRUE, FALSE, TRUE]);
 
         let robj = [TRUE, FALSE, TRUE].iter().collect::<Robj>();
-        assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+        assert_eq!(Vec::<Rbool>::try_from(&robj).unwrap(), vec![TRUE, FALSE, TRUE]);
 
         let robj = (0..3).map(|x| x as f64).collect::<Robj>();
-        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+        assert_eq!(Vec::<f64>::try_from(&robj).unwrap(), vec![0., 1., 2.]);
 
         let robj = [0., 1., 2.].iter().collect::<Robj>();
-        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+        assert_eq!(Vec::<f64>::try_from(&robj).unwrap(), vec![0., 1., 2.]);
 
         let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
         assert_eq!(robj.as_str_vector(), Some(vec!["0", "1", "2"]));
@@ -298,10 +298,10 @@ fn output_from_iterator_collect_test() {
 
         // Fallback allocation where size is not known in advance.
         let robj = (0..3).filter(|&x| x != 1).collect::<Robj>();
-        assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 2]);
+        assert_eq!(Vec::<i32>::try_from(&robj).unwrap(), vec![0, 2]);
 
         let robj = (0..3).filter(|&x| x != 1).map(|x| x as f64).collect::<Robj>();
-        assert_eq!(robj.as_real_vector().unwrap(), vec![0., 2.]);
+        assert_eq!(Vec::<f64>::try_from(&robj).unwrap(), vec![0., 2.]);
 
         let robj = (0..3)
             .filter(|&x| x != 1)
