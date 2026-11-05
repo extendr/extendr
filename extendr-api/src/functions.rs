@@ -5,7 +5,7 @@ use extendr_ffi::{
     R_dot_Generic,
 };
 
-/// Get a global function from global_env() and ancestors.
+/// Get a global function from `Environment::global()` and ancestors.
 /// ```
 /// use extendr_api::prelude::*;
 /// test! {
@@ -39,39 +39,6 @@ pub fn find_namespace<K: Into<Robj>>(key: K) -> Result<Environment> {
     }
 }
 
-/// The current interpreter environment.
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///    assert!(Environment::current().is_environment());
-/// }
-/// ```
-#[deprecated(since = "0.10.0", note = "Use `Environment::current()` instead")]
-pub fn current_env() -> Environment {
-    Environment::current()
-}
-
-/// The "global" environment
-///
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///     Environment::global().set_local(sym!(x), "hello");
-///     assert_eq!(Environment::global().local(sym!(x)), Ok(r!("hello")));
-/// }
-/// ```
-#[deprecated(since = "0.10.0", note = "Use `Environment::global()` instead")]
-pub fn global_env() -> Environment {
-    Environment::global()
-}
-
-/// An empty environment at the root of the environment tree
-#[deprecated(since = "0.10.0", note = "Use `Environment::empty()` instead")]
-pub fn empty_env() -> Environment {
-    Environment::empty()
-}
-
 /// Create a new environment
 ///
 /// ```
@@ -98,12 +65,6 @@ pub fn new_env(parent: Environment, hash: bool, capacity: i32) -> Environment {
         .unwrap()
         .try_into()
         .unwrap()
-}
-
-/// The base environment; formerly `R_NilValue`
-#[deprecated(since = "0.10.0", note = "Use `Environment::base()` instead")]
-pub fn base_env() -> Environment {
-    Environment::base()
 }
 
 /// The namespace for base.
@@ -146,19 +107,6 @@ pub fn blank_string() -> Robj {
 /// "" as a STRSXP
 pub fn blank_scalar_string() -> Robj {
     unsafe { Robj::from_sexp(R_BlankScalarString) }
-}
-
-/// Parse a string into an R executable object
-/// ```
-/// use extendr_api::prelude::*;
-/// test! {
-///    let expr = Expressions::from_str("1 + 2").unwrap();
-///    assert!(expr.is_expressions());
-/// }
-/// ```
-#[deprecated(since = "0.10.0", note = "Use Expressions::from_str() instead")]
-pub fn parse(code: &str) -> Result<Expressions> {
-    Expressions::from_str(code)
 }
 
 /// Parse a string into an R executable object and run it.
