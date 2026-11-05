@@ -58,6 +58,43 @@ impl Logicals {
             SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.0);
         })
     }
+
+    /// Port of the R function `any()` that returns `true` if at least one `true`
+    /// is found, `NA` if there is no `true` but at least one `NA` (which could be
+    /// true conceptually -- this is unknown), and `false` if all values are `false`.
+    pub fn any_true(&self) -> Rbool {
+        self.any_or_all_true(Rbool::true_value())
+    }
+
+    /// Port of the R function `all()` that returns `false` if at least one `false`
+    /// is found, `NA` if there is no `false` but at least one `NA` (which could be
+    /// false conceptually -- this is unknown), and `true` if all values are `true`.
+    pub fn all_true(&self) -> Rbool {
+        self.any_or_all_true(Rbool::false_value())
+    }
+
+    fn any_or_all_true(&self, crit: Rbool) -> Rbool {
+        let mut found_na = false;
+        
+        // Return early if the "critical" value is found:
+        // `true` for `any_true()`, `false` for `all_true()`
+        for val in self.iter() {
+            if val == crit {
+                return crit;
+            }
+            if val.is_na() {
+                found_na = true;
+            }
+        }
+
+        if found_na {
+            Rbool::na_value()
+        } else if crit.is_true() {
+            Rbool::false_value()
+        } else {
+            Rbool::true_value()
+        }
+    }
 }
 
 impl Deref for Logicals {
