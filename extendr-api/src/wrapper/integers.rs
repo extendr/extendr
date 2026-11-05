@@ -64,10 +64,12 @@ impl Integers {
 
 // TODO: this should be a trait.
 impl Integers {
-    pub fn set_elt(&mut self, index: usize, val: Rint) {
-        single_threaded(|| unsafe {
-            SET_INTEGER_ELT(self.get(), index as R_xlen_t, val.0);
-        })
+    pub fn set_elt(&mut self, index: usize, val: Rint) -> Result<()> {
+        if index >= self.len() {
+            return Err(Error::OutOfRange(self.robj.clone()));
+        }
+        unsafe { SET_INTEGER_ELT(self.get_mut(), index as R_xlen_t, val.0) };
+        Ok(())
     }
 }
 

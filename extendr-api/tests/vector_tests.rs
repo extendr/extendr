@@ -98,7 +98,7 @@ fn test_doubles() {
         let v = s.iter().collect::<Vec<Rfloat>>();
         assert_eq!(v, [1.0, 2.0, 3.0]);
 
-        s.set_elt(1, 5.0.into());
+        s.set_elt(1, 5.0.into())?;
         assert_eq!(s.elt(1), 5.0);
 
         let s : Doubles = [1.0, 2.0, 3.0].iter().map(|i| Rfloat::from(*i)).collect();
@@ -197,7 +197,7 @@ fn test_integers() {
         let v = s.iter().collect::<Vec<Rint>>();
         assert_eq!(v, [1, 2, 3]);
 
-        s.set_elt(1, 5.into());
+        s.set_elt(1, 5.into())?;
         assert_eq!(s.elt(1), 5);
 
         let s : Integers = [1, 2, 3].iter().map(|i| Rint::from(*i)).collect();
@@ -391,5 +391,22 @@ mod num_complex {
             assert_eq!(vec.is_complex(), true);
             assert_eq!(vec.len(), 10);
         }
+    }
+}
+
+#[test]
+fn test_set_elt_out_of_bounds() {
+    test! {
+        let mut x = Integers::new(3);
+        assert!(x.set_elt(2, 1.into()).is_ok());
+        assert!(x.set_elt(3, 1.into()).is_err());
+
+        let mut x = Doubles::new(3);
+        assert!(x.set_elt(2, 1.0.into()).is_ok());
+        assert!(x.set_elt(3, 1.0.into()).is_err());
+
+        let mut x = Logicals::new(3);
+        assert!(x.set_elt(2, TRUE).is_ok());
+        assert!(x.set_elt(3, TRUE).is_err());
     }
 }

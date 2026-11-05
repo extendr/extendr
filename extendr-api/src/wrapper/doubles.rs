@@ -63,10 +63,12 @@ impl Doubles {
 
 // TODO: this should be a trait.
 impl Doubles {
-    pub fn set_elt(&mut self, index: usize, val: Rfloat) {
-        single_threaded(|| unsafe {
-            SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val.0);
-        })
+    pub fn set_elt(&mut self, index: usize, val: Rfloat) -> Result<()> {
+        if index >= self.len() {
+            return Err(Error::OutOfRange(self.robj.clone()));
+        }
+        unsafe { SET_REAL_ELT(self.get_mut(), index as R_xlen_t, val.0) };
+        Ok(())
     }
 }
 
