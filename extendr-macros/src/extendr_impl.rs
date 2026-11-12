@@ -242,7 +242,7 @@ pub(crate) fn extendr_impl(
     opts: &ExtendrOptions,
 ) -> syn::Result<TokenStream> {
     // Only `impl name { }` allowed
-    if item_impl.defaultness.is_some() {
+    if item_impl.modifiers.defaultness.is_some() {
         return Err(syn::Error::new_spanned(
             item_impl,
             "default not allowed in #[extendr] impl",

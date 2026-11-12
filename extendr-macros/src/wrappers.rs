@@ -26,7 +26,9 @@
 use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use std::{collections::HashMap, sync::Mutex};
-use syn::{parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, Token, Type};
+use syn::{
+    parse_quote, punctuated::Punctuated, Expr, ExprLit, FnArg, ItemFn, ReceiverKind, Token, Type,
+};
 
 use crate::extendr_options::ExtendrOptions;
 
@@ -101,7 +103,9 @@ pub(crate) fn make_function_wrappers(
 
     let call_name = if has_self {
         let is_mut = match inputs.iter().next() {
-            Some(FnArg::Receiver(ref receiver)) => receiver.mutability.is_some(),
+            Some(FnArg::Receiver(ref receiver)) => {
+                matches!(receiver.kind, ReceiverKind::Reference(_, _, Some(_)))
+            }
             _ => false,
         };
         if is_mut {
@@ -402,7 +406,7 @@ pub fn translate_formal(input: &FnArg, self_ty: Option<&syn::Type>) -> syn::Resu
         }
         // &self / &mut self
         FnArg::Receiver(ref receiver) => {
-            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
+            if !receiver.attrs.is_empty() || !matches!(receiver.kind, ReceiverKind::Reference(..)) {
                 return Err(syn::Error::new_spanned(
                     input,
                     "expected &self or &mut self",
@@ -466,7 +470,7 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
         }
         // &self
         FnArg::Receiver(ref receiver) => {
-            if !receiver.attrs.is_empty() || receiver.reference.is_none() {
+            if !receiver.attrs.is_empty() || !matches!(receiver.kind, ReceiverKind::Reference(..)) {
                 return Err(syn::Error::new_spanned(
                     input,
                     "expected &self or &mut self",
