@@ -39,6 +39,9 @@ macros::gen_from_iterator_impl!(
 impl Complexes {
     /// Get a region of elements from the vector.
     pub fn get_region(&self, index: usize, dest: &mut [Rcplx]) -> usize {
+        if index >= self.len() {
+            return 0;
+        }
         unsafe {
             let ptr: *mut Rcomplex = dest.as_mut_ptr() as *mut Rcomplex;
             COMPLEX_GET_REGION(self.get(), index as R_xlen_t, dest.len() as R_xlen_t, ptr) as usize
