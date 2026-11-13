@@ -41,12 +41,16 @@ pub(crate) fn extendr_type_conversion(item: Item, opts: &ExtendrOptions) -> Toke
     }
 }
 
-fn do_extendr_type_conversion(item: Item, _opts: &ExtendrOptions) -> syn::Result<TokenStream> {
+fn do_extendr_type_conversion(item: Item, opts: &ExtendrOptions) -> syn::Result<TokenStream> {
     let TypeFields {
         ident: self_ty,
         generics,
         attrs,
     } = pull_fields(&item)?;
+    if opts.vctrs {
+        return crate::extendr_vctrs::extendr_vctrs(&item, &self_ty, &generics, opts)
+            .map(Into::into);
+    }
     if generics.const_params().count() != 0 {
         return Err(syn::Error::new_spanned(
             item,

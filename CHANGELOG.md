@@ -27,6 +27,7 @@
 - `Option<T>` arguments in `#[extendr]` functions now default to `NULL` in the generated R wrappers, so they can be omitted from R and handled with `.unwrap_or_default()` or `.unwrap_or_else()` <https://github.com/extendr/extendr/issues/1077>
 - Implement `fmt::Pointer` for `Robj`, so `{robj:p}` prints the address of the underlying SEXP <https://github.com/extendr/extendr/issues/537>
 - `Environment` gains `HashMap`-style methods `keys()`, `values()`, `contains_key()`, `insert()`, and `remove()`. `insert()` and `remove()` return an error instead of failing in R when the binding or environment is locked.
+- `vctrs` feature: `#[extendr(vctrs)]` and `vctr Type;` in `extendr_module!` turn an `Rvctr` type into a vctrs vector with generated `format`, `as.character`, `vec_restore` and `c` methods.
 
 ### Changed
 

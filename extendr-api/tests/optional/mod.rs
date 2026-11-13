@@ -28,3 +28,6 @@ mod serde;
 
 #[cfg(feature = "non-api")]
 mod non_api;
+
+#[cfg(feature = "vctrs")]
+mod vctrs;

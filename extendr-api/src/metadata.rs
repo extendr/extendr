@@ -42,6 +42,15 @@ pub struct Impl {
     pub methods: Vec<Func>,
 }
 
+/// Metadata for a type marked `#[extendr(vctrs)]`.
+#[doc(hidden)]
+#[derive(Debug, PartialEq, IntoList)]
+pub struct Vctr {
+    pub name: &'static str,
+    pub class: &'static str,
+    pub methods: Vec<Func>,
+}
+
 /// Module metadata.
 #[doc(hidden)]
 #[derive(Debug, PartialEq, IntoList)]
@@ -49,6 +58,7 @@ pub struct Metadata {
     pub name: &'static str,
     pub functions: Vec<Func>,
     pub impls: Vec<Impl>,
+    pub vctrs: Vec<Vctr>,
 }
 
 struct RArg {
@@ -97,6 +107,12 @@ impl From<&Vec<Func>> for Robj {
 impl From<&Vec<Impl>> for Robj {
     fn from(impls: &Vec<Impl>) -> Self {
         List::from_values(impls).into()
+    }
+}
+
+impl From<&Vec<Vctr>> for Robj {
+    fn from(vctrs: &Vec<Vctr>) -> Self {
+        List::from_values(vctrs).into()
     }
 }
 
@@ -318,6 +334,72 @@ fn write_impl_wrapper(
     Ok(())
 }
 
+fn write_call(
+    w: &mut Vec<u8>,
+    func: &Func,
+    args: &str,
+    package_name: &str,
+    use_symbols: bool,
+) -> std::io::Result<()> {
+    if use_symbols {
+        write!(w, ".Call({}, {})", func.c_name, args)
+    } else {
+        write!(
+            w,
+            ".Call(\"{}\", {}, PACKAGE = \"{}\")",
+            func.c_name, args, package_name
+        )
+    }
+}
+
+/// Generate the S3 methods for a type marked `#[extendr(vctrs)]`.
+fn write_vctr_wrapper(
+    w: &mut Vec<u8>,
+    vctr: &Vctr,
+    package_name: &str,
+    use_symbols: bool,
+) -> std::io::Result<()> {
+    let class = vctr.class;
+    let method = |generic: &str| {
+        let r_name = format!("{generic}.{class}");
+        vctr.methods
+            .iter()
+            .find(|f| f.r_name == r_name)
+            .ok_or_else(|| {
+                std::io::Error::other(format!("missing `{r_name}` for vctr `{}`", vctr.name))
+            })
+    };
+
+    writeln!(w, "#' @export")?;
+    write!(w, "`format.{class}` <- function(x, ...) ")?;
+    write_call(w, method("format")?, "x", package_name, use_symbols)?;
+    writeln!(w, "\n")?;
+
+    writeln!(w, "#' @export")?;
+    writeln!(
+        w,
+        "`as.character.{class}` <- function(x, ...) format(x, ...)\n"
+    )?;
+
+    writeln!(w, "#' @exportS3Method vctrs::vec_restore")?;
+    write!(w, "`vec_restore.{class}` <- function(x, to, ...) ")?;
+    write_call(
+        w,
+        method("vec_restore")?,
+        "x, to",
+        package_name,
+        use_symbols,
+    )?;
+    writeln!(w, "\n")?;
+
+    writeln!(w, "#' @export")?;
+    write!(w, "`c.{class}` <- function(...) ")?;
+    write_call(w, method("c")?, "list(...)", package_name, use_symbols)?;
+    writeln!(w, "\n")?;
+
+    Ok(())
+}
+
 impl Metadata {
     pub fn make_r_wrappers(
         &self,
@@ -332,6 +414,10 @@ impl Metadata {
 
         for name in self.impl_names() {
             write_impl_wrapper(&mut w, name, &self.impls, package_name, use_symbols)?;
+        }
+
+        for vctr in &self.vctrs {
+            write_vctr_wrapper(&mut w, vctr, package_name, use_symbols)?;
         }
 
         unsafe { Ok(String::from_utf8_unchecked(w)) }

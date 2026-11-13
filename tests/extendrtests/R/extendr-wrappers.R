@@ -305,6 +305,18 @@ throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, 
 
 sum_many_args_same_type <- function(x, y, z) .Call(wrap__sum_many_args_same_type, x, y, z)
 
+#' Create points from coordinates. `NA` in either coordinate gives a missing point.
+#' @export
+points <- function(x, y) .Call(wrap__points, x, y)
+
+#' Sum of the x coordinates, skipping missing points.
+#' @export
+points_sum_x <- function(x) .Call(wrap__points_sum_x, x)
+
+#' Create labels.
+#' @export
+labels <- function(x) .Call(wrap__labels, x)
+
 #' Class for testing (exported)
 #' @examples
 #' x <- MyClass$new()
@@ -534,5 +546,29 @@ Animal$speak <- function() .Call(wrap__Animal__speak, self)
 
 #' @export
 `[[.Animal` <- `$.Animal`
+
+#' @export
+`format.Points` <- function(x, ...) .Call(wrap__vctr_format__Points, x)
+
+#' @export
+`as.character.Points` <- function(x, ...) format(x, ...)
+
+#' @exportS3Method vctrs::vec_restore
+`vec_restore.Points` <- function(x, to, ...) .Call(wrap__vctr_restore__Points, x, to)
+
+#' @export
+`c.Points` <- function(...) .Call(wrap__vctr_c__Points, list(...))
+
+#' @export
+`format.extendr_labels` <- function(x, ...) .Call(wrap__vctr_format__Labels, x)
+
+#' @export
+`as.character.extendr_labels` <- function(x, ...) format(x, ...)
+
+#' @exportS3Method vctrs::vec_restore
+`vec_restore.extendr_labels` <- function(x, to, ...) .Call(wrap__vctr_restore__Labels, x, to)
+
+#' @export
+`c.extendr_labels` <- function(...) .Call(wrap__vctr_c__Labels, list(...))
 
 # nolint end

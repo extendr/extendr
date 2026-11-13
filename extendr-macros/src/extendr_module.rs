@@ -10,6 +10,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         fnnames,
         implnames,
         usenames,
+        vctrnames,
     } = module;
     let modname = modname.expect("cannot include unnamed modules");
     let modname_string = modname.to_string();
@@ -34,6 +35,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let implmetanames = implnames
         .iter()
         .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, wrappers::type_name(id)));
+    let vctrmetanames = vctrnames
+        .iter()
+        .map(|id| format_ident!("{}vctr__{}", wrappers::META_PREFIX, id));
     let usemetanames = usenames
         .iter()
         .map(|id| format_ident!("get_{}_metadata", id))
@@ -45,14 +49,17 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
         pub fn #module_metadata_name() -> extendr_api::metadata::Metadata {
             let mut functions = Vec::new();
             let mut impls = Vec::new();
+            let mut vctrs = Vec::new();
 
             // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
             #( #fnmetanames(&mut functions); )*
             #( #implmetanames(&mut impls); )*
+            #( #vctrmetanames(&mut vctrs); )*
 
             // Extends functions and impls with the submodules metadata
             #( functions.extend(#usenames::#usemetanames().functions); )*
             #( impls.extend(#usenames::#usemetanames().impls); )*
+            #( vctrs.extend(#usenames::#usemetanames().vctrs); )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -91,6 +98,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 name: #modname_string,
                 functions,
                 impls,
+                vctrs,
             }
         }
 
@@ -169,6 +177,7 @@ struct Module {
     fnnames: Vec<Ident>,
     implnames: Vec<Type>,
     usenames: Vec<Ident>,
+    vctrnames: Vec<Ident>,
 }
 
 // Custom parser for the module.
@@ -180,6 +189,7 @@ impl syn::parse::Parse for Module {
             fnnames: Vec::new(),
             implnames: Vec::new(),
             usenames: Vec::new(),
+            vctrnames: Vec::new(),
         };
         while !input.is_empty() {
             if let Ok(kmod) = input.parse::<Token![mod]>() {
@@ -194,8 +204,14 @@ impl syn::parse::Parse for Module {
                 res.implnames.push(input.parse()?);
             } else if input.parse::<Token![use]>().is_ok() {
                 res.usenames.push(input.parse()?);
+            } else if input.peek(Ident) && input.fork().parse::<Ident>()? == "vctr" {
+                input.parse::<Ident>()?;
+                res.vctrnames.push(input.parse()?);
             } else {
-                return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
+                return Err(syn::Error::new(
+                    input.span(),
+                    "expected mod, fn, impl, use or vctr",
+                ));
             }
 
             input.parse::<Token![;]>()?;

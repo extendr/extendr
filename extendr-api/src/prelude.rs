@@ -64,3 +64,6 @@ pub use ::either::*;
 
 #[cfg(feature = "faer")]
 pub use ::faer;
+
+#[cfg(feature = "vctrs")]
+pub use super::optional::vctrs::Rvctr;

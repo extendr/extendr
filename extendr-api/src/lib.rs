@@ -444,6 +444,12 @@ pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: M
         }
     }
 
+    for vctr in metadata.vctrs {
+        for func in vctr.methods {
+            make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
+        }
+    }
+
     rmethods.push(extendr_ffi::R_CallMethodDef {
         name: std::ptr::null(),
         fun: None,

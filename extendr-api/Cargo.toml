@@ -34,6 +34,9 @@ result_condition = []
 # None, one or both can be set, but the one with highest precedence will take effect.
 result_list = []
 
+# Represent Rust collections as vctrs vectors via `#[extendr(vctrs)]`
+vctrs = []
+
 # This dummy feature enables all features that increase the functionality of
 # extendr, via conversions or R features. Features that change behaviour
 full-functionality = [
@@ -42,6 +45,7 @@ full-functionality = [
   "ndarray",
   "num-complex",
   "serde",
+  "vctrs",
 ]
 
 # Parts of the R-API are locked behind non-API, as CRAN frowns upon the presence
@@ -53,7 +57,7 @@ non-api = ["extendr-ffi/non-api"]
 # The minimal set of features without all optional ones
 tests-minimal = []
 
-tests = ["either", "faer", "ndarray", "num-complex", "serde", "tests-minimal"]
+tests = ["either", "faer", "ndarray", "num-complex", "serde", "tests-minimal", "vctrs"]
 
 # Literally all features to test
 tests-all = ["tests"]

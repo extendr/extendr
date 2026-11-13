@@ -11,6 +11,8 @@ pub(crate) struct ExtendrOptions {
     /// R. See [WRE, Section 6.3 number generation](https://cran.r-project.org/doc/manuals/R-exts.html#Random-numbers)
     pub use_rng: bool,
     pub invisible: Option<bool>,
+    /// Represent a struct as a vctrs vector, see `extendr_api::optional::vctrs`.
+    pub vctrs: bool,
 }
 
 impl ExtendrOptions {
@@ -20,6 +22,7 @@ impl ExtendrOptions {
     ///
     /// - `r_name = "name"` which specifies the name of the wrapper on the R-side.
     /// - `use_rng = bool` ensures the RNG-state is pulled and pushed
+    /// - `vctrs` represents a struct as a vctrs vector
     ///
     pub fn parse(&mut self, meta: ParseNestedMeta) -> syn::parse::Result<()> {
         let path = meta
@@ -30,6 +33,10 @@ impl ExtendrOptions {
         match path.to_string().as_str() {
             "invisible" => {
                 self.invisible = Some(true);
+                Ok(())
+            }
+            "vctrs" => {
+                self.vctrs = true;
                 Ok(())
             }
             _ => {

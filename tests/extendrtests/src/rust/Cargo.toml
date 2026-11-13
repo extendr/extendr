@@ -18,6 +18,7 @@ extendr-api = { version = "*", features = [
     "either",
     "faer",
     "ndarray",
+    "vctrs",
 ] }
 
 [features]

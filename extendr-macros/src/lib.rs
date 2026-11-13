@@ -63,6 +63,7 @@ mod extendr_function;
 mod extendr_impl;
 mod extendr_module;
 mod extendr_options;
+mod extendr_vctrs;
 mod list;
 mod list_struct;
 mod pairlist;
