@@ -1,7 +1,7 @@
 use crate::wrappers;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse::ParseStream, parse_macro_input, Ident, Token, Type};
+use syn::{parse::ParseStream, parse_macro_input, Attribute, Ident, Token, Type};
 
 pub fn extendr_module(item: TokenStream) -> TokenStream {
     let module = parse_macro_input!(item as Module);
@@ -28,16 +28,25 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
     let wrap_make_module_wrappers_string = wrap_make_module_wrappers.to_string();
     let write_make_module_wrappers = format_ident!("write__make_{}_wrappers", modname);
 
-    let fnmetanames = fnnames
-        .iter()
-        .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, id));
-    let implmetanames = implnames
-        .iter()
-        .map(|id| format_ident!("{}{}", wrappers::META_PREFIX, wrappers::type_name(id)));
-    let usemetanames = usenames
-        .iter()
-        .map(|id| format_ident!("get_{}_metadata", id))
-        .collect::<Vec<Ident>>();
+    // Each statement is prefixed with its item's `#[cfg(...)]` (and other)
+    // attributes, so that `cfg`-gating an item in `extendr_module!` compiles out
+    // both the item and the metadata call that references it.
+    let fnmeta_stmts = fnnames.iter().map(|(attrs, id)| {
+        let meta = format_ident!("{}{}", wrappers::META_PREFIX, id);
+        quote! { #(#attrs)* #meta(&mut functions); }
+    });
+    let implmeta_stmts = implnames.iter().map(|(attrs, ty)| {
+        let meta = format_ident!("{}{}", wrappers::META_PREFIX, wrappers::type_name(ty));
+        quote! { #(#attrs)* #meta(&mut impls); }
+    });
+    let use_fn_stmts = usenames.iter().map(|(attrs, id)| {
+        let meta = format_ident!("get_{}_metadata", id);
+        quote! { #(#attrs)* functions.extend(#id::#meta().functions); }
+    });
+    let use_impl_stmts = usenames.iter().map(|(attrs, id)| {
+        let meta = format_ident!("get_{}_metadata", id);
+        quote! { #(#attrs)* impls.extend(#id::#meta().impls); }
+    });
 
     TokenStream::from(quote! {
         #[no_mangle]
@@ -47,12 +56,12 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
             let mut impls = Vec::new();
 
             // Pushes metadata (eg. extendr_api::metadata::Func) to functions and impl vectors.
-            #( #fnmetanames(&mut functions); )*
-            #( #implmetanames(&mut impls); )*
+            #( #fnmeta_stmts )*
+            #( #implmeta_stmts )*
 
             // Extends functions and impls with the submodules metadata
-            #( functions.extend(#usenames::#usemetanames().functions); )*
-            #( impls.extend(#usenames::#usemetanames().impls); )*
+            #( #use_fn_stmts )*
+            #( #use_impl_stmts )*
 
             // Add this function to the list, but set hidden: true.
             functions.push(extendr_api::metadata::Func {
@@ -166,9 +175,9 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
 #[derive(Debug)]
 struct Module {
     modname: Option<Ident>,
-    fnnames: Vec<Ident>,
-    implnames: Vec<Type>,
-    usenames: Vec<Ident>,
+    fnnames: Vec<(Vec<Attribute>, Ident)>,
+    implnames: Vec<(Vec<Attribute>, Type)>,
+    usenames: Vec<(Vec<Attribute>, Ident)>,
 }
 
 // Custom parser for the module.
@@ -182,18 +191,25 @@ impl syn::parse::Parse for Module {
             usenames: Vec::new(),
         };
         while !input.is_empty() {
+            // Outer attributes (e.g. `#[cfg(...)]`) preceding an item are
+            // captured and forwarded to the generated metadata call, so that
+            // `cfg`-gating an item here matches the item's own compilation.
+            let attrs = input.call(Attribute::parse_outer)?;
             if let Ok(kmod) = input.parse::<Token![mod]>() {
+                if !attrs.is_empty() {
+                    return Err(syn::Error::new(kmod.span(), "attributes are not supported on `mod`"));
+                }
                 let name: Ident = input.parse()?;
                 if res.modname.is_some() {
                     return Err(syn::Error::new(kmod.span(), "only one mod allowed"));
                 }
                 res.modname = Some(name);
             } else if input.parse::<Token![fn]>().is_ok() {
-                res.fnnames.push(input.parse()?);
+                res.fnnames.push((attrs, input.parse()?));
             } else if input.parse::<Token![impl]>().is_ok() {
-                res.implnames.push(input.parse()?);
+                res.implnames.push((attrs, input.parse()?));
             } else if input.parse::<Token![use]>().is_ok() {
-                res.usenames.push(input.parse()?);
+                res.usenames.push((attrs, input.parse()?));
             } else {
                 return Err(syn::Error::new(input.span(), "expected mod, fn or impl"));
             }
