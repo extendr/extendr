@@ -48,7 +48,7 @@ impl<T, const NDIM: usize> RArray<T, NDIM> {
     pub fn get_dim(&self) -> Vec<usize> {
         self.robj
             .get_attrib(wrapper::symbol::dim_symbol())
-            .and_then(|dim| dim.as_integer_vector())
+            .and_then(|dim| Vec::<i32>::try_from(&dim).ok())
             .map(|vec| vec.into_iter().map(|x| x as usize).collect())
             .unwrap_or_else(|| vec![self.robj.len()])
     }
@@ -766,14 +766,14 @@ where
     ///     matrix[[1, 0]] = 2.;
     ///     matrix[[2, 0]] = 3.;
     ///     matrix[[0, 1]] = 4.;
-    ///     assert_eq!(matrix.as_real_slice().unwrap(), &[1., 2., 3., 4., 0., 0.]);
+    ///     assert_eq!(<&[f64]>::try_from(matrix.as_robj()).unwrap(), &[1., 2., 3., 4., 0., 0.]);
     ///
     ///    let mut matrix = RMatrix3D::new_matrix3d(3, 2, 2, |_, _, _| 0.);
     ///    matrix[[0, 0, 0]] = 1.;
     ///    matrix[[1, 0, 0]] = 2.;
     ///    matrix[[2, 0, 0]] = 3.;
     ///    matrix[[0, 1, 0]] = 4.;
-    ///    assert_eq!(matrix.as_real_slice().unwrap(),
+    ///    assert_eq!(<&[f64]>::try_from(matrix.as_robj()).unwrap(),
     ///        &[1., 2., 3., 4., 0., 0., 0., 0., 0., 0., 0., 0.]);
     /// }
     /// ```
@@ -1032,13 +1032,13 @@ mod tests {
             let robj: Robj = first_row.into();
             assert!(robj.is_real());
             assert_eq!(robj.len(), 2);
-            assert_eq!(robj.as_real_slice().unwrap(), &[1., 4.]);
+            assert_eq!(<&[f64]>::try_from(&robj).unwrap(), &[1., 4.]);
 
             let first_col = matrix.col_iter().next().unwrap();
             let robj: Robj = first_col.into();
             assert!(robj.is_real());
             assert_eq!(robj.len(), 3);
-            assert_eq!(robj.as_real_slice().unwrap(), &[1., 2., 3.]);
+            assert_eq!(<&[f64]>::try_from(&robj).unwrap(), &[1., 2., 3.]);
 
             let string_data = ["a", "b", "c", "d"];
             let str_matrix: RMatrix<Rstr> = RMatrix::new_matrix(2, 2, |r, c| {

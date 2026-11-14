@@ -18,7 +18,12 @@ fn leak_unwrap_strings(x: Robj) -> String {
 
 #[extendr]
 fn leak_unwrap_doubles(x: Robj) -> String {
-    x.as_real_vector().ok_or("ERROR").unwrap().len().to_string()
+    Vec::<f64>::try_from(&x)
+        .ok()
+        .ok_or("ERROR")
+        .unwrap()
+        .len()
+        .to_string()
 }
 
 #[extendr]

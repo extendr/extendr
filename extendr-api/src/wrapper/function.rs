@@ -7,7 +7,7 @@ use extendr_ffi::{get_closure_body, get_closure_env, get_closure_formals, Rf_lco
 /// test! {
 ///     // Closures are functions.
 ///     let expr = R!("function(a = 1, b) {c <- a + b}")?;
-///     let func = expr.as_function().unwrap();
+///     let func = Function::try_from(&expr).unwrap();
 ///
 ///     let expected_formals = Pairlist::from_pairs(vec![("a", r!(1.0)), ("b", missing_arg().into())]);
 ///     let expected_body = lang!(
@@ -18,7 +18,7 @@ use extendr_ffi::{get_closure_body, get_closure_env, get_closure_formals, Rf_lco
 ///
 ///     // Primitives can also be functions.
 ///     let expr = R!("`~`")?;
-///     let func = expr.as_function().unwrap();
+///     let func = Function::try_from(&expr).unwrap();
 ///     assert_eq!(func.formals(), None);
 ///     assert_eq!(func.body(), None);
 ///     assert_eq!(func.environment(), None);
@@ -57,7 +57,7 @@ impl Function {
     /// ```
     /// use extendr_api::prelude::*;
     /// test! {
-    ///     let function = R!("function(a, b) a + b").unwrap().as_function().unwrap();
+    ///     let function = Function::try_from(R!("function(a, b) a + b").unwrap()).unwrap();
     ///     assert_eq!(function.call(pairlist!(a=1, b=2)).unwrap(), r!(3));
     /// }
     /// ```

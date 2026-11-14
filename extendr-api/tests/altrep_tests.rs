@@ -39,7 +39,7 @@ fn test_altinteger() {
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
-        assert_eq!(obj.as_robj().as_integer_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(<&[i32]>::try_from(obj.as_robj()).unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
         // index 5 is missing
         let mystate_w_missing = MyCompactIntRange { start: 0, len: 10, step: 1, missing_index: 5 };
@@ -93,7 +93,7 @@ fn test_altreal() {
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(45.0));
-        assert_eq!(obj.as_robj().as_real_slice().unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
+        assert_eq!(<&[f64]>::try_from(obj.as_robj()).unwrap(), [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]);
 
         // index 5 is missing
         let mystate_w_missing = MyCompactRealRange { start: 0.0, len: 10, step: 1.0, missing_index: 5 };
@@ -142,7 +142,7 @@ fn test_altlogical() {
 
         assert_eq!(obj.len(), 10);
         // assert_eq!(obj.sum(true), r!(5.0));
-        assert_eq!(obj.as_robj().as_logical_slice().unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
+        assert_eq!(<&[Rbool]>::try_from(obj.as_robj()).unwrap(), [FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE]);
     }
 }
 
@@ -174,7 +174,7 @@ fn test_altraw() {
         let obj = Altrep::from_state_and_class(mystate, class, false);
 
         assert_eq!(obj.len(), 10);
-        assert_eq!(obj.as_robj().as_raw_slice().unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(<&[u8]>::try_from(obj.as_robj()).unwrap(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
 }
 

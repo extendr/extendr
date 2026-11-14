@@ -502,7 +502,6 @@ impl GetSexp for Rstr {
 // These traits all derive from GetSexp with default implementations
 impl Length for Rstr {}
 impl Types for Rstr {}
-impl Conversions for Rstr {}
 impl Rinternals for Rstr {}
 impl Slices for Rstr {}
 impl Operators for Rstr {}
@@ -730,13 +729,13 @@ impl<T> RobjItertools for T where T: Iterator {}
 ///
 /// test! {
 /// let robj = (0..3).collect::<Robj>();
-/// assert_eq!(robj.as_integer_vector().unwrap(), vec![0, 1, 2]);
+/// assert_eq!(Vec::<i32>::try_from(&robj).unwrap(), vec![0, 1, 2]);
 ///
 /// let robj = (0..3).map(|x| x % 2 == 0).collect::<Robj>();
-/// assert_eq!(robj.as_logical_vector().unwrap(), vec![TRUE, FALSE, TRUE]);
+/// assert_eq!(Vec::<Rbool>::try_from(&robj).unwrap(), vec![TRUE, FALSE, TRUE]);
 ///
 /// let robj = (0..3).map(|x| x as f64).collect::<Robj>();
-/// assert_eq!(robj.as_real_vector().unwrap(), vec![0., 1., 2.]);
+/// assert_eq!(Vec::<f64>::try_from(&robj).unwrap(), vec![0., 1., 2.]);
 ///
 /// let robj = (0..3).map(|x| format!("{}", x)).collect::<Robj>();
 /// assert_eq!(robj.as_str_vector().unwrap(), vec!["0", "1", "2"]);
@@ -898,10 +897,10 @@ mod test {
             let expected: Vec<i32> = (1..=100).collect();
 
             let low: Robj = WrongSizeHint { i: 0, n: 100, hint: 1 }.collect();
-            assert_eq!(low.as_integer_slice().unwrap(), &expected);
+            assert_eq!(<&[i32]>::try_from(&low).unwrap(), &expected);
 
             let high: Robj = WrongSizeHint { i: 0, n: 100, hint: 500 }.collect();
-            assert_eq!(high.as_integer_slice().unwrap(), &expected);
+            assert_eq!(<&[i32]>::try_from(&high).unwrap(), &expected);
 
             let strs: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| i.to_string())
@@ -916,7 +915,7 @@ mod test {
             let expected: Vec<i32> = (1..=100).collect();
             for hint in [0, 1, 100, 500] {
                 let ints: Integers = WrongSizeHint { i: 0, n: 100, hint }.collect();
-                assert_eq!(ints.as_robj().as_integer_slice().unwrap(), &expected);
+                assert_eq!(<&[i32]>::try_from(ints.as_robj()).unwrap(), &expected);
 
                 let dbls: Doubles = WrongSizeHint { i: 0, n: 100, hint }.map(f64::from).collect();
                 assert_eq!(dbls.len(), 100);
@@ -932,7 +931,7 @@ mod test {
             }
             for hint in [0, 1, 99, 500] {
                 let robj: Robj = WrongSizeHint { i: 0, n: 100, hint }.collect();
-                assert_eq!(robj.as_integer_slice().unwrap(), &expected);
+                assert_eq!(<&[i32]>::try_from(&robj).unwrap(), &expected);
             }
 
             let empty: Robj = WrongSizeHint { i: 0, n: 0, hint: 5 }.collect();
@@ -942,17 +941,17 @@ mod test {
             let reals: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| i as f64)
                 .collect();
-            assert_eq!(reals.as_real_slice().unwrap(), &[1., 2., 3.]);
+            assert_eq!(<&[f64]>::try_from(&reals).unwrap(), &[1., 2., 3.]);
 
             let lgls: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| i % 2 == 0)
                 .collect();
-            assert_eq!(lgls.as_logical_vector().unwrap(), vec![FALSE, TRUE, FALSE]);
+            assert_eq!(Vec::<Rbool>::try_from(&lgls).unwrap(), vec![FALSE, TRUE, FALSE]);
 
             let raws: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| i as u8)
                 .collect();
-            assert_eq!(raws.as_raw_slice().unwrap(), &[1, 2, 3]);
+            assert_eq!(<&[u8]>::try_from(&raws).unwrap(), &[1, 2, 3]);
 
             let cplx: Robj = WrongSizeHint { i: 0, n: 3, hint: 1 }
                 .map(|i| c64::new(i as f64, 0.))
@@ -973,12 +972,12 @@ mod test {
             let int_vec = vec![3,4,0,-2];
             let int_vec_robj: Robj = int_vec.clone().into();
             // unsafe { extendr_ffi::Rf_PrintValue(int_vec_robj.get())}
-            assert_eq!(int_vec_robj.as_integer_slice().unwrap(), &int_vec);
+            assert_eq!(<&[i32]>::try_from(&int_vec_robj).unwrap(), &int_vec);
 
             let rint_vec = vec![Rint::from(3), Rint::from(4), Rint::from(0), Rint::from(-2)];
             let rint_vec_robj: Robj = rint_vec.into();
             // unsafe { extendr_ffi::Rf_PrintValue(rint_vec_robj.get())}
-            assert_eq!(rint_vec_robj.as_integer_slice().unwrap(), &int_vec);
+            assert_eq!(<&[i32]>::try_from(&rint_vec_robj).unwrap(), &int_vec);
         }
     }
 

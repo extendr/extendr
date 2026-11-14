@@ -15,7 +15,11 @@ impl std::fmt::Debug for Symbol {
             if self.is_unbound_value() {
                 return write!(f, "unbound_value()");
             }
-            write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
+            write!(
+                f,
+                "sym!({})",
+                Symbol::try_from(self.as_robj()).unwrap().as_str()
+            )
         }
     }
 }
@@ -59,15 +63,15 @@ impl std::fmt::Debug for Robj {
                        } else if self.is_unbound_value() {
                            write!(f, "unbound_value()")
                        } else {
-                           write!(f, "sym!({})", self.as_symbol().unwrap().as_str())
+                           write!(f, "sym!({})", Symbol::try_from(self).unwrap().as_str())
                        }
                    }
                    LISTSXP => {
-                       let pairlist = self.as_pairlist().unwrap().iter();
+                       let pairlist = Pairlist::try_from(self).unwrap().iter();
                        write!(f, "r!({:?})", pairlist)
                    }
                    CLOSXP => {
-                       let func = self.as_function().unwrap();
+                       let func = Function::try_from(self).unwrap();
                        let formals = func.formals();
                        let body = func.body();
                        let environment = func.environment();
@@ -90,7 +94,7 @@ impl std::fmt::Debug for Robj {
                        }
                    },
                    PROMSXP => {
-                       let p = self.as_promise().unwrap();
+                       let p = Promise::try_from(self).unwrap();
                        write!(
                            f,
                            "r!(Promise::from_parts({:?}, {:?}))",
@@ -101,7 +105,7 @@ impl std::fmt::Debug for Robj {
                    LANGSXP => write!(
                        f,
                        "r!(Language::from_values({:?}))",
-                       self.as_language().unwrap().values().collect::<Vec<_>>()
+                       Language::try_from(self).unwrap().values().collect::<Vec<_>>()
                    ),
                    SPECIALSXP => write!(f, "r!(Special())"),
                    BUILTINSXP => write!(f, "r!(Builtin())"),
@@ -110,7 +114,7 @@ impl std::fmt::Debug for Robj {
                        write!(f, "r!(Rstr::from_string({:?}))", c.as_str())
                    }
                    LGLSXP => {
-                       let slice = self.as_logical_slice().unwrap();
+                       let slice = <&[Rbool]>::try_from(self).unwrap();
                        if slice.len() == 1 {
                            write!(f, "r!({:?})", slice[0])
                        } else {
@@ -118,15 +122,15 @@ impl std::fmt::Debug for Robj {
                        }
                    }
                    INTSXP => {
-                       let slice = self.as_integer_slice().unwrap();
+                       let slice = <&[i32]>::try_from(self).unwrap();
                        if slice.len() == 1 {
                            write!(f, "r!({:?})", slice[0])
                        } else {
-                           write!(f, "r!({:?})", self.as_integer_slice().unwrap())
+                           write!(f, "r!({:?})", <&[i32]>::try_from(self).unwrap())
                        }
                    }
                    REALSXP => {
-                       let slice = self.as_real_slice().unwrap();
+                       let slice = <&[f64]>::try_from(self).unwrap();
                        if slice.len() == 1 {
                            write!(f, "r!({:?})", slice[0])
                        } else {
@@ -134,7 +138,7 @@ impl std::fmt::Debug for Robj {
                        }
                    }
                    VECSXP => {
-                       let list = self.as_list().unwrap();
+                       let list = List::try_from(self).unwrap();
                        if self.names().is_some() {
                            write!(f, "r!(List::from_pairs({:?}))", list.iter())
                        } else {
@@ -144,7 +148,7 @@ impl std::fmt::Debug for Robj {
                    EXPRSXP => write!(
                        f,
                        "r!(Expressions::from_values({:?}))",
-                       self.as_expressions().unwrap().values()
+                       Expressions::try_from(self).unwrap().values()
                    ),
                    WEAKREFSXP => write!(f, "r!(Weakref())"),
                    // CPLXSXP => false,
@@ -171,7 +175,7 @@ impl std::fmt::Debug for Robj {
                        write!(
                            f,
                            "r!(Raw::from_bytes({:?}))",
-                           self.as_raw().unwrap().as_slice()
+                           Raw::try_from(self).unwrap().as_slice()
                        )
                    }
                    S4SXP => write!(f, "r!(S4())"),

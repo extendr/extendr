@@ -7,7 +7,7 @@ use super::*;
 /// test! {
 ///     let bytes = r!(Raw::from_bytes(&[1, 2, 3]));
 ///     assert_eq!(bytes.len(), 3);
-///     assert_eq!(bytes.as_raw(), Some(Raw::from_bytes(&[1, 2, 3])));
+///     assert_eq!(Raw::try_from(&bytes).ok(), Some(Raw::from_bytes(&[1, 2, 3])));
 /// }
 /// ```
 ///
@@ -18,7 +18,7 @@ pub struct Raw {
 
 fn init_raw<F: FnOnce(&mut [u8])>(len: usize, filler: F) -> Raw {
     let mut robj = Robj::alloc_vector(SEXPTYPE::RAWSXP, len);
-    let slice = robj.as_raw_slice_mut().unwrap();
+    let slice = <&mut [u8]>::try_from(&mut robj).unwrap();
     filler(slice);
     Raw { robj }
 }

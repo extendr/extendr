@@ -16,7 +16,7 @@ fn test_derive_into_dataframe() {
 
         assert!(df.inherits("data.frame"));
 
-        let list : List = df.as_list().unwrap();
+        let list : List = List::try_from(df.as_robj()).unwrap();
         assert_eq!(list[0], r!([0, 1]));
         assert_eq!(list[1], r!(["abc", "xyz"]));
 
@@ -24,7 +24,7 @@ fn test_derive_into_dataframe() {
         let df3 = ((0..2).map(|i| MyStruct { x: i.into(), y: i.to_string().into() }),).into_dataframe()?;
         assert!(df3.inherits("data.frame"));
 
-        let list : List = df3.as_list().unwrap();
+        let list : List = List::try_from(df3.as_robj()).unwrap();
         assert_eq!(list[0], r!([0, 1]));
         assert_eq!(list[1], r!(["0", "1"]));
     }
@@ -44,7 +44,7 @@ fn test_derive_into_dataframe_field_names_dont_clash() {
             MyStruct { val: 0.into(), caller: 1.into(), res: 2.into() },
             MyStruct { val: 3.into(), caller: 4.into(), res: 5.into() },
         ];
-        let list: List = v.into_dataframe()?.as_list().unwrap();
+        let list = List::try_from(v.into_dataframe()?.as_robj()).unwrap();
         assert_eq!(list[0], r!([0, 3]));
         assert_eq!(list[1], r!([1, 4]));
         assert_eq!(list[2], r!([2, 5]));

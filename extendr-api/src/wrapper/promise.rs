@@ -73,7 +73,7 @@ impl Promise {
     /// use extendr_api::prelude::*;
     /// test! {
     ///    let iris_promise = Environment::global().find_var(sym!(iris)).unwrap();
-    ///    let iris_dataframe = iris_promise.as_promise().unwrap().eval().unwrap();
+    ///    let iris_dataframe = Promise::try_from(&iris_promise).unwrap().eval().unwrap();
     ///    assert_eq!(iris_dataframe.is_frame(), true);
     /// }
     /// ```

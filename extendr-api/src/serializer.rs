@@ -693,10 +693,8 @@ impl ser::Serialize for Raw {
     where
         S: ser::Serializer,
     {
-        let bytes = self
-            .as_robj()
-            .as_raw_slice()
-            .ok_or_else(|| ser::Error::custom("expected a raw vector"))?;
+        let bytes = <&[u8]>::try_from(self.as_robj())
+            .map_err(|_| ser::Error::custom("expected a raw vector"))?;
         serializer.serialize_bytes(bytes)
     }
 }

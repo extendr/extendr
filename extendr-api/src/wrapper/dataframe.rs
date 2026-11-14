@@ -79,7 +79,7 @@ where
         write!(
             f,
             "dataframe!({})",
-            self.as_list()
+            List::try_from(self.as_robj())
                 .unwrap()
                 .iter()
                 .map(|(k, v)| if !k.is_empty() {
