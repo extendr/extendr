@@ -7,3 +7,5 @@ pub mod either;
 pub mod faer;
 #[cfg(feature = "ndarray")]
 pub mod ndarray;
+#[cfg(feature = "vctrs")]
+pub mod vctrs;

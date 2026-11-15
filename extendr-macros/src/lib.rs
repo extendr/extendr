@@ -67,6 +67,7 @@ mod list;
 mod list_struct;
 mod pairlist;
 mod pairs;
+mod rvctr;
 mod wrappers;
 
 use proc_macro::TokenStream;
@@ -406,4 +407,12 @@ pub fn impl_try_from_robj_tuples(input: TokenStream) -> TokenStream {
 
         })
     }))
+}
+
+#[proc_macro_derive(Rvctr, attributes(rvctr))]
+pub fn derive_rvctr(item: TokenStream) -> TokenStream {
+    match rvctr::derive_rvctr(item) {
+        Ok(result) => result,
+        Err(e) => e.into_compile_error().into(),
+    }
 }

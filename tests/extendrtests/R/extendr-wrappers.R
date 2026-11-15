@@ -184,6 +184,20 @@ leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
+make_points <- function(x, y) .Call(wrap__make_points, x, y)
+
+#' @export
+format.Points <- function(x) .Call(wrap__format_Points, x)
+
+#' @export
+length.Points <- function(x) .Call(wrap__length_Points, x)
+
+#' @export
+`[.Points` <- function(x, idx) .Call(wrap__subset_Points, x, idx)
+
+#' @export
+c.Points <- function(x, y) .Call(wrap__extend_Points, x, y)
+
 #' Calculate Euclidean distance matrix
 #' Test case adopted from <https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5>
 #' @param a : Matrix of real values or `NULL`
