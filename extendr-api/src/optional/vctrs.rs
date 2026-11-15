@@ -1,16 +1,28 @@
 use crate::scalar::Rint;
 use crate::*;
 
+/// Make any `Vec<Option<T>>` into a vector in R.
+///
+///
+/// Can be derived via `#[derive(Rvctr)]`
+/// Additionally, there is a blanket `impl` for all `Vec<Option<T>>` for ease of use.
 pub trait Rvctr
 where
     Self: Sized + std::fmt::Debug,
 {
+    /// The subclass assigned to the vector
     fn class() -> &'static str {
         "extendr_vctr"
     }
+
+    /// Used in the `print()` method of the created vector
+    /// When using `#[derive(Rvctr)]`, the debug diplay method is used.
     fn format(&self) -> Strings;
+    /// Used to determine the length of the vector
     fn length(&self) -> Rint;
+    /// How to subset the vector—**this is 1-based indexed**
     fn subset(&self, idx: Integers) -> Self;
+    /// Used in `c(x, y)` consumes `y` and clones `self`
     fn extend(self, y: Self) -> Self;
 }
 
