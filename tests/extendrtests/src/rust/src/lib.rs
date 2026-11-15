@@ -17,6 +17,7 @@ mod memory_leaks;
 mod optional_either;
 mod optional_faer;
 mod optional_ndarray;
+mod optional_vctrs;
 mod raw_identifiers;
 mod submodule;
 mod to_unique_character;
@@ -472,6 +473,7 @@ extendr_module! {
     use into_list_derive;
     use memory_leaks;
     use optional_either;
+    use optional_vctrs;
     use optional_ndarray;
     use optional_faer;
     use raw_identifiers;

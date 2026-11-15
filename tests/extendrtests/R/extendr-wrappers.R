@@ -184,6 +184,26 @@ leak_negative_control <- function(x) .Call(wrap__leak_negative_control, x)
 
 type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
+make_points <- function(x, y) .Call(wrap__make_points, x, y)
+
+my_centroid <- function(points) .Call(wrap__my_centroid, points)
+
+make_lines <- function(start, end) .Call(wrap__make_lines, start, end)
+
+line_lengths <- function(lines) .Call(wrap__line_lengths, lines)
+
+#' @export
+format.Points <- function(x) .Call(wrap__format_Points, x)
+
+#' @export
+length.Points <- function(x) .Call(wrap__length_Points, x)
+
+#' @export
+`[.Points` <- function(x, idx) .Call(wrap__subset_Points, x, idx)
+
+#' @export
+c.Points <- function(x, y) .Call(wrap__extend_Points, x, y)
+
 #' Calculate Euclidean distance matrix
 #' Test case adopted from <https://github.com/mikemahoney218/examplerust/blob/23d21b1ced4e24b7a7c00dd36290114dc1bbd113/src/rust/src/lib.rs#L5>
 #' @param a : Matrix of real values or `NULL`
@@ -304,6 +324,12 @@ cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_cal
 throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
 
 sum_many_args_same_type <- function(x, y, z) .Call(wrap__sum_many_args_same_type, x, y, z)
+
+#' @export
+format.extendr_vctr <- function(x) .Call(wrap__format_extendr_vctr, x)
+
+#' @export
+print.extendr_vctr <- function(x) invisible(.Call(wrap__print_extendr_vctr, x))
 
 #' Class for testing (exported)
 #' @examples
