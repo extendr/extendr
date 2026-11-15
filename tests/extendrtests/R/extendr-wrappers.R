@@ -186,6 +186,12 @@ type_aware_sum <- function(input) .Call(wrap__type_aware_sum, input)
 
 make_points <- function(x, y) .Call(wrap__make_points, x, y)
 
+my_centroid <- function(points) .Call(wrap__my_centroid, points)
+
+make_lines <- function(start, end) .Call(wrap__make_lines, start, end)
+
+line_lengths <- function(lines) .Call(wrap__line_lengths, lines)
+
 #' @export
 format.Points <- function(x) .Call(wrap__format_Points, x)
 
@@ -318,6 +324,12 @@ cnd_abort_with_call <- function(msg, call = NULL) .Call(wrap__cnd_abort_with_cal
 throw_error_with_percent <- function(msg) .Call(wrap__throw_error_with_percent, msg)
 
 sum_many_args_same_type <- function(x, y, z) .Call(wrap__sum_many_args_same_type, x, y, z)
+
+#' @export
+format.extendr_vctr <- function(x) .Call(wrap__format_extendr_vctr, x)
+
+#' @export
+print.extendr_vctr <- function(x) invisible(.Call(wrap__print_extendr_vctr, x))
 
 #' Class for testing (exported)
 #' @examples

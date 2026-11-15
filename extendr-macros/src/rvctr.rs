@@ -40,7 +40,7 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
 
     let format_body = match format_fn {
         Some(f) => quote! { #f(self) },
-        None => quote! { extendr_api::optional::vctrs::Rvctr::format(&self.#member) },
+        None => quote! { extendr_api::vctrs::Rvctr::format(&self.#member) },
     };
 
     let module_name = format_ident!("vctr_{}", struct_name);
@@ -54,8 +54,11 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
     let c_method = format!("c.{struct_name}");
     let brack_method = format!("`[.{struct_name}`");
 
+    let get_metadata_name = format_ident!("get_{}_metadata", struct_name);
+    let get_module_metadata_name = format_ident!("get_{}_metadata", module_name);
+
     Ok(quote! {
-        impl extendr_api::optional::vctrs::Rvctr for #struct_name {
+        impl extendr_api::vctrs::Rvctr for #struct_name {
             fn class() -> &'static str {
                 stringify!(#struct_name)
             }
@@ -65,18 +68,18 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
             }
 
             fn length(&self) -> extendr_api::scalar::Rint {
-                extendr_api::optional::vctrs::Rvctr::length(&self.#member)
+                extendr_api::vctrs::Rvctr::length(&self.#member)
             }
 
             fn subset(&self, idx: extendr_api::Integers) -> Self {
                 Self {
-                    #member: extendr_api::optional::vctrs::Rvctr::subset(&self.#member, idx),
+                    #member: extendr_api::vctrs::Rvctr::subset(&self.#member, idx),
                 }
             }
 
             fn extend(self, y: Self) -> Self {
                 Self {
-                    #member: extendr_api::optional::vctrs::Rvctr::extend(self.#member, y.#member),
+                    #member: extendr_api::vctrs::Rvctr::extend(self.#member, y.#member),
                 }
             }
         }
@@ -102,10 +105,18 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
             }
         }
 
+        impl TryFrom<extendr_api::Robj> for #struct_name {
+            type Error = extendr_api::Error;
+
+            fn try_from(robj: extendr_api::Robj) -> extendr_api::Result<Self> {
+                Self::try_from(&robj)
+            }
+        }
+
         impl From<#struct_name> for extendr_api::Robj {
             fn from(value: #struct_name) -> Self {
-                let class = <#struct_name as extendr_api::optional::vctrs::Rvctr>::class();
-                let n = extendr_api::optional::vctrs::Rvctr::length(&value).0;
+                let class = <#struct_name as extendr_api::vctrs::Rvctr>::class();
+                let n = extendr_api::vctrs::Rvctr::length(&value).0;
                 let mut data = extendr_api::Robj::from(extendr_api::Integers::from_values(
                     (1..n + 1).map(extendr_api::scalar::Rint::from),
                 ));
@@ -124,13 +135,13 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
             /// @export
             #[extendr_api::extendr(r_name = #fmt_method)]
             pub fn #format_fn_name(x: &#struct_name) -> extendr_api::Strings {
-                extendr_api::optional::vctrs::Rvctr::format(x)
+                extendr_api::vctrs::Rvctr::format(x)
             }
 
             /// @export
             #[extendr_api::extendr(r_name = #len_method)]
             pub fn #length_fn_name(x: &#struct_name) -> extendr_api::scalar::Rint {
-                extendr_api::optional::vctrs::Rvctr::length(x)
+                extendr_api::vctrs::Rvctr::length(x)
             }
 
             /// @export
@@ -153,13 +164,13 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
                     extendr_api::prelude::Either::Right(ints) => ints,
                 };
 
-                extendr_api::optional::vctrs::Rvctr::subset(x, idx)
+                extendr_api::vctrs::Rvctr::subset(x, idx)
             }
 
             /// @export
             #[extendr_api::extendr(r_name = #c_method)]
             pub fn #extend_fn_name(x: #struct_name, y: #struct_name) -> #struct_name {
-                extendr_api::optional::vctrs::Rvctr::extend(x, y)
+                extendr_api::vctrs::Rvctr::extend(x, y)
             }
 
             extendr_api::extendr_module! {
@@ -168,6 +179,14 @@ pub fn derive_rvctr(item: TokenStream) -> syn::Result<TokenStream> {
                 fn #length_fn_name;
                 fn #subset_fn_name;
                 fn #extend_fn_name;
+            }
+        }
+
+        impl #struct_name {
+            #[doc(hidden)]
+            #[allow(non_snake_case)]
+            pub fn #get_metadata_name() -> extendr_api::metadata::Metadata {
+                #module_name::#get_module_metadata_name()
             }
         }
     }

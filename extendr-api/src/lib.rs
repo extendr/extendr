@@ -335,6 +335,9 @@ pub mod serializer;
 #[cfg(feature = "serde")]
 pub mod deserializer;
 
+#[cfg(feature = "vctrs")]
+pub mod vctrs;
+
 pub(crate) mod conversions;
 
 //////////////////////////////////////////////////
@@ -434,7 +437,11 @@ unsafe fn make_method_def(
 pub unsafe fn register_call_methods(info: *mut extendr_ffi::DllInfo, metadata: Metadata) {
     let mut rmethods = Vec::new();
     let mut cstrings = Vec::new();
-    for func in metadata.functions {
+    for func in metadata
+        .functions
+        .into_iter()
+        .chain(metadata::feature_functions())
+    {
         make_method_def(&mut cstrings, &mut rmethods, &func, func.c_name);
     }
 

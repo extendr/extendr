@@ -318,6 +318,16 @@ fn write_impl_wrapper(
     Ok(())
 }
 
+#[cfg(feature = "vctrs")]
+pub(crate) fn feature_functions() -> Vec<Func> {
+    crate::vctrs::extendr_vctr::get_extendr_vctr_metadata().functions
+}
+
+#[cfg(not(feature = "vctrs"))]
+pub(crate) fn feature_functions() -> Vec<Func> {
+    Vec::new()
+}
+
 impl Metadata {
     pub fn make_r_wrappers(
         &self,
@@ -326,7 +336,8 @@ impl Metadata {
     ) -> std::io::Result<String> {
         let mut w = Vec::new();
 
-        for func in &self.functions {
+        let feature_functions = feature_functions();
+        for func in self.functions.iter().chain(&feature_functions) {
             write_function_wrapper(&mut w, func, package_name, use_symbols)?;
         }
 
