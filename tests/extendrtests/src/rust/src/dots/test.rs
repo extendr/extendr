@@ -48,15 +48,15 @@ fn bullet_list(items: Dots) -> Result<BulletList> {
 /// @export
 #[extendr(invisible, r_name = "print.bullet_list")]
 fn print_bullet_list(x: BulletList, dots: Dots) -> Result<BulletList> {
-    let arg = |name: &str| match dots.get(name) {
-        Some(dot) => dot.value(),
-        None => Ok(None),
+    let width = match dots.get("width") {
+        Some(dot) => dot.value()?.map(|w| usize::try_from(&w)).transpose()?,
+        None => None,
     };
-    let width = arg("width")?.map(|w| usize::try_from(&w)).transpose()?;
-    let symbol = arg("symbol")?
-        .map(String::try_from)
-        .transpose()?
-        .unwrap_or_else(|| "•".to_string());
+    let symbol = match dots.get("symbol") {
+        Some(dot) => dot.value()?.map(String::try_from).transpose()?,
+        None => None,
+    }
+    .unwrap_or_else(|| "•".to_string());
 
     for item in x.0.iter() {
         let text: String = if item.is_na() {
