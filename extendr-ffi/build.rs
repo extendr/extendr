@@ -180,11 +180,16 @@ fn emit_r_version_flags(version: &Version) {
     if (version.major, version.minor) >= (4, 5) {
         println!("cargo:rustc-cfg=r_4_5")
     }
+
+    if (version.major, version.minor) >= (4, 6) {
+        println!("cargo:rustc-cfg=r_4_6")
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rustc-check-cfg=cfg(r_4_4)");
     println!("cargo:rustc-check-cfg=cfg(r_4_5)");
+    println!("cargo:rustc-check-cfg=cfg(r_4_6)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_15)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_16)");
     println!("cargo:rustc-check-cfg=cfg(use_r_ge_version_17)");

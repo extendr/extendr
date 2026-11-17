@@ -31,6 +31,7 @@ pub struct Func {
     pub func_ptr: *const u8,
     pub hidden: bool,
     pub invisible: Option<bool>,
+    pub dots: bool,
 }
 
 /// Metadata Impl.
@@ -146,7 +147,10 @@ fn write_function_wrapper(
 
     let r_args: Vec<RArg> = func.args.iter().map(Into::into).collect();
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
-    let formal_args = r_args.iter().map(|a| a.to_formal_arg());
+    let formal_args = r_args
+        .iter()
+        .map(|a| a.to_formal_arg())
+        .chain(func.dots.then(|| "...".to_string()));
 
     let should_be_invisible = match func.invisible {
         Some(true) => true,
@@ -213,7 +217,8 @@ fn write_method_wrapper(
     let formal_args = r_args
         .iter()
         .skip_while(|a| a.is_self())
-        .map(|a| a.to_formal_arg());
+        .map(|a| a.to_formal_arg())
+        .chain(func.dots.then(|| "...".to_string()));
 
     // Both `class_name` and `func.name` should be processed
     // because they are exposed to R

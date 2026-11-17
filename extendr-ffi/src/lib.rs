@@ -18,6 +18,9 @@ mod non_api;
 #[cfg(feature = "non-api")]
 pub use non_api::*;
 
+#[cfg(r_4_6)]
+pub mod dots;
+
 #[non_exhaustive]
 #[repr(transparent)]
 #[derive(Debug)]

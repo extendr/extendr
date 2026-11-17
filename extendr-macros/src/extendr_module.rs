@@ -66,6 +66,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 func_ptr: #wrap_module_metadata_name as * const u8,
                 hidden: true,
                 invisible: None,
+                dots: false,
             });
             let mut args = vec![
                 extendr_api::metadata::Arg { name: "use_symbols", arg_type: "bool", default: None },
@@ -85,6 +86,7 @@ pub fn extendr_module(item: TokenStream) -> TokenStream {
                 func_ptr: #wrap_make_module_wrappers as * const u8,
                 hidden: true,
                 invisible: None,
+                dots: false,
             });
 
             extendr_api::metadata::Metadata {

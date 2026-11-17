@@ -323,6 +323,8 @@ pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
+pub mod dots;
+
 pub use robj::Robj;
 pub use std::convert::{TryFrom, TryInto};
 pub use std::ops::Deref;

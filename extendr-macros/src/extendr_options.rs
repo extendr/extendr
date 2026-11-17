@@ -1,6 +1,6 @@
 use syn::{meta::ParseNestedMeta, Lit, LitBool};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub(crate) struct ExtendrOptions {
     /// Name of the corresponding R object
     pub r_name: Option<String>,
@@ -11,6 +11,7 @@ pub(crate) struct ExtendrOptions {
     /// R. See [WRE, Section 6.3 number generation](https://cran.r-project.org/doc/manuals/R-exts.html#Random-numbers)
     pub use_rng: bool,
     pub invisible: Option<bool>,
+    pub dots: bool,
 }
 
 impl ExtendrOptions {
@@ -30,6 +31,10 @@ impl ExtendrOptions {
         match path.to_string().as_str() {
             "invisible" => {
                 self.invisible = Some(true);
+                Ok(())
+            }
+            "dots" => {
+                self.dots = true;
                 Ok(())
             }
             _ => {

@@ -95,6 +95,7 @@ pub(crate) fn make_function_wrappers(
         Some(false) => quote!(Some(false)),
         None => quote!(None),
     };
+    let opts_dots = opts.dots;
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -308,6 +309,7 @@ pub(crate) fn make_function_wrappers(
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
                 invisible: #opts_invisible,
+                dots: #opts_dots,
             })
         }
     ));

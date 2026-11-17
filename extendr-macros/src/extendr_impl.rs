@@ -361,6 +361,17 @@ pub(crate) fn extendr_impl(
     let mut wrappers: Vec<ItemFn> = Vec::new();
     for impl_item in &mut item_impl.items {
         if let syn::ImplItem::Fn(ref mut method) = impl_item {
+            let mut method_opts = opts.clone();
+            let mut attrs = Vec::with_capacity(method.attrs.len());
+            for attr in method.attrs.drain(..) {
+                if attr.path().is_ident("extendr") && matches!(attr.meta, syn::Meta::List(_)) {
+                    attr.parse_nested_meta(|meta| method_opts.parse(meta))?;
+                } else {
+                    attrs.push(attr);
+                }
+            }
+            method.attrs = attrs;
+
             method_meta_names.push(format_ident!(
                 "{}{}__{}",
                 wrappers::META_PREFIX,
@@ -368,7 +379,7 @@ pub(crate) fn extendr_impl(
                 method.sig.ident
             ));
             wrappers::make_function_wrappers(
-                opts,
+                &method_opts,
                 &mut wrappers,
                 prefix.as_str(),
                 &method.attrs,
