@@ -56,4 +56,12 @@ enum FooEnum2 {
     C,
 }
 
+// dots -----------------------------------------
+
+#[extendr]
+fn two_dots(a: Dots, b: Dots) {}
+
+#[extendr]
+fn dots_default(#[extendr(default = "1")] a: Dots) {}
+
 fn main() {}

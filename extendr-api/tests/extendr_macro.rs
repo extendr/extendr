@@ -192,6 +192,7 @@ fn test_metadata() {
         name: "val",
         arg_type: "Robj",
         default: Some("NULL"),
+        dots: false,
     }];
 
     assert_eq!(
@@ -207,7 +208,6 @@ fn test_metadata() {
             func_ptr: wrap__test_metadata_1 as *const u8,
             hidden: false,
             invisible: None,
-            dots: false,
         }
     );
 }

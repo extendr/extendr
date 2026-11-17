@@ -31,28 +31,24 @@ impl From<BulletList> for Robj {
 }
 
 /// @export
-#[extendr(dots)]
-fn bullet_list() -> Result<BulletList> {
-    let items = match Dots::find() {
-        Some(dots) => dots
-            .into_iter()
-            .map(|dot| match dot.value()? {
-                Some(value) => Rstr::try_from(value),
-                None => Ok(Rstr::na()),
-            })
-            .collect::<Result<Vec<Rstr>>>()?,
-        None => Vec::new(),
-    };
+#[extendr]
+fn bullet_list(items: Dots) -> Result<BulletList> {
+    let items = items
+        .into_iter()
+        .map(|dot| match dot.value()? {
+            Some(value) => Rstr::try_from(value),
+            None => Ok(Rstr::na()),
+        })
+        .collect::<Result<Vec<Rstr>>>()?;
     let mut items = Strings::from_values(items);
     items.set_class(["bullet_list"])?;
     Ok(BulletList(items))
 }
 
 /// @export
-#[extendr(dots, invisible, r_name = "print.bullet_list")]
-fn print_bullet_list(x: BulletList) -> Result<BulletList> {
-    let dots = Dots::find();
-    let arg = |name: &str| match dots.as_ref().and_then(|d| d.get(name)) {
+#[extendr(invisible, r_name = "print.bullet_list")]
+fn print_bullet_list(x: BulletList, dots: Dots) -> Result<BulletList> {
+    let arg = |name: &str| match dots.get(name) {
         Some(dot) => dot.value(),
         None => Ok(None),
     };

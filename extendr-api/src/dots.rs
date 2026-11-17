@@ -60,28 +60,24 @@
 //! }
 //!
 //! /// @export
-//! #[extendr(dots)]
-//! fn bullet_list() -> Result<BulletList> {
-//!     let items = match Dots::find() {
-//!         Some(dots) => dots
-//!             .into_iter()
-//!             .map(|dot| match dot.value()? {
-//!                 Some(value) => Rstr::try_from(value),
-//!                 None => Ok(Rstr::na()),
-//!             })
-//!             .collect::<Result<Vec<Rstr>>>()?,
-//!         None => Vec::new(),
-//!     };
+//! #[extendr]
+//! fn bullet_list(items: Dots) -> Result<BulletList> {
+//!     let items = items
+//!         .into_iter()
+//!         .map(|dot| match dot.value()? {
+//!             Some(value) => Rstr::try_from(value),
+//!             None => Ok(Rstr::na()),
+//!         })
+//!         .collect::<Result<Vec<Rstr>>>()?;
 //!     let mut items = Strings::from_values(items);
 //!     items.set_class(["bullet_list"])?;
 //!     Ok(BulletList(items))
 //! }
 //!
 //! /// @export
-//! #[extendr(dots, invisible, r_name = "print.bullet_list")]
-//! fn print_bullet_list(x: BulletList) -> Result<BulletList> {
-//!     let dots = Dots::find();
-//!     let arg = |name: &str| match dots.as_ref().and_then(|d| d.get(name)) {
+//! #[extendr(invisible, r_name = "print.bullet_list")]
+//! fn print_bullet_list(x: BulletList, dots: Dots) -> Result<BulletList> {
+//!     let arg = |name: &str| match dots.get(name) {
 //!         Some(dot) => dot.value(),
 //!         None => Ok(None),
 //!     };
@@ -105,7 +101,8 @@
 //!     Ok(x)
 //! }
 //! ```
-use crate::{catch_r_error, Environment, Error, GetSexp, Result, Robj, Strings};
+use crate::wrapper::symbol::dots_symbol;
+use crate::{robj::Eval, Environment, Error, GetSexp, Result, Robj, Strings, Symbol};
 use extendr_ffi::dots::R_DotType_t;
 use std::os::raw::c_int;
 
@@ -127,12 +124,8 @@ impl Dot {
             Self::Missing => Ok(None),
             Self::Value(v) => Ok(Some(v.clone())),
             Self::DelayedExpression { i, env } | Self::ForcedExpression { i, env } => {
-                let r_i = c_int::try_from(i + 1)
-                    .map_err(|_| Error::OutOfRange(Robj::from(env.clone())))?;
-                let env = unsafe { env.get() };
-                let sexp =
-                    catch_r_error(move || unsafe { extendr_ffi::dots::R_DotsElt(r_i, env) })?;
-                Ok(Some(unsafe { Robj::from_sexp(sexp) }))
+                let symbol = Symbol::from_string(format!("..{}", i + 1));
+                Robj::from(symbol).eval_with_env(env).map(Some)
             }
         }
     }
@@ -223,6 +216,36 @@ impl AsRef<Environment> for Dots {
 impl From<Dots> for Environment {
     fn from(dots: Dots) -> Self {
         dots.0
+    }
+}
+
+impl TryFrom<&Robj> for Dots {
+    type Error = Error;
+
+    fn try_from(robj: &Robj) -> Result<Self> {
+        let env = Environment::try_from(robj)?;
+        let dots_env = unsafe {
+            let sexp = extendr_ffi::dots::R_findDotsEnv(env.get());
+            if sexp == extendr_ffi::R_EmptyEnv {
+                return Err(Error::Other("no `...` found".to_string()));
+            }
+            Robj::from_sexp(sexp)
+        };
+        Ok(Dots(Environment::try_from(dots_env)?))
+    }
+}
+
+impl TryFrom<Robj> for Dots {
+    type Error = Error;
+
+    fn try_from(robj: Robj) -> Result<Self> {
+        Self::try_from(&robj)
+    }
+}
+
+impl From<Dots> for Symbol {
+    fn from(_: Dots) -> Self {
+        dots_symbol()
     }
 }
 

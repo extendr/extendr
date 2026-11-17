@@ -95,7 +95,6 @@ pub(crate) fn make_function_wrappers(
         Some(false) => quote!(Some(false)),
         None => quote!(None),
     };
-    let opts_dots = opts.dots;
 
     let inputs = &mut sig.inputs;
     let has_self = matches!(inputs.iter().next(), Some(FnArg::Receiver(_)));
@@ -153,9 +152,10 @@ pub(crate) fn make_function_wrappers(
     let actual_args: Punctuated<Expr, Token![,]> =
         inputs.iter().filter_map(translate_actual).collect();
 
+    let mut has_dots = false;
     let meta_args: Vec<Expr> = inputs
         .iter_mut()
-        .map(|input| translate_meta_arg(input, self_ty))
+        .map(|input| translate_meta_arg(input, self_ty, &mut has_dots))
         .collect::<syn::Result<Vec<Expr>>>()?;
 
     // Generate wrappers for rust functions to be called from R.
@@ -309,7 +309,6 @@ pub(crate) fn make_function_wrappers(
                 func_ptr: #wrap_name as * const u8,
                 hidden: false,
                 invisible: #opts_invisible,
-                dots: #opts_dots,
             })
         }
     ));
@@ -437,7 +436,11 @@ fn translate_only_alias(pat: &syn::Pat) -> Result<&Ident, syn::Error> {
 }
 
 // Generate code to make a metadata::Arg.
-fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Result<Expr> {
+fn translate_meta_arg(
+    input: &mut FnArg,
+    self_ty: Option<&syn::Type>,
+    has_dots: &mut bool,
+) -> syn::Result<Expr> {
     match input {
         // function argument.
         FnArg::Typed(ref mut pattype) => {
@@ -449,20 +452,32 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
             let name_string = quote! { #pat_ident }.to_string();
             let type_string = type_name(ty);
             let is_option = matches!(ty, Type::Path(p) if p.path.segments.last().is_some_and(|seg| seg.ident == "Option"));
-            let default = if let Some(default) = get_defaults(&mut pattype.attrs) {
-                quote!(Some(#default))
-            } else if let Some(default) = get_named_lit(&mut pattype.attrs, "default") {
-                quote!(Some(#default))
-            } else if is_option {
-                quote!(Some("NULL"))
-            } else {
-                quote!(None)
+            let dots = matches!(ty, Type::Path(p) if p.path.segments.last().is_some_and(|seg| seg.ident == "Dots"));
+            if dots && std::mem::replace(has_dots, true) {
+                return Err(syn::Error::new_spanned(
+                    &*pattype,
+                    "only one `Dots` argument is allowed",
+                ));
+            }
+            let explicit_default = get_defaults(&mut pattype.attrs)
+                .or_else(|| get_named_lit(&mut pattype.attrs, "default"));
+            if dots && explicit_default.is_some() {
+                return Err(syn::Error::new_spanned(
+                    &*pattype,
+                    "a `Dots` argument can't have a default",
+                ));
+            }
+            let default = match explicit_default {
+                Some(default) => quote!(Some(#default)),
+                None if is_option => quote!(Some("NULL")),
+                None => quote!(None),
             };
             Ok(parse_quote! {
                 extendr_api::metadata::Arg {
                     name: #name_string,
                     arg_type: #type_string,
-                    default: #default
+                    default: #default,
+                    dots: #dots
                 }
             })
         }
@@ -486,7 +501,8 @@ fn translate_meta_arg(input: &mut FnArg, self_ty: Option<&syn::Type>) -> syn::Re
                 extendr_api::metadata::Arg {
                     name: "self",
                     arg_type: #type_string,
-                    default: None
+                    default: None,
+                    dots: false
                 }
             })
         }
