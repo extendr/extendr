@@ -5,6 +5,7 @@ mod attributes;
 mod conditions;
 mod custom_errors;
 mod dataframe;
+mod dots;
 mod errors;
 mod externalptr;
 mod field_errors;
@@ -466,6 +467,7 @@ extendr_module! {
     use altrep;
     use attributes;
     use dataframe;
+    use dots;
     use errors;
     use hashmap;
     use hashset;

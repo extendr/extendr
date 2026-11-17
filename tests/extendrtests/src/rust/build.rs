@@ -4,6 +4,7 @@ fn main() {
     println!("cargo:rerun-if-env-changed=R_HOME");
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rustc-check-cfg=cfg(use_r_altlist)");
+    println!("cargo:rustc-check-cfg=cfg(r_4_6)");
 
     let r_home_env = std::env::var_os("R_HOME");
     let r_home_env = r_home_env.map(PathBuf::from);
@@ -55,5 +56,9 @@ fn main() {
 
     if major >= 4 && minor >= 3 {
         println!("cargo:rustc-cfg=use_r_altlist");
+    }
+
+    if (major, minor) >= (4, 6) {
+        println!("cargo:rustc-cfg=r_4_6");
     }
 }

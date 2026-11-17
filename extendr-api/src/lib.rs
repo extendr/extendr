@@ -323,6 +323,7 @@ pub mod scalar;
 pub mod thread_safety;
 pub mod wrapper;
 
+#[cfg(r_4_6)]
 pub mod dots;
 
 pub use robj::Robj;

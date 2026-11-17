@@ -4,32 +4,112 @@
 //! the delayed expression API introduced in R 4.6.
 //! See [Working with variable bindings](https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Working-with-variable-bindings-1).
 //!
-//! Example:
+//! [`Dots`] is built upon [`Environment`].
+//! `Dots` should always be fetched from inside
+//! the body of a function via `Dots::find()`.
+//! This calls [`extendr_ffi::dots::R_findDotsEnv`] to walk the
+//! environments and fine where `...`, if anywhere, is defined.
 //!
-//! ```rust
-//! struct BulletList(Strings);
+//! `Dots` can be iterated over using `.iter()` or extracted
+//! manually by index or name via [`Dots::get()`].
 //!
-//! TryFrom<&Robj> for BulletList {
-//!   todo!()
-//! }
+//! [`Dot`] enum represents a single element of [`Dots`].
+//! It can either be a value, missing, a promise, or an already-evaluated expression.
 //!
-//! From<BulletList> for Robj {
-//!   todo!()
-//! }
-//! #[extendr(dots, r_name = "print.bullet_list")]
-//! fn print_bulletlist(x: Robj) -> Strings {
-//!   x.into_iter().map(|xi| {
-//!     if xi.is_na() {
-//!       Rstr::na()
-//!     } else {
-//!       Rstr::from(format("• {}", xi.as_ref())
+//! To extract the underlying value of a `Dot` call [`Dot::value()`].
+//!
+//! Common operations (note you should always handle `None` safely!):
+//!
+//! - Dots are missing: `Dots::find().is_none()`
+//! - Dots are empty: `Dots::find().unwrap().is_empty()`
+//! - Dots are unnamed: `Dots::find().unwrap().names().is_none()`
+//!
+//! ## Example:
+//!
+//! ```rust,ignore
+//! use extendr_api::dots::Dots;
+//! use extendr_api::prelude::*;
+//! use extendr_api::Result;
+//!
+//! #[derive(Debug, Clone)]
+//! pub struct BulletList(Strings);
+//!
+//! impl TryFrom<&Robj> for BulletList {
+//!     type Error = Error;
+//!
+//!     fn try_from(robj: &Robj) -> Result<Self> {
+//!         if !robj.inherits("bullet_list") {
+//!             return Err(Error::TypeMismatch(robj.clone()));
+//!         }
+//!         Ok(BulletList(Strings::try_from(robj)?))
 //!     }
-//!   }).collect()
 //! }
-use crate::{catch_r_error, Environment, Error, GetSexp, Result, Robj};
+//!
+//! impl TryFrom<Robj> for BulletList {
+//!     type Error = Error;
+//!
+//!     fn try_from(robj: Robj) -> Result<Self> {
+//!         Self::try_from(&robj)
+//!     }
+//! }
+//!
+//! impl From<BulletList> for Robj {
+//!     fn from(x: BulletList) -> Self {
+//!         x.0.into()
+//!     }
+//! }
+//!
+//! /// @export
+//! #[extendr(dots)]
+//! fn bullet_list() -> Result<BulletList> {
+//!     let items = match Dots::find() {
+//!         Some(dots) => dots
+//!             .into_iter()
+//!             .map(|dot| match dot.value()? {
+//!                 Some(value) => Rstr::try_from(value),
+//!                 None => Ok(Rstr::na()),
+//!             })
+//!             .collect::<Result<Vec<Rstr>>>()?,
+//!         None => Vec::new(),
+//!     };
+//!     let mut items = Strings::from_values(items);
+//!     items.set_class(["bullet_list"])?;
+//!     Ok(BulletList(items))
+//! }
+//!
+//! /// @export
+//! #[extendr(dots, invisible, r_name = "print.bullet_list")]
+//! fn print_bullet_list(x: BulletList) -> Result<BulletList> {
+//!     let dots = Dots::find();
+//!     let arg = |name: &str| match dots.as_ref().and_then(|d| d.get(name)) {
+//!         Some(dot) => dot.value(),
+//!         None => Ok(None),
+//!     };
+//!     let width = arg("width")?.map(|w| usize::try_from(&w)).transpose()?;
+//!     let symbol = arg("symbol")?
+//!         .map(String::try_from)
+//!         .transpose()?
+//!         .unwrap_or_else(|| "•".to_string());
+//!
+//!     for item in x.0.iter() {
+//!         let text: String = if item.is_na() {
+//!             "NA".to_string()
+//!         } else {
+//!             match width {
+//!                 Some(width) => item.as_str().chars().take(width).collect(),
+//!                 None => item.as_str().to_string(),
+//!             }
+//!         };
+//!         rprintln!("{symbol} {text}");
+//!     }
+//!     Ok(x)
+//! }
+//! ```
+use crate::{catch_r_error, Environment, Error, GetSexp, Result, Robj, Strings};
 use extendr_ffi::dots::R_DotType_t;
 use std::os::raw::c_int;
 
+/// Represents `...` as a struct.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Dots(Environment);
 
@@ -78,7 +158,13 @@ impl Dots {
         self.len() == 0
     }
 
-    pub fn get(&self, i: usize) -> Option<Dot> {
+    pub fn names(&self) -> Option<Strings> {
+        Strings::try_from(unsafe { Robj::from_sexp(extendr_ffi::dots::R_DotsNames(self.0.get())) })
+            .ok()
+    }
+
+    pub fn get<I: DotsIndex>(&self, index: I) -> Option<Dot> {
+        let i = index.position(self)?;
         if i >= self.len() {
             return None;
         }
@@ -94,6 +180,37 @@ impl Dots {
                 R_DotType_t::R_DotTypeForced => Some(Dot::ForcedExpression { i, env }),
             }
         }
+    }
+}
+
+pub trait DotsIndex {
+    fn position(&self, dots: &Dots) -> Option<usize>;
+}
+
+impl DotsIndex for usize {
+    fn position(&self, _dots: &Dots) -> Option<usize> {
+        Some(*self)
+    }
+}
+
+impl DotsIndex for &str {
+    fn position(&self, dots: &Dots) -> Option<usize> {
+        if self.is_empty() {
+            return None;
+        }
+        dots.names()?.iter().position(|n| n.as_ref() == *self)
+    }
+}
+
+impl DotsIndex for String {
+    fn position(&self, dots: &Dots) -> Option<usize> {
+        self.as_str().position(dots)
+    }
+}
+
+impl DotsIndex for &String {
+    fn position(&self, dots: &Dots) -> Option<usize> {
+        self.as_str().position(dots)
     }
 }
 

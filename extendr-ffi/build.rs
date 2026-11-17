@@ -202,7 +202,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             // Keep in sync with the newest version in emit_r_version_flags
             emit_r_version_flags(&Version {
                 major: 4,
-                minor: 5,
+                minor: 6,
                 patch: 0,
             });
             return Ok(());
