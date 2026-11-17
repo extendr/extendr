@@ -67,8 +67,8 @@ fn print_bullet_list(x: BulletList) -> Result<BulletList> {
             "NA".to_string()
         } else {
             match width {
-                Some(width) => item.as_str().chars().take(width).collect(),
-                None => item.as_str().to_string(),
+                Some(width) => item.as_ref().chars().take(width).collect(),
+                None => item.as_ref().to_string(),
             }
         };
         rprintln!("{symbol} {text}");
