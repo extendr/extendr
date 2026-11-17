@@ -156,9 +156,7 @@ fn write_function_wrapper(
 
     let r_args: Vec<RArg> = func.args.iter().map(Into::into).collect();
     let actual_args = r_args.iter().map(|a| a.to_actual_arg());
-    let formal_args = r_args
-        .iter()
-        .map(|a| a.to_formal_arg());
+    let formal_args = r_args.iter().map(|a| a.to_formal_arg());
 
     let should_be_invisible = match func.invisible {
         Some(true) => true,
