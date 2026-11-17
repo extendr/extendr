@@ -77,3 +77,15 @@ error: Only `struct` is supported
 56 | |     C,
 57 | | }
    | |_^
+
+error: only one `Dots` argument is allowed
+  --> tests/cases/case-extendr-macro.rs:62:22
+   |
+62 | fn two_dots(a: Dots, b: Dots) {}
+   |                      ^^^^^^^
+
+error: a `Dots` argument can't have a default
+  --> tests/cases/case-extendr-macro.rs:65:43
+   |
+65 | fn dots_default(#[extendr(default = "1")] a: Dots) {}
+   |                                           ^^^^^^^

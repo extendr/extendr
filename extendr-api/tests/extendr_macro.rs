@@ -192,6 +192,7 @@ fn test_metadata() {
         name: "val",
         arg_type: "Robj",
         default: Some("NULL"),
+        dots: false,
     }];
 
     assert_eq!(

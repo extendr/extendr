@@ -14,6 +14,7 @@ pub struct Arg {
     pub arg_type: &'static str,
     #[into_list(ignore)]
     pub default: Option<&'static str>,
+    pub dots: bool,
 }
 
 /// Metadata function.
@@ -54,6 +55,7 @@ pub struct Metadata {
 struct RArg {
     name: String,
     default: Option<&'static str>,
+    dots: bool,
 }
 
 impl RArg {
@@ -62,10 +64,17 @@ impl RArg {
     }
 
     fn to_actual_arg(&self) -> String {
-        self.name.clone()
+        if self.dots {
+            "environment()".to_string()
+        } else {
+            self.name.clone()
+        }
     }
 
     fn to_formal_arg(&self) -> String {
+        if self.dots {
+            return "...".to_string();
+        }
         match self.default {
             Some(default_val) => format!("{} = {}", self.name, default_val),
             None => self.name.clone(),
@@ -78,6 +87,7 @@ impl From<&Arg> for RArg {
         Self {
             name: sanitize_identifier(arg.name),
             default: arg.default,
+            dots: arg.dots,
         }
     }
 }
