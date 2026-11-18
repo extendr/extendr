@@ -72,6 +72,15 @@ cfg <- if (is_debug) "debug" else "release"
 
 # read in the Makevars.in file checking
 is_windows <- .Platform[["OS.type"]] == "windows"
+.windows_target <- if (grepl("aarch", R.version$platform)) {
+  "aarch64-pc-windows-gnullvm"
+} else if (grepl("clang", Sys.getenv("R_COMPILED_BY"))) {
+  "x86_64-pc-windows-gnullvm"
+} else if (grepl("i386", R.version$platform)) {
+  "i686-pc-windows-gnu"
+} else {
+  "x86_64-pc-windows-gnu"
+}
 
 # if windows we replace in the Makevars.win.in
 mv_fp <- ifelse(
@@ -99,6 +108,7 @@ mv_txt <- readLines(mv_fp)
 # replace placeholder values
 new_txt <- gsub("@CRAN_FLAGS@", .cran_flags, mv_txt) |>
   gsub("@PROFILE@", .profile, x = _) |>
+  gsub("@WINDOWS_TARGET@", .windows_target, x = _) |>
   gsub("@CLEAN_TARGET@", .clean_targets, x = _) |>
   gsub("@LIBDIR@", .libdir, x = _) |>
   gsub("@TARGET@", .target, x = _) |>
