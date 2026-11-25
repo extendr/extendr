@@ -86,8 +86,7 @@ check_rint_na <- function(x) .Call(wrap__check_rint_na, x)
 
 #' Test whether `_arg` parameters are treated correctly in R
 #' Executes \code{`_x` - `_y`}
-#' @param _x an integer scalar, ignored
-#' @param `_y` an integer scalar, ignored
+#' @rawRd \arguments{\item{_x}{an integer scalar, ignored}\item{`_y`}{an integer scalar, ignored}}
 #' @export
 special_param_names <- function(`_x`, `_y`) .Call(wrap__special_param_names, `_x`, `_y`)
 

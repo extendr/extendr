@@ -282,8 +282,7 @@ fn check_option_default_override(#[extendr(default = "1L")] x: Option<i32>) -> b
 // first passes tests as is, second -- only in backquotes.
 /// Test whether `_arg` parameters are treated correctly in R
 /// Executes \code{`_x` - `_y`}
-/// @param _x an integer scalar, ignored
-/// @param `_y` an integer scalar, ignored
+/// @rawRd \arguments{\item{_x}{an integer scalar, ignored}\item{`_y`}{an integer scalar, ignored}}
 /// @export
 #[extendr]
 fn special_param_names(_x: i32, _y: i32) -> i32 {
