@@ -7,12 +7,8 @@ Executes \code{`_x` - `_y`}}
 \usage{
 special_param_names(`_x`, `_y`)
 }
-\arguments{
-\item{_x}{an integer scalar, ignored}
-
-\item{`_y`}{an integer scalar, ignored}
-}
 \description{
 Test whether \verb{_arg} parameters are treated correctly in R
 Executes \code{`_x` - `_y`}
 }
+\arguments{\item{_x}{an integer scalar, ignored}\item{`_y`}{an integer scalar, ignored}}

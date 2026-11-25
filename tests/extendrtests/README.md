@@ -1,43 +1,31 @@
 # Integration Tests for Calling Extendr from an R Package
 
-[![R build status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
+[![R build
+status](https://github.com/extendr/extendr/actions/workflows/post-merge.yml/badge.svg)](https://github.com/extendr/extendr/actions/workflows/post-merge.yml)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 
-This package serves as a test to see whether an R package using extendr can successfully build, run, and pass `R CMD check` on all major platforms.
+This R package serves as a comprehensive integration test for extendr. It 
+exercises the full path from Rust through the R FFI, verifying that a package
+built with extendr:
 
-The Rust code that is part of the package is located here: <https://github.com/extendr/extendr/tree/main/tests/extendrtests/src/rust>
-
-The wrapper scripts calling the Rust functions are located here:
-<https://github.com/extendr/extendr/blob/main/tests/extendrtests/R/make-wrappers.R>
-
-The test functions that verify that the wrapper and Rust functions work correctly are located here: <https://github.com/extendr/extendr/blob/main/tests/extendrtests/tests/testthat/test-wrappers.R>
-
-## Using local extendr packages
-
-While testing new features, you may want to explore these features using
-`rextendr::rust_function` / `rextendr::rust_source`, you may run this
-
-```r
-options(
-    rextendr.patch.crates_io =
-        list(
-            `extendr-api` = list(path = "extendr-api" |> normalizePath()),
-            `extendr-macros` = list(path = "extendr-macros" |> normalizePath()),
-            `extendr-engine` = list(path = "extendr-engine" |> normalizePath())
-        )
-)
-```
-
-to ensure that the R-session knows about local extendr.
+- compiles its Rust code ([src/rust](src/rust)),
+- generates its R wrappers ([R/extendr-wrappers.R](R/extendr-wrappers.R)),
+- passes its `{testthat}` suite ([tests/testthat](tests/testthat)), and
+- passes `R CMD check` on all major platforms.
 
 ## Running tests locally
 
-The `Cargo.toml` file hard-codes the relative path of the `extendr` libraries. You can build and install `extendrtests` from RStudio as normal using the menu items in the "Build" menu. However, "Check" does not work. To check this project locally you need to run:
+Run these [just](https://just.systems) recipes from the root of the extendr
+repository:
 
-```r
-rcmdcheck::rcmdcheck(check_dir = "../../../")
+```sh
+just document       # regenerate R/extendr-wrappers.R and man/ via devtools::document()
+just devtools-test  # run the {testthat} suite; FILTER=<name> runs a single file
+just r-cmd-check    # run R CMD check --as-cran
 ```
 
-This is necessary so the relative paths in `Cargo.toml` points to the correct location.
-
-Clicking "Check" in RStudio will not work because it runs `devtools::check()` (that resolves to `rcmdcheck::rcmdcheck()`) with no arguments and the checks are then run in a temporary directory that doesn't have the same relative path.
+`R CMD check` builds the package in a temporary directory, which breaks the
+relative path to `extendr-api` in `src/rust/Cargo.toml`. `just r-cmd-check`
+temporarily rewrites that path to an absolute one, so prefer it over
+`devtools::check()` or RStudio's "Check" button.
